@@ -7,8 +7,9 @@ in the form $setting: value,
 ----------------------------------------
 */
 
-@use "uswds-core" with (
+@use "~uswds/uswds-core" with (
+  $theme-show-notifications: false,
   $theme-font-path: "/fonts",
   $theme-font-sans-custom-stack: 'source-sans-pro-web-normal-400-fallback',
-  $theme-image-path: "/icons"
+  $theme-image-path: "/icons",
 );
