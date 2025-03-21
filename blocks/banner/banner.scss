@@ -1,1 +1,6 @@
-@forward "~uswds/usa-banner/index";
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+
+.banner-wrapper {
+	@include meta.load-css("~uswds/usa-banner/index");
+}

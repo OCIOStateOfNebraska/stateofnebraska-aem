@@ -7,8 +7,10 @@
     "lint:js": "eslint .",
     "lint:css": "stylelint blocks/**/*.css styles/*.css",
     "lint": "npm run lint:js && npm run lint:css",
-    "up": "node sass-compile.js & aem up"
+    "sass": "node sass-compile.js",
+    "up": "node sass-compile.js watch & aem up"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/adobe/aem-boilerplate.git"

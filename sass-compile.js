@@ -8,6 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import { readdir } from 'fs/promises';
 import { fileURLToPath, pathToFileURL } from 'url';
+import * as process from 'process';
 
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -17,44 +18,56 @@ const ignoredFiles = [];
 const compileAndSave = async (sassFile) => {
   const dest = sassFile.replace(path.extname(sassFile), '.css');
 
-  fs.writeFile(dest, sass.compile(sassFile, {
-    outputStyle: 'compressed',
-    loadPaths: [
-      'node_modules/@uswds',
-      'node_modules/@uswds/uswds/packages',
-    ],
-    importers: [{
-      // Shortcuts for node_modules folders
-      findFileUrl(url) {
-        const USWDS_PREFIX = '~uswds';
-        if (url.startsWith(USWDS_PREFIX)) return new URL(pathToFileURL('node_modules/@uswds/uswds/packages') + url.substring(USWDS_PREFIX.length));
-        if (url.startsWith('~')) return new URL(url.substring(1), pathToFileURL('node_modules'));
+  try {
+    const compileResult = sass.compile(sassFile, {
+      style: 'compressed',
+      // TODO: sourceMap: true (https://sass-lang.com/documentation/js-api/interfaces/options/#sourceMap)
+      loadPaths: [
+        'node_modules/@uswds',
+        'node_modules/@uswds/uswds/packages',
+      ],
+      importers: [{
+        // Shortcuts for node_modules folders
+        findFileUrl(url) {
+          const USWDS_PREFIX = '~uswds';
+          if (url.startsWith(USWDS_PREFIX)) return new URL(pathToFileURL('node_modules/@uswds/uswds/packages') + url.substring(USWDS_PREFIX.length));
+          if (url.startsWith('~')) return new URL(url.substring(1), pathToFileURL('node_modules'));
 
-        return null;
-      },
-    }],
-    // deprecation warnings from uswds
-    silenceDeprecations: [
-      'mixed-decls',
-      'global-builtin',
-    ],
-  }).css, (err) => {
-    if (err) console.log(err);
-    console.log(`Compiled ${sassFile} to ${dest}`);
-  });
+          return null;
+        },
+      }],
+      // deprecation warnings from uswds
+      silenceDeprecations: [
+        'mixed-decls',
+        'global-builtin',
+        'color-functions',
+      ],
+    });
+
+    fs.writeFile(dest, compileResult.css, (fileError) => {
+      if (fileError) console.log(fileError);
+      console.log(`Compiled ${sassFile} to ${dest}`);
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 const processFiles = async (parent) => {
   const files = await readdir(parent, { withFileTypes: true });
   for (const file of files) {
+    const fileName = file.name;
     if (file.isDirectory()) {
-      await processFiles(path.join(parent, file.name));
+      await processFiles(path.join(parent, fileName));
     }
-    if (path.extname(file.name) === '.scss') {
+    if (path.extname(fileName) === '.scss') {
       if (!ignoredFiles.includes(file.name)) {
-        await compileAndSave(path.join(parent, file.name));
+        if (!path.basename(fileName).startsWith('_')) {
+          console.log(`${path.basename(fileName)} compiling...`);
+          await compileAndSave(path.join(parent, fileName));
+        }
       } else {
-        console.log(`${file.name} has been explicitly ignored for compilation`);
+        console.log(`${fileName} has been explicitly ignored for compilation`);
       }
     }
   }
@@ -69,12 +82,18 @@ for (const folder of ['styles', 'blocks']) {
   }
 }
 
-fs.watch('.', { recursive: true }, (eventType, fileName) => {
-  if (path.extname(fileName) === '.scss' && eventType === 'change') {
-    if (!ignoredFiles.includes(fileName)) {
-      compileAndSave(path.join(__dirname, fileName));
-    } else {
-      console.log(`${fileName} has been explicitly ignored for compilation`);
+if (process.argv[2]?.trim().toLowerCase() === 'watch') {
+  fs.watch('.', { recursive: true }, (eventType, fileName) => {
+    if (path.extname(fileName) === '.scss' && eventType === 'change') {
+      if (!ignoredFiles.includes(fileName)) {
+        if (!path.basename(fileName).startsWith('_')) {
+          // compile this css file directly
+          compileAndSave(path.join(__dirname, fileName));
+        }
+        // TODO: Process changes to dependencies (without infinite loops in here)
+      } else {
+        console.log(`${fileName} has been explicitly ignored for compilation`);
+      }
     }
-  }
-});
+  });
+}
