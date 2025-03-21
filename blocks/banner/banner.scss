@@ -2,5 +2,5 @@
 @use 'sass:meta';
 
 .banner-wrapper {
-	@include meta.load-css("~uswds/usa-banner/index");
+	@include meta.load-css('~uswds/usa-banner/index');
 }
