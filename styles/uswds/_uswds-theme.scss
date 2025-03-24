@@ -1,0 +1,150 @@
+/*
+----------------------------------------
+USWDS with settings overrides
+----------------------------------------
+Uncomment the following lines and add a list of changed settings
+in the form $setting: value,
+----------------------------------------
+*/
+
+@forward "~uswds/uswds-core" with (
+  /////
+	/// Settings
+	/////
+  $theme-show-notifications: false,
+  $theme-show-compile-warnings: false,
+
+  $theme-image-path: "/icons",
+
+  $theme-utility-breakpoints-custom: (
+    'mobile': '402px',
+    'mobile-lg': '480px',
+    'tablet': '640px',
+    'tablet-lg': '880px',
+    'desktop': '1024px',
+    'desktop-lg': '1200px',
+    'widescreen': '1400px',
+  ),
+	// $theme-utility-breakpoints: (),
+
+	$theme-grid-container-max-width: "desktop-lg",
+	$theme-header-min-width: "desktop",
+
+  /////
+	/// Colors
+	/////
+  
+  // TODO: Add base for reference
+
+  $theme-color-primary-lightest: #E6EEEF,
+  $theme-color-primary-lighter: #BBD4DD,
+  $theme-color-primary-light: #4D90A5,
+  $theme-color-primary: #00607F, // "medium"
+  $theme-color-primary-dark: #004D66,
+  $theme-color-primary-darker: #004D66,
+  $theme-color-primary-vivid: #00607F,
+  $theme-color-primary-darkest: #002733,
+  
+  $theme-color-secondary-lightest: #FFF9ED,
+  $theme-color-secondary-lighter: #FFF9ED,
+  $theme-color-secondary-light: #FFE1A6,
+  $theme-color-secondary: #FFC44D, // "medium"
+  $theme-color-secondary-dark: #AD7E1F,
+  $theme-color-secondary-darker: #573F0F,
+  $theme-color-secondary-vivid: #FFD580,
+  $theme-color-secondary-darkest: #33250A,
+
+  $theme-color-accent-cool-lightest: #E1F3F8,
+  $theme-color-accent-cool-lighter: #E1F3F8,
+  $theme-color-accent-cool-light: #97D4EA,
+  $theme-color-accent-cool: #00BDE3, // "medium"
+  $theme-color-accent-cool-dark: #28A0CB,
+  $theme-color-accent-cool-darker: #07648D,
+  $theme-color-accent-cool-darkest: #07648D,
+
+  $theme-color-accent-warm-lightest: #F8F9EB,
+  $theme-color-accent-warm-lighter: #F8F9EB,
+  $theme-color-accent-warm-light: #DDDF9B,
+  $theme-color-accent-warm: #BABF33, // "medium"
+  $theme-color-accent-warm-dark: #797C21,
+  $theme-color-accent-warm-darker: #414312,
+  $theme-color-accent-warm-darkest: #414312,
+  // $theme-color-accent-warm-vivid: #A0BD0F, // TODO: Consolidate with one of the above - this token doesn't actually exist (and errors if it's included)
+
+  /////
+	/// Typography
+	/////
+  $theme-respect-user-font-size: true,
+  $theme-typeface-tokens: (
+    'roboto': (
+      'display-name': 'Roboto',
+      'cap-height': 364px, // the default
+      'stack': 'Helvetica, Arial, sans-serif'
+    ),
+    'montserrat': (
+      'display-name': 'Montserrat',
+      'cap-height': 364px, // the default
+      'stack': 'Roboto, Helvetica, Arial, sans-serif'
+    )
+  ),
+  $theme-font-type-sans: 'roboto',
+  $theme-font-type-serif: 'montserrat', // not actually serif, but want to provide a "type" key more generically
+  $theme-font-role-ui: 'sans',
+  $theme-font-role-heading: 'serif',
+
+  $theme-type-scale-3xs: 2, // 13px
+  $theme-type-scale-2xs: 3, // 14px
+	$theme-type-scale-xs: 4, // 15px
+	$theme-type-scale-sm: 5, // 16px
+	$theme-type-scale-md: 8, // 20px
+	$theme-type-scale-lg: 9, // 22px
+	$theme-type-scale-xl: 12, // 32px
+	$theme-type-scale-2xl: 14, // 40px
+  $theme-type-scale-3xl: 15, // 48px
+  
+	$theme-display-font-size: '3xl',
+	$theme-h1-font-size: '2xl',
+	$theme-h2-font-size: 'xl',
+	$theme-h3-font-size: 'lg',
+	$theme-h4-font-size: 'sm',
+	$theme-h5-font-size: 'xs',
+	$theme-h6-font-size: '3xs',
+	$theme-body-font-size: 'md',
+  $theme-small-font-size: '2xs',
+
+	$theme-font-weight-thin: 300,
+	$theme-font-weight-light: 300,
+	$theme-font-weight-normal: 400,
+	$theme-font-weight-medium: 400,
+	$theme-font-weight-semibold: 700,
+	$theme-font-weight-bold: 700,
+	$theme-font-weight-heavy: 700,
+  
+	$theme-heading-line-height: 2, // 1.15
+	$theme-body-line-height: 4, // 1.5
+
+	$theme-text-color: 'ink',
+	$theme-link-color: 'accent-cool',
+	$theme-link-visited-color: 'accent-cool',
+	$theme-link-hover-color: 'primary',
+	$theme-link-active-color: 'accent-cool',
+
+  $theme-border-radius-sm: '05', // 4px
+  $theme-border-radius-md: 1, // 8px
+  $theme-border-radius-lg: 2, // 16px
+
+  $output-these-utilities: (), // none of them
+  $theme-style-body-element: true,
+	$theme-global-paragraph-styles: true,
+	$theme-global-link-styles: true,
+	$theme-global-content-styles: true,
+
+  /////
+  /// Buttons
+  /////
+  $theme-button-border-radius: 'pill',
+
+  /////
+	/// Component-specific stuff
+	/////
+);

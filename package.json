@@ -5,8 +5,10 @@
   "description": "Starter project for Adobe Helix",
   "scripts": {
     "lint:js": "eslint .",
-    "lint:css": "stylelint blocks/**/*.css styles/*.css",
-    "lint": "npm run lint:js && npm run lint:css"
+    "lint:css": "stylelint blocks/**/*.scss styles/*.scss",
+    "lint": "npm run lint:js && npm run lint:css",
+    "sass": "node sass-compile.js",
+    "dev": "node sass-compile.js watch & aem up"
   },
   "repository": {
     "type": "git",
@@ -20,12 +22,17 @@
   "homepage": "https://github.com/adobe/aem-boilerplate#readme",
   "devDependencies": {
     "@babel/eslint-parser": "7.25.9",
+    "@stylistic/stylelint-plugin": "^3.1.2",
     "@uswds/compile": "^1.2.1",
     "@uswds/uswds": "3.11.0",
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.31.0",
-    "stylelint": "16.12.0",
-    "stylelint-config-standard": "36.0.1"
+    "sass": "^1.86.0",
+    "stylelint": "^16.16.0",
+    "stylelint-config-standard": "36.0.1",
+    "stylelint-config-standard-scss": "^14.0.0",
+    "stylelint-order": "^6.0.4",
+    "stylelint-scss": "^6.11.1"
   }
 }
