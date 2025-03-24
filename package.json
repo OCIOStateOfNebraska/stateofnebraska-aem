@@ -8,7 +8,7 @@
     "lint:css": "stylelint blocks/**/*.scss styles/*.scss",
     "lint": "npm run lint:js && npm run lint:css",
     "sass": "node sass-compile.js",
-    "up": "node sass-compile.js watch & aem up"
+    "dev": "node sass-compile.js watch & aem up"
   },
   "repository": {
     "type": "git",

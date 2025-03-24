@@ -22,14 +22,31 @@ This project requires Node.js 22.
 npm i
 ```
 
+## Local Development
+_Note that this will run a watcher for both SASS and AEM changes_
+```sh
+npm run dev
+```
+
+### AEM Development
+If you don't want to make any style updates, and are only touching JS files, the following will run a watcher for just those AEM changes.
+
+```sh
+aem up
+```
+
 ## Linting
+Note that linting must pass before committing changes, otherwise the automated build will fail.
 
 ```sh
 npm run lint
 ```
 
-## Compile USWDS
-npx gulp compile
+## Compile Just SASS
+
+```sh
+npm run sass
+```
 
 ## Local development
 1. Create .env file with the following content: AEM_PAGES_URL=https://main--stateofnebraska-aem--ociostateofnebraska.aem.page (where the url the env where you want to pull the content from)

@@ -33,6 +33,9 @@ in the form $setting: value,
   /////
 	/// Colors
 	/////
+  
+  // TODO: Add base for reference
+
   $theme-color-primary-lightest: #E6EEEF,
   $theme-color-primary-lighter: #BBD4DD,
   $theme-color-primary-light: #4D90A5,
@@ -51,14 +54,13 @@ in the form $setting: value,
   $theme-color-secondary-vivid: #FFD580,
   $theme-color-secondary-darkest: #33250A,
 
-  // $theme-color-accent-cool-lightest: #fff,
+  $theme-color-accent-cool-lightest: #E1F3F8,
   $theme-color-accent-cool-lighter: #E1F3F8,
   $theme-color-accent-cool-light: #97D4EA,
   $theme-color-accent-cool: #00BDE3, // "medium"
   $theme-color-accent-cool-dark: #28A0CB,
   $theme-color-accent-cool-darker: #07648D,
-  // $theme-color-accent-cool-darkest: #fff,
-  // $theme-color-accent-cool-vivid: #fff,
+  $theme-color-accent-cool-darkest: #07648D,
 
   $theme-color-accent-warm-lightest: #F8F9EB,
   $theme-color-accent-warm-lighter: #F8F9EB,
@@ -67,7 +69,7 @@ in the form $setting: value,
   $theme-color-accent-warm-dark: #797C21,
   $theme-color-accent-warm-darker: #414312,
   $theme-color-accent-warm-darkest: #414312,
-  // $theme-color-accent-warm-vivid: #A0BD0F,
+  // $theme-color-accent-warm-vivid: #A0BD0F, // TODO: Consolidate with one of the above - this token doesn't actually exist (and errors if it's included)
 
   /////
 	/// Typography

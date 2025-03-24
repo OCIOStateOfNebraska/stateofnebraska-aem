@@ -9,11 +9,24 @@ import path from 'path';
 import { readdir } from 'fs/promises';
 import { fileURLToPath, pathToFileURL } from 'url';
 import * as process from 'process';
+import { exec } from 'node:child_process';
 
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const ignoredFiles = [];
+const LINT = 'npm run lint:css';
+const LINT_HANDLER = (error, stdout, stderr) => {
+  if (error) {
+    console.error(`exec error: ${error}`);
+    return;
+  }
+  if (stdout) {
+    console.log(stdout);
+  }
+  if (stderr) {
+    console.error(stderr);
+  }
+};
 
 const compileAndSave = async (sassFile) => {
   const dest = sassFile.replace(path.extname(sassFile), '.css');
@@ -73,24 +86,36 @@ const processFiles = async (parent) => {
   }
 };
 
-// Program execution process
-for (const folder of ['styles', 'blocks']) {
-  try {
-    await processFiles(path.join(__dirname, folder));
-  } catch (err) {
-    console.error(err);
+const processAllScssFiles = async () => {
+  for (const folder of ['styles', 'blocks']) {
+    try {
+      await processFiles(path.join(__dirname, folder));
+    } catch (err) {
+      console.error(err);
+    }
   }
-}
 
+  console.log('Linting CSS...');
+  exec(LINT, LINT_HANDLER);
+};
+
+// Initial build
+processAllScssFiles();
+
+// Watcher
 if (process.argv[2]?.trim().toLowerCase() === 'watch') {
   fs.watch('.', { recursive: true }, (eventType, fileName) => {
     if (path.extname(fileName) === '.scss' && eventType === 'change') {
       if (!ignoredFiles.includes(fileName)) {
-        if (!path.basename(fileName).startsWith('_')) {
-          // compile this css file directly
+        if (path.basename(fileName).startsWith('_')) {
+          // updating a potential dependency, compile all of them again
+          processAllScssFiles();
+        } else {
+          // compile just this css file directly
           compileAndSave(path.join(__dirname, fileName));
+          console.log('Linting CSS...');
+          exec(LINT, LINT_HANDLER);
         }
-        // TODO: Process changes to dependencies (without infinite loops in here)
       } else {
         console.log(`${fileName} has been explicitly ignored for compilation`);
       }
