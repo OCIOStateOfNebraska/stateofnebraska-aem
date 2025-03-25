@@ -2,6 +2,7 @@
 
 .usa-button {
 	font-size: font-size('ui', 'sm');
+	transition: background-color $transition, text-decoration-color $transition;
 
 	&__wrap {
 		em {
@@ -22,9 +23,13 @@
 	}
 
 	&--outline {
+		text-decoration: underline;
+		text-decoration-color: transparent;
+
 		&:hover,
 		&.usa-button--hover {
 			text-decoration: underline;
+			text-decoration-color: currentColor;
 		}
 	}
 }
