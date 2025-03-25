@@ -1,30 +1,30 @@
-@forward "./uswds-theme";
+@forward './uswds-theme';
 
 /*! uswds @version */
 
-// Global
+// Global /* stylelint-disable-line CssSyntaxError */
 // -------------------------------------
 /*! uswds @version */
 
 // Global
 // -------------------------------------
-@forward "uswds-global";
+@forward 'uswds-global';
 
 // Helpers
 // -------------------------------------
-@forward "uswds-helpers";
+@forward 'uswds-helpers';
 
 // Components
 //
 // ONLY IMPORT FILES THAT ARE TRULY GLOBAL - THE REST SHOULD BE IMPORTED ON A BLOCK-BY-BLOCK BASIS
 // -------------------------------------
-@forward "uswds-typography";
+@forward 'uswds-typography';
 // @forward "usa-accordion/src/styles";
 // @forward "usa-alert/src/styles";
 // @forward "usa-banner/src/styles";
 // @forward "usa-breadcrumb/src/styles";
 // @forward "usa-button-group/src/styles";
-@forward "usa-button/src/styles";
+@forward 'usa-button/src/styles';
 // @forward "usa-card/src/styles";
 // @forward "usa-checklist/src/styles";
 // @forward "usa-collection/src/styles";
@@ -40,7 +40,7 @@
 // @forward "usa-in-page-navigation/src/styles";
 // @forward "usa-language-selector/src/styles";
 // @forward "usa-layout-docs/src/styles";
-@forward "usa-layout-grid/src/styles";
+@forward 'usa-layout-grid/src/styles';
 // @forward "usa-media-block/src/styles";
 // @forward "usa-modal/src/styles";
 // @forward "usa-nav/src/styles";
@@ -60,4 +60,4 @@
 
 // Utilities
 // -------------------------------------
-@forward "uswds-utilities/src/styles";
+@forward 'uswds-utilities/src/styles';

@@ -1,0 +1,15 @@
+
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+
+.summary-box-wrapper {
+	@include meta.load-css('~uswds/usa-summary-box/src/styles/usa-summary-box');
+
+	margin-bottom: units(3); // TODO: change this unit once we get spacing
+
+	.usa-summary-box {
+		&__text {
+			font-size: size('ui', 5);
+		}
+	}
+}

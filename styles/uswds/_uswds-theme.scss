@@ -1,6 +1,8 @@
+/* stylelint-disable */
+
 /*
 ----------------------------------------
-USWDS with settings overrides
+// USWDS with settings overrides
 ----------------------------------------
 Uncomment the following lines and add a list of changed settings
 in the form $setting: value,
@@ -147,4 +149,7 @@ in the form $setting: value,
   /////
 	/// Component-specific stuff
 	/////
+	$theme-summary-box-background-color: 'primary-lighter',
+	$theme-summary-box-link-color: 'primary',
+	$theme-summary-box-border-color: 'primary',
 );
