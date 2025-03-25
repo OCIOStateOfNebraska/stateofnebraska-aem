@@ -1,0 +1,30 @@
+@use '../../styles/ne-global-imports' as *;
+
+.usa-button {
+	font-size: font-size('ui', 'sm');
+
+	&__wrap {
+		em {
+			font-style: normal;
+		}
+	}
+
+	&--secondary {
+		&:hover,
+		&.usa-button--hover {
+			background: color('secondary-light');
+		}
+
+		&:active,
+		&.usa-button--active {
+			background: color('secondary-lighter');
+		}
+	}
+
+	&--outline {
+		&:hover,
+		&.usa-button--hover {
+			text-decoration: underline;
+		}
+	}
+}
