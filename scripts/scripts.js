@@ -8,6 +8,7 @@ import {
 	decorateSections,
 	decorateBlocks,
 	decorateTemplateAndTheme,
+	getMetadata,
 	waitForFirstImage,
 	loadSection,
 	loadSections,
@@ -69,18 +70,18 @@ function decorateButtons( element ) {
 				}
 				if (
 					up.childNodes.length === 1
-                    && up.tagName === 'STRONG'
-                    && twoup.childNodes.length === 1
-                    && twoup.tagName === 'P'
+					&& up.tagName === 'STRONG'
+					&& twoup.childNodes.length === 1
+					&& twoup.tagName === 'P'
 				) {
 					a.className = 'usa-button usa-button--secondary';
 					twoup.classList.add( 'button-container' );
 				}
 				if (
 					up.childNodes.length === 1
-                    && up.tagName === 'EM'
-                    && twoup.childNodes.length === 1
-                    && twoup.tagName === 'P'
+					&& up.tagName === 'EM'
+					&& twoup.childNodes.length === 1
+					&& twoup.tagName === 'P'
 				) {
 					a.className = 'usa-button usa-button--outline';
 					twoup.classList.add( 'button-container' );
@@ -94,7 +95,6 @@ function decorateButtons( element ) {
  * Decorates the main element.
  * @param {Element} main The main element
  */
-
 export function decorateMain( main ) {
 	main.id = 'main-content';
 
@@ -104,6 +104,37 @@ export function decorateMain( main ) {
 	buildAutoBlocks( main );
 	decorateSections( main );
 	decorateBlocks( main );
+}
+
+/**
+ *
+ * @param {Element} doc The container element
+ * @param {string} templateName The template name from document metadata
+ */
+async function loadTemplate( doc, templateName ) {
+	try {
+		const cssLoaded = new Promise( ( resolve ) => {
+			loadCSS( `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`, resolve );
+		} );
+		const decorationComplete = new Promise( ( resolve ) => {
+			( async () => {
+				try {
+					const mod = await import( `../templates/${templateName}/${templateName}.js` );
+					if ( mod.default ) {
+						await mod.default( doc );
+					}
+				} catch ( error ) {
+					// eslint-disable-next-line no-console
+					console.log( `failed to load module for ${templateName}`, error );
+				}
+				resolve();
+			} )();
+		} );
+		await Promise.all( [cssLoaded, decorationComplete] );
+	} catch ( error ) {
+		// eslint-disable-next-line no-console
+		console.log( `failed to load template ${templateName}`, error );
+	}
 }
 
 /**
@@ -122,20 +153,20 @@ async function loadEager( doc ) {
 	}
 }
 
-async function loadFonts() {
-	await loadCSS( 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap' );
-	try {
-		if ( !window.location.hostname.includes( 'localhost' ) ) sessionStorage.setItem( 'fonts-loaded', 'true' );
-	} catch ( e ) {
-		// do nothing
-	}
-}
-
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
  */
 async function loadLazy( doc ) {
+	// pull in template name from document metadata
+	// fallback to USWDS "documentation" template if none is specified
+	const templateName = getMetadata( 'template' );
+	if ( templateName ) {
+		await loadTemplate( doc, templateName );
+	} else {
+		await loadTemplate( doc, 'default' );
+	}
+
 	const main = doc.querySelector( 'main' );
 	await loadSections( main );
 
@@ -157,6 +188,15 @@ async function loadLazy( doc ) {
 function loadDelayed() {
 	window.setTimeout( () => import( './delayed.js' ), 3000 );
 	// load anything that can be postponed to the latest here
+}
+
+async function loadFonts() {
+	await loadCSS( 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap' );
+	try {
+		if ( !window.location.hostname.includes( 'localhost' ) ) sessionStorage.setItem( 'fonts-loaded', 'true' );
+	} catch ( e ) {
+		// do nothing
+	}
 }
 
 async function loadPage() {
