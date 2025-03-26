@@ -69,18 +69,18 @@ function decorateButtons( element ) {
 				}
 				if (
 					up.childNodes.length === 1
-          && up.tagName === 'STRONG'
-          && twoup.childNodes.length === 1
-          && twoup.tagName === 'P'
+                    && up.tagName === 'STRONG'
+                    && twoup.childNodes.length === 1
+                    && twoup.tagName === 'P'
 				) {
 					a.className = 'usa-button usa-button--secondary';
 					twoup.classList.add( 'button-container' );
 				}
 				if (
 					up.childNodes.length === 1
-          && up.tagName === 'EM'
-          && twoup.childNodes.length === 1
-          && twoup.tagName === 'P'
+                    && up.tagName === 'EM'
+                    && twoup.childNodes.length === 1
+                    && twoup.tagName === 'P'
 				) {
 					a.className = 'usa-button usa-button--outline';
 					twoup.classList.add( 'button-container' );
@@ -123,12 +123,12 @@ async function loadEager( doc ) {
 }
 
 async function loadFonts() {
-  await loadCSS('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-  try {
-    if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
-  } catch (e) {
-    // do nothing
-  }
+	await loadCSS( 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap' );
+	try {
+		if ( !window.location.hostname.includes( 'localhost' ) ) sessionStorage.setItem( 'fonts-loaded', 'true' );
+	} catch ( e ) {
+		// do nothing
+	}
 }
 
 /**
