@@ -1,3 +1,5 @@
+/* stylelint-disable */
+
 /*
 ----------------------------------------
 USWDS with settings overrides
@@ -147,4 +149,11 @@ in the form $setting: value,
   /////
 	/// Component-specific stuff
 	/////
+	
+	/////
+	/// Summary Box
+	/////
+	$theme-summary-box-background-color: 'primary-lighter',
+	$theme-summary-box-link-color: 'primary',
+	$theme-summary-box-border-color: 'primary',
 );
