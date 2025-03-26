@@ -30,7 +30,8 @@ export default function decorate( block ) {
 	
 	// Set Title ONLY if we have one 
 	let titleId = '';
-	let title = block.querySelector( 'h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child' ) ? block.querySelector( 'h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child' ) : null;
+	let titleSelector = 'h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child';
+	let title = block.querySelector( titleSelector ) ? block.querySelector( titleSelector ) : null;
 	if ( title ) {
 		titleId = title.id;
 		title.classList.add( 'usa-summary-box__heading' );
