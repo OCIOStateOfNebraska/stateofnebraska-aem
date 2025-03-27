@@ -127,7 +127,7 @@ export function decorateUswdsPage( doc, placeholders ) {
 async function loadTemplate( doc, templateName ) {
 	try {
 		const cssLoaded = new Promise( ( resolve ) => {
-			loadCSS( `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`, resolve );
+			loadCSS( `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`, resolve() );
 		} );
 		const decorationComplete = new Promise( ( resolve ) => {
 			( async () => {
@@ -158,19 +158,7 @@ async function loadEager( doc ) {
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
 	loadBanner( doc.querySelector( 'body' ) );
-	const main = doc.querySelector( 'main' );
-	if( main ) {
-		decorateMain( main );
-		document.body.classList.add( 'appear' );
-		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
-	}
-}
 
-/**
- * Loads everything that doesn't need to be delayed.
- * @param {Element} doc The container element
- */
-async function loadLazy( doc ) {
 	const placeholders = await fetchPlaceholders();
 
 	decorateUswdsPage( doc, placeholders );
@@ -184,6 +172,19 @@ async function loadLazy( doc ) {
 		await loadTemplate( doc, 'default' );
 	}
 
+	const main = doc.querySelector( 'main' );
+	if( main ) {
+		decorateMain( main );
+		document.body.classList.add( 'appear' );
+		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
+	}
+}
+
+/**
+ * Loads everything that doesn't need to be delayed.
+ * @param {Element} doc The container element
+ */
+async function loadLazy( doc ) {
 	const main = doc.querySelector( 'main' );
 	await loadSections( main );
 
