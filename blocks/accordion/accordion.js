@@ -1,9 +1,7 @@
 import { domEl } from '../../scripts/dom-helpers.js';
 import { createId } from '../../scripts/utils.js';
 
-
 export default function decorate( block ) {
-
 	let accordions = block.children;
 	let usaAccordion = domEl( 'div', { class: 'usa-accordion' } );
 	
@@ -25,11 +23,10 @@ export default function decorate( block ) {
 		heading.textContent = '';
 		heading.classList.add( 'usa-accordion__heading' );
 		heading.appendChild( button );
-		
 
 		// Create new content div
 		let contentEl = domEl( 'div', { class: 'usa-accordion__content usa-prose', id: accordionId } );
-		contentEl.innerHTML = content.innerHTML;
+		contentEl.appendChild( content );
 		
 		if ( !openCheck ) {
 			contentEl.setAttribute( 'hidden', openCheck.toString() );
@@ -42,5 +39,4 @@ export default function decorate( block ) {
 
 	block.textContent = '';
 	block.appendChild( usaAccordion );
-
 }
