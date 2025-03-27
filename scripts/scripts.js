@@ -8,12 +8,17 @@ import {
 	decorateSections,
 	decorateBlocks,
 	decorateTemplateAndTheme,
+	fetchPlaceholders,
 	getMetadata,
 	waitForFirstImage,
 	loadSection,
 	loadSections,
 	loadCSS,
 } from './aem.js';
+import {
+	div,
+	a
+} from '../../scripts/dom-helpers.js';
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -106,6 +111,14 @@ export function decorateMain( main ) {
 	decorateBlocks( main );
 }
 
+export function decorateUswdsPage( doc, placeholders ) {
+	const { skipnav } = placeholders;
+	const overlayDiv = div( { class: 'usa-overlay' } );
+	doc.querySelector( '.banner-wrapper' ).after( overlayDiv );
+	const skipNav = a( { class: 'usa-skipnav', href: '#main-content' }, skipnav ? skipnav : 'Skip to main content' );
+	body.prepend( skipNav );
+}
+
 /**
  *
  * @param {Element} doc The container element
@@ -158,6 +171,10 @@ async function loadEager( doc ) {
  * @param {Element} doc The container element
  */
 async function loadLazy( doc ) {
+	const placeholders = await fetchPlaceholders();
+
+	decorateUswdsPage( doc, placeholders );
+
 	// pull in template name from document metadata
 	// fallback to USWDS "documentation" template if none is specified
 	const templateName = getMetadata( 'template' );
