@@ -22,7 +22,7 @@ function buildHeroBlock( main ) {
 	const h1 = main.querySelector( 'h1' );
 	const picture = main.querySelector( 'picture' );
 	// eslint-disable-next-line no-bitwise
-	if ( h1 && picture && ( h1.compareDocumentPosition( picture ) & Node.DOCUMENT_POSITION_PRECEDING ) ) {
+	if( h1 && picture && ( h1.compareDocumentPosition( picture ) & Node.DOCUMENT_POSITION_PRECEDING ) ) {
 		// const section = document.createElement('div');
 		// section.append(buildBlock('hero', { elems: [picture, h1] }));
 		// main.prepend(section);
@@ -59,31 +59,31 @@ function buildAutoBlocks( main ) {
 function decorateButtons( element ) {
 	element.querySelectorAll( 'a' ).forEach( ( a ) => {
 		a.title = a.title || a.textContent;
-		if ( a.href !== a.textContent ) {
+		if( a.href !== a.textContent ) {
 			const up = a.parentElement;
 			const twoup = a.parentElement.parentElement;
-			if ( !a.querySelector( 'img' ) ) {
-				if ( up.childNodes.length === 1 && ( up.tagName === 'P' || up.tagName === 'DIV' ) ) {
+			if( !a.querySelector( 'img' ) ) {
+				if( up.childNodes.length === 1 && ( up.tagName === 'P' || up.tagName === 'DIV' ) ) {
 					a.className = 'usa-button'; // default
-					up.classList.add( 'button-container' );
+					up.classList.add( 'usa-button__wrap' );
 				}
-				if (
+				if(
 					up.childNodes.length === 1
-                    && up.tagName === 'STRONG'
-                    && twoup.childNodes.length === 1
-                    && twoup.tagName === 'P'
+					&& up.tagName === 'STRONG'
+					&& twoup.childNodes.length === 1
+					&& twoup.tagName === 'P'
 				) {
 					a.className = 'usa-button usa-button--secondary';
-					twoup.classList.add( 'button-container' );
+					twoup.classList.add( 'usa-button__wrap' );
 				}
-				if (
+				if(
 					up.childNodes.length === 1
-                    && up.tagName === 'EM'
-                    && twoup.childNodes.length === 1
-                    && twoup.tagName === 'P'
+					&& up.tagName === 'EM'
+					&& twoup.childNodes.length === 1
+					&& twoup.tagName === 'P'
 				) {
 					a.className = 'usa-button usa-button--outline';
-					twoup.classList.add( 'button-container' );
+					twoup.classList.add( 'usa-button__wrap' );
 				}
 			}
 		}
@@ -115,7 +115,7 @@ async function loadEager( doc ) {
 	decorateTemplateAndTheme();
 	loadBanner( doc.querySelector( 'body' ) );
 	const main = doc.querySelector( 'main' );
-	if ( main ) {
+	if( main ) {
 		decorateMain( main );
 		document.body.classList.add( 'appear' );
 		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
@@ -125,7 +125,7 @@ async function loadEager( doc ) {
 async function loadFonts() {
 	await loadCSS( 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap' );
 	try {
-		if ( !window.location.hostname.includes( 'localhost' ) ) sessionStorage.setItem( 'fonts-loaded', 'true' );
+		if( !window.location.hostname.includes( 'localhost' ) ) sessionStorage.setItem( 'fonts-loaded', 'true' );
 	} catch ( e ) {
 		// do nothing
 	}
@@ -141,7 +141,7 @@ async function loadLazy( doc ) {
 
 	const { hash } = window.location;
 	const element = hash ? doc.getElementById( hash.substring( 1 ) ) : false;
-	if ( hash && element ) element.scrollIntoView();
+	if( hash && element ) element.scrollIntoView();
 
 	loadHeader( doc.querySelector( 'header' ) );
 	loadFooter( doc.querySelector( 'footer' ) );
@@ -180,7 +180,7 @@ loadPage();
 	fallback = setTimeout( revertClass, 8000 );
 
 	function verifyLoaded() {
-		if ( window.uswdsPresent ) {
+		if( window.uswdsPresent ) {
 			clearTimeout( fallback );
 			revertClass();
 			window.removeEventListener( 'load', verifyLoaded, true );
