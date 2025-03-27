@@ -35,7 +35,8 @@ function normalizeId( str ) {
 function createId( str ) {
 	str = `${str}`; // just in case it wasn't a string already
 	var id = normalizeId( str );
-	var uniqueId = id + '-' + Date.now(); // add a unique identifier just in case somewhere has the same 2 ids
+	var random = Math.random() + Date.now();
+	var uniqueId = id + '-' + Math.round( random ); // add a unique identifier just in case somewhere has the same 2 ids
 	return uniqueId;
 }
 

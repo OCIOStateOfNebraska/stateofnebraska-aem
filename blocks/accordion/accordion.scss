@@ -1,0 +1,7 @@
+
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+
+.accordion-wrapper {
+	@include meta.load-css('~uswds/usa-accordion/src/styles/usa-accordion');
+}
