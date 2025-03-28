@@ -16,7 +16,7 @@ in the form $setting: value,
   $theme-show-notifications: false,
   $theme-show-compile-warnings: false,
 
-  $theme-image-path: "/icons/usa-icons",
+  $theme-image-path: "/icons",
 
   $theme-utility-breakpoints-custom: (
     'mobile': '402px',
@@ -35,7 +35,7 @@ in the form $setting: value,
   /////
 	/// Colors
 	/////
-  
+
   // TODO: Add base for reference
 
   $theme-color-primary-lightest: #E6EEEF,
@@ -46,7 +46,7 @@ in the form $setting: value,
   $theme-color-primary-darker: #004D66,
   $theme-color-primary-vivid: #00607F,
   $theme-color-primary-darkest: #002733,
-  
+
   $theme-color-secondary-lightest: #FFF9ED,
   $theme-color-secondary-lighter: #FFF9ED,
   $theme-color-secondary-light: #FFE1A6,
@@ -103,7 +103,7 @@ in the form $setting: value,
 	$theme-type-scale-xl: 12, // 32px
 	$theme-type-scale-2xl: 14, // 40px
   $theme-type-scale-3xl: 15, // 48px
-  
+
 	$theme-display-font-size: '3xl',
 	$theme-h1-font-size: '2xl',
 	$theme-h2-font-size: 'xl',
@@ -121,7 +121,7 @@ in the form $setting: value,
 	$theme-font-weight-semibold: 700,
 	$theme-font-weight-bold: 700,
 	$theme-font-weight-heavy: 700,
-  
+
 	$theme-heading-line-height: 2, // 1.15
 	$theme-body-line-height: 4, // 1.5
 
@@ -149,7 +149,7 @@ in the form $setting: value,
   /////
 	/// Component-specific stuff
 	/////
-	
+
 	/////
 	/// Summary Box
 	/////
