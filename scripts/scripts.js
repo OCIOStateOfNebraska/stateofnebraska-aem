@@ -44,7 +44,10 @@ function buildBreadcrumbBlock( main ) {
 	const hideBreadcrumb = hideBreadcrumbVal.toLowerCase() === 'yes' || hideBreadcrumbVal.toLowerCase() === 'true';
 	if ( window.location.pathname !== '/' && window.isErrorPage !== true && !hideBreadcrumb ) {
 		const section = document.createElement( 'div' );
-		section.append( buildBlock( 'breadcrumb', { elems: [] } ) );
+		const breadcrumbs = buildBlock( 'breadcrumb', { elems: [] } );
+		section.append( breadcrumbs );
+		decorateBlock( breadcrumbs );
+		loadBlock( breadcrumbs );
 		main.prepend( section );
 	}
 }
@@ -121,7 +124,6 @@ export function decorateMain( main ) {
 	// hopefully forward compatible button decoration
 	decorateButtons( main );
 	decorateIcons( main );
-	buildAutoBlocks( main );
 	decorateSections( main );
 	decorateBlocks( main );
 }
@@ -199,13 +201,9 @@ async function loadEager( doc ) {
 	} else {
 		await loadTemplate( doc, 'default' );
 	}
-
-	const main = doc.querySelector( 'main' );
-	if ( main ) {
-		decorateMain( main );
-		document.body.classList.add( 'appear' );
-		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
-	}
+	
+	// build components that should be in main but be outside of the main template area
+	buildAutoBlocks( main );
 }
 
 /**
