@@ -170,6 +170,11 @@ async function loadTemplate( doc, templateName ) {
  * @param {Element} doc The container element
  */
 async function loadEager( doc ) {
+	// Brand slug application
+	const brandSlug = getMetadata( 'brandslug' );
+	if ( brandSlug ) {
+		document.title = document.title + ' | ' + brandSlug;
+	}
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
 	loadBanner( doc.querySelector( 'body' ) );

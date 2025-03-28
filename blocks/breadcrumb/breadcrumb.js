@@ -1,3 +1,4 @@
+import { fetchPlaceholders } from '../../scripts/aem.js';
 import {
 	domEl,
 	a,
@@ -36,10 +37,8 @@ const getAllPathsExceptCurrent = async ( paths ) => {
 };
 
 const createLi = ( path ) => {
-	//TODO: strip | from title
-	//TODO: placeholders
 	const linkMeta = domEl( 'meta', { property: 'position', content: path.position } );
-	const linkSpan = span( { property: 'name' }, path.name );
+	const linkSpan = span( { property: 'name' }, path.name.split( ' | ' )[0] );
 	let pathLink;
 	if ( path.url ) {
 		pathLink = a( { href: path.url, property: 'item', typeof: 'WebPage', class: 'usa-breadcrumb__link' }, linkSpan );
@@ -53,11 +52,12 @@ const createLi = ( path ) => {
 };
 
 export default async function decorate( block ) {
-	const breadcrumbNav = domEl( 'nav', { class: 'usa-breadcrumb', 'aria-label': 'Breadcrumbs' } );
+	const placeholders = await fetchPlaceholders();
+	const breadcrumbNav = domEl( 'nav', { class: 'usa-breadcrumb', 'aria-label': placeholders.breadcrumbs || 'Breadcrumbs' } );
 	const olEle = ol( { class: 'usa-breadcrumb__list', vocab: 'https://schema.org/', typeof: 'BreadcrumbList' } );
 
 	// Add home link
-	const homeLink = createLi( { path: '', name: 'Home', url: '/', position: 1 } );
+	const homeLink = createLi( { path: '', name: placeholders.home || 'Home', url: '/', position: 1 } );
 	const breadcrumbLinks = [homeLink.outerHTML];
 
 	// Gather all ancestor paths
