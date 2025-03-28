@@ -16,7 +16,7 @@ in the form $setting: value,
   $theme-show-notifications: false,
   $theme-show-compile-warnings: false,
 
-  $theme-image-path: "/icons",
+  $theme-image-path: "/icons/usa-icons",
 
   $theme-utility-breakpoints-custom: (
     'mobile': '402px',
@@ -126,10 +126,10 @@ in the form $setting: value,
 	$theme-body-line-height: 4, // 1.5
 
 	$theme-text-color: 'ink',
-	$theme-link-color: 'accent-cool',
-	$theme-link-visited-color: 'accent-cool',
-	$theme-link-hover-color: 'primary',
-	$theme-link-active-color: 'accent-cool',
+	$theme-link-color: 'primary',
+	$theme-link-visited-color: 'primary',
+	$theme-link-hover-color: 'accent-cool',
+	$theme-link-active-color: 'primary',
 
   $theme-border-radius-sm: '05', // 4px
   $theme-border-radius-md: 1, // 8px
@@ -156,4 +156,5 @@ in the form $setting: value,
 	$theme-summary-box-background-color: 'primary-lighter',
 	$theme-summary-box-link-color: 'primary',
 	$theme-summary-box-border-color: 'primary',
+
 );
