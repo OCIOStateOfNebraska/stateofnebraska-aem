@@ -5,7 +5,7 @@
 .summary-box-wrapper {
 	@include meta.load-css('~uswds/usa-summary-box/src/styles/usa-summary-box');
 
-	margin-bottom: $component-spacing; // TODO: change this unit once we get spacing
+	margin-bottom: units($component-spacing); 
 
 	.usa-summary-box {
 		&__text {
