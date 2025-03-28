@@ -163,6 +163,14 @@ async function loadEager( doc ) {
 
 	decorateUswdsPage( doc, placeholders );
 
+	// load the blocks BEFORE decorating the template 
+	const main = doc.querySelector( 'main' );
+	if( main ) {
+		decorateMain( main );
+		document.body.classList.add( 'appear' );
+		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
+	}
+	
 	// pull in template name from document metadata
 	// fallback to USWDS "documentation" template if none is specified
 	const templateName = getMetadata( 'template' );
@@ -170,13 +178,6 @@ async function loadEager( doc ) {
 		await loadTemplate( doc, templateName );
 	} else {
 		await loadTemplate( doc, 'default' );
-	}
-
-	const main = doc.querySelector( 'main' );
-	if( main ) {
-		decorateMain( main );
-		document.body.classList.add( 'appear' );
-		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
 	}
 }
 
