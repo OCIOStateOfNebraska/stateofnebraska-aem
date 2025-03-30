@@ -66,7 +66,6 @@ function loadBanner( body ) {
 function buildAutoBlocks( main ) {
 	try {
 		buildHeroBlock( main );
-		buildBreadcrumbBlock( main );
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Auto Blocking failed', error );
@@ -117,13 +116,16 @@ function decorateButtons( element ) {
  */
 export function decorateMain( main ) {
 	main.id = 'main-content';
+	buildBreadcrumbBlock( main ); // extracted from auto blocks so it only runs once on the main element
+	decorateInner( main );
+}
 
-	// hopefully forward compatible button decoration
-	decorateButtons( main );
-	decorateIcons( main );
-	buildAutoBlocks( main );
-	decorateSections( main );
-	decorateBlocks( main );
+export function decorateInner( container ) {
+	decorateButtons( container );
+	decorateIcons( container );
+	buildAutoBlocks( container );
+	decorateSections( container );
+	decorateBlocks( container );
 }
 
 export function decorateUswdsPage( doc, placeholders ) {

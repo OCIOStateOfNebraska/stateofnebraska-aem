@@ -18,14 +18,32 @@ async function loadAndDecorateNav( block ) {
 	return nav;
 }
 
-async function loadAlert() {
+async function loadAndDecorateAlert() {
 	const alertMeta = getMetadata( 'alert' );
 	const alertPath = alertMeta ? new URL( alertMeta, window.location ).pathname : '/alert';
 	const alertFragment = await loadFragment( alertPath );
 
-	// remove <main> from fragment
-	const alertWrap = alertFragment.querySelector( '.alert-container' );
-	return alertWrap;
+	const alerts = alertFragment.querySelectorAll( '.alert-wrapper' );
+	const alertContainer = domEl( 'div', { class: 'alert-container' } );
+
+	// Adjust state classes that the block added - they're applied differently and are more on the global alerts
+	Array.from( alerts ).forEach( wrap => {
+		const alertEle = wrap.querySelector( '.usa-alert' );
+		alertEle.parentNode.classList.add( 'usa-site-alert' );
+		if( alertEle.classList.contains( 'usa-alert--emergency' ) ) {
+			alertEle.classList.remove( 'usa-alert--emergency' );
+			alertEle.parentNode.classList.add( 'usa-site-alert--emergency' );
+		} else {
+			alertEle.classList.remove( 'usa-alert--warning', 'usa-alert--error', 'usa-alert--success', 'usa-alert--info' );
+			alertEle.parentNode.classList.add( 'usa-site-alert--info' );
+		}
+
+		alertEle.classList.remove( 'usa-alert--no-icon', 'usa-alert--slim' );
+
+		alertContainer.append( wrap );
+	} );
+
+	return alerts.length && alertContainer;
 }
 
 /**
@@ -33,7 +51,7 @@ async function loadAlert() {
  * @param {Element} block The header block element
  */
 export default async function decorate( block ) {
-	const alertEle = await loadAlert( block );
+	const alertEle = await loadAndDecorateAlert( block );
 	const navEle = await loadAndDecorateNav( block );
 
 	block.innerHTML = '';

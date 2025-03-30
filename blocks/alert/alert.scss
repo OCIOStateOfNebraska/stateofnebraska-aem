@@ -2,5 +2,32 @@
 @use 'sass:meta';
 
 .alert-wrapper {
+	$uswds-block: 'usa-alert';
+
 	@include meta.load-css('~uswds/usa-site-alert/src/styles/usa-site-alert');
+	@include meta.load-css('~uswds/usa-alert/src/styles/usa-alert');
+
+	// stylelint-disable-next-line scss/selector-nest-combinators
+	.usa-site-alert .#{$uswds-block},
+	.#{$uswds-block} {
+
+		.#{$uswds-block}__heading {
+			@include u-font('heading', 'lg');
+			@include u-font-weight('bold');
+		}
+
+		.#{$uswds-block}__body {
+			font-size: size('body', 'sm');
+		}
+	}
+
+	.#{$uswds-block} {
+		margin-bottom: units(1.5);
+	}
+
+	.usa-site-alert {
+		.#{$uswds-block} {
+			margin-bottom: 0;
+		}
+	}
 }
