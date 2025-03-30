@@ -164,6 +164,8 @@ async function loadEager( doc ) {
 		await loadTemplate( doc, 'default' );
 	}
 
+	loadHeader( doc.querySelector( 'header' ) );
+
 	const main = doc.querySelector( 'main' );
 	if ( main ) {
 		decorateMain( main );
@@ -184,7 +186,6 @@ async function loadLazy( doc ) {
 	const element = hash ? doc.getElementById( hash.substring( 1 ) ) : false;
 	if ( hash && element ) element.scrollIntoView();
 
-	loadHeader( doc.querySelector( 'header' ) );
 	loadFooter( doc.querySelector( 'footer' ) );
 
 	loadCSS( `${window.hlx.codeBasePath}/styles/lazy-styles.css` );
