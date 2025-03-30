@@ -1,7 +1,25 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, decorateBlock, loadBlock, buildBlock, fetchPlaceholders } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { p, domEl } from '../../scripts/dom-helpers.js';
+import { p, a, domEl } from '../../scripts/dom-helpers.js';
 
+function decorateSkipnav( block, placeholders ) {
+	const { skipnav } = placeholders;
+	const skipNav = a( { class: 'usa-skipnav', href: '#main-content' }, skipnav ? skipnav : 'Skip to main content' );
+	return skipNav;
+}
+
+async function loadBanner() {
+	const bannerWrapper = domEl( 'div', { class: 'banner-wrap' } );
+	const bannerBlock = buildBlock( 'banner', '' );
+
+	bannerWrapper.appendChild( bannerBlock );
+	decorateBlock( bannerBlock );
+
+	return loadBlock( bannerBlock );
+}
+
+// TODO: Leverage block
+// eslint-disable-next-line no-unused-vars
 async function loadAndDecorateNav( block ) {
 	// load nav as fragment
 	const navMeta = getMetadata( 'nav' );
@@ -51,10 +69,17 @@ async function loadAndDecorateAlert() {
  * @param {Element} block The header block element
  */
 export default async function decorate( block ) {
+	const placeholders = await fetchPlaceholders();
+
+	const skipNav = decorateSkipnav( block, placeholders );
 	const alertEle = await loadAndDecorateAlert( block );
+	const bannerEle = await loadBanner( block );
 	const navEle = await loadAndDecorateNav( block );
 
 	block.innerHTML = '';
-	if( alertEle ) { block.appendChild( alertEle ); }
+
+	block.append( skipNav );
+	if( alertEle ) { block.append( alertEle ); }
+	block.appendChild( bannerEle );
 	block.appendChild( navEle );
 }

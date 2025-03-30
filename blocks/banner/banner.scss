@@ -3,8 +3,4 @@
 
 .banner-wrapper {
 	@include meta.load-css('~uswds/usa-banner/src/styles/usa-banner');
-
-	.usa-banner__content {
-		background-color: red;
-	}
 }

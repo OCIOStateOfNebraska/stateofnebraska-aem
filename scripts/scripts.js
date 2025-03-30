@@ -1,24 +1,17 @@
 import {
-	decorateBlock,
 	buildBlock,
-	loadBlock,
 	loadHeader,
 	loadFooter,
 	decorateIcons,
 	decorateSections,
 	decorateBlocks,
 	decorateTemplateAndTheme,
-	fetchPlaceholders,
 	getMetadata,
 	waitForFirstImage,
 	loadSection,
 	loadSections,
 	loadCSS,
 } from './aem.js';
-import {
-	div,
-	a
-} from '../../scripts/dom-helpers.js';
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -47,16 +40,6 @@ function buildBreadcrumbBlock( main ) {
 		section.append( buildBlock( 'breadcrumb', { elems: [] } ) );
 		main.prepend( section );
 	}
-}
-
-// Add USWDS Banner to page
-function loadBanner( body ) {
-	const bannerWrapper = document.createElement( 'div' );
-	const bannerBlock = buildBlock( 'banner', '' );
-	body.prepend( bannerWrapper );
-	bannerWrapper.append( bannerBlock );
-	decorateBlock( bannerBlock );
-	return loadBlock( bannerBlock );
 }
 
 /**
@@ -128,14 +111,6 @@ export function decorateInner( container ) {
 	decorateBlocks( container );
 }
 
-export function decorateUswdsPage( doc, placeholders ) {
-	const { skipnav } = placeholders;
-	const overlayDiv = div( { class: 'usa-overlay' } );
-	doc.querySelector( '.banner-wrapper' ).after( overlayDiv );
-	const skipNav = a( { class: 'usa-skipnav', href: '#main-content' }, skipnav ? skipnav : 'Skip to main content' );
-	body.prepend( skipNav );
-}
-
 /**
  *
  * @param {Element} doc The container element
@@ -179,11 +154,6 @@ async function loadEager( doc ) {
 	}
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
-	loadBanner( doc.querySelector( 'body' ) );
-
-	const placeholders = await fetchPlaceholders();
-
-	decorateUswdsPage( doc, placeholders );
 
 	// pull in template name from document metadata
 	// fallback to USWDS "documentation" template if none is specified

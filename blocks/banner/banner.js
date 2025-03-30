@@ -35,7 +35,7 @@ export default function decorate( block ) {
 
 	const banner = domEl( 'section', { class: 'usa-banner', 'aria-label': bannerText } );
 	const accordion = domEl( 'div', { class: 'usa-accordion' } );
-	const header = domEl( 'header', { class: 'usa-banner__header' } );
+	const header = domEl( 'div', { class: 'usa-banner__header' } );
 	const inner = domEl( 'div', { class: 'usa-banner__inner' } );
 	const grid = domEl( 'div', { class: 'grid-col-auto' } );
 
