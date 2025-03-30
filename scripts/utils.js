@@ -39,4 +39,31 @@ function createId( str ) {
 	return uniqueId;
 }
 
-export { debounce, normalizeId, createId };
+/**
+ * Adds the "usa-list" class to all lists within a parent element
+ * @param {HTMLElement} parent 
+ */
+function addClassToLists( parent ) {
+	let lists = parent.querySelectorAll( 'ul, ol' );
+	
+	if ( !lists ) { return; }
+	lists.forEach( ( list ) => {
+		list.classList.add( 'usa-list' );
+	} );
+}
+
+/**
+ * Adds a class to all links within a parent element
+ * @param {HTMLElement} parent 
+ * @param {String} cl - optional, defaults to 'usa-link'
+ */
+function addClassToLinks( parent, cl = 'usa-link' ) {
+	let links = parent.querySelectorAll( 'a' );
+	
+	if ( !links ) { return; }
+	links.forEach( ( link ) => {
+		link.classList.add( cl );
+	} );
+}
+
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks };

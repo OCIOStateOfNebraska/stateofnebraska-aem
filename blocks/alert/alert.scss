@@ -1,0 +1,6 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+
+.alert-wrapper {
+	@include meta.load-css('~uswds/usa-site-alert/src/styles/usa-site-alert');
+}
