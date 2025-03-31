@@ -38,7 +38,9 @@ async function loadAndDecorateNav( block ) {
 
 async function loadAndDecorateAlert() {
 	const alertMeta = getMetadata( 'alert' );
-	const alertPath = alertMeta ? new URL( alertMeta, window.location ).pathname : '/alert';
+	if( !alertMeta ) { return null; }
+
+	const alertPath = new URL( alertMeta, window.location ).pathname;
 	const alertFragment = await loadFragment( alertPath );
 
 	const alerts = alertFragment.querySelectorAll( '.alert-wrapper' );
