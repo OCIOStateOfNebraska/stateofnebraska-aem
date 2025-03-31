@@ -5,9 +5,11 @@ import {
 	decorateIcons,
 	decorateSections,
 	decorateBlocks,
+	decorateBlock,
 	decorateTemplateAndTheme,
 	getMetadata,
 	waitForFirstImage,
+	loadBlock,
 	loadSection,
 	loadSections,
 	loadCSS,
@@ -32,18 +34,19 @@ function buildHeroBlock( main ) {
 //  * Builds breadcrumb block and prepends to main in a new section.
 //  * @param {Element} main The container element
 //  */
-// function buildBreadcrumbBlock( main ) {
-// 	const hideBreadcrumbVal = getMetadata( 'hide-breadcrumb' ) || 'no';
-// 	const hideBreadcrumb = hideBreadcrumbVal.toLowerCase() === 'yes' || hideBreadcrumbVal.toLowerCase() === 'true';
-// 	if ( window.location.pathname !== '/' && window.isErrorPage !== true && !hideBreadcrumb ) {
-// 		const section = document.createElement( 'div' );
-// 		const breadcrumbs = buildBlock( 'breadcrumb', { elems: [] } );
-// 		section.append( breadcrumbs );
-// 		decorateBlock( breadcrumbs );
-// 		loadBlock( breadcrumbs );
-// 		main.prepend( section );
-// 	}
-// }
+// TODO: Consolidate BreadcrumbBlock and Hero Block together.  
+function buildBreadcrumbBlock( main ) {
+	const hideBreadcrumbVal = getMetadata( 'hide-breadcrumb' ) || 'no';
+	const hideBreadcrumb = hideBreadcrumbVal.toLowerCase() === 'yes' || hideBreadcrumbVal.toLowerCase() === 'true';
+	if ( window.location.pathname !== '/' && window.isErrorPage !== true && !hideBreadcrumb ) {
+		const section = document.createElement( 'div' );
+		const breadcrumbs = buildBlock( 'breadcrumb', { elems: [] } );
+		section.append( breadcrumbs );
+		decorateBlock( breadcrumbs );
+		loadBlock( breadcrumbs );
+		main.prepend( section );
+	}
+}
 
 /**
  * Builds all synthetic blocks in a container element.
@@ -52,6 +55,7 @@ function buildHeroBlock( main ) {
 function buildAutoBlocks( main ) {
 	try {
 		buildHeroBlock( main );
+		buildBreadcrumbBlock( main );
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Auto Blocking failed', error );
@@ -102,13 +106,6 @@ function decorateButtons( element ) {
  */
 export function decorateMain( main ) {
 	main.id = 'main-content';
-	// // hopefully forward compatible button decoration
-	// decorateButtons( main );
-	// decorateIcons( main );
-	// decorateSections( main );
-	// decorateBlocks( main );
-
-	//buildBreadcrumbBlock( main ); // extracted from auto blocks so it only runs once on the main element
 	decorateInner( main );
 
 }
@@ -116,7 +113,6 @@ export function decorateMain( main ) {
 export function decorateInner( container ) {
 	decorateButtons( container );
 	decorateIcons( container );
-	buildAutoBlocks( container );
 	decorateSections( container );
 	decorateBlocks( container );
 }
@@ -183,10 +179,8 @@ async function loadEager( doc ) {
 	}
 	
 	// // build components that should be in main but be outside of the main template area
-	// buildAutoBlocks( main );
-
+	buildAutoBlocks( main );
 	loadHeader( doc.querySelector( 'header' ) );
-
 }
 
 /**
