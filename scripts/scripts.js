@@ -1,24 +1,17 @@
 import {
-	decorateBlock,
 	buildBlock,
-	loadBlock,
 	loadHeader,
 	loadFooter,
 	decorateIcons,
 	decorateSections,
 	decorateBlocks,
 	decorateTemplateAndTheme,
-	fetchPlaceholders,
 	getMetadata,
 	waitForFirstImage,
 	loadSection,
 	loadSections,
 	loadCSS,
 } from './aem.js';
-import {
-	div,
-	a
-} from '../../scripts/dom-helpers.js';
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -49,16 +42,6 @@ function buildBreadcrumbBlock( main ) {
 	}
 }
 
-// Add USWDS Banner to page
-function loadBanner( body ) {
-	const bannerWrapper = document.createElement( 'div' );
-	const bannerBlock = buildBlock( 'banner', '' );
-	body.prepend( bannerWrapper );
-	bannerWrapper.append( bannerBlock );
-	decorateBlock( bannerBlock );
-	return loadBlock( bannerBlock );
-}
-
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -66,7 +49,6 @@ function loadBanner( body ) {
 function buildAutoBlocks( main ) {
 	try {
 		buildHeroBlock( main );
-		buildBreadcrumbBlock( main );
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Auto Blocking failed', error );
@@ -117,21 +99,16 @@ function decorateButtons( element ) {
  */
 export function decorateMain( main ) {
 	main.id = 'main-content';
-
-	// hopefully forward compatible button decoration
-	decorateButtons( main );
-	decorateIcons( main );
-	buildAutoBlocks( main );
-	decorateSections( main );
-	decorateBlocks( main );
+	buildBreadcrumbBlock( main ); // extracted from auto blocks so it only runs once on the main element
+	decorateInner( main );
 }
 
-export function decorateUswdsPage( doc, placeholders ) {
-	const { skipnav } = placeholders;
-	const overlayDiv = div( { class: 'usa-overlay' } );
-	doc.querySelector( '.banner-wrapper' ).after( overlayDiv );
-	const skipNav = a( { class: 'usa-skipnav', href: '#main-content' }, skipnav ? skipnav : 'Skip to main content' );
-	body.prepend( skipNav );
+export function decorateInner( container ) {
+	decorateButtons( container );
+	decorateIcons( container );
+	buildAutoBlocks( container );
+	decorateSections( container );
+	decorateBlocks( container );
 }
 
 /**
@@ -177,11 +154,6 @@ async function loadEager( doc ) {
 	}
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
-	loadBanner( doc.querySelector( 'body' ) );
-
-	const placeholders = await fetchPlaceholders();
-
-	decorateUswdsPage( doc, placeholders );
 
 	// pull in template name from document metadata
 	// fallback to USWDS "documentation" template if none is specified
@@ -191,6 +163,8 @@ async function loadEager( doc ) {
 	} else {
 		await loadTemplate( doc, 'default' );
 	}
+
+	loadHeader( doc.querySelector( 'header' ) );
 
 	const main = doc.querySelector( 'main' );
 	if ( main ) {
@@ -212,7 +186,6 @@ async function loadLazy( doc ) {
 	const element = hash ? doc.getElementById( hash.substring( 1 ) ) : false;
 	if ( hash && element ) element.scrollIntoView();
 
-	loadHeader( doc.querySelector( 'header' ) );
 	loadFooter( doc.querySelector( 'footer' ) );
 
 	loadCSS( `${window.hlx.codeBasePath}/styles/lazy-styles.css` );

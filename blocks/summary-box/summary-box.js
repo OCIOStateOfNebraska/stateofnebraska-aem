@@ -1,29 +1,10 @@
-export default function decorate( block ) {
+import { addClassToLists, addClassToLinks } from '../../scripts/utils.js';
 
-	// function to get all lists in the box and add a class 
-	function getAllLists( lists ) {
-		if ( !lists ) { return; }
-		lists.forEach( ( list ) => {
-			list.classList.add( 'usa-list' );
-		} );
-	}
-	
-	// function to get all links the box and add a class 
-	function getAllLinks( links ) {
-		if ( !links ) { return; }
-		links.forEach( ( link ) => {
-			link.classList.add( 'usa-summary-box__link' );
-		} );
-	}
-	
+export default function decorate( block ) {
 	// the content of the summary-box
 	let summary = block.querySelector( '.summary-box div div' );
-	let ulLists = block.querySelectorAll( 'ul' );
-	let olLists = block.querySelectorAll( 'ol' );
-	let links = block.querySelectorAll( 'a' );
-	getAllLists( ulLists );
-	getAllLists( olLists );
-	getAllLinks( links );
+	addClassToLists( block );
+	addClassToLinks( block, 'usa-summary-box__link' );
 	
 	// the USWDS wrapper around the entire box 
 	let usaWrapper = summary.parentNode;
