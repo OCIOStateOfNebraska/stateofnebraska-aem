@@ -5,9 +5,11 @@ import {
 	decorateIcons,
 	decorateSections,
 	decorateBlocks,
+	decorateBlock,
 	decorateTemplateAndTheme,
 	getMetadata,
 	waitForFirstImage,
+	loadBlock,
 	loadSection,
 	loadSections,
 	loadCSS,
@@ -28,16 +30,20 @@ function buildHeroBlock( main ) {
 	}
 }
 
-/**
- * Builds breadcrumb block and prepends to main in a new section.
- * @param {Element} main The container element
- */
+// /**
+//  * Builds breadcrumb block and prepends to main in a new section.
+//  * @param {Element} main The container element
+//  */
+// TODO: Consolidate BreadcrumbBlock and Hero Block together.  
 function buildBreadcrumbBlock( main ) {
 	const hideBreadcrumbVal = getMetadata( 'hide-breadcrumb' ) || 'no';
 	const hideBreadcrumb = hideBreadcrumbVal.toLowerCase() === 'yes' || hideBreadcrumbVal.toLowerCase() === 'true';
 	if ( window.location.pathname !== '/' && window.isErrorPage !== true && !hideBreadcrumb ) {
 		const section = document.createElement( 'div' );
-		section.append( buildBlock( 'breadcrumb', { elems: [] } ) );
+		const breadcrumbs = buildBlock( 'breadcrumb', { elems: [] } );
+		section.append( breadcrumbs );
+		decorateBlock( breadcrumbs );
+		loadBlock( breadcrumbs );
 		main.prepend( section );
 	}
 }
@@ -49,6 +55,7 @@ function buildBreadcrumbBlock( main ) {
 function buildAutoBlocks( main ) {
 	try {
 		buildHeroBlock( main );
+		buildBreadcrumbBlock( main );
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Auto Blocking failed', error );
@@ -99,14 +106,13 @@ function decorateButtons( element ) {
  */
 export function decorateMain( main ) {
 	main.id = 'main-content';
-	buildBreadcrumbBlock( main ); // extracted from auto blocks so it only runs once on the main element
 	decorateInner( main );
+
 }
 
 export function decorateInner( container ) {
 	decorateButtons( container );
 	decorateIcons( container );
-	buildAutoBlocks( container );
 	decorateSections( container );
 	decorateBlocks( container );
 }
@@ -155,6 +161,14 @@ async function loadEager( doc ) {
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
 
+	// load the blocks BEFORE decorating the template 
+	const main = doc.querySelector( 'main' );
+	if( main ) {
+		decorateMain( main );
+		document.body.classList.add( 'appear' );
+		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
+	}
+	
 	// pull in template name from document metadata
 	// fallback to USWDS "documentation" template if none is specified
 	const templateName = getMetadata( 'template' );
@@ -163,15 +177,10 @@ async function loadEager( doc ) {
 	} else {
 		await loadTemplate( doc, 'default' );
 	}
-
+	
+	// // build components that should be in main but be outside of the main template area
+	buildAutoBlocks( main );
 	loadHeader( doc.querySelector( 'header' ) );
-
-	const main = doc.querySelector( 'main' );
-	if ( main ) {
-		decorateMain( main );
-		document.body.classList.add( 'appear' );
-		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
-	}
 }
 
 /**

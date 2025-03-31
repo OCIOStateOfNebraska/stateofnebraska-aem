@@ -9,15 +9,20 @@ import {
 export default async function decorate( doc ) {
 	// TODO: see if any of this is common between USWDS templates and should be consolidated
 	const main = doc.querySelector( 'main' );
-	// TODO: adjust main grid size based on presence of sidenav and in-page nav
-	main.classList.add( 'desktop:grid-col-12', 'usa-prose' );
 	const usaSectionDiv = div( { class: 'usa-section' } );
 	const usaGridDiv = div( { class: 'grid-container' } );
 	const usaGridRowDiv = div( { class: 'grid-row grid-gap' } );
-	usaGridRowDiv.append( main );
-	usaGridDiv.append( usaGridRowDiv );
+	const usaContentDiv = div( { class: 'desktop:grid-col-12 usa-prose' } );
+	main.parentNode.append( usaSectionDiv );
 	usaSectionDiv.append( usaGridDiv );
-	document.querySelector( 'footer' ).before( usaSectionDiv );
+	usaGridDiv.append( usaGridRowDiv );
+	usaGridRowDiv.append( usaContentDiv );
+	main.append( usaSectionDiv );
+	[...main.children].forEach( ( child ) => {
+		if ( child !== usaContentDiv ) {
+			usaContentDiv.appendChild( child );
+		}
+	} );
 	// TODO: create / decorate sidenav
 	// const siteNav = buildBlock('sidnav', '');
 	// usaGridRowDiv.append(siteNav);
