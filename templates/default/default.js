@@ -27,6 +27,4 @@ export default async function decorate( doc ) {
 	// const siteNav = buildBlock('sidnav', '');
 	// usaGridRowDiv.append(siteNav);
 	// decorateBlock(siteNav);
-	
-	// TODO: create/decorate hero.  
 }
