@@ -1,9 +1,11 @@
-.hlx/*
-coverage/*
-logs/*
-node_modules/*
+.hlx
+coverage
+logs
+node_modules
 
 helix-importer-ui
 .DS_Store
 *.bak
 .idea
+.env
+.configs

@@ -1,0 +1,70 @@
+
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+
+.accordion-wrapper {
+	$block: 'usa-accordion';
+
+	@include meta.load-css('~uswds/usa-accordion/src/styles/usa-accordion');
+	$accordion-padding-left: units(2.5); // found in ~uswds/usa-accordion/src/styles/usa-accordion. No variable was set
+	$accordion-circle: px-to-rem(28px);
+	$accordion-button-gap: units(1);
+
+	margin-bottom: units($component-spacing);
+
+	.#{$block}__heading {
+		&:not(:first-child) {
+			margin-top: 0;
+		}
+	}
+
+	.#{$block}__content {
+		padding-left: calc($accordion-padding-left + $accordion-circle + $accordion-button-gap);
+		font-size: size('body', 5);
+	}
+
+	.#{$block}__button {
+		@include u-border-top('1px', 'base-lighter');
+		display: flex;
+		align-items: center;
+		column-gap: units(1);
+		background-color: transparent; // to set transparency, I have to set it outside of the tokens, or an error occurs
+		background-image: none;
+		color: color(primary);
+		font-size: size('body', 5);
+
+		&:before {
+			@include add-background-svg('usa-icons/remove');
+			display: inline-block;
+			width: $accordion-circle;
+			height: $accordion-circle;
+			border-radius: 50%;
+			background-color: color(secondary);
+			background-position: center center;
+			content: '';
+		}
+
+		&[aria-expanded='false'] {
+			background-image: none;
+
+			&:hover,
+			&:focus,
+			&:focus-visible {
+				background-image: none;
+			}
+
+			&:before {
+				@include add-background-svg('usa-icons/add');
+			}
+		}
+
+		&:hover,
+		&:focus,
+		&:focus-visible {
+			background-color: transparent;
+			background-image: none;
+			color: color(primary);
+			text-decoration: underline;
+		}
+	}
+}

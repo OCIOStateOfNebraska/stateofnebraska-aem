@@ -1,0 +1,10 @@
+@use '../../styles/ne-global-imports' as *;
+@use '~uswds/usa-banner/src/styles/usa-banner';
+
+$uswds-block: 'usa-banner';
+
+.#{$uswds-block} {
+	&__header-text {
+		@include u-padding-y(1.5);
+	}
+}

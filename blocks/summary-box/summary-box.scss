@@ -1,0 +1,14 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+
+.summary-box-wrapper {
+	@include meta.load-css('~uswds/usa-summary-box/src/styles/usa-summary-box');
+
+	margin-bottom: units($component-spacing); 
+
+	.usa-summary-box {
+		&__text {
+			font-size: size('body', 5);
+		}
+	}
+}

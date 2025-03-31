@@ -1,9 +1,9 @@
-# Your Project's Title...
-Your project's description...
+# State of Nebraska Sower Design System
+Design system based on USWDS
 
 ## Environments
-- Preview: https://main--eds-boilerplate--kharris-reingold.aem.page/
-- Live: https://main--eds-boilerplate--kharris-reingold.aem.live/
+- Preview: https://main--stateofnebraska-aem--ociostateofnebraska.aem.page/
+- Live: https://main--stateofnebraska-aem--ociostateofnebraska.aem.live/
 
 ## Documentation
 
@@ -13,22 +13,42 @@ Before using the aem-boilerplate, we recommand you to go through the documentati
 3. [Web Performance](https://www.aem.live/developer/keeping-it-100)
 4. [Markup, Sections, Blocks, and Auto Blocking](https://www.aem.live/developer/markup-sections-blocks)
 
+## Node Version
+This project requires Node.js 22.
+
 ## Installation
 
 ```sh
 npm i
 ```
 
+## Local Development
+_Note that this will run a watcher for both SASS and AEM changes_
+```sh
+npm run dev
+```
+
+### AEM Development
+If you don't want to make any style updates, and are only touching JS files, the following will run a watcher for just those AEM changes.
+
+```sh
+aem up
+```
+
 ## Linting
+Note that linting must pass before committing changes, otherwise the automated build will fail.
 
 ```sh
 npm run lint
 ```
 
-## Local development
+## Compile Just SASS
 
-1. Create a new repository based on the `aem-boilerplate` template and add a mountpoint in the `fstab.yaml`
-1. Add the [AEM Code Sync GitHub App](https://github.com/apps/aem-code-sync) to the repository
+```sh
+npm run sass
+```
+
+## Local development
+1. Create .env file with the following content: AEM_PAGES_URL=https://main--stateofnebraska-aem--ociostateofnebraska.aem.page (where the url the env where you want to pull the content from)
 1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
 1. Start AEM Proxy: `aem up` (opens your browser at `http://localhost:3000`)
-1. Open the `eds-boilerplate` directory in your favorite IDE and start coding :)

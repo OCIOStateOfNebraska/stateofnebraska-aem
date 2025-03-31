@@ -3,5 +3,5 @@ Please always provide the [GitHub issue(s)](../issues) your PR is for, as well a
 Fix #<gh-issue-id>
 
 Test URLs:
-- Before: https://main--eds-boilerplate--kharris-reingold.aem.live/
-- After: https://<branch>--eds-boilerplate--kharris-reingold.aem.live/
+- Before: https://main--stateofnebraska-aem--ociostateofnebraska.aem.live/
+- After: https://<branch>--stateofnebraska-aem--ociostateofnebraska.aem.live/
