@@ -11,14 +11,20 @@
 	}
 
 	&--secondary {
+		$button-context: "Button";
+
+		&:visited {
+			@include set-text-from-bg('secondary', $context: $button-context);
+		}
+
 		&:hover,
 		&.usa-button--hover {
-			background: color('secondary-light');
+			@include set-text-and-bg('secondary-light', $context: $button-context);
 		}
 
 		&:active,
 		&.usa-button--active {
-			background: color('secondary-lighter');
+			@include set-text-and-bg('secondary-lighter', $context: $button-context);
 		}
 	}
 
