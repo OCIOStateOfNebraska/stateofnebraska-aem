@@ -121,7 +121,7 @@ function decorateIcon( span, prefix = '' ) {
 	svg.append( use );
 	span.append( svg );
 	// needed to repaint the svg https://stackoverflow.com/questions/30905493/how-to-force-webkit-to-update-svg-use-elements-after-changes-to-original/30905719
-	svg.innerHTML += ''; // "update" the inner source
+	svg.innerHTML += ''; // "update" the inner source to force a repaint
 }
 
 /**
