@@ -26,16 +26,19 @@ function generateMedia( div, container ) {
 * @param {HTMLElement} div - The `div` element to be transformed into a card media section.
 * @param {HTMLElement} container - The card wrapper the content should be in.
 */
-function generateContent( div, container ) {
-	const button = div.querySelector( '.usa-button__wrap' );
+function generateContent( div, container, type ) {
+	const button = div.querySelector( '.usa-button__wrap a' );
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
 	div.className = 'usa-card__body'; 
 
 	// take out the button and put into its own container 
 	if ( button ) {
-		button.classList.add( 'usa-card__footer' );
-		button.classList.remove( 'usa-button__wrap' ); // remove to match USWDS
-		container.append( button );
+		const buttonWrap = domEl( 'div', { class: 'usa-card__footer' } );
+		buttonWrap.append( button );
+		if ( type === 'blue' ) {
+			button.classList.add( 'usa-button--secondary' );
+		}
+		container.append( buttonWrap );
 	}
 		
 	// take out the heading and put into its own container 
@@ -51,12 +54,12 @@ function generateContent( div, container ) {
 * Generates in the card.
 * @param {HTMLElement} container - The card wrapper the content should be in. child of the li
 */
-function generateWholeCard( container ) {
+function generateWholeCard( container, type ) {
 	[...container.children].forEach( ( div ) => {
 		if ( div.querySelector( 'picture' ) || div.querySelector( 'svg' ) ) {
 			generateMedia( div, container );
 		} else {
-			generateContent( div, container );
+			generateContent( div, container, type );
 		}
 	} );
 }
@@ -82,7 +85,7 @@ function checkUnmatchingCard( el, type ) {
 export default function decorate( block ) {
 	const grid = 'grid-col-12 tablet:grid-col-6 desktop:grid-col-4 widescreen:grid-col-3';
 	const type = block.classList.contains( 'blue' ) ? 'blue' : 'default';
-	const ul = domEl( 'ul', { class: 'usa-card-group grid-row grid-gap' } );
+	const ul = domEl( 'ul', { class: 'usa-card-group grid-row' } );
 
 	[...block.children].forEach( ( row ) => {
 		const li = domEl( 'li', { class: `usa-card ${grid}` } );
@@ -98,7 +101,7 @@ export default function decorate( block ) {
 			li.remove();
 		// ..else generate the card and add to the ul grid 
 		} else {
-			generateWholeCard( cardContainer );
+			generateWholeCard( cardContainer, type );
 			ul.append( li );
 		}
 	} );

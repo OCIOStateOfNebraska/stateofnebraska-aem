@@ -3,37 +3,44 @@
 
 @use '../../styles/ne-global-imports' as *;
 @use 'sass:meta';
+@use 'sass:math';
 
 .info-card-grid-wrapper {
 	$block: 'usa-card';
-
 	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
 
 	.#{$block} {
 		&__img {
 			aspect-ratio: 16 / 9;
-			// position: relative;
-			
-			// picture {
-			// 	position: absolute;
-			// 	top: 0;
-			// 	bottom: 0;
-			// 	left: 0;
-			// 	right: 0;
-			// 	height: 100%;
-			// }
-			
-			// img {
-			// 	object-fit: cover;
-			// 	height: 100%;
-			// 	width: 100%;
-			// }
+		}
+
+		.usa-button {
+			width: 100%;
 		}
 	}
 	
-	&.blue {
+	.blue { // overriding default card styles to create a the blue card
 		.#{$block} {
+			&__container {
+				color: color('white');
+			}
+
+			&__img {
+				@include u-padding-top($theme-card-padding-perimeter);
+				@include u-padding-x($theme-card-padding-perimeter);
+				padding-bottom: math.div(units($theme-card-padding-y), 2); // copied from uswds card css
+				aspect-ratio: unset;
+				background-color: transparent;
+			}
 			
+			.usa-icon {
+				width: units(8);
+				height: units(8);
+			}
+			
+			&__container {
+				background-color: color(primary-dark)
+			}
 		}
 	}
 }
