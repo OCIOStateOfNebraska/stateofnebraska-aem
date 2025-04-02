@@ -1,0 +1,11 @@
+// stylelint-disable
+
+
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+
+.info-card-grid-wrapper {
+	$block: 'usa-card';
+
+	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
+}
