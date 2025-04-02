@@ -2,7 +2,6 @@ import {
 	buildBlock,
 	loadHeader,
 	loadFooter,
-	decorateIcons,
 	decorateSections,
 	decorateBlocks,
 	decorateBlock,
@@ -46,6 +45,44 @@ function buildBreadcrumbBlock( main ) {
 		loadBlock( breadcrumbs );
 		main.prepend( section );
 	}
+}
+
+/**
+ * Add <svg> for icon, prefixed with codeBasePath and optional prefix. -- taken from aem.js and modified
+ * @param {Element} [span] span element with icon classes
+ * @param {string} [prefix] prefix to be added to icon src
+ * @param {string} [alt] alt text to be added to icon
+ */
+function decorateUSWDSIcon( span, prefix = '' ) {
+	const iconName = Array.from( span.classList )
+		.find( ( c ) => c.startsWith( 'icon-' ) )
+		.substring( 5 );
+	const svg = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
+	svg.classList.add( 'usa-icon' );
+	svg.setAttribute( 'aria-hidden', 'true' ); 
+	svg.setAttribute( 'focusable', false );
+	svg.setAttribute( 'role', 'img' );
+	const use = document.createElement( 'use' );
+	svg.dataset.iconName = iconName;
+	const link = `${window.hlx.codeBasePath}${prefix}/icons/sprite.svg#${iconName}`;
+
+	use.setAttribute( 'href', link ); 
+	svg.append( use );
+	span.append( svg );
+	// needed to repaint the svg https://stackoverflow.com/questions/30905493/how-to-force-webkit-to-update-svg-use-elements-after-changes-to-original/30905719
+	svg.innerHTML += ''; // "update" the inner source to force a repaint
+}
+
+/**
+ * Add <img> for icons, prefixed with codeBasePath and optional prefix. -- taken from aem.js and modified
+ * @param {Element} [element] Element containing icons
+ * @param {string} [prefix] prefix to be added to icon the src
+ */
+function decorateUSWDSIcons( element, prefix = '' ) {
+	const icons = [...element.querySelectorAll( 'span.icon' )];
+	icons.forEach( ( span ) => {
+		decorateUSWDSIcon( span, prefix );
+	} );
 }
 
 /**
@@ -112,7 +149,7 @@ export function decorateMain( main ) {
 
 export function decorateInner( container ) {
 	decorateButtons( container );
-	decorateIcons( container );
+	decorateUSWDSIcons( container );
 	decorateSections( container );
 	decorateBlocks( container );
 }
