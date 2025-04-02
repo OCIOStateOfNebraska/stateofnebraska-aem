@@ -53,7 +53,7 @@ function buildBreadcrumbBlock( main ) {
  * @param {string} [prefix] prefix to be added to icon src
  * @param {string} [alt] alt text to be added to icon
  */
-function decorateIcon( span, prefix = '' ) {
+function decorateUSWDSIcon( span, prefix = '' ) {
 	const iconName = Array.from( span.classList )
 		.find( ( c ) => c.startsWith( 'icon-' ) )
 		.substring( 5 );
@@ -78,10 +78,10 @@ function decorateIcon( span, prefix = '' ) {
  * @param {Element} [element] Element containing icons
  * @param {string} [prefix] prefix to be added to icon the src
  */
-function decorateIcons( element, prefix = '' ) {
+function decorateUSWDSIcons( element, prefix = '' ) {
 	const icons = [...element.querySelectorAll( 'span.icon' )];
 	icons.forEach( ( span ) => {
-		decorateIcon( span, prefix );
+		decorateUSWDSIcon( span, prefix );
 	} );
 }
 
@@ -149,7 +149,7 @@ export function decorateMain( main ) {
 
 export function decorateInner( container ) {
 	decorateButtons( container );
-	decorateIcons( container );
+	decorateUSWDSIcons( container );
 	decorateSections( container );
 	decorateBlocks( container );
 }
