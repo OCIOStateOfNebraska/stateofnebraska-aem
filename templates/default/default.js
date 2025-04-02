@@ -9,7 +9,7 @@ import {
 export default async function decorate( doc ) {
 	// TODO: see if any of this is common between USWDS templates and should be consolidated
 	const main = doc.querySelector( 'main' );
-	const usaSectionDiv = div( { class: 'usa-section' } );
+	const usaSectionDiv = div( { class: 'usa-section main-content' } );
 	const usaGridDiv = div( { class: 'grid-container' } );
 	const usaGridRowDiv = div( { class: 'grid-row grid-gap' } );
 	const usaContentDiv = div( { class: 'desktop:grid-col-12 usa-prose' } );
@@ -19,7 +19,7 @@ export default async function decorate( doc ) {
 	usaGridRowDiv.append( usaContentDiv );
 	main.append( usaSectionDiv );
 	[...main.children].forEach( ( child ) => {
-		if ( child !== usaContentDiv ) {
+		if ( !child.classList.contains( 'main-content' ) ) {
 			usaContentDiv.appendChild( child );
 		}
 	} );
