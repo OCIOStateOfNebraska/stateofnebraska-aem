@@ -8,4 +8,32 @@
 	$block: 'usa-card';
 
 	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
+
+	.#{$block} {
+		&__img {
+			aspect-ratio: 16 / 9;
+			// position: relative;
+			
+			// picture {
+			// 	position: absolute;
+			// 	top: 0;
+			// 	bottom: 0;
+			// 	left: 0;
+			// 	right: 0;
+			// 	height: 100%;
+			// }
+			
+			// img {
+			// 	object-fit: cover;
+			// 	height: 100%;
+			// 	width: 100%;
+			// }
+		}
+	}
+	
+	&.blue {
+		.#{$block} {
+			
+		}
+	}
 }
