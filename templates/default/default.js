@@ -25,11 +25,20 @@ export default async function decorate( doc ) {
 	usaSectionDiv.append( usaGridDiv );
 	usaGridDiv.append( usaGridRowDiv );
 
-	let usaGridSideNavDiv = null;
-	let usaGridSideNavDivMobile = null;
+	const usaContentDiv = div( { class: showSideNav ? 'desktop:grid-col-9 usa-prose' : 'desktop:grid-col-12 usa-prose' } );
+	usaGridRowDiv.append( usaContentDiv );
+	main.append( usaSectionDiv );
+	[...main.children].forEach( ( child ) => {
+		if ( !child.classList.contains( 'main-content' ) ) {
+			usaContentDiv.appendChild( child );
+		}
+	} );
+
+	// Inject sidenav if that layout option is chosen
+	// delay to help avoid layout shift while it loads
 	if ( showSideNav ) {
-		usaGridSideNavDiv = div( { class: 'usa-layout-docs__sidenav display-none desktop:display-block desktop:grid-col-3' } );
-		usaGridSideNavDivMobile = div( { class: 'usa-layout-docs__sidenav desktop:display-none' } );
+		const usaGridSideNavDiv = div( { class: 'usa-layout-docs__sidenav display-none desktop:display-block desktop:grid-col-3' } );
+		const usaGridSideNavDivMobile = div( { class: 'usa-layout-docs__sidenav desktop:display-none' } );
 
 		const sideNav = buildBlock( 'side-navigation', '' );
 		usaGridSideNavDiv.append( sideNav );
@@ -40,17 +49,7 @@ export default async function decorate( doc ) {
 
 		const mobileSideNav = sideNav.cloneNode( true );
 		usaGridSideNavDivMobile.append( mobileSideNav );
+		usaGridRowDiv.prepend( usaGridSideNavDiv );
+		usaGridRowDiv.append( usaGridSideNavDivMobile );
 	}
-
-	const usaContentDiv = div( { class: showSideNav ? 'desktop:grid-col-9 usa-prose' : 'desktop:grid-col-12 usa-prose' } );
-	showSideNav && usaGridRowDiv.append( usaGridSideNavDiv );
-	usaGridRowDiv.append( usaContentDiv );
-	showSideNav && usaGridRowDiv.append( usaGridSideNavDivMobile );
-
-	main.append( usaSectionDiv );
-	[...main.children].forEach( ( child ) => {
-		if ( !child.classList.contains( 'main-content' ) ) {
-			usaContentDiv.appendChild( child );
-		}
-	} );
 }
