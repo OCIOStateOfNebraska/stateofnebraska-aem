@@ -71,4 +71,19 @@ function addClassToLinks( parent, cl = 'usa-link' ) {
 	} );
 }
 
-export { debounce, normalizeId, createId, addClassToLists, addClassToLinks };
+function removeEmptyChildren( el ) {
+	if ( el.innerText.trim().length === 0 ) {
+		el.remove();
+	}
+}
+
+//TODO: documentation
+function checkIfRowExists( el, rowNum ) {
+	if ( el[rowNum] && ( el[rowNum].innerText.trim().length > 0 || el[rowNum].querySelector( 'picture' ) ) ) {
+		return el[rowNum].children;
+	} else {
+		return;
+	}
+}
+
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, removeEmptyChildren, checkIfRowExists };
