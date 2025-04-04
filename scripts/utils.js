@@ -94,6 +94,7 @@ async function fetchIndex( indexFile = 'query-index', sheet = null ) {
 		window.siteIndexCache[cacheKey] = data;
 		return data;
 	} catch ( e ) {
+		// eslint-disable-next-line no-console
 		console.error( `Failed to fetch index ${indexPath}`, e );
 		window.siteIndexCache[cacheKey] = { data: [] }; // Cache failure state
 		return window.siteIndexCache[cacheKey];
