@@ -1,43 +1,21 @@
+import {
+	fetchIndex,
+} from '../../scripts/utils.js';
 /**
  * Fetches the site index data.
- * It's highly recommended to use a shared helper function in your project's
- * '/scripts/scripts.js' that includes caching logic to avoid redundant fetches.
- * Example signature: import { fetchIndex } from '../../scripts/scripts.js';
  *
  * @param {string} [indexFile='query-index'] The name of the index file (e.g., 'query-index', 'index').
  * @returns {Promise<Array<object>>} A promise that resolves to the index data array.
  */
 async function getIndexData( indexFile = 'query-index' ) {
 	// Check if a shared caching function exists (RECOMMENDED)
-	if ( typeof window.fetchIndex === 'function' ) {
-		try {
-			const index = await window.fetchIndex( indexFile ); // Use the shared function
-			// Ensure the shared function returns the expected { data: [...] } structure
-			return index && index.data ? index.data : [];
-		} catch ( e ) {
-			// eslint-disable-next-line no-console
-			console.error( `Error using shared fetchIndex for ${indexFile}:`, e );
-			// Fallback to direct fetch if shared function fails
-		}
-	}
-
-	// --- Fallback: Direct fetch (no caching) ---
-	const indexPath = `/${indexFile.endsWith( '.json' ) ? indexFile : `${indexFile}.json`}`;
 	try {
-		const resp = await fetch( indexPath );
-		if ( !resp.ok ) {
-			// eslint-disable-next-line no-console
-			console.error( `Failed to fetch index: ${indexPath}`, await resp.text() );
-			throw new Error( `Failed to fetch index: ${indexPath} status: ${resp.status}` );
-		}
-		const json = await resp.json();
-		// Standard index structure is { data: [...] }
-		// Handle potential variations if needed
-		return json && json.data ? json.data : [];
-	} catch ( error ) {
+		const index = await fetchIndex( indexFile ); // Use the shared function
+		// Ensure the shared function returns the expected { data: [...] } structure
+		return index && index.data ? index.data : [];
+	} catch ( e ) {
 		// eslint-disable-next-line no-console
-		console.error( `Error loading or processing index ${indexPath}:`, error );
-		return []; // Return empty array on error
+		console.error( `Error using shared fetchIndex for ${indexFile}:`, e );
 	}
 }
 
@@ -160,7 +138,7 @@ function buildNavLevel( parentPath, currentLevel, maxLevel, indexData, currentPa
 			// Actual current page: Add ARIA attribute and styling class
 			a.setAttribute( 'aria-current', 'page' );
 			a.classList.add( 'usa-current' );
-		} else if ( isTopLevelAncestor && currentLevel === 1 ) { // <<< UPDATED CONDITION
+		} else if ( isTopLevelAncestor && currentLevel === 1 ) {
 			// Top-level ancestor (must be level 1): Add styling class only
 			a.classList.add( 'usa-current' );
 		}
@@ -173,7 +151,7 @@ function buildNavLevel( parentPath, currentLevel, maxLevel, indexData, currentPa
 		// - We haven't reached the max level yet.
 		// - EITHER this page IS the current page OR it's *any* ancestor of the current page.
 		//   (This ensures we only expand the branch leading to the current page, using the full ancestor list)
-		if ( currentLevel < maxLevel && ( isCurrent || isActiveAncestor ) ) { // <<< Expansion uses full ancestor list
+		if ( currentLevel < maxLevel && ( isCurrent || isActiveAncestor ) ) {
 			const nestedUl = buildNavLevel(
 				pagePathNormalized,
 				currentLevel + 1, // Increment level
@@ -208,7 +186,7 @@ export default async function decorate( block ) {
 	block.textContent = '';
 	const maxDepth = 3; // Define the fixed depth
 
-	const indexData = await getIndexData( 'query-index' ); // Or 'index'
+	const indexData = await getIndexData();
 
 	if ( !indexData || indexData.length === 0 ) {
 		// eslint-disable-next-line no-console

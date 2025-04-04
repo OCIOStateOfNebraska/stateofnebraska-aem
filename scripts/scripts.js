@@ -33,7 +33,7 @@ function buildHeroBlock( main ) {
 //  * Builds breadcrumb block and prepends to main in a new section.
 //  * @param {Element} main The container element
 //  */
-// TODO: Consolidate BreadcrumbBlock and Hero Block together.  
+// TODO: Consolidate BreadcrumbBlock and Hero Block together.
 function buildBreadcrumbBlock( main ) {
 	const hideBreadcrumbVal = getMetadata( 'hide-breadcrumb' ) || 'no';
 	const hideBreadcrumb = hideBreadcrumbVal.toLowerCase() === 'yes' || hideBreadcrumbVal.toLowerCase() === 'true';
@@ -59,14 +59,14 @@ function decorateUSWDSIcon( span, prefix = '' ) {
 		.substring( 5 );
 	const svg = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
 	svg.classList.add( 'usa-icon' );
-	svg.setAttribute( 'aria-hidden', 'true' ); 
+	svg.setAttribute( 'aria-hidden', 'true' );
 	svg.setAttribute( 'focusable', false );
 	svg.setAttribute( 'role', 'img' );
 	const use = document.createElement( 'use' );
 	svg.dataset.iconName = iconName;
 	const link = `${window.hlx.codeBasePath}${prefix}/icons/sprite.svg#${iconName}`;
 
-	use.setAttribute( 'href', link ); 
+	use.setAttribute( 'href', link );
 	svg.append( use );
 	span.append( svg );
 	// needed to repaint the svg https://stackoverflow.com/questions/30905493/how-to-force-webkit-to-update-svg-use-elements-after-changes-to-original/30905719
@@ -198,14 +198,14 @@ async function loadEager( doc ) {
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
 
-	// load the blocks BEFORE decorating the template 
+	// load the blocks BEFORE decorating the template
 	const main = doc.querySelector( 'main' );
-	if( main ) {
+	if ( main ) {
 		decorateMain( main );
 		document.body.classList.add( 'appear' );
 		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
 	}
-	
+
 	// pull in template name from document metadata
 	// fallback to USWDS "documentation" template if none is specified
 	const templateName = getMetadata( 'template' );
@@ -214,7 +214,7 @@ async function loadEager( doc ) {
 	} else {
 		await loadTemplate( doc, 'default' );
 	}
-	
+
 	// // build components that should be in main but be outside of the main template area
 	buildAutoBlocks( main );
 	loadHeader( doc.querySelector( 'header' ) );
@@ -289,6 +289,10 @@ loadPage();
 
 const uswds = document.createElement( 'script' );
 const body = document.querySelector( 'body' );
+
+// variable for caching site index
+window.siteIndexCache = window.siteIndexCache || {};
+
 uswds.async = 'true';
 uswds.src = '/scripts/uswds.min.js';
 body.append( uswds );

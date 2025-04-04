@@ -26,12 +26,14 @@ export default async function decorate( doc ) {
 
 	const sideNav = buildBlock( 'side-navigation', '' );
 	usaGridSideNavDiv.append( sideNav );
+	decorateBlock( sideNav );
+
+	// await this so we can clone it for mobile
+	await loadBlock( sideNav );
+
 	const mobileSideNav = sideNav.cloneNode( true );
 	usaGridSideNavDivMobile.append( mobileSideNav );
-	decorateBlock( sideNav );
-	decorateBlock( mobileSideNav );
-	loadBlock( sideNav );
-	loadBlock( mobileSideNav );
+
 	usaGridRowDiv.append( usaGridSideNavDiv );
 	usaGridRowDiv.append( usaContentDiv );
 	usaGridRowDiv.append( usaGridSideNavDivMobile );
