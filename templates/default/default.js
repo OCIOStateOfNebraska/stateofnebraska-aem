@@ -17,16 +17,24 @@ export default async function decorate( doc ) {
 	const usaSectionDiv = div( { class: 'usa-section main-content' } );
 	const usaGridDiv = div( { class: 'grid-container' } );
 	const usaGridRowDiv = div( { class: 'grid-row grid-gap' } );
-	const usaContentDiv = div( { class: 'desktop:grid-col-12 usa-prose' } );
+	const usaGridSideNavDiv = div( { class: 'usa-layout-docs__sidenav display-none desktop:display-block desktop:grid-col-3' } );
+	const usaGridSideNavDivMobile = div( { class: 'usa-layout-docs__sidenav desktop:display-none' } );
+	const usaContentDiv = div( { class: 'desktop:grid-col-9 usa-prose' } );
 	main.parentNode.append( usaSectionDiv );
 	usaSectionDiv.append( usaGridDiv );
 	usaGridDiv.append( usaGridRowDiv );
-	//TODO: check location
+
 	const sideNav = buildBlock( 'side-navigation', '' );
-	usaGridRowDiv.append( sideNav );
+	usaGridSideNavDiv.append( sideNav );
+	const mobileSideNav = sideNav.cloneNode( true );
+	usaGridSideNavDivMobile.append( mobileSideNav );
 	decorateBlock( sideNav );
+	decorateBlock( mobileSideNav );
 	loadBlock( sideNav );
+	loadBlock( mobileSideNav );
+	usaGridRowDiv.append( usaGridSideNavDiv );
 	usaGridRowDiv.append( usaContentDiv );
+	usaGridRowDiv.append( usaGridSideNavDivMobile );
 	main.append( usaSectionDiv );
 	[...main.children].forEach( ( child ) => {
 		if ( !child.classList.contains( 'main-content' ) ) {
