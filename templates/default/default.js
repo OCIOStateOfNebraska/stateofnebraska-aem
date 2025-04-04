@@ -1,4 +1,9 @@
 import {
+	buildBlock,
+	decorateBlock,
+	loadBlock,
+} from '../../scripts/aem.js';
+import {
 	div
 } from '../../scripts/dom-helpers.js';
 
@@ -16,6 +21,11 @@ export default async function decorate( doc ) {
 	main.parentNode.append( usaSectionDiv );
 	usaSectionDiv.append( usaGridDiv );
 	usaGridDiv.append( usaGridRowDiv );
+	//TODO: check location
+	const sideNav = buildBlock( 'side-navigation', '' );
+	usaGridRowDiv.append( sideNav );
+	decorateBlock( sideNav );
+	loadBlock( sideNav );
 	usaGridRowDiv.append( usaContentDiv );
 	main.append( usaSectionDiv );
 	[...main.children].forEach( ( child ) => {
@@ -23,8 +33,5 @@ export default async function decorate( doc ) {
 			usaContentDiv.appendChild( child );
 		}
 	} );
-	// TODO: create / decorate sidenav
-	// const siteNav = buildBlock('sidnav', '');
-	// usaGridRowDiv.append(siteNav);
-	// decorateBlock(siteNav);
+
 }
