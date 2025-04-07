@@ -9,7 +9,7 @@ import { domEl } from '../../scripts/dom-helpers.js';
 function generateMedia( div, container ) {
 	div.className = 'usa-card__media';
 	const media = container.querySelector( '.usa-card__media' );
-	const img = container.querySelector( 'picture' ) || container.querySelector( 'svg' );
+	const img = container.querySelector( 'picture' ) || container.querySelector( 'svg' ) ;
 	const imgWrapper = domEl( 'div', { class: 'usa-card__img' } );
 	const svgParagraph = media.querySelector( 'p' );
 	imgWrapper.append( img );
@@ -98,12 +98,15 @@ export default function decorate( block ) {
 		}
 		// if the card isn't the right type for the class remove it...
 		if ( checkUnmatchingCard( li, type ) ) {
-			li.remove();
+			if ( type === 'blue' && li.querySelector( 'picture' ) ) {
+				li.querySelector( 'picture' ).parentNode.remove();
+			} else {
+				li.querySelector( '.icon' ).closest( 'p' ).parentNode.remove();
+			}
 		// ..else generate the card and add to the ul grid 
-		} else {
-			generateWholeCard( cardContainer, type );
-			ul.append( li );
-		}
+		} 
+		generateWholeCard( cardContainer, type );
+		ul.append( li );
 	} );
 
 	ul.querySelectorAll( 'picture > img' ).forEach( ( img ) => img.closest( 'picture' ).replaceWith( createOptimizedPicture( img.src, img.alt, false, [{ width: '750' }] ) ) );
