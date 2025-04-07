@@ -1,3 +1,4 @@
+import { fetchPlaceholders } from '../../scripts/aem.js';
 import {
 	fetchIndex,
 } from '../../scripts/utils.js';
@@ -129,7 +130,7 @@ function buildNavLevel( parentPath, currentLevel, maxLevel, indexData, currentPa
 		li.classList.add( 'usa-sidenav__item' );
 
 		const a = document.createElement( 'a' );
-		a.textContent = page.title || pagePathNormalized.split( '/' ).pop() || 'Untitled';
+		a.textContent = page.title || pagePathNormalized.split( '/' ).pop() || '';
 		a.href = page.path;
 		a.classList.add( 'usa-sidenav__link' );
 
@@ -191,11 +192,9 @@ export default async function decorate( block ) {
 	if ( !indexData || indexData.length === 0 ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Side Navigation Error: Index data is empty or could not be loaded.' );
-		block.textContent = 'Navigation unavailable.';
-		block.style.display = 'block';
-		block.style.color = 'var(--usa-color-secondary-dark)';
 		return;
 	}
+	const placeholders = await fetchPlaceholders();
 
 	const currentPagePath = normalizePath( window.location.pathname );
 	const ancestors = getAncestors( currentPagePath );
@@ -216,7 +215,7 @@ export default async function decorate( block ) {
 	if ( navList && navList.hasChildNodes() ) {
 		// Wrap the generated list in a NAV element for accessibility
 		const nav = document.createElement( 'nav' );
-		nav.setAttribute( 'aria-label', 'Side navigation' );
+		nav.setAttribute( 'aria-label', placeholders.sidenavigation || 'Side navigation' );
 		nav.appendChild( navList );
 		block.appendChild( nav );
 		block.style.display = ''; // Ensure block is visible
