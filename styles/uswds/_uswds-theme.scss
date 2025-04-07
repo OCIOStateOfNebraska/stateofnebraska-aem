@@ -49,7 +49,7 @@ in the form $setting: value,
 
   // Primary colors
   // $theme-color-primary-family: "blue",
-  $theme-color-primary-lightest: #E6EEEF,
+  $theme-color-primary-lightest: #F3F7FC,
   $theme-color-primary-lighter: #BBD4DD,
   $theme-color-primary-light: #4D90A5,
   $theme-color-primary: #00607F, // "medium"
@@ -202,6 +202,8 @@ in the form $setting: value,
 	$theme-global-paragraph-styles: true,
 	$theme-global-link-styles: true,
 	$theme-global-content-styles: true,
+	
+	$theme-body-background-color: 'primary-lightest',
 
   /////
   /// Buttons
@@ -238,5 +240,11 @@ in the form $setting: value,
   /////
   $theme-banner-background-color: 'primary-darker',
   $theme-banner-link-color: 'white',
+  
+  /////
+  /// Default Card
+  /////
+  $theme-card-border-radius: 'md',
+  $theme-card-border-width: 0
   
 );
