@@ -1,5 +1,6 @@
 import {domEl} from '../../scripts/dom-helpers.js';
 import {removeEmptyChildren, checkIfRowExists } from '../../scripts/utils.js';
+import { getMetadata } from '../../scripts/aem.js';
 
 /**
  * loads and decorates the footer
@@ -22,30 +23,8 @@ export default async function decorate( block ) {
 	}
 	
 	const [siteMap, infoAndSocial, accreditation, footerLinks] = children.map( ( child, index ) => { return checkIfRowExists( children, index ); } );
-	// TODO: Style Links
-	/**
-	 * Styles common links within the footer - specifically the sitemap and extra footer links 
-	 *
-	 * @param {HTMLCollection} row - The collection of elements.
-	 * @param {Element} container - The container element that will contain all the sections.
-	 * @param {string} sectionClass - The column of links. Will always be in a section
-	 */
-	function styleCommonLinks( row, container, sectionClass ) {
-		const grid = domEl( 'div', { class: 'grid-row grid-gap' } );
-		Array.from( row ).forEach( child => {
-			const section = domEl( 'section', { class: sectionClass } );
-			const rows = domEl( 'div', { class: 'mobile-lg:grid-col-6 desktop:grid-col-3' } );
-			while ( child.firstElementChild ) {
-				section.append( child.firstElementChild );
-			} 
-			rows.append( section );
-			grid.append( rows );
-		} );
-		container.append( grid );
-		block.removeChild( block.firstElementChild ); // remove the empty div the children used to be in
-	}
 
-	// Section renders
+	// Section renderers
 	/**
 	 * Styles the sitemap section of the footer.
 	 *
@@ -53,11 +32,33 @@ export default async function decorate( block ) {
 	 */
 	function styleSitemap( row ) {
 		const container = domEl( 'nav', { class: 'usa-footer__nav', 'aria-label': 'Footer navigation'} );
-		const sectionClass = 'usa-footer__primary-content usa-footer__primary-content--collapsible';
-		styleCommonLinks( row, container, sectionClass );
+		const sectionClass = 'usa-footer__primary-content usa-footer__primary-content--collapsible ';
+		const grid = domEl( 'div', { class: 'grid-row grid-gap' } );
+		Array.from( row ).forEach( child => {
+			const section = domEl( 'section', { class: sectionClass } );
+			const rows = domEl( 'div', { class: 'mobile-lg:grid-col-6 desktop:grid-col-3' } );
+			while ( child.firstElementChild ) {
+				child.querySelectorAll( 'ul' ).forEach( el => {
+					el.classList.add( 'usa-list--unstyled', 'usa-list' );
+					if ( el.previousElementSibling ) {
+						el.previousElementSibling.classList.add( 'usa-footer__primary-link' );
+					}
+				} );
+				
+				child.querySelectorAll( 'li' ).forEach( el => {
+					el.classList.add( 'usa-footer__secondary-link' );
+				} );
+				
+				section.append( child.firstElementChild );
+			} 
+			rows.append( section );
+			grid.append( rows );
+		} );
+		container.append( grid );
 		primaryGridContainer.append( container );
 		primarySection.append( primaryGridContainer );
 		block.append( primarySection );
+		block.removeChild( block.firstElementChild );
 	}
 	
 	/**
@@ -147,6 +148,7 @@ export default async function decorate( block ) {
 			removeEmptyChildren( child );
 			secondaryGridContainer.append( child );
 		} );
+		block.removeChild( block.firstElementChild ); // remove the empty div the children used to be in
 	}
 	
 	/**
@@ -154,10 +156,26 @@ export default async function decorate( block ) {
 	 *
 	 * @param {HTMLCollection} row - The footer links section of the footer.
 	 */
-	function styleFooterLinks( row ) {
+	function styleIdentifierLinks( row ) {
 		const container = secondaryGridContainer;
-		const sectionClass = 'usa-footer__content';
-		styleCommonLinks( row, container, sectionClass );
+		const nav = domEl( 'nav', { class: 'usa-identifier', 'aria-label': 'Footer navigation'} );
+		const grid = domEl( 'section', { class: 'grid-row grid-gap usa-identifier__section usa-identifier__section--required-links' } );
+		Array.from( row ).forEach( child => {
+			while ( child.firstElementChild ) {
+				child.querySelectorAll( 'ul' ).forEach( el => {
+					el.classList.add( 'usa-list--unstyled', 'usa-list', 'usa-identifier__required-links-list' );
+				} );
+				
+				child.querySelectorAll( 'li' ).forEach( el => {
+					el.classList.add( 'usa-identifier__required-links-item' );
+				} );
+				
+				grid.append( child.firstElementChild );
+			} 
+		} );
+		nav.append( grid );
+		container.append( nav );
+		block.removeChild( block.firstElementChild ); // remove the empty div the children used to be in
 	}
 	
 	/**
@@ -165,9 +183,11 @@ export default async function decorate( block ) {
 	 */
 	function styleCopyright() {
 		const copyrightWrapper = domEl( 'div', { class: 'grid-row grid-gap usa-footer__copyright' } );
+		const copyrightMeta = getMetadata( 'copyrightslug' );
 		const col = domEl( 'div', { class: 'grid-col-12' } );
 		const text = domEl( 'p' );
-		const child = '//TODO copyright set with metadata';
+		const year = new Date().getFullYear();
+		const child = `© ${year} ${copyrightMeta}`;
 		text.append( child );
 		col.append( text );
 		copyrightWrapper.append( col );
@@ -178,6 +198,6 @@ export default async function decorate( block ) {
 	if ( siteMap ) { styleSitemap( siteMap ); }
 	styleLogoAndSocial( infoAndSocial );
 	if ( accreditation ) { styleAccreditation( accreditation ); }
-	styleFooterLinks( footerLinks );
+	styleIdentifierLinks( footerLinks );
 	styleCopyright();
 }

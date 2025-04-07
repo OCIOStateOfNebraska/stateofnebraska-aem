@@ -1,3 +1,13 @@
+/* stylelint-disable */
+//st
 .usa-footer--big {
 	margin-top: 20px;
+}
+
+.usa-footer__secondary-section>.grid-container>.grid-row.usa-footer__secondary-section-links {
+	justify-content: flex-start !important;
+}
+
+.usa-identifier {
+	background-color: transparent;
 }
