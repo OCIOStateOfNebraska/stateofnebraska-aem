@@ -50,6 +50,6 @@ export default async function decorate( doc ) {
 		const mobileSideNav = sideNav.cloneNode( true );
 		usaGridSideNavDivMobile.append( mobileSideNav );
 		usaGridRowDiv.prepend( usaGridSideNavDiv );
-		usaGridRowDiv.append( usaGridSideNavDivMobile );
+		usaGridRowDiv.after( usaGridSideNavDivMobile );
 	}
 }
