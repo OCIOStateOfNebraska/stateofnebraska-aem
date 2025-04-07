@@ -6,27 +6,31 @@
 .display-none {
 	display: none;
 }
-@media (min-width: 64em) {
+
+@media (width >= 64em) {
 	.desktop\:display-block {
-			display: block;
-	}
-}
-@media (min-width: 64em) {
-	.desktop\:display-none {
-			display: none;
+		display: block;
 	}
 }
 
-@media (min-width: 64em) {
-	.usa-layout-docs__sidenav {
-			padding-top: 0;
+@media (width >= 64em) {
+	.desktop\:display-none {
+		display: none;
 	}
 }
+
+@media (width >= 64em) {
+	.usa-layout-docs__sidenav {
+		padding-top: 0;
+	}
+}
+
 .usa-layout-docs__sidenav {
 	padding-top: 2rem;
 }
-@media (min-width: 64em) {
+
+@media (width >= 64em) {
 	.usa-layout-docs__sidenav {
-			padding-top: 0;
+		padding-top: 0;
 	}
 }
