@@ -262,9 +262,9 @@ async function loadPage() {
 	loadDelayed();
 }
 
-loadPage();
+await loadPage();
 
-// add uswds js to page
+// add uswds js to page after the content is all loaded
 ( function uswdsInit() {
 	const loadingClass = 'usa-js-loading';
 	let fallback = '';
@@ -285,13 +285,10 @@ loadPage();
 	}
 
 	window.addEventListener( 'load', verifyLoaded, true );
-}() );
 
-// TODO: this is not the way
-setTimeout( function() {
 	const uswds = document.createElement( 'script' );
 	const body = document.querySelector( 'body' );
 	uswds.async = 'true';
 	uswds.src = '/scripts/uswds.min.js';
 	body.append( uswds );
-}, 3000 );
+} )();

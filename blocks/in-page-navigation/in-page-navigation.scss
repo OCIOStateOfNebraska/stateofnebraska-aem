@@ -1,2 +1,6 @@
 @use '../../styles/ne-global-imports' as *;
 @use '~uswds/usa-in-page-navigation/src/styles/usa-in-page-navigation';
+
+.in-page-navigation {
+	min-height: 100%; // so that the inner .usa-in-page-navigation can be sticky within this space
+}
