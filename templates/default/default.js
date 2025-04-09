@@ -22,8 +22,9 @@ export default async function decorate( doc ) {
 	const usaContentDiv = div( { class: ( showSideNav ? 'desktop:grid-col-9 usa-prose main-content' :  'usa-prose main-content' ) } );
 
 	// Only add grid if sidenav is present
-	const usaGridRowDiv = div( { class: 'grid-row grid-gap' } );
+	let usaGridRowDiv;
 	if( showSideNav ) {
+		usaGridRowDiv = div( { class: 'grid-row grid-gap' } );
 		usaContainerDiv.append( usaGridRowDiv );
 		usaGridRowDiv.append( usaContentDiv );
 	} else {
