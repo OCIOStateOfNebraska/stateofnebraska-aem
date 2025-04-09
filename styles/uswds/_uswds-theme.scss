@@ -203,6 +203,7 @@ in the form $setting: value,
 	$theme-global-paragraph-styles: true,
 	$theme-global-link-styles: true,
 	$theme-global-content-styles: true,
+  $theme-text-measure: 6, // 88ex
 	
 	$theme-body-background-color: 'primary-lightest',
 
@@ -247,7 +248,7 @@ in the form $setting: value,
   /// In-Page Navigation
   /////
   $theme-in-page-nav-margin-top: 0,
-  $theme-in-page-nav-margin-left: 15,
+  $theme-in-page-nav-margin-left: 4,
   $theme-in-page-nav-background-radius: 0,
   $theme-in-page-nav-background-padding: 0,
   $theme-in-page-nav-bar-color: 'secondary',
