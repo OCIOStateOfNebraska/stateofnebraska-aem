@@ -1,6 +1,39 @@
 @use '../../styles/ne-global-imports' as *;
 @use '~uswds/usa-in-page-navigation/src/styles/usa-in-page-navigation';
 
+$block: 'usa-in-page-nav';
+
 .in-page-navigation {
-	min-height: 100%; // so that the inner .usa-in-page-navigation can be sticky within this space
+	align-self: stretch; // so that the inner .usa-in-page-navigation can be sticky within this space
+}
+
+.#{$block} {
+	&-container {
+		.main-content {
+			// card-lg is the max-width of .usa-in-page-nav
+			width: calc(100% - #{units('card-lg') + units($theme-in-page-nav-margin-left)});
+		}
+	}
+
+	&__heading {
+		@include typeset('heading', '2xs', $theme-heading-line-height);
+		@include u-text('semibold');
+	}
+
+	&__list {
+		// stylelint-disable-next-line scss/selector-nest-combinators
+		&,
+		a:not(.usa-button) {
+			&.usa-current {
+				&:after {
+					left: units(1px) * -1; // on top of the __list border
+					background: color('secondary');
+				}
+			}
+		}
+	}
+
+	&__item {
+		font-size: size('body', '3xs');
+	}
 }

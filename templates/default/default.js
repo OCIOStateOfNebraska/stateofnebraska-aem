@@ -16,14 +16,20 @@ export default async function decorate( doc ) {
 
 	const main = doc.querySelector( 'main' );
 	const usaSectionDiv = div( { class: 'usa-section' } );
-	const usaGridDiv = div( { class: 'grid-container' } );
-	const usaGridRowDiv = div( { class: 'grid-row grid-gap' } );
+	const usaContainerDiv = div( { class: 'grid-container' } );
 	main.parentNode.append( usaSectionDiv );
-	usaSectionDiv.append( usaGridDiv );
-	usaGridDiv.append( usaGridRowDiv );
+	usaSectionDiv.append( usaContainerDiv );
 
-	const usaContentDiv = div( { class: ( showSideNav || showInPageNav ? 'desktop:grid-col-9 usa-prose main-content' : 'desktop:grid-col-12 usa-prose main-content' ) } );
-	usaGridRowDiv.append( usaContentDiv );
+	const usaContentDiv = div( { class: ( showSideNav ? 'desktop:grid-col-9 usa-prose main-content' :  'usa-prose main-content' ) } );
+
+	if( showSideNav ) {
+		const usaGridRowDiv = div( { class: 'grid-row grid-gap' } );
+		usaContainerDiv.append( usaGridRowDiv );
+		usaGridRowDiv.append( usaContentDiv );
+	} else {
+		usaContainerDiv.append( usaContentDiv );
+	}
+
 	main.append( usaSectionDiv );
 	[...main.children].forEach( ( child ) => {
 		if ( child !== usaSectionDiv ) {
@@ -36,10 +42,8 @@ export default async function decorate( doc ) {
 	if ( showSideNav ) {
 		// Resolve conflicts :) 
 	} else if( showInPageNav ) {
-		const usaGridSideNavDiv = div( { class: 'desktop:grid-col-3' } );
 		const inPageNav = buildBlock( 'in-page-navigation', '' );
-		usaGridSideNavDiv.append( inPageNav );
-		usaGridRowDiv.appendChild( usaGridSideNavDiv );
+		usaContainerDiv.appendChild( inPageNav );
 		decorateBlock( inPageNav );
 		await loadBlock( inPageNav );
 	}

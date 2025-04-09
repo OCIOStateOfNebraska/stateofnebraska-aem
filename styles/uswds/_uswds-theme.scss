@@ -29,6 +29,7 @@ in the form $setting: value,
   ),
 	// $theme-utility-breakpoints: (),
 
+  $theme-column-gap-desktop: 6,
 	$theme-grid-container-max-width: 'widescreen',
 	//$theme-header-min-width: "desktop",
 
@@ -180,7 +181,7 @@ in the form $setting: value,
 	$theme-font-weight-light: 300,
 	$theme-font-weight-normal: 400,
 	$theme-font-weight-medium: 400,
-	$theme-font-weight-semibold: 700,
+	$theme-font-weight-semibold: 600,
 	$theme-font-weight-bold: 700,
 	$theme-font-weight-heavy: 700,
 
@@ -240,6 +241,15 @@ in the form $setting: value,
   /// Default Card
   /////
   $theme-card-border-radius: 'md',
-  $theme-card-border-width: 0
-  
+  $theme-card-border-width: 0,
+
+  /////
+  /// In-Page Navigation
+  /////
+  $theme-in-page-nav-margin-top: 0,
+  $theme-in-page-nav-margin-left: 15,
+  $theme-in-page-nav-background-radius: 0,
+  $theme-in-page-nav-background-padding: 0,
+  $theme-in-page-nav-bar-color: 'secondary',
+  $theme-in-page-nav-bar-width: '05',
 );
