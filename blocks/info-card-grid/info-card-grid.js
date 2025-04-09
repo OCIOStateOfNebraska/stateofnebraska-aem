@@ -9,13 +9,13 @@ import { domEl } from '../../scripts/dom-helpers.js';
 function generateMedia( div, container ) {
 	div.className = 'usa-card__media';
 	const media = container.querySelector( '.usa-card__media' );
-	const img = container.querySelector( 'picture' ) || container.querySelector( 'svg' ) ;
+	const img = container.querySelector( 'picture' ) || container.querySelector( 'svg' );
 	const imgWrapper = domEl( 'div', { class: 'usa-card__img' } );
 	const svgParagraph = media.querySelector( 'p' );
 	imgWrapper.append( img );
 	media.append( imgWrapper );
-	
-	// remove the old p tag that the svg was wrapped in if it exists 
+
+	// remove the old p tag that the svg was wrapped in if it exists
 	if ( svgParagraph ) {
 		svgParagraph.remove();
 	}
@@ -29,9 +29,9 @@ function generateMedia( div, container ) {
 function generateContent( div, container, type ) {
 	const button = div.querySelector( '.usa-button__wrap a' );
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
-	div.className = 'usa-card__body'; 
+	div.className = 'usa-card__body';
 
-	// take out the button and put into its own container 
+	// take out the button and put into its own container
 	if ( button ) {
 		const buttonWrap = domEl( 'div', { class: 'usa-card__footer' } );
 		buttonWrap.append( button );
@@ -40,8 +40,8 @@ function generateContent( div, container, type ) {
 		}
 		container.append( buttonWrap );
 	}
-		
-	// take out the heading and put into its own container 
+
+	// take out the heading and put into its own container
 	if ( heading ) {
 		const header = domEl( 'div', { class: 'usa-card__header' } );
 		heading.classList.add( 'usa-card__heading' );
@@ -49,7 +49,7 @@ function generateContent( div, container, type ) {
 		container.prepend( header );
 	}
 }
-	
+
 /**
 * Generates in the card.
 * @param {HTMLElement} container - The card wrapper the content should be in. child of the li
@@ -90,8 +90,8 @@ export default function decorate( block ) {
 	[...block.children].forEach( ( row ) => {
 		const li = domEl( 'li', { class: `usa-card ${grid}` } );
 		const cardContainer = domEl( 'div', { class: 'usa-card__container' } );
-		
-		// add all the table row contents into a li with a container wrapper inside 
+
+		// add all the table row contents into a li with a container wrapper inside
 		while ( row.firstElementChild ) {
 			cardContainer.append( row.firstElementChild );
 			li.append( cardContainer );
@@ -103,8 +103,8 @@ export default function decorate( block ) {
 			} else {
 				li.querySelector( '.icon' ).closest( 'p' ).parentNode.remove();
 			}
-		// ..else generate the card and add to the ul grid 
-		} 
+			// ..else generate the card and add to the ul grid
+		}
 		generateWholeCard( cardContainer, type );
 		ul.append( li );
 	} );
@@ -114,7 +114,7 @@ export default function decorate( block ) {
 		img.setAttribute( 'height', '340' );
 		img.setAttribute( 'width', '605' );
 		img.setAttribute( 'loading', 'lazy' );
-	});
+	} );
 
 	block.textContent = '';
 	block.append( ul );

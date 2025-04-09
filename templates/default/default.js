@@ -1,7 +1,6 @@
 import {
 	div
 } from '../../scripts/dom-helpers.js';
-
 import { getMetadata, buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 
 /**
@@ -22,8 +21,9 @@ export default async function decorate( doc ) {
 
 	const usaContentDiv = div( { class: ( showSideNav ? 'desktop:grid-col-9 usa-prose main-content' :  'usa-prose main-content' ) } );
 
+	// Only add grid if sidenav is present
+	const usaGridRowDiv = div( { class: 'grid-row grid-gap' } );
 	if( showSideNav ) {
-		const usaGridRowDiv = div( { class: 'grid-row grid-gap' } );
 		usaContainerDiv.append( usaGridRowDiv );
 		usaGridRowDiv.append( usaContentDiv );
 	} else {
@@ -40,7 +40,20 @@ export default async function decorate( doc ) {
 	// Inject sidenav if that layout option is chosen
 	// delay to help avoid layout shift while it loads
 	if ( showSideNav ) {
-		// Resolve conflicts :) 
+		const usaGridSideNavDiv = div( { class: 'usa-layout-docs__sidenav display-none desktop:display-block desktop:grid-col-3' } );
+		const usaGridSideNavDivMobile = div( { class: 'usa-layout-docs__sidenav desktop:display-none' } );
+
+		const sideNav = buildBlock( 'side-navigation', '' );
+		usaGridSideNavDiv.append( sideNav );
+		decorateBlock( sideNav );
+
+		// await this so we can clone it for mobile
+		await loadBlock( sideNav );
+
+		const mobileSideNav = sideNav.cloneNode( true );
+		usaGridSideNavDivMobile.append( mobileSideNav );
+		usaGridRowDiv.prepend( usaGridSideNavDiv );
+		usaGridRowDiv.after( usaGridSideNavDivMobile );
 	} else if( showInPageNav ) {
 		const inPageNav = buildBlock( 'in-page-navigation', '' );
 		usaContainerDiv.appendChild( inPageNav );
