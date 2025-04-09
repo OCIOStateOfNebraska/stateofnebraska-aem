@@ -53,6 +53,7 @@ const createLi = ( path ) => {
 
 export default async function decorate( block ) {
 	const placeholders = await fetchPlaceholders();
+	const container = domEl( 'div', { class: 'grid-container' } );
 	const breadcrumbNav = domEl( 'nav', { class: 'usa-breadcrumb', 'aria-label': placeholders.breadcrumbs || 'Breadcrumbs' } );
 	const olEle = ol( { class: 'usa-breadcrumb__list', vocab: 'https://schema.org/', typeof: 'BreadcrumbList' } );
 
@@ -72,5 +73,7 @@ export default async function decorate( block ) {
 
 	olEle.innerHTML = breadcrumbLinks.join( '' );
 	breadcrumbNav.append( olEle );
-	block.append( breadcrumbNav );
+	container.append( breadcrumbNav );
+	block.textContent = '';
+	block.append( container );
 }
