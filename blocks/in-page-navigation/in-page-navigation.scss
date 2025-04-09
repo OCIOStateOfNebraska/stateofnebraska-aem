@@ -3,37 +3,60 @@
 
 $block: 'usa-in-page-nav';
 
-.in-page-navigation {
-	align-self: stretch; // so that the inner .usa-in-page-navigation can be sticky within this space
-}
+@include at-media('tablet') {
+	$max-width: units('card');
 
-.#{$block} {
-	&-container {
-		.main-content {
-			// card-lg is the max-width of .usa-in-page-nav
-			width: calc(100% - #{units('card-lg') + units($theme-in-page-nav-margin-left)});
+	.in-page-navigation {
+		align-self: stretch; // so that the inner .usa-in-page-navigation can be sticky within this space
+	}
+
+	.#{$block} {
+		max-width: $max-width;
+
+		&-container {
+			.main-content {
+				// card-lg is the max-width of .usa-in-page-nav
+				width: calc(100% - #{$max-width + units($theme-in-page-nav-margin-left)});
+			}
 		}
-	}
 
-	&__heading {
-		@include typeset('heading', '2xs', $theme-heading-line-height);
-		@include u-text('semibold');
-	}
+		&__heading {
+			@include typeset('heading', '2xs', $theme-heading-line-height);
+			@include u-text('semibold');
+		}
 
-	&__list {
-		// stylelint-disable-next-line scss/selector-nest-combinators
-		&,
-		a:not(.usa-button) {
-			&.usa-current {
-				&:after {
-					left: units(1px) * -1; // on top of the __list border
-					background: color('secondary');
+		&__list {
+			// stylelint-disable-next-line scss/selector-nest-combinators
+			&,
+			a:not(.usa-button) {
+				&.usa-current {
+					&:after {
+						left: units(1px) * -1; // on top of the __list border
+						background: color('secondary');
+					}
 				}
 			}
 		}
-	}
 
-	&__item {
-		font-size: size('body', '3xs');
+		&__item {
+			font-size: size('body', '3xs');
+		}
+	}
+}
+
+@include at-media('desktop') {
+	$margin-left: units(15);
+	$max-width: units('card-lg');
+
+	.#{$block} {
+		max-width: $max-width;
+		margin-left: $margin-left;
+
+		&-container {
+			.main-content {
+				// card-lg is the max-width of .usa-in-page-nav
+				width: calc(100% - #{$max-width + $margin-left});
+			}
+		}
 	}
 }
