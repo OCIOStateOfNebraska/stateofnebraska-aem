@@ -1,13 +1,13 @@
 /**
-  * Delay the execution of a function until after a specified period of inactivity.
-  * @param {any} func - the function to be delayed
-  * @param {any} wait - how long to wait
-  * @returns {any}
-  */
+	* Delay the execution of a function until after a specified period of inactivity.
+	* @param {any} func - the function to be delayed
+	* @param {any} wait - how long to wait
+	* @returns {any}
+	*/
 function debounce( func, wait ) {
 	let timeout;
 	return function () {
-		const context = this; 
+		const context = this;
 		const args = arguments;
 		clearTimeout( timeout );
 		timeout = setTimeout( () => {
@@ -37,7 +37,7 @@ function createId( str ) {
 	let uniqueId = normalizeId( str );
 	let counter = 0;
 	let tryId = uniqueId;
-	while( document.getElementById( tryId ) ) {
+	while ( document.getElementById( tryId ) ) {
 		counter++;
 		tryId = `${uniqueId}-${counter}`;
 	}
@@ -46,11 +46,11 @@ function createId( str ) {
 
 /**
  * Adds the "usa-list" class to all lists within a parent element
- * @param {HTMLElement} parent 
+ * @param {HTMLElement} parent
  */
 function addClassToLists( parent ) {
 	let lists = parent.querySelectorAll( 'ul, ol' );
-	
+
 	if ( !lists ) { return; }
 	lists.forEach( ( list ) => {
 		list.classList.add( 'usa-list' );
@@ -59,31 +59,46 @@ function addClassToLists( parent ) {
 
 /**
  * Adds a class to all links within a parent element
- * @param {HTMLElement} parent 
+ * @param {HTMLElement} parent
  * @param {String} cl - optional, defaults to 'usa-link'
  */
 function addClassToLinks( parent, cl = 'usa-link' ) {
 	let links = parent.querySelectorAll( 'a' );
-	
+
 	if ( !links ) { return; }
 	links.forEach( ( link ) => {
 		link.classList.add( cl );
 	} );
 }
 
-function removeEmptyChildren( el ) {
-	if ( el.innerText.trim().length === 0 ) {
-		el.remove();
+/**
+ * Fetches index data and caches it in the window object.
+ * Returns from cache if available.
+ * @param {string} The name of the index file (e.g., 'query-index', 'index').
+ * @param {string} The name of the sheet inside the index file (optional).
+ * @returns {Promise<object>} The index data.
+ */
+async function fetchIndex( indexFile = 'query-index', sheet = null ) {
+	const cacheKey = sheet ? `${indexFile}-${sheet}` : indexFile;
+	const cache = window.siteIndexCache[cacheKey];
+	// Add TTL logic if needed (e.g., cache for 5 minutes)
+	if ( cache ) return cache;
+
+	const indexPath = `/${indexFile.endsWith( '.json' ) ? indexFile : `${indexFile}.json`}`;
+	try {
+		const resp = await fetch( indexPath );
+		if ( !resp.ok ) throw new Error( `Fetch failed: ${resp.status}` );
+		const json = await resp.json();
+		// Basic structure { data: [...] } or { sheetName: { data: [...] } }
+		const data = sheet ? json[sheet] : json;
+		window.siteIndexCache[cacheKey] = data;
+		return data;
+	} catch ( e ) {
+		// eslint-disable-next-line no-console
+		console.error( `Failed to fetch index ${indexPath}`, e );
+		window.siteIndexCache[cacheKey] = { data: [] }; // Cache failure state
+		return window.siteIndexCache[cacheKey];
 	}
 }
 
-//TODO: documentation
-function checkIfRowExists( el, rowNum ) {
-	if ( el[rowNum] && ( el[rowNum].innerText.trim().length > 0 || el[rowNum].querySelector( 'picture' ) ) ) {
-		return el[rowNum].children;
-	} else {
-		return;
-	}
-}
-
-export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, removeEmptyChildren, checkIfRowExists };
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex };

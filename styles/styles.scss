@@ -1,2 +1,36 @@
 @forward 'uswds/uswds';
 @forward 'ne-global/usa-button';
+
+
+// pulled from https://federalist-3b6ba08e-0df4-44c9-ac73-6fc193b0e19c.sites.pages.cloud.gov/preview/uswds/uswds/develop/iframe.html?id=pages-documentation-page--documentation-page&args=&viewMode=story
+.display-none {
+	display: none;
+}
+
+@media (width >= 64em) {
+	.desktop\:display-block {
+		display: block;
+	}
+}
+
+@media (width >= 64em) {
+	.desktop\:display-none {
+		display: none;
+	}
+}
+
+@media (width >= 64em) {
+	.usa-layout-docs__sidenav {
+		padding-top: 0;
+	}
+}
+
+.usa-layout-docs__sidenav {
+	padding-top: 2rem;
+}
+
+@media (width >= 64em) {
+	.usa-layout-docs__sidenav {
+		padding-top: 0;
+	}
+}

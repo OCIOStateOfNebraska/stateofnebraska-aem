@@ -4,7 +4,7 @@ import { createId } from '../../scripts/utils.js';
 export default function decorate( block ) {
 	let accordions = block.children;
 	let usaAccordion = domEl( 'div', { class: 'usa-accordion' } );
-	
+
 	Array.from( accordions ).forEach( ( accordion ) => {
 		let heading = accordion.querySelector( 'h2, h3, h4, h5, h6' );
 		let content = accordion.querySelector( 'div:last-child' );
