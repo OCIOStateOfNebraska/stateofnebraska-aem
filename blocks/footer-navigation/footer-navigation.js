@@ -71,14 +71,26 @@ export default async function decorate( block ) {
 	
 	const children = [...block.children];
 	
-	if ( children.length !== 4 ) { // if they didn't author right, bail, don't render anything 
+	// Authored table MUST have four columns 
+	if ( children && children.length !== 4 ) { // if they didn't author right, bail, don't render anything 
 		block.innerHTML = '';
+		console.error('Footer has wrong number of rows. Please reauthor');
 		return; 
 	}
 	
 	const [siteMap, infoAndSocial, accreditation, footerLinks] = children.map( ( child, index ) => { return checkIfRowExists( children, index ); } );
+	
+	
 
 	// Section renderers
+	// TODO: Back to Top
+	// function styleBackToTop() {
+	// 	const container = domEl( 'div', { class: 'grid-container usa-footer__return-to-top'} );
+	// 	const a = domEl( 'a', { 'href': '#'}, 'Return to top' );
+	// 	container.append( a );
+	// 	block.prepend( container );
+	// }
+	
 	/**
 	 * Styles the sitemap section of the footer.
 	 *
@@ -264,11 +276,13 @@ export default async function decorate( block ) {
 	}
 
 	//decorate footer DOM
+	
 	if ( siteMap ) { styleSitemap( siteMap ); }
 	styleLogoAndSocial( infoAndSocial );
 	if ( accreditation ) { styleAccreditation( accreditation ); }
 	styleIdentifierLinks( footerLinks );
 	styleCopyright();
+	//styleBackToTop(); // TODO: back to top
 	
 	block.querySelectorAll( 'p' ).forEach( el => {
 		removeEmptyChildren( el ); // remove any empty p tags that are left over 
