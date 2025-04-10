@@ -101,4 +101,20 @@ async function fetchIndex( indexFile = 'query-index', sheet = null ) {
 	}
 }
 
-export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex };
+// remove any empty children in a block 
+function removeEmptyChildren( el ) {
+	if ( el.innerText.trim().length === 0 ) {
+		el.remove();
+	}
+}
+
+// check if the row exists OR if a row contains a picture 
+function checkIfRowExists( el, rowNum ) {
+	if ( el[rowNum] && ( el[rowNum].innerText.trim().length > 0 || el[rowNum].querySelector( 'picture' ) ) ) {
+		return el[rowNum].children;
+	} else {
+		return;
+	}
+}
+
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists  };
