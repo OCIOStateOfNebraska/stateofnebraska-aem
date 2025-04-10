@@ -14,6 +14,9 @@ import {
 	loadCSS,
 } from './aem.js';
 
+// variable for caching site index
+window.siteIndexCache = window.siteIndexCache || {};
+
 /**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
@@ -262,9 +265,9 @@ async function loadPage() {
 	loadDelayed();
 }
 
-loadPage();
+await loadPage();
 
-// add uswds js to page
+// add uswds js to page after the content is all loaded
 ( function uswdsInit() {
 	const loadingClass = 'usa-js-loading';
 	let fallback = '';
@@ -285,14 +288,11 @@ loadPage();
 	}
 
 	window.addEventListener( 'load', verifyLoaded, true );
-}() );
 
-const uswds = document.createElement( 'script' );
-const body = document.querySelector( 'body' );
+	const uswds = document.createElement( 'script' );
+	const body = document.querySelector( 'body' );
+	uswds.async = 'true';
+	uswds.src = '/scripts/uswds.min.js';
+	body.append( uswds );
+} )();
 
-// variable for caching site index
-window.siteIndexCache = window.siteIndexCache || {};
-
-uswds.async = 'true';
-uswds.src = '/scripts/uswds.min.js';
-body.append( uswds );
