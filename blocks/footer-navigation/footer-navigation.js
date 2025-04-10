@@ -1,6 +1,6 @@
 import {domEl} from '../../scripts/dom-helpers.js';
 import {removeEmptyChildren, checkIfRowExists } from '../../scripts/utils.js';
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 
 /**
  * loads and decorates the footer
@@ -74,7 +74,7 @@ export default async function decorate( block ) {
 	// Authored table MUST have four columns 
 	if ( children && children.length !== 4 ) { // if they didn't author right, bail, don't render anything 
 		block.innerHTML = '';
-		console.error('Footer has wrong number of rows. Please reauthor');
+		console.error( 'Footer has wrong number of rows. Please reauthor' );
 		return; 
 	}
 	
@@ -159,15 +159,22 @@ export default async function decorate( block ) {
 	* @param {Element} logoColumn - The element containing the logo.
 	*/
 	function styleLogo( logoColumn ) {
-		const logo = logoColumn.querySelector( 'picture' );
+
 		logoColumn.classList.add( 'usa-footer__logo', 'grid-row', 'mobile-lg:grid-col-6', 'mobile-lg:grid-gap-2' );
-		logo.classList.add( 'usa-footer__logo-img' );
-		logoColumn.prepend( logo );
 		Array.from( logoColumn.children ).forEach( el => {
 			const col = domEl( 'div', { class: 'grid-col-auto' } );
 			col.append( el );
 			logoColumn.append( col );
 		} );
+		
+		if ( logoColumn.querySelector( 'picture' ) ) {
+			logoColumn.querySelector( 'picture' ).querySelectorAll( 'img' ).forEach( ( img ) => {
+				const optimizedPicture = createOptimizedPicture( img.src, img.alt, false, [{ width: '250' }] );
+				img.closest( 'picture' ).replaceWith( optimizedPicture );
+			} );
+			// after we replace the picture tag, add the class to the new tag 
+			logoColumn.querySelector( 'picture' ).classList.add( 'usa-footer__logo-img' );
+		}
 	}
 
 	/**
@@ -204,8 +211,15 @@ export default async function decorate( block ) {
 	function styleAccreditation( row ) {
 		const pictureWrapper = domEl( 'div', { class: 'usa-footer__accreditations' } );
 		Array.from( row ).forEach( child => {
-			const pictures = child.querySelectorAll( 'picture' );
 			child.classList.add( 'grid-container', 'usa-footer__accreditations-row' );
+			
+			child.querySelectorAll( 'img' ).forEach( ( img ) => {
+				const optimizedPicture = createOptimizedPicture( img.src, img.alt, false, [{ width: '100' }] );
+				img.closest( 'picture' ).replaceWith( optimizedPicture );
+			} );
+			
+			// select pictures only after the element has been replaced
+			const pictures = child.querySelectorAll( 'picture' );
 
 			[...pictures].forEach( ( picture ) => {
 				const next = picture.parentNode.nextElementSibling;
