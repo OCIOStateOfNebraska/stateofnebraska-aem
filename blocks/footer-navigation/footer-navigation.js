@@ -3,8 +3,8 @@ import {removeEmptyChildren, checkIfRowExists } from '../../scripts/utils.js';
 import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 
 /**
- * loads and decorates the footer
- * @param {Element} block The footer block element
+ * loads and decorates the footer-navigation
+ * @param {Element} block The footer-navigation block element
  */
 export default async function decorate( block ) {
 	block.classList.add( 'usa-footer', 'usa-footer--big' );

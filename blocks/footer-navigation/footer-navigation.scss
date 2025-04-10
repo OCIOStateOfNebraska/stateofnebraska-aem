@@ -2,11 +2,13 @@
 @use 'sass:meta';
 
 .footer-navigation-wrapper {
-	$block: 'usa-footer';
+	@include meta.load-css( '~uswds/usa-identifier/src/styles/usa-identifier');
+	@include meta.load-css( '~uswds/usa-footer/src/styles/usa-footer');
 	
-	.#{$block}--big {
-		@include u-padding-top(8);
-	}
+	$block: 'usa-footer';
+
+	@include u-padding-top(8);
+	overflow: hidden;
 	
 	a, 
 	p {
@@ -34,7 +36,7 @@
 		}
 		
 		.#{$block}__primary-rows {
-			&:first-of-type {
+			&:first-child {
 				.#{$block}__primary-link--button {
 					border-top: 0;
 				}
@@ -151,6 +153,7 @@
 	.usa-identifier {
 		@include u-padding-y(3);
 		position: relative;
+		
 		
 		&:after { // line that stretches beyond the container 
 			position: absolute;
