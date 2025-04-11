@@ -84,7 +84,7 @@ export default async function decorate( block ) {
 	
 
 	// Section renderers
-	// TODO: Back to Top button
+	// TODO: Back to Top
 	// function styleBackToTop() {
 	// 	const container = domEl( 'div', { class: 'grid-container usa-footer__return-to-top'} );
 	// 	const a = domEl( 'a', { 'href': '#'}, 'Return to top' );
@@ -196,10 +196,10 @@ export default async function decorate( block ) {
 				
 			Array.from( socialLinks.children ).forEach( li => {
 				const link = li.querySelector( 'a' );
-				const icon = li.querySelector( 'svg' );
+				const icon = li.querySelector( 'span' );
 				li.classList.add( 'grid-col-auto' );
 				link.classList.add( 'usa-social-link' );
-				icon.parentNode.classList.add( 'usa-social-link__icon' );
+				icon.classList.add( 'usa-social-link__icon' );
 			} );
 		}
 	}
