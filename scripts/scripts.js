@@ -56,24 +56,33 @@ function buildBreadcrumbBlock( main ) {
  * @param {string} [prefix] prefix to be added to icon src
  * @param {string} [alt] alt text to be added to icon
  */
-function decorateUSWDSIcon( span, prefix = '' ) {
+async function decorateIcon( span, prefix = '' ) {
 	const iconName = Array.from( span.classList )
 		.find( ( c ) => c.startsWith( 'icon-' ) )
 		.substring( 5 );
-	const svg = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
-	svg.classList.add( 'usa-icon' );
-	svg.setAttribute( 'aria-hidden', 'true' );
-	svg.setAttribute( 'focusable', false );
-	svg.setAttribute( 'role', 'img' );
-	const use = document.createElement( 'use' );
-	svg.dataset.iconName = iconName;
-	const link = `${window.hlx.codeBasePath}${prefix}/icons/sprite.svg#${iconName}`;
+	
+	let link; 
+	
+	if ( iconName.startsWith( 'g-' ) ) {
+		link = `${window.hlx.codeBasePath}${prefix}/icons/material-icons/${iconName.substring( 2 )}.svg`;
+	} else {
+		link = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
+	}
 
-	use.setAttribute( 'href', link );
-	svg.append( use );
-	span.append( svg );
-	// needed to repaint the svg https://stackoverflow.com/questions/30905493/how-to-force-webkit-to-update-svg-use-elements-after-changes-to-original/30905719
-	svg.innerHTML += ''; // "update" the inner source to force a repaint
+	const resp = await fetch( link );
+	if ( resp.ok ) {
+		const svgContent = await resp.text();
+		span.innerHTML = svgContent;
+		const svg = span.querySelector( 'svg' );
+		svg.classList.add( 'usa-icon' );
+		svg.setAttribute( 'aria-hidden', 'true' );
+		svg.setAttribute( 'focusable', false );
+		svg.setAttribute( 'role', 'img' );
+		svg.dataset.iconName = iconName;
+	} else {
+		// eslint-disable-next-line no-console
+		console.error( 'Failed to fetch SVG' );
+	}
 }
 
 /**
@@ -81,10 +90,10 @@ function decorateUSWDSIcon( span, prefix = '' ) {
  * @param {Element} [element] Element containing icons
  * @param {string} [prefix] prefix to be added to icon the src
  */
-function decorateUSWDSIcons( element, prefix = '' ) {
+function decorateIcons( element, prefix = '' ) {
 	const icons = [...element.querySelectorAll( 'span.icon' )];
 	icons.forEach( ( span ) => {
-		decorateUSWDSIcon( span, prefix );
+		decorateIcon( span, prefix );
 	} );
 }
 
@@ -152,7 +161,7 @@ export function decorateMain( main ) {
 
 export function decorateInner( container ) {
 	decorateButtons( container );
-	decorateUSWDSIcons( container );
+	decorateIcons( container );
 	decorateSections( container );
 	decorateBlocks( container );
 }
