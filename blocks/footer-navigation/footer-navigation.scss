@@ -4,12 +4,14 @@
 .footer-navigation-wrapper {
 	@include meta.load-css( '~uswds/usa-identifier/src/styles/usa-identifier');
 	@include meta.load-css( '~uswds/usa-footer/src/styles/usa-footer');
-	
-	$block: 'usa-footer';
-
 	@include u-padding-top(8);
 	overflow: hidden;
 	
+}
+
+.usa-footer {
+	$block: 'usa-footer';
+
 	a, 
 	p {
 		font-size: size('body', 'sm');
