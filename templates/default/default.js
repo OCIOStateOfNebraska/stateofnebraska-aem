@@ -19,7 +19,7 @@ export default async function decorate( doc ) {
 	main.parentNode.append( usaSectionDiv );
 	usaSectionDiv.append( usaContainerDiv );
 
-	const usaContentDiv = div( { class: ( showSideNav ? 'desktop:grid-col-9 usa-prose main-content' :  'usa-prose main-content' ) } );
+	const usaContentDiv = div( { class: ( showSideNav ? 'grid-col-12 tablet:grid-col-9 usa-prose main-content' :  'usa-prose main-content' ) } );
 
 	// Only add grid if sidenav is present
 	let usaGridRowDiv;
@@ -41,8 +41,8 @@ export default async function decorate( doc ) {
 	// Inject sidenav if that layout option is chosen
 	// delay to help avoid layout shift while it loads
 	if ( showSideNav ) {
-		const usaGridSideNavDiv = div( { class: 'usa-layout-docs__sidenav display-none desktop:display-block desktop:grid-col-3' } );
-		const usaGridSideNavDivMobile = div( { class: 'usa-layout-docs__sidenav desktop:display-none' } );
+		const usaGridSideNavDiv = div( { class: 'side-navigation-container side-navigation-container--tablet grid-col-12 tablet:grid-col-3' } );
+		const usaGridSideNavDivMobile = div( { class: 'side-navigation-container side-navigation-container--mobile' } );
 
 		const sideNav = buildBlock( 'side-navigation', '' );
 		usaGridSideNavDiv.append( sideNav );

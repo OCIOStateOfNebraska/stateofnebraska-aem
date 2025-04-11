@@ -4,21 +4,12 @@
 $block: 'usa-in-page-nav';
 
 @include at-media('tablet') {
-	$max-width: units('card');
-
 	.in-page-navigation {
 		align-self: stretch; // so that the inner .usa-in-page-navigation can be sticky within this space
 	}
 
 	.#{$block} {
-		max-width: $max-width;
-
-		&-container {
-			.main-content {
-				// card-lg is the max-width of .usa-in-page-nav
-				width: calc(100% - #{$max-width + units($theme-in-page-nav-margin-left)});
-			}
-		}
+		max-width: units('card');
 
 		&__heading {
 			@include typeset('heading', '2xs', $theme-heading-line-height);
@@ -45,18 +36,7 @@ $block: 'usa-in-page-nav';
 }
 
 @include at-media('desktop') {
-	$margin-left: units(15);
-	$max-width: units('card-lg');
-
 	.#{$block} {
-		max-width: $max-width;
-		margin-left: $margin-left;
-
-		&-container {
-			.main-content {
-				// card-lg is the max-width of .usa-in-page-nav
-				width: calc(100% - #{$max-width + $margin-left});
-			}
-		}
+		max-width: units('card-lg');
 	}
 }
