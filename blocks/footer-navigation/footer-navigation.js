@@ -255,7 +255,7 @@ export default async function decorate( block ) {
 	function styleIdentifierLinks( row ) {
 		const container = secondaryGridContainer;
 		const nav = domEl( 'nav', { class: 'usa-identifier grid-container', 'aria-label': 'Footer navigation'} );
-		const grid = domEl( 'section', { class: 'grid-row grid-gap usa-identifier__section usa-identifier__section--required-links' } );
+		const grid = domEl( 'section', { class: 'usa-identifier__section usa-identifier__section--required-links' } );
 		Array.from( row ).forEach( child => {
 			while ( child.firstElementChild ) {
 				child.querySelectorAll( 'ul' ).forEach( el => {
