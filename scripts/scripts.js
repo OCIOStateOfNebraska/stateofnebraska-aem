@@ -65,7 +65,7 @@ async function decorateIcon( span, prefix = '' ) {
 	
 	if ( iconName.startsWith( 'g-' ) ) {
 		link = `${window.hlx.codeBasePath}${prefix}/icons/material-icons/${iconName.substring( 2 )}.svg`;
-	} else {
+	} else { // add material icon
 		link = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
 	}
 
