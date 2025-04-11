@@ -86,8 +86,11 @@
 
 			&:hover,
 			&:focus {
+				background-color: color('white');
+
 				svg {
 					fill: color('primary-darkest')
+					
 				}
 			}
 			
