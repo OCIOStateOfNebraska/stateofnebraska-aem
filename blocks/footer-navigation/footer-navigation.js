@@ -74,6 +74,7 @@ export default async function decorate( block ) {
 	// Authored table MUST have four columns 
 	if ( children && children.length !== 4 ) { // if they didn't author right, bail, don't render anything 
 		block.innerHTML = '';
+		// eslint-disable-next-line no-console
 		console.error( 'Footer has wrong number of rows. Please reauthor' );
 		return; 
 	}
