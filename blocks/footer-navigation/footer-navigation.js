@@ -84,7 +84,7 @@ export default async function decorate( block ) {
 	
 
 	// Section renderers
-	// TODO: Back to Top
+	// TODO: Back to Top button
 	// function styleBackToTop() {
 	// 	const container = domEl( 'div', { class: 'grid-container usa-footer__return-to-top'} );
 	// 	const a = domEl( 'a', { 'href': '#'}, 'Return to top' );
