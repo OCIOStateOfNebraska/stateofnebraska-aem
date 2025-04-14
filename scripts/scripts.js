@@ -100,6 +100,33 @@ function buildAutoBlocks( main ) {
 }
 
 /**
+ * Check to see if a ul element contains only links
+ * @param {Element} ulElement element we are checking
+ */
+function containsOnlyLinks( ulElement ) {
+	const lis = ulElement.querySelectorAll( 'li' );
+	for ( const li of lis ) {
+		if ( li.children.length !== 1 || li.firstElementChild.tagName.toLowerCase() !== 'a' ) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * Decorates paragraphs containing a list of links as an unstyled link list.
+ * @param {Element} element container element
+ */
+function decorateUnstyledLinks( element ) {
+	element.querySelectorAll( 'ul' ).forEach( ( ul ) => {
+		// only add the class if this is directly in the default content wrapper and NOT a block 
+		if ( !ul.parentNode.classList.contains( 'default-content-wrapper' ) && containsOnlyLinks( ul ) ) {
+			ul.classList.add( 'usa-list', 'usa-list--unstyled', 'usa-list__unstyled-link-list' );
+		}
+	} );
+}
+
+/**
  * Decorates paragraphs containing a single link as buttons.
  * @param {Element} element container element
  */
@@ -148,6 +175,7 @@ export function decorateMain( main ) {
 }
 
 export function decorateInner( container ) {
+	decorateUnstyledLinks( container );
 	decorateButtons( container );
 	decorateIcons( container );
 	decorateSections( container );
