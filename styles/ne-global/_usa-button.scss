@@ -1,8 +1,8 @@
 @use '../../styles/ne-global-imports' as *;
 
 .usa-button {
-	font-size: font-size('ui', 'sm');
 	transition: background-color $transition, text-decoration-color $transition;
+	font-size: font-size('ui', 'sm');
 
 	&__wrap {
 		em {
@@ -11,7 +11,7 @@
 	}
 
 	&--secondary {
-		$button-context: "Button";
+		$button-context: 'Button';
 
 		&:visited {
 			@include set-text-from-bg('secondary', $context: $button-context);
@@ -35,7 +35,7 @@
 		&:hover,
 		&.usa-button--hover {
 			text-decoration: underline;
-			text-decoration-color: currentColor;
+			text-decoration-color: currentcolor;
 		}
 	}
 }
