@@ -79,6 +79,7 @@ $block: 'usa-hero';
 	&:has(picture) {
 		background: $bg-w-picture;
 
+		// stylelint-disable-next-line scss/selector-nest-combinators
 		.usa-breadcrumb,
 		.usa-breadcrumb a.usa-breadcrumb__link,
 		h1 {
@@ -121,7 +122,7 @@ $block: 'usa-hero';
 	@include at-media('desktop') {
 		picture {
 			&:after {
-				$transparent-black: rgba(0, 0, 0, 0);
+				$transparent-black: rgba(0, 0, 0, 0%); // stylelint-disable-line color-function-notation
 				background: linear-gradient(to right, color('black-transparent-80'), color('black-transparent-60') 60%, $transparent-black);
 			}
 		}

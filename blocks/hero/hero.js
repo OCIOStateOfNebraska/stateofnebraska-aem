@@ -1,5 +1,5 @@
 import { getMetadata, decorateBlock, loadBlock, buildBlock } from '../../scripts/aem.js';
-import { domEl, div } from '../../scripts/dom-helpers.js';
+import { div } from '../../scripts/dom-helpers.js';
 
 function buildBreadcrumbBlock( breadcrumbContainer ) {
 	const hideBreadcrumbVal = getMetadata( 'hide-breadcrumb' ) || 'no';
