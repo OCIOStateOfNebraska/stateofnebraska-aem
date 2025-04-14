@@ -55,7 +55,7 @@ in the form $setting: value,
   $theme-color-primary-light: #4D90A5,
   $theme-color-primary: #00607F, // "medium"
   $theme-color-primary-dark: #004D66,
-  $theme-color-primary-darker: #004D66,
+  $theme-color-primary-darker: #003A4D,
   $theme-color-primary-vivid: #00607F,
   $theme-color-primary-darkest: #002733,
 
@@ -211,6 +211,13 @@ in the form $setting: value,
   /// Buttons
   /////
   $theme-button-border-radius: 'pill',
+  
+  /////
+  /// Footer & Identifier 
+  /////
+  $theme-footer-max-width: 'widescreen',
+  $theme-identifier-max-width: 'widescreen',
+  $theme-identifier-background-color: 'primary-darker',
 
 	/////
 	/// Banner
