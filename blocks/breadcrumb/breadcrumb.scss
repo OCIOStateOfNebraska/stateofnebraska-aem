@@ -6,4 +6,16 @@ $block: 'usa-breadcrumb';
 .#{$block} {
 	margin-bottom: units(3);
 	background: transparent; // could not set $theme-breadcrumb-background-color to transparent without an ::grammar-error
+
+	a {
+		&.#{$block}__link {
+			color: color(ink);
+
+			&:hover {
+				span {
+					text-decoration: none;
+				}
+			}
+		}
+	}
 }

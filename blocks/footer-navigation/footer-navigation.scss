@@ -4,7 +4,7 @@
 .footer-navigation-wrapper {
 	@include meta.load-css( '~uswds/usa-identifier/src/styles/usa-identifier');
 	@include meta.load-css( '~uswds/usa-footer/src/styles/usa-footer');
-	@include u-padding-top(8);
+	@include u-margin-top(8);
 	overflow: hidden;
 }
 
@@ -30,7 +30,7 @@
 		}
 		
 		.#{$block}__svg-stroke--alt {
-			stroke: var(--theme-hill-secondary, color('secondary'));
+			stroke: var(--theme-footer, color('secondary'));
 			opacity: .5;
 		}
 	}
