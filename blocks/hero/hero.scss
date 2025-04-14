@@ -4,5 +4,53 @@
 $block: 'usa-hero';
 
 .#{$block} {
-	// somthing
+	position: relative;
+	background: var(--theme-color-primary-medium, #00607F);
+	background-image: linear-gradient(to bottom, color('white-transparent-80'), color('white'));
+
+	svg {
+		position: relative;
+		left: 50%;
+		display: block;
+		aspect-ratio: 1727 / 86;
+		width: 100%;
+		margin: 0 auto;
+		transform: translateX(-50%);
+
+		.#{$block}__svg-back {
+			fill: var(--theme-hill-primary, color('primary-light'));
+			opacity: .5;
+		}
+
+		.#{$block}__svg-mid {
+			fill: var(--theme-hill-secondary, color('secondary'));
+			opacity: .75;
+		}
+
+		.#{$block}__svg-fore {
+			fill: color($theme-body-background-color);
+		}
+	}
+
+	h1 {
+		@include h1;
+		margin: 0;
+		color: color('ink');
+	}
+
+	> .grid-container {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	&__callout {
+		padding: units(4) 0 units(9);
+		background: transparent;
+	}
+
+	@include at-media('tablet') {
+		&__callout {
+			max-width: 100%;
+		}
+	}
 }

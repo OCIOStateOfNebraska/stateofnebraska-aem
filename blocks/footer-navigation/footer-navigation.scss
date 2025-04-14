@@ -10,15 +10,34 @@
 
 .usa-footer {
 	$block: 'usa-footer';
+	$bg: color('white');
 
 	a, 
 	p {
 		font-size: size('body', 'sm');
 	}
+
+	svg {
+		background: $bg;
+
+		.#{$block}__svg-background {
+			fill: color($theme-body-background-color);
+		}
+
+		.#{$block}__svg-stroke {
+			fill: none;
+			stroke: color('primary-lighter');
+		}
+		
+		.#{$block}__svg-stroke--alt {
+			stroke: var(--theme-hill-secondary, color('secondary'));
+			opacity: .5;
+		}
+	}
 	
 	.#{$block}__primary-section {
 		position: relative;
-		background-color: color('white');
+		background-color: $bg;
 		
 		svg {
 			position: relative;
