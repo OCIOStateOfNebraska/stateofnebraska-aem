@@ -132,7 +132,7 @@ function containsOnlyLinks( ulElement ) {
 function decorateUnstyledLinks( element ) {
 	element.querySelectorAll( 'ul' ).forEach( ( ul ) => {
 		// only add the class if this is directly in the default content wrapper and NOT a block 
-		if ( containsOnlyLinks( ul ) && !ul.parentNode.classList.contains( 'default-content-wrapper' ) ) {
+		if ( !ul.parentNode.classList.contains( 'default-content-wrapper' ) && containsOnlyLinks( ul ) ) {
 			ul.classList.add( 'usa-list', 'usa-list--unstyled', 'usa-list__unstyled-link-list' );
 		}
 	} );
