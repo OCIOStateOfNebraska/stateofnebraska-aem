@@ -120,7 +120,7 @@ function containsOnlyLinks( ulElement ) {
 function decorateUnstyledLinks( element ) {
 	element.querySelectorAll( 'ul' ).forEach( ( ul ) => {
 		// only add the class if this is directly in the default content wrapper and NOT a block 
-		if ( !ul.parentNode.classList.contains( 'default-content-wrapper' ) && containsOnlyLinks( ul ) ) {
+		if ( ul.parentNode.classList.contains( 'default-content-wrapper' ) && containsOnlyLinks( ul ) ) {
 			ul.classList.add( 'usa-list', 'usa-list--unstyled', 'usa-list__unstyled-link-list' );
 		}
 	} );
@@ -175,11 +175,11 @@ export function decorateMain( main ) {
 }
 
 export function decorateInner( container ) {
-	decorateUnstyledLinks( container );
 	decorateButtons( container );
 	decorateIcons( container );
 	decorateSections( container );
 	decorateBlocks( container );
+	decorateUnstyledLinks( container );
 }
 
 /**
