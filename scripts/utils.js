@@ -117,4 +117,37 @@ function checkIfRowExists( el, rowNum ) {
 	}
 }
 
-export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists  };
+/**
+ * Asynchronously loads a USWDS SVG icon into a given element.
+ * @async
+ * @function getIndividualIcon
+ * @param {HTMLElement} el     - The element to inject the SVG into.
+ * @param {string} iconName        - The icon name (e.g., 'arrow_back').
+ * @param {bool} google        - If the icon is a material icon. defaults to false 
+ * @param {string} [prefix=''] - Optional prefix to prepend to the icon path.
+ */
+async function getIndividualIcon( el, iconName, google = false, prefix = '' ) {
+	let link;
+	if ( google ) {
+		link = `${window.hlx.codeBasePath}${prefix}/icons/material-icons/${iconName}.svg`;
+	} else { // add material icon
+		link = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
+	}
+
+	const resp = await fetch( link );
+	if ( resp.ok ) {
+		const svgContent = await resp.text();
+		el .innerHTML = svgContent;
+		const svg = el.querySelector( 'svg' );
+		svg.classList.add( 'usa-icon' );
+		svg.setAttribute( 'aria-hidden', 'true' );
+		svg.setAttribute( 'focusable', false );
+		svg.setAttribute( 'role', 'img' );
+		svg.dataset.iconName = iconName;
+	} else {
+		// eslint-disable-next-line no-console
+		console.error( 'Failed to fetch SVG' );
+	}
+}
+
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon  };
