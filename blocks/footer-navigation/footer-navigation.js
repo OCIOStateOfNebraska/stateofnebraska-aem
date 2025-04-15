@@ -11,7 +11,7 @@ export default async function decorate( block ) {
 	// generate wrapper domEls
 	
 	const svg = `
-		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1730.1 86.006" preserveAspectRatio="none">
+		<svg class="usa-footer__svg-graphic" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1730.1 86.006" preserveAspectRatio="none">
 			<path class="usa-footer__svg-background" d="M1126.5 33.5C950.5 9.7 820.8 8.7 624.7 7.3 457.8 6 245.9 12.3 0 39.1V0h1730v47c-166.2-12.2-287.5-18.3-304.4-18.6-22.2-.4-45.1-.6-45.1-.6h-1.6c-52.2-.4-138.8 0-248.8 5.5-1.2 0-2.5.1-3.7.2h.1Z" />
 			<path class="usa-footer__svg-stroke" d="M0 39.1C245.9 12.3 457.8 6 624.7 7.2c196 1.4 325.8 2.4 501.8 26.2 1.3.2 2.7.4 4 .5 100.2 13.7 205.9 33.5 374.4 44.7l3.2.2c93.5 6.1 170.7 7.3 221.9 7.2M790.9 57.7c111.4-8.7 220.4-18.2 335.6-24.2 1.2 0 2.5-.1 3.7-.2 109.9-5.6 196.6-6 248.8-5.5h1.6s22.9.2 45.1.6c16.9.3 138.2 6.4 304.4 18.6M0 58.2c21.3 2.9 52.5 6.9 90.3 10.4 3.2.3 6.5.6 9.7.9 88.8 7.7 158.1 7 200.7 7.6 182.6 2.6 338.7-7.6 490.3-19.4" />
 			<path class="usa-footer__svg-stroke usa-footer__svg-stroke--alt" d="M0 80c34-3.9 67.4-7.4 100-10.5 290.7-27.6 523.8-22.8 690.9-11.8 145.2 9.6 306.9 28.5 556.7 25.6 56.1-.7 108.8-2.3 157.3-4.6 91-4.2 167.4-10.5 225.1-16" />
