@@ -1,0 +1,69 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:math';
+
+// space between layout-level columns
+$default-layout-tablet-space: units(4);
+$default-layout-desktop-space: units(8);
+$default-layout-widescreen-space: units(15);
+
+/////
+/// Side Navigation
+/////
+
+// extra strong selector to overcome uswds grid
+.grid-row {
+	&.grid-gap {
+		> .side-navigation-container {
+			@include at-media('tablet') {
+				$pad: math.div($default-layout-tablet-space, 2);
+
+				padding-right: $pad;
+			
+				+ .main-content {
+					padding-left: $pad;
+				}
+			}
+
+			@include at-media('desktop') {
+				$pad: math.div($default-layout-desktop-space, 2);
+
+				padding-right: $pad;
+
+				+ .main-content {
+					padding-left: $pad;
+				}
+			}
+
+			@include at-media('widescreen') {
+				$pad: math.div($default-layout-widescreen-space, 2);
+
+				padding-right: $pad;
+
+				+ .main-content {
+					padding-left: $pad;
+				}
+			}
+		}
+
+	}
+}
+
+/////
+/// In-Page Navigation
+/////
+.usa-in-page-nav-container {
+	.main-content {
+		@include at-media('tablet') {
+			flex: 1 1 0%; // fill in the width
+			padding-right: $default-layout-tablet-space;
+		}
+
+		@include at-media('desktop') {
+			padding-right: $default-layout-desktop-space;
+		}
+
+		@include at-media('widescreen') {
+			padding-right: $default-layout-widescreen-space;
+		}
+	}
+}

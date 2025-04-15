@@ -8,43 +8,35 @@ import {
 	decorateTemplateAndTheme,
 	getMetadata,
 	waitForFirstImage,
-	loadBlock,
 	loadSection,
 	loadSections,
 	loadCSS,
+	loadBlock,
 } from './aem.js';
 
+// variable for caching site index
+window.siteIndexCache = window.siteIndexCache || {};
+
 /**
- * Builds hero block and prepends to main in a new section.
+ * Builds hero block and prepends to main.
  * @param {Element} main The container element
  */
 function buildHeroBlock( main ) {
 	const h1 = main.querySelector( 'h1' );
-	const picture = main.querySelector( 'picture' );
-	// eslint-disable-next-line no-bitwise
-	if ( h1 && picture && ( h1.compareDocumentPosition( picture ) & Node.DOCUMENT_POSITION_PRECEDING ) ) {
-		// const section = document.createElement('div');
-		// section.append(buildBlock('hero', { elems: [picture, h1] }));
-		// main.prepend(section);
+	const heroSection = h1.closest( '.section' );
+	
+	let picture = null;
+	// If there are no sections delineated, everything is in the hero section
+	if( heroSection && main.querySelectorAll( '.section' ).length > 1 ) {
+		picture = heroSection.querySelector( 'picture' );
 	}
-}
 
-// /**
-//  * Builds breadcrumb block and prepends to main in a new section.
-//  * @param {Element} main The container element
-//  */
-// TODO: Consolidate BreadcrumbBlock and Hero Block together.  
-function buildBreadcrumbBlock( main ) {
-	const hideBreadcrumbVal = getMetadata( 'hide-breadcrumb' ) || 'no';
-	const hideBreadcrumb = hideBreadcrumbVal.toLowerCase() === 'yes' || hideBreadcrumbVal.toLowerCase() === 'true';
-	if ( window.location.pathname !== '/' && window.isErrorPage !== true && !hideBreadcrumb ) {
-		const section = document.createElement( 'div' );
-		const breadcrumbs = buildBlock( 'breadcrumb', { elems: [] } );
-		section.append( breadcrumbs );
-		decorateBlock( breadcrumbs );
-		loadBlock( breadcrumbs );
-		main.prepend( section );
-	}
+	const container = document.createElement( 'div' );
+	const heroBlock = buildBlock( 'hero', { elems: [picture, h1] } );
+	container.appendChild( heroBlock );
+	main.prepend( container );
+	decorateBlock( heroBlock );
+	loadBlock( heroBlock );
 }
 
 /**
@@ -53,24 +45,33 @@ function buildBreadcrumbBlock( main ) {
  * @param {string} [prefix] prefix to be added to icon src
  * @param {string} [alt] alt text to be added to icon
  */
-function decorateUSWDSIcon( span, prefix = '' ) {
+async function decorateIcon( span, prefix = '' ) {
 	const iconName = Array.from( span.classList )
 		.find( ( c ) => c.startsWith( 'icon-' ) )
 		.substring( 5 );
-	const svg = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
-	svg.classList.add( 'usa-icon' );
-	svg.setAttribute( 'aria-hidden', 'true' ); 
-	svg.setAttribute( 'focusable', false );
-	svg.setAttribute( 'role', 'img' );
-	const use = document.createElement( 'use' );
-	svg.dataset.iconName = iconName;
-	const link = `${window.hlx.codeBasePath}${prefix}/icons/sprite.svg#${iconName}`;
+	
+	let link; 
+	
+	if ( iconName.startsWith( 'g-' ) ) {
+		link = `${window.hlx.codeBasePath}${prefix}/icons/material-icons/${iconName.substring( 2 )}.svg`;
+	} else { // add material icon
+		link = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
+	}
 
-	use.setAttribute( 'href', link ); 
-	svg.append( use );
-	span.append( svg );
-	// needed to repaint the svg https://stackoverflow.com/questions/30905493/how-to-force-webkit-to-update-svg-use-elements-after-changes-to-original/30905719
-	svg.innerHTML += ''; // "update" the inner source to force a repaint
+	const resp = await fetch( link );
+	if ( resp.ok ) {
+		const svgContent = await resp.text();
+		span.innerHTML = svgContent;
+		const svg = span.querySelector( 'svg' );
+		svg.classList.add( 'usa-icon' );
+		svg.setAttribute( 'aria-hidden', 'true' );
+		svg.setAttribute( 'focusable', false );
+		svg.setAttribute( 'role', 'img' );
+		svg.dataset.iconName = iconName;
+	} else {
+		// eslint-disable-next-line no-console
+		console.error( 'Failed to fetch SVG' );
+	}
 }
 
 /**
@@ -78,10 +79,10 @@ function decorateUSWDSIcon( span, prefix = '' ) {
  * @param {Element} [element] Element containing icons
  * @param {string} [prefix] prefix to be added to icon the src
  */
-function decorateUSWDSIcons( element, prefix = '' ) {
+function decorateIcons( element, prefix = '' ) {
 	const icons = [...element.querySelectorAll( 'span.icon' )];
 	icons.forEach( ( span ) => {
-		decorateUSWDSIcon( span, prefix );
+		decorateIcon( span, prefix );
 	} );
 }
 
@@ -92,11 +93,37 @@ function decorateUSWDSIcons( element, prefix = '' ) {
 function buildAutoBlocks( main ) {
 	try {
 		buildHeroBlock( main );
-		buildBreadcrumbBlock( main );
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Auto Blocking failed', error );
 	}
+}
+
+/**
+ * Check to see if a ul element contains only links
+ * @param {Element} ulElement element we are checking
+ */
+function containsOnlyLinks( ulElement ) {
+	const lis = ulElement.querySelectorAll( 'li' );
+	for ( const li of lis ) {
+		if ( li.children.length !== 1 || li.firstElementChild.tagName.toLowerCase() !== 'a' ) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * Decorates paragraphs containing a list of links as an unstyled link list.
+ * @param {Element} element container element
+ */
+function decorateUnstyledLinks( element ) {
+	element.querySelectorAll( 'ul' ).forEach( ( ul ) => {
+		// only add the class if this is directly in the default content wrapper and NOT a block 
+		if ( ul.parentNode.classList.contains( 'default-content-wrapper' ) && containsOnlyLinks( ul ) ) {
+			ul.classList.add( 'usa-list', 'usa-list--unstyled', 'usa-list__unstyled-link-list' );
+		}
+	} );
 }
 
 /**
@@ -149,9 +176,10 @@ export function decorateMain( main ) {
 
 export function decorateInner( container ) {
 	decorateButtons( container );
-	decorateUSWDSIcons( container );
+	decorateIcons( container );
 	decorateSections( container );
 	decorateBlocks( container );
+	decorateUnstyledLinks( container );
 }
 
 /**
@@ -198,14 +226,14 @@ async function loadEager( doc ) {
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
 
-	// load the blocks BEFORE decorating the template 
+	// load the blocks BEFORE decorating the template
 	const main = doc.querySelector( 'main' );
-	if( main ) {
+	if ( main ) {
 		decorateMain( main );
 		document.body.classList.add( 'appear' );
 		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
 	}
-	
+
 	// pull in template name from document metadata
 	// fallback to USWDS "documentation" template if none is specified
 	const templateName = getMetadata( 'template' );
@@ -214,7 +242,7 @@ async function loadEager( doc ) {
 	} else {
 		await loadTemplate( doc, 'default' );
 	}
-	
+
 	// // build components that should be in main but be outside of the main template area
 	buildAutoBlocks( main );
 	loadHeader( doc.querySelector( 'header' ) );
@@ -262,9 +290,9 @@ async function loadPage() {
 	loadDelayed();
 }
 
-loadPage();
+await loadPage();
 
-// add uswds js to page
+// add uswds js to page after the content is all loaded
 ( function uswdsInit() {
 	const loadingClass = 'usa-js-loading';
 	let fallback = '';
@@ -285,10 +313,11 @@ loadPage();
 	}
 
 	window.addEventListener( 'load', verifyLoaded, true );
-}() );
 
-const uswds = document.createElement( 'script' );
-const body = document.querySelector( 'body' );
-uswds.async = 'true';
-uswds.src = '/scripts/uswds.min.js';
-body.append( uswds );
+	const uswds = document.createElement( 'script' );
+	const body = document.querySelector( 'body' );
+	uswds.async = 'true';
+	uswds.src = '/scripts/uswds.min.js';
+	body.append( uswds );
+} )();
+

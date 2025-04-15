@@ -1,0 +1,22 @@
+@use '../../styles/ne-global-imports' as *;
+
+:root {
+	--theme-hero-bg: #{color('primary')};
+	--theme-hero-primary: #{color('primary')};
+	--theme-hero-secondary: #{color('secondary')};
+	--theme-footer: #{color('secondary')};
+}
+
+.theme--red {
+	--theme-hero-bg: #{$ne-color-red};
+	--theme-hero-primary: #{$ne-color-red};
+	--theme-hero-secondary: #{$ne-color-red};
+	--theme-footer: #{$ne-color-red};
+}
+
+.theme--green {
+	--theme-hero-bg: #{color('accent-warm')};
+	--theme-hero-primary: #{color('accent-warm')};
+	--theme-hero-secondary: #{color('accent-warm')};
+	--theme-footer: #{color('accent-warm')};
+}

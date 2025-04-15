@@ -1,6 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/aem.js';
 import {
 	domEl,
+	div,
 	a,
 	li,
 	ol,
@@ -53,7 +54,8 @@ const createLi = ( path ) => {
 
 export default async function decorate( block ) {
 	const placeholders = await fetchPlaceholders();
-	const breadcrumbNav = domEl( 'nav', { class: 'usa-breadcrumb', 'aria-label': placeholders.breadcrumbs || 'Breadcrumbs' } );
+	const container = div();
+	const breadcrumbNav = domEl( 'nav', { class: 'usa-breadcrumb usa-breadcrumb--wrap', 'aria-label': placeholders.breadcrumbs || 'Breadcrumbs' } );
 	const olEle = ol( { class: 'usa-breadcrumb__list', vocab: 'https://schema.org/', typeof: 'BreadcrumbList' } );
 
 	// Add home link
@@ -72,5 +74,7 @@ export default async function decorate( block ) {
 
 	olEle.innerHTML = breadcrumbLinks.join( '' );
 	breadcrumbNav.append( olEle );
-	block.append( breadcrumbNav );
+	container.append( breadcrumbNav );
+	block.textContent = '';
+	block.append( container );
 }

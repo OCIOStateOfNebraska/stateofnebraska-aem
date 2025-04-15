@@ -167,7 +167,6 @@ function toClassName( name ) {
 		? name
 			.toLowerCase()
 			.replace( /[^0-9a-z]/gi, '-' )
-			.replace( /-+/g, '-' )
 			.replace( /^-|-$/g, '' )
 		: '';
 }
@@ -336,13 +335,13 @@ function createOptimizedPicture(
 function decorateTemplateAndTheme() {
 	const addClasses = ( element, classes ) => {
 		classes.split( ',' ).forEach( ( c ) => {
-			element.classList.add( toClassName( c.trim() ) );
+			element.classList.add( toClassName( c.toLowerCase().trim() ) );
 		} );
 	};
 	const template = getMetadata( 'template' );
 	if ( template ) addClasses( document.body, template );
-	const theme = getMetadata( 'theme' );
-	if ( theme ) addClasses( document.body, theme );
+	let theme = getMetadata( 'theme' );
+	if ( theme ) addClasses( document.body, `theme--${theme.trim()}` );
 }
 
 /**

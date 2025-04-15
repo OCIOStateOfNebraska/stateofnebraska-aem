@@ -1,0 +1,15 @@
+@use '../../styles/ne-global-imports' as *;
+
+.usa-list {
+
+	&.usa-list__unstyled-link-list { // uswds has a unstyled list style, but I needed one specifically to make the list when on the page have more spacing
+		@include u-margin-top(3);
+		@include u-margin-bottom(3);
+
+		li {
+			@include u-padding-bottom(2.5);
+		}
+	}
+}
+
+

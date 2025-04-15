@@ -1,0 +1,44 @@
+@use '../../styles/ne-global-imports' as *;
+@use '~uswds/usa-sidenav/src/styles/usa-sidenav';
+
+$block: 'usa-sidenav';
+
+.side-navigation-container {
+	margin-top: units(8);
+
+	&--tablet {
+		display: none;
+	}
+
+	@include at-media('tablet') {
+		&--mobile {
+			display: none;
+		}
+
+		&--tablet {
+			display: block;
+			margin-top: 0;
+		}
+	}
+}
+
+.#{$block} {
+	@mixin sidenav-bar {
+		.usa-current {
+			&:after {
+				background-color: color(secondary);
+			}
+		}
+	}
+
+	@include sidenav-bar;
+	
+	@include at-media('tablet') {
+		// included again to mirror/override nav-list.scss
+		@include sidenav-bar;
+	}
+
+	.grid-container & {
+		margin: 0;
+	}
+}
