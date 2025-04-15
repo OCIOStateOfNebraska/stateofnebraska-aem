@@ -13,6 +13,7 @@ import {
 	loadCSS,
 	loadBlock,
 } from './aem.js';
+import { getIndividualIcon } from '../../scripts/utils.js';
 
 // variable for caching site index
 window.siteIndexCache = window.siteIndexCache || {};
@@ -40,38 +41,21 @@ function buildHeroBlock( main ) {
 }
 
 /**
- * Add <svg> for icon, prefixed with codeBasePath and optional prefix. -- taken from aem.js and modified
+ * Add <svg> for icon, prefixed with codeBasePath and optional prefix.
  * @param {Element} [span] span element with icon classes
- * @param {string} [prefix] prefix to be added to icon src
- * @param {string} [alt] alt text to be added to icon
  */
-async function decorateIcon( span, prefix = '' ) {
-	const iconName = Array.from( span.classList )
+function decorateIcon( span ) {
+	let iconName = Array.from( span.classList )
 		.find( ( c ) => c.startsWith( 'icon-' ) )
 		.substring( 5 );
-	
-	let link; 
+	let google = false;
 	
 	if ( iconName.startsWith( 'g-' ) ) {
-		link = `${window.hlx.codeBasePath}${prefix}/icons/material-icons/${iconName.substring( 2 )}.svg`;
-	} else { // add material icon
-		link = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
+		iconName = iconName.substring( 2 );
+		google = true;
 	}
 
-	const resp = await fetch( link );
-	if ( resp.ok ) {
-		const svgContent = await resp.text();
-		span.innerHTML = svgContent;
-		const svg = span.querySelector( 'svg' );
-		svg.classList.add( 'usa-icon' );
-		svg.setAttribute( 'aria-hidden', 'true' );
-		svg.setAttribute( 'focusable', false );
-		svg.setAttribute( 'role', 'img' );
-		svg.dataset.iconName = iconName;
-	} else {
-		// eslint-disable-next-line no-console
-		console.error( 'Failed to fetch SVG' );
-	}
+	getIndividualIcon( span, iconName, google );
 }
 
 /**
