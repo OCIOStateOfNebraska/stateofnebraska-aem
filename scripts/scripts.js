@@ -8,46 +8,35 @@ import {
 	decorateTemplateAndTheme,
 	getMetadata,
 	waitForFirstImage,
-	loadBlock,
 	loadSection,
 	loadSections,
 	loadCSS,
+	loadBlock,
 } from './aem.js';
 
 // variable for caching site index
 window.siteIndexCache = window.siteIndexCache || {};
 
 /**
- * Builds hero block and prepends to main in a new section.
+ * Builds hero block and prepends to main.
  * @param {Element} main The container element
  */
 function buildHeroBlock( main ) {
 	const h1 = main.querySelector( 'h1' );
-	const picture = main.querySelector( 'picture' );
-	// eslint-disable-next-line no-bitwise
-	if ( h1 && picture && ( h1.compareDocumentPosition( picture ) & Node.DOCUMENT_POSITION_PRECEDING ) ) {
-		// const section = document.createElement('div');
-		// section.append(buildBlock('hero', { elems: [picture, h1] }));
-		// main.prepend(section);
+	const heroSection = h1.closest( '.section' );
+	
+	let picture = null;
+	// If there are no sections delineated, everything is in the hero section
+	if( heroSection && main.querySelectorAll( '.section' ).length > 1 ) {
+		picture = heroSection.querySelector( 'picture' );
 	}
-}
 
-// /**
-//  * Builds breadcrumb block and prepends to main in a new section.
-//  * @param {Element} main The container element
-//  */
-// TODO: Consolidate BreadcrumbBlock and Hero Block together.
-function buildBreadcrumbBlock( main ) {
-	const hideBreadcrumbVal = getMetadata( 'hide-breadcrumb' ) || 'no';
-	const hideBreadcrumb = hideBreadcrumbVal.toLowerCase() === 'yes' || hideBreadcrumbVal.toLowerCase() === 'true';
-	if ( window.location.pathname !== '/' && window.isErrorPage !== true && !hideBreadcrumb ) {
-		const section = document.createElement( 'div' );
-		const breadcrumbs = buildBlock( 'breadcrumb', { elems: [] } );
-		section.append( breadcrumbs );
-		decorateBlock( breadcrumbs );
-		loadBlock( breadcrumbs );
-		main.prepend( section );
-	}
+	const container = document.createElement( 'div' );
+	const heroBlock = buildBlock( 'hero', { elems: [picture, h1] } );
+	container.appendChild( heroBlock );
+	main.prepend( container );
+	decorateBlock( heroBlock );
+	loadBlock( heroBlock );
 }
 
 /**
@@ -104,7 +93,6 @@ function decorateIcons( element, prefix = '' ) {
 function buildAutoBlocks( main ) {
 	try {
 		buildHeroBlock( main );
-		buildBreadcrumbBlock( main );
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Auto Blocking failed', error );

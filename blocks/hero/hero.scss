@@ -1,38 +1,134 @@
-// stylelint-disable
-.hero-container .hero-wrapper {
-	max-width: unset;
-	padding: 0;
-}
+@use '../../styles/ne-global-imports' as *;
+@use '~uswds/usa-hero/src/styles/usa-hero';
 
-.hero {
+$block: 'usa-hero';
+
+.#{$block} {
+	$bg-w-picture: color('primary-darker');
+
+	@include u-margin-bottom(15);
 	position: relative;
-	padding: 40px 24px;
-	min-height: 300px;
-}
+	background: var(--theme-hero-bg, color('primary'));
+	background-image: linear-gradient(to bottom, color('white-transparent-80'), color('white'));
+	z-index: 1;
 
-.hero h1 {
-	max-width: 1200px;
-	margin-left: auto;
-	margin-right: auto;
-	color: var(--background-color);
-}
+	picture {
+		position: relative;
+		display: block;
+		width: 100%;
+		overflow: hidden;
+		z-index: -1;
 
-.hero picture {
-	position: absolute;
-	z-index: -1;
-	inset: 0;
-	object-fit: cover;
-	box-sizing: border-box;
-}
+		&:after {
+			$transparent-primary: rgba($bg-w-picture, 0);
+			position: absolute;
+			top: 50%;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			display: block;
+			background: linear-gradient(to bottom, $transparent-primary, $bg-w-picture);
+			content: '';
+		}
 
-.hero img {
-	object-fit: cover;
-	width: 100%;
-	height: 100%;
-}
+		img {
+			width: 100%;
+			height: auto;
+			max-height: 20vh;
+			object-fit: cover;
+			object-position: center;
+		}
+	}
 
-@media (width >= 900px) {
-	.hero {
-		padding: 40px 32px;
+	svg {
+		display: block;
+		aspect-ratio: 1727 / 86;
+		width: 100%;
+
+		.#{$block}__svg-back {
+			fill: var(--theme-hero-primary, color('primary-light'));
+			opacity: .5;
+		}
+
+		.#{$block}__svg-mid {
+			fill: var(--theme-hero-secondary, color('secondary'));
+			opacity: .75;
+		}
+
+		.#{$block}__svg-fore {
+			fill: color($theme-body-background-color);
+		}
+	}
+
+	h1 {
+		@include h1;
+		margin: 0;
+		color: color('ink');
+	}
+
+	> .grid-container {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	&__callout {
+		padding: units(4) 0 units(9);
+		background: transparent;
+	}
+
+	&:has(picture) {
+		background: $bg-w-picture;
+
+		// stylelint-disable-next-line scss/selector-nest-combinators
+		.usa-breadcrumb,
+		.usa-breadcrumb a.usa-breadcrumb__link,
+		h1 {
+			color: color('white');
+		}
+
+		.#{$block}__callout {
+			padding-top: unit(9);
+		}
+	}
+
+	@include at-media('tablet') {
+		picture {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: -1;
+	
+			&:after {
+				top: 0;
+				background: linear-gradient(to right, color('black-transparent-80'), color('black-transparent-60') 50%, color('black-transparent-50'));
+			}
+	
+			img {
+				width: 100%;
+				height: 100%;
+				max-height: 100%;
+				object-fit: cover;
+				object-position: center;
+			}
+		}
+
+		&__callout {
+			max-width: none;
+		}
+	}
+
+	@include at-media('desktop') {
+		picture {
+			&:after {
+				$transparent-black: rgba(0, 0, 0, 0%); // stylelint-disable-line color-function-notation
+				background: linear-gradient(to right, color('black-transparent-80'), color('black-transparent-60') 60%, $transparent-black);
+			}
+		}
+
+		&__callout {
+			max-width: 75%;
+		}
 	}
 }

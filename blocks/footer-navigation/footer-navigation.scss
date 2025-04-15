@@ -4,21 +4,40 @@
 .footer-navigation-wrapper {
 	@include meta.load-css( '~uswds/usa-identifier/src/styles/usa-identifier');
 	@include meta.load-css( '~uswds/usa-footer/src/styles/usa-footer');
-	@include u-padding-top(8);
+	@include u-margin-top(8);
 	overflow: hidden;
 }
 
 .usa-footer {
 	$block: 'usa-footer';
+	$bg: color('white');
 
 	a, 
 	p {
 		font-size: size('body', 'sm');
 	}
+
+	svg {
+		background: $bg;
+
+		.#{$block}__svg-background {
+			fill: color($theme-body-background-color);
+		}
+
+		.#{$block}__svg-stroke {
+			fill: none;
+			stroke: color('primary-lighter');
+		}
+		
+		.#{$block}__svg-stroke--alt {
+			stroke: var(--theme-footer, color('secondary'));
+			opacity: .5;
+		}
+	}
 	
 	.#{$block}__primary-section {
 		position: relative;
-		background-color: color('white');
+		background-color: $bg;
 		
 		svg {
 			position: relative;
