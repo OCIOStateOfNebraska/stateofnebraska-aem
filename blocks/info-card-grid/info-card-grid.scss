@@ -6,8 +6,20 @@
 	$block: 'usa-card';
 
 	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
+	
+	margin-bottom: units($component-spacing);
 
 	.#{$block} {
+		margin-bottom: units(2);
+		
+		&:last-child {
+			margin-bottom: units(2);
+		}
+		
+		&-group {
+			margin-bottom: units(-2);
+		}
+
 		&__img {
 			aspect-ratio: 16 / 9;
 		}
