@@ -7,29 +7,30 @@ import { getIndividualIcon } from '../../scripts/utils.js';
 * @param {HTMLElement} container - The card wrapper the content should be in.
 */
 function generateContent( div, container ) {
-	const a = div.querySelector( '.usa-button__wrap a' );
 	const wrap = div.querySelector( '.usa-button__wrap' );
+	const a = wrap ? wrap.querySelector( 'a' ) : null;
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
 	let header = '';
 	div.className = 'usa-card__body';
 	
 	// take out the heading and put into its own container
 	if ( heading ) {
-		header = domEl( 'div', { class: 'usa-card__header' } );
 		heading.classList.add( 'usa-card__heading' );
-		header.append( heading );
+		header = domEl( 'div', { class: 'usa-card__header' }, heading );
 		container.prepend( header );
 		
-		// take out the link and wrap it around the header 
-		if ( a ) {
+		// Wrap the link in the header 
+		if ( a && wrap ) {
 			a.textContent = ''; 
-			a.classList.remove( 'usa-button' );
+			a.className = '';
 			heading.append( a );
 			getIndividualIcon( wrap, 'arrow_forward' );
 		} 
 	} else {
 		if ( wrap ) {
 			wrap.remove();
+			// eslint-disable-next-line no-console
+			console.error( 'No heading provided. Please re-author with the appropriate heading' );
 		}
 	}
 }
