@@ -1,6 +1,6 @@
 import { getMetadata, decorateBlock, loadBlock, buildBlock, fetchPlaceholders } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { p, a, domEl } from '../../scripts/dom-helpers.js';
+import {  a, domEl } from '../../scripts/dom-helpers.js';
 
 function decorateSkipnav( block, placeholders ) {
 	const { skipnav } = placeholders;
