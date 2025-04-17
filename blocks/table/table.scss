@@ -1,0 +1,30 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+@use 'sass:math';
+
+.table-wrapper {
+	$block: 'usa-table';
+
+	@include u-margin-bottom($component-spacing);
+	@include meta.load-css('~uswds/usa-table/src/styles/usa-table');
+	
+	margin-bottom: units($component-spacing);
+	
+	.table {
+		@include u-padding-y(4);
+	}
+
+	.#{$block} {
+		width: 100%;
+
+		@include u-margin(0);
+		
+		caption {
+			@include u-margin-top(3);
+			@include u-margin-bottom(0);
+			font-size: size('body', 'md');
+			font-weight: font-weight('normal');
+			caption-side: bottom;
+		}
+	}
+}
