@@ -46,23 +46,22 @@ export default function decorate( block ) {
 	const table = block.querySelector( 'table' );
 	const p = block.querySelector( 'p' );
 	const caption = domEl( 'caption', {}, p );
-
-	table.classList.add( 'usa-table' );
-	
 	const tbody = table.querySelector( 'tbody' );
 	const rows = tbody.querySelectorAll( 'tr' );
 	let thead = null;
 	let container = null;
 	let newRows;
+	
+	table.classList.add( 'usa-table' );
 
+	// create the header 
 	rows.forEach( ( row, index ) => {
-		if ( index === 0 ) {
+		while ( index === 0 ) {
 			thead = domEl( 'thead', {}, row );
 			row.querySelectorAll( 'td' ).forEach( ( cell ) => {
 				createTableHeaders( row, cell, 'col' );
 			} );
-		} else {
-			return;  // bail, we don't have to loop through the entire table
+			break;
 		}
 	} );
 
@@ -70,19 +69,18 @@ export default function decorate( block ) {
 	if ( caption ) {
 		table.append( caption );
 	}
-	newRows = tbody.querySelectorAll( 'tr' ); // grab the new Rows after we generate the table 
+	// grab the new Rows in the body after we generate the thead 
+	newRows = tbody.querySelectorAll( 'tr' ); 
 	
 	// handle scrollable table 
 	if ( type === 'scrollable' || type === 'row-heading' ) {
 		container = domEl( 'div', {class: 'usa-table-container--scrollable' }, table );
-		
 		if ( type === 'row-heading' ) {
 			newRows.forEach( ( row ) => {
 				row.querySelectorAll( 'td' ).forEach( ( cell, index ) => {
-					if ( index === 0 ) {
+					while ( index === 0 ) {
 						createTableHeaders( row, cell, 'row' );
-					} else {
-						return; // bail, we don't have to loop through the entire table
+						break;
 					}
 				} );
 			} );
