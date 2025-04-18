@@ -43,7 +43,7 @@
 
 			&:has(a) {
 				cursor: pointer;
-				// TODO: update with hover effect 
+
 				&:hover { // focus state handled by uswds
 					transition: box-shadow $transition, border $transition,  border-radius $transition,;
 					border-top: 2px solid transparent;
@@ -53,6 +53,11 @@
 					.usa-button__wrap {
 						transform: translateX(units(0.5)); 
 						transition: transform $transition;
+					}
+					
+					.#{$block}__heading {
+						text-decoration: underline;
+						text-decoration-thickness: 2px;
 					}
 				}
 			}
@@ -68,10 +73,10 @@
 		}
 
 		.usa-button__wrap {
+			height: $icon-size;
 			margin-top: auto;
 
 			svg {
-				@include u-padding(1);
 				width: $icon-size;
 				height: $icon-size;
 				fill: color(primary);
