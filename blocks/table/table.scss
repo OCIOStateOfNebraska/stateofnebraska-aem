@@ -2,22 +2,18 @@
 @use 'sass:meta';
 @use 'sass:math';
 
-.table-wrapper {
+.table {
 	$block: 'usa-table';
 
+	@include u-padding-y(4);
 	@include u-margin-bottom($component-spacing);
 	@include meta.load-css('~uswds/usa-table/src/styles/usa-table');
 	
 	margin-bottom: units($component-spacing);
-	
-	.table {
-		@include u-padding-y(4);
-	}
 
 	.#{$block} {
-		width: 100%;
-
 		@include u-margin(0);
+		width: 100%;
 		
 		caption {
 			@include u-margin-top(3);
@@ -28,3 +24,4 @@
 		}
 	}
 }
+

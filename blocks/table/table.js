@@ -26,8 +26,8 @@ function checkType( block ) {
 	const c = block.classList;
 	let type;
 	
-	if ( c.contains( 'row-heading-scrollable' ) ) {
-		type = 'row-heading';
+	if ( c.contains( 'col-1-header' ) ) {
+		type = 'col-heading';
 	} else if ( c.contains( 'scrollable' ) ){
 		type = 'scrollable';
 	} else {
@@ -55,14 +55,9 @@ export default function decorate( block ) {
 	table.classList.add( 'usa-table' );
 
 	// create the header 
-	rows.forEach( ( row, index ) => {
-		while ( index === 0 ) {
-			thead = domEl( 'thead', {}, row );
-			row.querySelectorAll( 'td' ).forEach( ( cell ) => {
-				createTableHeaders( row, cell, 'col' );
-			} );
-			break;
-		}
+	thead = domEl( 'thead', {}, rows[0] );
+	rows[0].querySelectorAll( 'td' ).forEach( ( cell ) => {
+		createTableHeaders( rows[0], cell, 'col' );
 	} );
 
 	table.prepend( thead );
@@ -73,9 +68,9 @@ export default function decorate( block ) {
 	newRows = tbody.querySelectorAll( 'tr' ); 
 	
 	// handle scrollable table 
-	if ( type === 'scrollable' || type === 'row-heading' ) {
+	if ( type === 'scrollable' || type === 'col-heading' ) {
 		container = domEl( 'div', {class: 'usa-table-container--scrollable' }, table );
-		if ( type === 'row-heading' ) {
+		if ( type === 'col-heading' ) {
 			newRows.forEach( ( row ) => {
 				row.querySelectorAll( 'td' ).forEach( ( cell, index ) => {
 					while ( index === 0 ) {
@@ -92,7 +87,7 @@ export default function decorate( block ) {
 			const tds = [...row.querySelectorAll( 'td' ) ]; // Get all td elements in this row
 			[...newHeaderRow].map( ( th, index ) => {
 				const dataLabel = th.textContent.trim();
-				tds[index].setAttribute( 'data-label', dataLabel );
+				tds[index].dataset.label = dataLabel;
 			} );
 		} );
 	}
