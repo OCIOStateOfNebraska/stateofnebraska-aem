@@ -24,7 +24,7 @@ window.siteIndexCache = window.siteIndexCache || {};
 function buildHeroBlock( main ) {
 	const h1 = main.querySelector( 'h1' );
 	const heroSection = h1.closest( '.section' );
-	
+
 	let picture = null;
 	// If there are no sections delineated, everything is in the hero section
 	if( heroSection && main.querySelectorAll( '.section' ).length > 1 ) {
@@ -49,9 +49,9 @@ async function decorateIcon( span, prefix = '' ) {
 	const iconName = Array.from( span.classList )
 		.find( ( c ) => c.startsWith( 'icon-' ) )
 		.substring( 5 );
-	
-	let link; 
-	
+
+	let link;
+
 	if ( iconName.startsWith( 'g-' ) ) {
 		link = `${window.hlx.codeBasePath}${prefix}/icons/material-icons/${iconName.substring( 2 )}.svg`;
 	} else { // add material icon
@@ -119,7 +119,7 @@ function containsOnlyLinks( ulElement ) {
  */
 function decorateUnstyledLinks( element ) {
 	element.querySelectorAll( 'ul' ).forEach( ( ul ) => {
-		// only add the class if this is directly in the default content wrapper and NOT a block 
+		// only add the class if this is directly in the default content wrapper and NOT a block
 		if ( ul.parentNode.classList.contains( 'default-content-wrapper' ) && containsOnlyLinks( ul ) ) {
 			ul.classList.add( 'usa-list', 'usa-list--unstyled', 'usa-list__unstyled-link-list' );
 		}
@@ -321,3 +321,9 @@ await loadPage();
 	body.append( uswds );
 } )();
 
+// document authoring snippet
+(async function loadDa() {
+  if (!new URL(window.location.href).searchParams.get('dapreview')) return;
+  // eslint-disable-next-line import/no-unresolved
+  import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
+}());
