@@ -137,7 +137,8 @@ async function getIndividualIcon( el, iconName, google = false, prefix = '' ) {
 	const resp = await fetch( link );
 	if ( resp.ok ) {
 		const svgContent = await resp.text();
-		el .innerHTML = svgContent;
+		const originalText = el.innerHTML;
+		el.innerHTML = originalText + svgContent; // if we are adding an icon, make sure not to remove the el's inner text
 		const svg = el.querySelector( 'svg' );
 		svg.classList.add( 'usa-icon' );
 		svg.setAttribute( 'aria-hidden', 'true' );
