@@ -27,7 +27,7 @@ function buildHeroBlock( main ) {
 
 	let picture = null;
 	// If there are no sections delineated, everything is in the hero section
-	if( heroSection && main.querySelectorAll( '.section' ).length > 1 ) {
+	if ( heroSection && main.querySelectorAll( '.section' ).length > 1 ) {
 		picture = heroSection.querySelector( 'picture' );
 	}
 
@@ -322,8 +322,7 @@ await loadPage();
 } )();
 
 // document authoring snippet
-(async function loadDa() {
-  if (!new URL(window.location.href).searchParams.get('dapreview')) return;
-  // eslint-disable-next-line import/no-unresolved
-  import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
-}());
+( async function loadDa() {
+	if ( !new URL( window.location.href ).searchParams.get( 'dapreview' ) ) return;
+	import( 'https://da.live/scripts/dapreview.js' ).then( ( { default: daPreview } ) => daPreview( loadPage ) );
+}() );
