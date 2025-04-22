@@ -99,6 +99,11 @@
 		&__heading {
 			margin: 0;
 			font-size: font-size('body', $theme-h2-font-size);
+			font-weight: font-weight('bold'); 
+			
+			strong {
+				font-weight: font-weight('bold'); 
+			}
 		}
 		
 		.usa-button,
