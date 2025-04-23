@@ -49,7 +49,6 @@ function decorateIcon( span ) {
 		.find( ( c ) => c.startsWith( 'icon-' ) )
 		.substring( 5 );
 	let google = false;
-	
 	if ( iconName.startsWith( 'g-' ) ) {
 		iconName = iconName.substring( 2 );
 		google = true;

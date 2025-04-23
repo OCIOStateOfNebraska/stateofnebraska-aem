@@ -2,6 +2,7 @@ indices:
   site:
     exclude:
       - tools/**
+      - library/**
       - footer
       - nav
       - alert
