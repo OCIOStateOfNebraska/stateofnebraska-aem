@@ -25,6 +25,7 @@ function createSubMenu( subMenu, id ) {
 		const span = domEl( 'span', {}, subMenu.firstElementChild.innerHTML );
 		button.append( span );
 		subMenu.prepend( button );
+		subMenu.querySelector( 'p' ).remove();
 
 		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu usa-megamenu'} );
 		const grid = domEl( 'div', { class: 'grid-row grid-gap-4'} );
