@@ -22,7 +22,7 @@ function createSubMenu( subMenu, id ) {
 	let listItem = subMenu.querySelectorAll( 'ul > li' );
 	if ( listItem.length > 0 ) {
 		const button = domEl( 'button', { class: 'usa-accordion__button usa-nav__link usa-current', type: 'button', 'aria-expanded': false, 'aria-controls': 'extended-mega-nav-section-' + id} );
-		const span = domEl( 'span', {}, subMenu.firstChild );
+		const span = domEl( 'span', {}, subMenu.firstElementChild.innerHTML );
 		button.append( span );
 		subMenu.prepend( button );
 
