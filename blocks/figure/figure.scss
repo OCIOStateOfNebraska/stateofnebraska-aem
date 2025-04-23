@@ -1,0 +1,52 @@
+@use '../../styles/ne-global-imports' as *;
+
+.figure {
+	figure, img, picture {
+		height: auto;
+	}
+
+	figure {
+		@include u-margin-y(3);
+		@include u-margin-x(0);
+	}
+	
+	figcaption {
+		@include u-margin-top(2);
+		font-size: size('body', '3xs');
+	}
+
+	&.left,
+	&.right {
+		figure, img, picture {
+			display: block;
+			max-width: 100%;
+		}
+	}
+
+	@include at-media('tablet') {
+		$x-margin: units(4);
+
+		&.left,
+		&.right {
+			max-width: 50%;
+		}
+
+		&.left {
+			float: left;
+			clear: left;
+
+			figure {
+				margin-right: $x-margin;
+			}
+		} 
+        
+		&.right {
+			float: right;
+			clear: right;
+
+			figure {
+				margin-left: $x-margin;
+			}
+		} 
+	}
+}
