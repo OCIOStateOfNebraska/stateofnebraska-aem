@@ -26,8 +26,8 @@ function checkType( block ) {
 	const c = block.classList;
 	let type;
 	
-	if ( c.contains( 'col-1-header' ) ) {
-		type = 'col-heading';
+	if ( c.contains( 'col-header' ) ) {
+		type = 'col-header';
 	} else if ( c.contains( 'scrollable' ) ){
 		type = 'scrollable';
 	} else {
@@ -68,16 +68,11 @@ export default function decorate( block ) {
 	newRows = tbody.querySelectorAll( 'tr' ); 
 	
 	// handle scrollable table 
-	if ( type === 'scrollable' || type === 'col-heading' ) {
+	if ( type === 'scrollable' || type === 'col-header' ) {
 		container = domEl( 'div', {class: 'usa-table-container--scrollable' }, table );
-		if ( type === 'col-heading' ) {
+		if ( type === 'col-header' ) {
 			newRows.forEach( ( row ) => {
-				row.querySelectorAll( 'td' ).forEach( ( cell, index ) => {
-					while ( index === 0 ) {
-						createTableHeaders( row, cell, 'row' );
-						break;
-					}
-				} );
+				createTableHeaders( row, row.querySelector( 'td' ), 'row' );
 			} );
 		}
 	} else { // handle stacked table 
