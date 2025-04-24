@@ -1,2 +1,4 @@
 @use '../../styles/ne-global-imports' as *;
-@use '~uswds/usa-header/src/styles/usa-header';
+@forward '~uswds/usa-header/src/styles/usa-header';
+@forward '~uswds/usa-nav/src/styles/usa-nav';
+@forward '~uswds/usa-accordion/src/styles/usa-accordion';
