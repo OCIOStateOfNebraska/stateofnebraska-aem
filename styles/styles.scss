@@ -2,3 +2,12 @@
 @forward 'ne-global/theme-vars';
 @forward 'ne-global/usa-button';
 @forward 'ne-global/usa-list';
+
+
+body {
+	display: none;
+
+	&:has(header .header[data-block-status='loaded']) {
+		display: block;
+	}
+}

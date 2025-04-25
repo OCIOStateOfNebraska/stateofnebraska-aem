@@ -209,12 +209,12 @@ async function loadEager( doc ) {
 	}
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
-
+	loadHeader( doc.querySelector( 'header' ) );
 	// load the blocks BEFORE decorating the template
 	const main = doc.querySelector( 'main' );
 	if ( main ) {
 		decorateMain( main );
-		document.body.classList.add( 'appear' );
+		//document.body.classList.add( 'appear' );
 		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
 	}
 
@@ -229,7 +229,7 @@ async function loadEager( doc ) {
 
 	// // build components that should be in main but be outside of the main template area
 	buildAutoBlocks( main );
-	loadHeader( doc.querySelector( 'header' ) );
+	
 }
 
 /**

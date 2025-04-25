@@ -102,13 +102,14 @@ async function loadAndDecorateNav( block ) {
 	const container = domEl( 'div', { class: 'usa-nav-container'} );
 	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--basic usa-header--megamenu'} );
 	container.append( nav );
-
 	const picture = navChildren[0].querySelector( 'picture' );
 	const link = navChildren[0].querySelector( 'a' );
-	link.textContent = '';
-	link.className = '';
-	link.append( picture );
-	
+	if ( picture && link ) {
+		link.textContent = '';
+		link.className = '';
+		link.append( picture );
+	}
+
 	const img = domEl( 'div', { class: 'usa-logo__text'}, link );
 
 	const logo = domEl( 'div', { class: 'usa-logo'} );
@@ -174,5 +175,5 @@ export default async function decorate( block ) {
 	block.appendChild( overLay );
 	block.appendChild( navEle );
 	
-	// block;
+	return block;
 }
