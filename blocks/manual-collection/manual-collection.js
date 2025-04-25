@@ -14,28 +14,38 @@ function getDateText ( date ) {
 export default function decorate( block ) {
 	const ul = domEl( 'ul', { class: 'usa-collection' } );
 	[...block.children].forEach( ( row ) => {
-		const li = domEl( 'li', { class: 'usa-collection__item' } );
-		const div = row.querySelector( 'div' );
-		div.classList.add( 'usa-collection__body' );
-		const h4 = row.querySelector( 'h4' );
-		h4.classList.add( 'usa-collection__heading' );
-		const anchor = h4.querySelector( 'a' );
-		anchor.classList.add( 'usa-link' );
-		while ( row.firstElementChild ) {
-			const divBody = row.firstElementChild;
-			const para = divBody.querySelector( 'p' );
-			para.classList.add( 'usa-collection__description' );
-			li.append( divBody );
-		}
-		let date = div.lastElementChild.innerHTML;
-		const timeTag = domEl( 'time', { 'datetime': getDateValue( date ) } );
-		timeTag.innerHTML = getDateText( date );
-		div.lastElementChild.remove();
-		const metaUl = domEl( 'ul', { 'class': 'usa-collection__meta', 'aria-label': 'More information' } );
-		const metaLi = domEl( 'li', { 'class': 'usa-collection__meta-item' } );
-		metaLi.append( timeTag );
-		metaUl.append( metaLi );
-		div.appendChild( metaUl );
+		const li = document.createElement( 'li' );
+		li.className = 'usa-collection__item';
+		while ( row.firstElementChild ) li.append( row.firstElementChild );
+		[...li.children].forEach( ( div ) => {
+			if ( div.children.length === 1 && div.querySelector( 'picture' ) ) {
+				const imgTag = domEl( 'img', { 'class': 'usa-collection__img', 'src': div.querySelector( 'picture > img' ).getAttribute( 'src' ) } );
+				li.prepend( imgTag );
+				div.remove();
+			} else {
+				div.classList.add( 'usa-collection__body' );
+				const h4 = div.querySelector( 'h4' );
+				h4.classList.add( 'usa-collection__heading' );
+				const anchor = h4.querySelector( 'a' );
+				anchor.classList.add( 'usa-link' );
+				const para = div.querySelector( 'p' );
+				para.classList.add( 'usa-collection__description' );
+				let date = div.lastElementChild.innerHTML;
+				const timeTag = document.createElement( 'time' );
+				timeTag.setAttribute( 'datetime', getDateValue( date ) );
+				timeTag.innerHTML = getDateText( date );
+				div.lastElementChild.remove();
+				const metaUl = document.createElement( 'ul' );
+				metaUl.classList.add( 'usa-collection__meta' );
+				metaUl.setAttribute( 'aria-label', 'More information' );
+				const metaLi = document.createElement( 'li' );
+				metaLi.classList.add( 'usa-collection__meta-item' );
+				metaLi.append( timeTag );
+				metaUl.append( metaLi );
+				div.appendChild( metaUl );
+			}
+		} );
+		li.querySelector( '.usa-collection__img' ).setAttribute( 'alt', li.querySelector( '.usa-collection__heading > a' ).innerHTML );
 		ul.append( li );
 	} );
 	block.textContent = '';
