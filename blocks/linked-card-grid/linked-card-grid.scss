@@ -43,16 +43,20 @@
 
 			&:has(a) {
 				cursor: pointer;
-				// TODO: update with hover effect 
+
 				&:hover { // focus state handled by uswds
-					transition: box-shadow $transition, border $transition,  border-radius $transition,;
+					transition: box-shadow $transition-slow, border $transition-slow;
 					border-top: 2px solid transparent;
-					border-radius: radius(md);
-					box-shadow: 0 0 0 2px color(secondary);
+					box-shadow: 0 0 0 3px color(secondary), 0 8px 16px 0 rgb(0 0 0 / 10%); // maps to shadow(3), mixin doesn't work with a custom one
 				
 					.usa-button__wrap {
 						transform: translateX(units(0.5)); 
 						transition: transform $transition;
+					}
+					
+					.#{$block}__heading {
+						text-decoration: underline;
+						text-decoration-thickness: 2px;
 					}
 				}
 			}
@@ -68,10 +72,10 @@
 		}
 
 		.usa-button__wrap {
+			height: $icon-size;
 			margin-top: auto;
 
 			svg {
-				@include u-padding(1);
 				width: $icon-size;
 				height: $icon-size;
 				fill: color(primary);
