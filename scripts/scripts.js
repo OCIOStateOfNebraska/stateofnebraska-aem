@@ -277,33 +277,33 @@ async function loadPage() {
 await loadPage();
 
 // add uswds js to page after the content is all loaded
-( function uswdsInit() {
-	const loadingClass = 'usa-js-loading';
-	let fallback = '';
+// ( function uswdsInit() {
+// 	const loadingClass = 'usa-js-loading';
+// 	let fallback = '';
 
-	document.documentElement.classList.add( loadingClass );
-	function revertClass() {
-		document.documentElement.classList.remove( loadingClass );
-	}
+// 	document.documentElement.classList.add( loadingClass );
+// 	function revertClass() {
+// 		document.documentElement.classList.remove( loadingClass );
+// 	}
 
-	fallback = setTimeout( revertClass, 8000 );
+// 	fallback = setTimeout( revertClass, 8000 );
 
-	function verifyLoaded() {
-		if ( window.uswdsPresent ) {
-			clearTimeout( fallback );
-			revertClass();
-			window.removeEventListener( 'load', verifyLoaded, true );
-		}
-	}
+// 	function verifyLoaded() {
+// 		if ( window.uswdsPresent ) {
+// 			clearTimeout( fallback );
+// 			revertClass();
+// 			window.removeEventListener( 'load', verifyLoaded, true );
+// 		}
+// 	}
 
-	window.addEventListener( 'load', verifyLoaded, true );
+// 	window.addEventListener( 'load', verifyLoaded, true );
 
-	const uswds = document.createElement( 'script' );
-	const body = document.querySelector( 'body' );
-	uswds.async = 'true';
-	uswds.src = '/scripts/uswds.min.js';
-	body.append( uswds );
-} )();
+// 	const uswds = document.createElement( 'script' );
+// 	const body = document.querySelector( 'body' );
+// 	uswds.async = 'true';
+// 	uswds.src = '/scripts/uswds.min.js';
+// 	body.append( uswds );
+// } )();
 
 // document authoring snippet
 ( async function loadDa() {

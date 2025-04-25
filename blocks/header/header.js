@@ -1,6 +1,8 @@
 import { getMetadata, decorateBlock, loadBlock, buildBlock, fetchPlaceholders } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { a, domEl } from '../../scripts/dom-helpers.js';
+import { header } from '../../scripts/deps/bundle-uswds.js';
+
 
 async function decorateSkipnav( block, placeholders ) {
 	const { skipnav } = placeholders;
@@ -174,6 +176,6 @@ export default async function decorate( block ) {
 	block.appendChild( bannerEle );
 	block.appendChild( overLay );
 	block.appendChild( navEle );
-	
+	header.on();
 	return block;
 }
