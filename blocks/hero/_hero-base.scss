@@ -11,13 +11,13 @@ $block: 'usa-hero';
 	@include u-margin-bottom(15);
 	position: relative;
 	background: $bg-w-picture;
+	color: color('white');
 	z-index: 1;
 
 	// stylelint-disable-next-line scss/selector-nest-combinators
-	&,
 	h1,
 	a:not(.usa-button--secondary) {
-		color: color('white');
+		color: currentcolor
 	}
 
 	picture {
@@ -50,15 +50,15 @@ $block: 'usa-hero';
 
 	&__svg {
 		svg {
+			position: relative;
+			bottom: -1px; // to make sure the bottom of the hero is completely covered after subpx calculations
 			display: block;
-			aspect-ratio: 1727 / 86; // TODO: Update for homepage
 			width: 100%;
 		}
 	}
 
 	&__svg-back {
 		fill: var(--theme-hero-primary, color('primary-light'));
-		opacity: .5;
 	}
 
 	&__svg-mid {

@@ -27,8 +27,12 @@ $block: 'usa-hero';
 
 	&__svg {
 		svg {
-			aspect-ratio: 1727 / 86;
+			aspect-ratio: 1728 / 103;
 		}
+	}
+
+	&__svg-back {
+		opacity: .75;
 	}
 
 	@include at-media('tablet') {

@@ -4,6 +4,22 @@
 $block: 'usa-hero';
 
 .#{$block} {
+	// stylelint-disable-next-line scss/selector-nest-combinators
+	.usa-breadcrumb,
+	.usa-breadcrumb a.usa-breadcrumb__link {
+		color: currentcolor;
+	}
+
+	&__svg {
+		svg {
+			aspect-ratio: 1727 / 86;
+		}
+	}
+
+	&__svg-back {
+		opacity: .5;
+	}
+
 	&:not(:has(picture)) {
 		background: var(--theme-hero-bg, color('primary'));
 		background-image: linear-gradient(to bottom, color('white-transparent-80'), color('white'));
@@ -11,18 +27,13 @@ $block: 'usa-hero';
 		// stylelint-disable-next-line scss/selector-nest-combinators
 		&,
 		h1,
-		a:not(.usa-button--secondary) {
+		a:not(.usa-button--secondary),
+		.usa-breadcrumb a.usa-breadcrumb__link {
 			color: color('ink');
 		}
 
 		.#{$block}__callout {
 			padding-top: units(4);
-		}
-	}
-
-	&__svg {
-		svg {
-			aspect-ratio: 1727 / 86;
 		}
 	}
 }
