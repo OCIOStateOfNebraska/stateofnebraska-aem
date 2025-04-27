@@ -3,11 +3,11 @@
 @forward 'ne-global/usa-button';
 @forward 'ne-global/usa-list';
 
-
 body {
 	display: none;
 
-	&:has(header .header[data-block-status='loaded']) {
+	&:has(header .header[data-block-status='loaded']),
+	&.appear { // stylelint-disable-line selector-no-qualifying-type
 		display: block;
 	}
 }

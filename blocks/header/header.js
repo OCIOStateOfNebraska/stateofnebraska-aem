@@ -1,10 +1,10 @@
 import { getMetadata, decorateBlock, loadBlock, buildBlock, fetchPlaceholders } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { a, domEl } from '../../scripts/dom-helpers.js';
-import { header } from '../../scripts/deps/bundle-uswds.js';
+import { header, accordion } from '../../scripts/deps/bundle-uswds.js';
 
 
-async function decorateSkipnav( block, placeholders ) {
+async function decorateSkipnav( placeholders ) {
 	const { skipnav } = placeholders;
 	const skipNav = a( { class: 'usa-skipnav', href: '#main-content' }, skipnav ? skipnav : 'Skip to main content' );
 	return skipNav;
@@ -28,7 +28,7 @@ async function createSubMenu( subMenu, id ) {
 		subMenu.prepend( button );
 		subMenu.querySelector( 'p' ).remove();
 
-		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu usa-megamenu', hidden: true} );
+		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu', hidden: true} );
 		const grid = domEl( 'div', { class: 'grid-row grid-gap-4'} );
 		subNav.append( grid );
 		subMenu.append( subNav );
@@ -77,9 +77,7 @@ function createSecondaryMenu( innerMenu ) {
 	innerMenu.prepend( closeButton );
 }
 
-
-// eslint-disable-next-line no-unused-vars
-async function loadAndDecorateNav( block ) {
+async function loadAndDecorateNav() {
 	const navMeta = getMetadata( 'nav' );
 	const navPath = navMeta ? new URL( navMeta, window.location ).pathname : '/nav';
 	const navFragment = await loadFragment( navPath );
@@ -102,7 +100,7 @@ async function loadAndDecorateNav( block ) {
 	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation'} );
 	nav.append( innerNav );
 	const container = domEl( 'div', { class: 'usa-nav-container'} );
-	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--basic usa-header--megamenu'} );
+	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--extended'} );
 	container.append( nav );
 	const picture = navChildren[0].querySelector( 'picture' );
 	const link = navChildren[0].querySelector( 'a' );
@@ -164,10 +162,10 @@ async function loadAndDecorateAlert() {
 export default async function decorate( block ) {
 	const placeholders = await fetchPlaceholders();
 
-	const skipNav = await decorateSkipnav( block, placeholders );
+	const skipNav = await decorateSkipnav( placeholders );
 	const alertEle = await loadAndDecorateAlert( block );
-	const bannerEle = await loadBanner( block );
-	const navEle = await loadAndDecorateNav( block );
+	const bannerEle = await loadBanner();
+	const navEle = await loadAndDecorateNav();
 
 	block.innerHTML = '';
 	const overLay = domEl( 'div', { class: 'usa-overlay'} );
@@ -176,6 +174,9 @@ export default async function decorate( block ) {
 	block.appendChild( bannerEle );
 	block.appendChild( overLay );
 	block.appendChild( navEle );
+
+	accordion.on();
 	header.on();
+
 	return block;
 }

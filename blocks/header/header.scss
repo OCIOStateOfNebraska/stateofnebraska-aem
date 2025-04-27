@@ -1,4 +1,42 @@
 @use '../../styles/ne-global-imports' as *;
-@forward '~uswds/usa-header/src/styles/usa-header';
-@forward '~uswds/usa-nav/src/styles/usa-nav';
-@forward '~uswds/usa-accordion/src/styles/usa-accordion';
+@use '~uswds/usa-header/src/styles/index';
+@use '~uswds/usa-nav/src/styles/usa-nav';
+@use '~uswds/usa-search/src/styles/usa-search';
+@use '~uswds/usa-form/src/styles/usa-form';
+
+.usa-header {
+	background-color: color('primary-dark');
+	
+	.usa-nav {
+		border-color: color('primary-light');
+		
+		@include at-media('desktop') {
+			&__link {
+				> span {
+					color: color('white');
+                    
+					&:after {
+						background-color: color('white') !important;
+					}
+				}
+                
+				&:after {
+					background-color: color('primary-light');
+				}
+			}
+			
+			.usa-current {
+				&:after {
+					background-color: color('primary-dark');
+				}
+
+				&:hover,
+				&:focus {
+					&:after {
+						background-color: color('primary-light');
+					}
+				}
+			}
+		}
+	}
+}

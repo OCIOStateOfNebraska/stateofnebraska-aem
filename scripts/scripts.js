@@ -214,7 +214,7 @@ async function loadEager( doc ) {
 	const main = doc.querySelector( 'main' );
 	if ( main ) {
 		decorateMain( main );
-		//document.body.classList.add( 'appear' );
+		//
 		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
 	}
 
@@ -276,34 +276,14 @@ async function loadPage() {
 
 await loadPage();
 
-// add uswds js to page after the content is all loaded
-// ( function uswdsInit() {
-// 	const loadingClass = 'usa-js-loading';
-// 	let fallback = '';
+// add class to to make the content appear in case header gets stuck
+( function bodyAppear() {
 
-// 	document.documentElement.classList.add( loadingClass );
-// 	function revertClass() {
-// 		document.documentElement.classList.remove( loadingClass );
-// 	}
-
-// 	fallback = setTimeout( revertClass, 8000 );
-
-// 	function verifyLoaded() {
-// 		if ( window.uswdsPresent ) {
-// 			clearTimeout( fallback );
-// 			revertClass();
-// 			window.removeEventListener( 'load', verifyLoaded, true );
-// 		}
-// 	}
-
-// 	window.addEventListener( 'load', verifyLoaded, true );
-
-// 	const uswds = document.createElement( 'script' );
-// 	const body = document.querySelector( 'body' );
-// 	uswds.async = 'true';
-// 	uswds.src = '/scripts/uswds.min.js';
-// 	body.append( uswds );
-// } )();
+	function addClass() {
+		document.body.classList.add( 'appear' );
+	}
+	setTimeout( addClass, 2000 );
+} )();
 
 // document authoring snippet
 ( async function loadDa() {
