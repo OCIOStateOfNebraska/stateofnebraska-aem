@@ -1,3 +1,4 @@
 helix-importer-ui
 scripts/uswds*
+scripts/deps
 gulpfile.js

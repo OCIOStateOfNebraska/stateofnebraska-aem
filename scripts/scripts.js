@@ -21,19 +21,31 @@ window.siteIndexCache = window.siteIndexCache || {};
 /**
  * Builds hero block and prepends to main.
  * @param {Element} main The container element
+ * @param {String} templateName The name of the template
  */
-function buildHeroBlock( main ) {
+function buildHeroBlock( main, templateName ) {
 	const h1 = main.querySelector( 'h1' );
 	const heroSection = h1.closest( '.section' );
+	const multipleSections = main.querySelectorAll( '.section' ).length > 1;
 
 	let picture = null;
 	// If there are no sections delineated, everything is in the hero section
-	if ( heroSection && main.querySelectorAll( '.section' ).length > 1 ) {
+	// homepage always grabs the first image (it's required)
+	if ( heroSection && ( multipleSections || templateName === 'homepage' ) ) {
 		picture = heroSection.querySelector( 'picture' );
 	}
 
 	const container = document.createElement( 'div' );
-	const heroBlock = buildBlock( 'hero', { elems: [picture, h1] } );
+	let heroBlock;
+	if( templateName === 'homepage' ) {
+		let desc;
+		if ( heroSection && multipleSections ) {
+			desc = heroSection.querySelectorAll( 'p, ul, ol' );
+		}
+		heroBlock = buildBlock( 'hero-homepage', { elems: [picture, h1, ...desc ] } );
+	} else {
+		heroBlock = buildBlock( 'hero', { elems: [picture, h1] } );
+	}
 	container.appendChild( heroBlock );
 	main.prepend( container );
 	decorateBlock( heroBlock );
@@ -49,7 +61,6 @@ function decorateIcon( span ) {
 		.find( ( c ) => c.startsWith( 'icon-' ) )
 		.substring( 5 );
 	let google = false;
-
 	if ( iconName.startsWith( 'g-' ) ) {
 		iconName = iconName.substring( 2 );
 		google = true;
@@ -73,10 +84,11 @@ function decorateIcons( element, prefix = '' ) {
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
+ * @param {String} templateName The name of the template
  */
-function buildAutoBlocks( main ) {
+function buildAutoBlocks( main, templateName ) {
 	try {
-		buildHeroBlock( main );
+		buildHeroBlock( main, templateName );
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Auto Blocking failed', error );
@@ -209,12 +221,11 @@ async function loadEager( doc ) {
 	}
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
-
+	loadHeader( doc.querySelector( 'header' ) );
 	// load the blocks BEFORE decorating the template
 	const main = doc.querySelector( 'main' );
 	if ( main ) {
 		decorateMain( main );
-		document.body.classList.add( 'appear' );
 		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
 	}
 
@@ -228,8 +239,7 @@ async function loadEager( doc ) {
 	}
 
 	// // build components that should be in main but be outside of the main template area
-	buildAutoBlocks( main );
-	loadHeader( doc.querySelector( 'header' ) );
+	buildAutoBlocks( main, templateName );
 }
 
 /**
@@ -276,33 +286,13 @@ async function loadPage() {
 
 await loadPage();
 
-// add uswds js to page after the content is all loaded
-( function uswdsInit() {
-	const loadingClass = 'usa-js-loading';
-	let fallback = '';
+// add class to to make the content appear in case header gets stuck
+( function bodyAppear() {
 
-	document.documentElement.classList.add( loadingClass );
-	function revertClass() {
-		document.documentElement.classList.remove( loadingClass );
+	function addClass() {
+		document.body.classList.add( 'appear' );
 	}
-
-	fallback = setTimeout( revertClass, 8000 );
-
-	function verifyLoaded() {
-		if ( window.uswdsPresent ) {
-			clearTimeout( fallback );
-			revertClass();
-			window.removeEventListener( 'load', verifyLoaded, true );
-		}
-	}
-
-	window.addEventListener( 'load', verifyLoaded, true );
-
-	const uswds = document.createElement( 'script' );
-	const body = document.querySelector( 'body' );
-	uswds.async = 'true';
-	uswds.src = '/scripts/uswds.min.js';
-	body.append( uswds );
+	setTimeout( addClass, 2000 );
 } )();
 
 // document authoring snippet

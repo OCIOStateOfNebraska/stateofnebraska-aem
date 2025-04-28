@@ -1,2 +1,135 @@
 @use '../../styles/ne-global-imports' as *;
-@use '~uswds/usa-header/src/styles/usa-header';
+@use '~uswds/usa-header/src/styles/index';
+@use '~uswds/usa-nav/src/styles/usa-nav';
+@use '~uswds/usa-search/src/styles/usa-search';
+@use '~uswds/usa-form/src/styles/usa-form';
+
+.usa-header {
+	height: fit-content;
+	background-color: color('primary-dark');
+	
+	.usa-navbar {
+		justify-content: space-between;
+		height: fit-content;
+	}
+	
+	.usa-logo {
+		@include u-margin-y(3);
+		position: relative;
+		flex: 0 0 auto;
+
+		
+		width: px-to-rem(180px);
+		height: px-to-rem(50px);
+		
+		&__text,
+		a, 
+		picture, 
+		img {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+		}
+		
+		img {
+			object-fit: scale-down;
+		}
+	}
+	
+	.usa-menu-btn {
+		$button-context: 'Button';
+
+		@include set-text-from-bg('secondary', $context: $button-context);
+		margin-right: units(2);
+		border-radius: radius(sm);
+		background-color: color('secondary');
+		cursor: pointer;
+
+		&:visited {
+			@include set-text-from-bg('secondary', $context: $button-context);
+		}
+
+		&:hover,
+		&.usa-button--hover {
+			@include set-text-and-bg('secondary-light', $context: $button-context);
+		}
+
+		&:active,
+		&.usa-button--active {
+			@include set-text-and-bg('secondary-lighter', $context: $button-context);
+		}
+		
+	}
+	
+	.usa-text-input {
+		border: 1px solid color('black');
+	}
+	
+	.usa-button {
+		&[type='submit'] {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+	}
+	
+	@include at-media('desktop') {
+		.usa-text-input {
+			border: 0;
+			background-color: color('primary-darkest');
+			color: color('white');
+		}
+	
+		.usa-button {
+			&[type='submit'] {
+				border-top-right-radius: radius(sm);
+				border-bottom-right-radius: radius(sm);
+				background-color: color(blue-50);
+			}
+		}
+	
+		.usa-nav { // needs to be nested for styles to take 
+			border-color: color('primary-light');
+
+			&__primary {
+				button {
+					> span {
+						color: color('white');
+
+						&:after {
+							background-color: color('white');
+						}
+					}
+					
+					&:hover,
+					&:focus {
+						> span {
+
+							&:after { // stylelint-disable-line max-nesting-depth
+								background-color: color('white');
+							}
+						}
+					}
+				}
+				
+                
+				&:after {
+					background-color: color('primary-light');
+				}
+			}
+			
+			.usa-current {
+				&:after {
+					background-color: color('primary-dark');
+				}
+
+				&:hover,
+				&:focus {
+					&:after {
+						background-color: color('primary-light');
+					}
+				}
+			}
+		}
+	}
+}
