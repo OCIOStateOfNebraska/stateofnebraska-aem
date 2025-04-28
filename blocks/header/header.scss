@@ -76,7 +76,7 @@
 	@include at-media('desktop') {
 		.usa-text-input {
 			border: 0;
-			background-color: color('primary-darkest');
+			background-color: color('primary-darker');
 			color: color('white');
 		}
 	
@@ -85,6 +85,17 @@
 				border-top-right-radius: radius(sm);
 				border-bottom-right-radius: radius(sm);
 				background-color: color(blue-50);
+			}
+		}
+		
+		.usa-megamenu {
+			&.usa-nav__submenu {
+				background-color: color('primary-darkest');
+
+				&:before, 
+				&:after {
+					background-color: color('primary-darkest');
+				}
 			}
 		}
 	
@@ -99,6 +110,10 @@
 						&:after {
 							background-color: color('white');
 						}
+					}
+					
+					&[aria-expanded='true'] { // stylelint-disable-line selector-no-qualifying-type
+						background-color: color('primary-darkest');
 					}
 					
 					&:hover,
