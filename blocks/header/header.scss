@@ -87,6 +87,17 @@
 				background-color: color(blue-50);
 			}
 		}
+		
+		.usa-megamenu {
+			&.usa-nav__submenu {
+				background-color: color('primary-darkest');
+
+				&:before, 
+				&:after {
+					background-color: color('primary-darkest');
+				}
+			}
+		}
 	
 		.usa-nav { // needs to be nested for styles to take 
 			border-color: color('primary-light');
@@ -99,6 +110,10 @@
 						&:after {
 							background-color: color('white');
 						}
+					}
+					
+					&[aria-expanded='true'] { // stylelint-disable-line selector-no-qualifying-type
+						background-color: color('primary-darkest');
 					}
 					
 					&:hover,
