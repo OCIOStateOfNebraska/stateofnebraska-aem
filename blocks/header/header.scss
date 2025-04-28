@@ -19,8 +19,8 @@
 		flex: 0 0 auto;
 
 		
-		width: 180px;
-		height: 50px;
+		width: px-to-rem(180px);
+		height: px-to-rem(50px);
 		
 		&__text,
 		a, 
@@ -39,12 +39,12 @@
 	
 	.usa-menu-btn {
 		$button-context: 'Button';
+
+		@include set-text-from-bg('secondary', $context: $button-context);
 		margin-right: units(2);
 		border-radius: radius(sm);
 		background-color: color('secondary');
 		cursor: pointer;
-
-		@include set-text-from-bg('secondary', $context: $button-context);
 
 		&:visited {
 			@include set-text-from-bg('secondary', $context: $button-context);
