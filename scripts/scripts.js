@@ -214,7 +214,6 @@ async function loadEager( doc ) {
 	const main = doc.querySelector( 'main' );
 	if ( main ) {
 		decorateMain( main );
-		//
 		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
 	}
 
