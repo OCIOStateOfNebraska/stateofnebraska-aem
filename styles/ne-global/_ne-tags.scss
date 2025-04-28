@@ -1,0 +1,19 @@
+// basic tag styles here, NO BLOCKS
+body {
+	display: none;
+	overflow-x: hidden;
+
+	&:has(header .header[data-block-status='loaded']),
+	&.appear { // stylelint-disable-line selector-no-qualifying-type
+		display: block;
+	}
+}
+
+picture {
+	display: block;
+	font-size: 0; // no extra space inside
+}
+
+img {
+	height: auto;
+}
