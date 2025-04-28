@@ -126,27 +126,38 @@ function checkIfRowExists( el, rowNum ) {
  * @param {bool} google        - If the icon is a material icon. defaults to false 
  * @param {string} [prefix=''] - Optional prefix to prepend to the icon path.
  */
+const svgCache = {};
+
+// Return a promise for fetching (or getting from cache)
 async function getIndividualIcon( el, iconName, google = false, prefix = '' ) {
 	let link;
 	if ( google ) {
 		link = `${window.hlx.codeBasePath}${prefix}/icons/material-icons/${iconName}.svg`;
-	} else { // add material icon
+	} else {
 		link = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
 	}
 
-	const resp = await fetch( link );
-	if ( resp.ok ) {
-		const svgContent = await resp.text();
-		el .innerHTML = svgContent;
+	// Cache based on the link, since that's what's fetched
+	if ( !svgCache[link] ) {
+		// Store the promise, not just the resolved text
+		svgCache[link] = fetch( link ).then( resp => {
+			if ( !resp.ok ) throw new Error( 'Failed to fetch SVG' );
+			return resp.text();
+		} );
+	}
+	try {
+		const svgContent = await svgCache[link];
+		const originalText = el.innerHTML;
+		el.innerHTML = originalText + svgContent; // append the SVG
 		const svg = el.querySelector( 'svg' );
 		svg.classList.add( 'usa-icon' );
 		svg.setAttribute( 'aria-hidden', 'true' );
 		svg.setAttribute( 'focusable', false );
 		svg.setAttribute( 'role', 'img' );
 		svg.dataset.iconName = iconName;
-	} else {
+	} catch ( e ) {
 		// eslint-disable-next-line no-console
-		console.error( 'Failed to fetch SVG' );
+		console.error( e.message );
 	}
 }
 
