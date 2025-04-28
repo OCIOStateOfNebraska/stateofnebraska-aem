@@ -22,7 +22,7 @@ export default function decorate( block ) {
 				const imgTag = domEl( 'img', { 'class': 'usa-collection__img', 'src': div.querySelector( 'picture > img' ).getAttribute( 'src' ) } );
 				li.prepend( imgTag );
 				div.remove();
-			} else {
+			} else if ( div.children.length > 1 ) {
 				div.classList.add( 'usa-collection__body' );
 				const h4 = div.querySelector( 'h4' );
 				h4.classList.add( 'usa-collection__heading' );
