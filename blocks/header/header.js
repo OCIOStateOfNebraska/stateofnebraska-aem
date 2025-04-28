@@ -28,7 +28,7 @@ async function createSubMenu( subMenu, id ) {
 		subMenu.prepend( button );
 		subMenu.querySelector( 'p' ).remove();
 
-		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu', hidden: true} );
+		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu usa-megamenu', hidden: true} );
 		const grid = domEl( 'div', { class: 'grid-row grid-gap-4'} );
 		subNav.append( grid );
 		subMenu.append( subNav );
@@ -100,7 +100,7 @@ async function loadAndDecorateNav() {
 	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation'} );
 	nav.append( innerNav );
 	const container = domEl( 'div', {} );
-	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--extended'} );
+	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--extended usa-header--megamenu'} );
 	container.append( nav );
 	const picture = navChildren[0].querySelector( 'picture' );
 	const link = navChildren[0].querySelector( 'a' );
