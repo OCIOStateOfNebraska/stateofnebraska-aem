@@ -13,6 +13,10 @@
 		height: fit-content;
 	}
 	
+	.usa-col {
+		width: 100%;
+	}
+	
 	.usa-logo {
 		@include u-margin-y(3);
 		position: relative;
@@ -88,17 +92,10 @@
 			}
 		}
 		
-		.usa-megamenu {
-			&.usa-nav__submenu {
-				background-color: color('primary-darkest');
-
-				&:before, 
-				&:after {
-					background-color: color('primary-darkest');
-				}
-			}
+		.usa-nav__submenu {
+			background-color: color('primary-darkest');
 		}
-	
+
 		.usa-nav { // needs to be nested for styles to take 
 			border-color: color('primary-light');
 
