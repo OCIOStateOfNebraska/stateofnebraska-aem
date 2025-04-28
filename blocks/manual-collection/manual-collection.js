@@ -1,7 +1,7 @@
 import { domEl } from '../../scripts/dom-helpers.js';
 
 function getDateValue ( date ) {
-	return date + 'T00:00:00';
+	return date + 'T12:00:00';
 }
 
 function getDateText ( date ) {
