@@ -33,7 +33,7 @@ export default function decorate( block ) {
 				let date = div.lastElementChild.innerHTML;
 				const timeTag = document.createElement( 'time' );
 				timeTag.setAttribute( 'datetime', getDateValue( date ) );
-				timeTag.innerHTML = getDateText( date );
+				timeTag.innerHTML = getDateText( getDateValue( date ) );
 				div.lastElementChild.remove();
 				const metaUl = document.createElement( 'ul' );
 				metaUl.classList.add( 'usa-collection__meta' );
