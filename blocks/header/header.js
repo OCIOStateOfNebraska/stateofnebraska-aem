@@ -1,8 +1,10 @@
 import { getMetadata, decorateBlock, loadBlock, buildBlock, fetchPlaceholders } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { a, domEl } from '../../scripts/dom-helpers.js';
+import { header, accordion } from '../../scripts/deps/bundle-uswds.js';
 
-function decorateSkipnav( block, placeholders ) {
+
+async function decorateSkipnav( placeholders ) {
 	const { skipnav } = placeholders;
 	const skipNav = a( { class: 'usa-skipnav', href: '#main-content' }, skipnav ? skipnav : 'Skip to main content' );
 	return skipNav;
@@ -14,11 +16,10 @@ async function loadBanner() {
 
 	bannerWrapper.appendChild( bannerBlock );
 	decorateBlock( bannerBlock );
-
 	return loadBlock( bannerBlock );
 }
 
-function createSubMenu( subMenu, id ) {
+async function createSubMenu( subMenu, id ) {
 	let listItem = subMenu.querySelectorAll( 'ul > li' );
 	if ( listItem.length > 0 ) {
 		const button = domEl( 'button', { class: 'usa-accordion__button usa-nav__link usa-current', type: 'button', 'aria-expanded': false, 'aria-controls': 'extended-mega-nav-section-' + id} );
@@ -27,7 +28,7 @@ function createSubMenu( subMenu, id ) {
 		subMenu.prepend( button );
 		subMenu.querySelector( 'p' ).remove();
 
-		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu usa-megamenu'} );
+		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu', hidden: true} );
 		const grid = domEl( 'div', { class: 'grid-row grid-gap-4'} );
 		subNav.append( grid );
 		subMenu.append( subNav );
@@ -42,7 +43,7 @@ function createSubMenu( subMenu, id ) {
 				grid.append( column );
 			}
 			ul.append( element );
-			element.firstChild.classList.add( 'usa-nav-link' );
+			element.classList.add( 'usa-nav__submenu-item' );
 		}
 	} else {
 		subMenu.firstChild.classList.add( 'usa-nav-link' );
@@ -51,8 +52,8 @@ function createSubMenu( subMenu, id ) {
 }
 
 function createSecondaryMenu( innerMenu ) {
-	const input = domEl( 'input', { class: 'usa-input', id: 'search-field', type: 'search', name: 'search'} );
-	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: '../../icons/usa-icons/search.svg'} );
+	const input = domEl( 'input', { class: 'usa-input usa-text-input', id: 'search-field', type: 'search', name: 'search'} );
+	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: '../../icons/usa-icons-bg/search--white.svg'} );
 	const searchButton = domEl( 'button', { class: 'usa-button', type: 'submit'} );
 	searchButton.append( img );
 	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field'} );
@@ -65,10 +66,8 @@ function createSecondaryMenu( innerMenu ) {
 	searchLabel.innerHTML = 'Search';
 
 	const secondaryNav = domEl( 'div', { class: 'usa-nav__secondary'} );
-	const ulLink = domEl( 'ul', { class: 'usa-nav__secondary-links'} );
 	const searchSection = domEl( 'section', { 'aria-label': 'Search component'} );
 	searchSection.append( form );
-	secondaryNav.append( ulLink );
 	secondaryNav.append( searchSection );
 	innerMenu.append( secondaryNav );
 
@@ -78,10 +77,7 @@ function createSecondaryMenu( innerMenu ) {
 	innerMenu.prepend( closeButton );
 }
 
-
-// TODO: Leverage block
-// eslint-disable-next-line no-unused-vars
-async function loadAndDecorateNav( block ) {
+async function loadAndDecorateNav() {
 	const navMeta = getMetadata( 'nav' );
 	const navPath = navMeta ? new URL( navMeta, window.location ).pathname : '/nav';
 	const navFragment = await loadFragment( navPath );
@@ -103,12 +99,19 @@ async function loadAndDecorateNav( block ) {
 	createSecondaryMenu( innerNav );
 	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation'} );
 	nav.append( innerNav );
-	const container = domEl( 'div', { class: 'usa-nav-container'} );
-	const navWrapper = domEl( 'header', { class: 'usa-header usa-header--basic usa-header--megamenu'} );
+	const container = domEl( 'div', {} );
+	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--extended'} );
 	container.append( nav );
+	const picture = navChildren[0].querySelector( 'picture' );
+	const link = navChildren[0].querySelector( 'a' );
+	if ( picture && link ) {
+		link.textContent = '';
+		link.className = '';
+		link.append( picture );
+	}
 
-	const img = domEl( 'img', { class: 'usa-logo__text'} );
-	img.append( navChildren[0] );
+	const img = domEl( 'div', { class: 'usa-logo__text'}, link );
+
 	const logo = domEl( 'div', { class: 'usa-logo'} );
 	logo.append( img );
 	const navBar = domEl( 'div', { class: 'usa-navbar'} );
@@ -159,10 +162,10 @@ async function loadAndDecorateAlert() {
 export default async function decorate( block ) {
 	const placeholders = await fetchPlaceholders();
 
-	const skipNav = decorateSkipnav( block, placeholders );
+	const skipNav = await decorateSkipnav( placeholders );
 	const alertEle = await loadAndDecorateAlert( block );
-	const bannerEle = await loadBanner( block );
-	const navEle = await loadAndDecorateNav( block );
+	const bannerEle = await loadBanner();
+	const navEle = await loadAndDecorateNav();
 
 	block.innerHTML = '';
 	const overLay = domEl( 'div', { class: 'usa-overlay'} );
@@ -171,4 +174,9 @@ export default async function decorate( block ) {
 	block.appendChild( bannerEle );
 	block.appendChild( overLay );
 	block.appendChild( navEle );
+
+	accordion.on();
+	header.on();
+
+	return block;
 }

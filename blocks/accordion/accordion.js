@@ -1,5 +1,6 @@
 import { domEl } from '../../scripts/dom-helpers.js';
 import { createId } from '../../scripts/utils.js';
+import { accordion } from '../../scripts/deps/bundle-uswds.js';
 
 export default function decorate( block ) {
 	let accordions = block.children;
@@ -33,4 +34,5 @@ export default function decorate( block ) {
 
 	block.textContent = '';
 	block.appendChild( usaAccordion );
+	accordion.on();
 }

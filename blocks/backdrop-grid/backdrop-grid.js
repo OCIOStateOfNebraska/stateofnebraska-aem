@@ -22,7 +22,6 @@ function generateMedia( div, container ) {
 function generateContent( div, container ) {
 	const button = div.querySelector( '.usa-button__wrap' );
 	const buttonLink = button.querySelector( 'a' );
-	const link = buttonLink.href;
 	const buttonText = buttonLink.title;
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
 	div.className = 'backdrop-card__body';
@@ -42,7 +41,8 @@ function generateContent( div, container ) {
 
 	// take out the heading and put into its own container
 	if ( heading ) {
-		const cardLink = domEl( 'a', { class: 'backdrop-card__link', href: link} );
+		const link = buttonLink.getAttribute( 'href' );
+		const cardLink = domEl( 'a', { class: 'backdrop-card__link', href: link, 'aria-labelledby': heading.id} );
 		heading.classList.add( 'backdrop-card__heading' );
 		heading.append( cardLink );
 		const headerWrap = domEl( 'div', { class: 'backdrop-card__header'}, meta, heading );

@@ -4,8 +4,6 @@
 
 .accordion-wrapper {
 	$block: 'usa-accordion';
-
-	@include meta.load-css('~uswds/usa-accordion/src/styles/usa-accordion');
 	$accordion-padding-left: units(2.5); // found in ~uswds/usa-accordion/src/styles/usa-accordion. No variable was set
 	$accordion-circle: px-to-rem(28px);
 	$accordion-button-gap: units(1);
