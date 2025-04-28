@@ -5,6 +5,7 @@
 
 body {
 	display: none;
+	overflow-x: hidden;
 
 	&:has(header .header[data-block-status='loaded']),
 	&.appear { // stylelint-disable-line selector-no-qualifying-type
