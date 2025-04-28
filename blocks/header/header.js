@@ -52,8 +52,8 @@ async function createSubMenu( subMenu, id ) {
 }
 
 function createSecondaryMenu( innerMenu ) {
-	const input = domEl( 'input', { class: 'usa-input', id: 'search-field', type: 'search', name: 'search'} );
-	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: '../../icons/usa-icons/search.svg'} );
+	const input = domEl( 'input', { class: 'usa-input usa-text-input', id: 'search-field', type: 'search', name: 'search'} );
+	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: '../../icons/usa-icons-bg/search--white.svg'} );
 	const searchButton = domEl( 'button', { class: 'usa-button', type: 'submit'} );
 	searchButton.append( img );
 	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field'} );
@@ -99,7 +99,7 @@ async function loadAndDecorateNav() {
 	createSecondaryMenu( innerNav );
 	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation'} );
 	nav.append( innerNav );
-	const container = domEl( 'div', { class: 'usa-nav-container'} );
+	const container = domEl( 'div', {} );
 	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--extended'} );
 	container.append( nav );
 	const picture = navChildren[0].querySelector( 'picture' );
