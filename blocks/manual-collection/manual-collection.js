@@ -45,7 +45,7 @@ export default function decorate( block ) {
 				div.appendChild( metaUl );
 			}
 		} );
-		li.querySelector( '.usa-collection__img' ).setAttribute( 'alt', li.querySelector( '.usa-collection__heading > a' ).innerHTML );
+		if ( li.querySelector( '.usa-collection__img' ) ) li.querySelector( '.usa-collection__img' ).setAttribute( 'alt', li.querySelector( '.usa-collection__heading > a' ).innerHTML );
 		ul.append( li );
 	} );
 	block.textContent = '';
