@@ -144,12 +144,12 @@ in the form $setting: value,
 		'roboto': (
 			'display-name': 'Roboto',
 			'cap-height': 364px, // the default
-			'stack': 'Helvetica, Arial, sans-serif'
+			'stack': 'roboto-italic-400-fallback, roboto-normal-400-fallback, Helvetica, Arial, sans-serif'
 		),
 		'montserrat': (
 			'display-name': 'Montserrat',
 			'cap-height': 364px, // the default
-			'stack': 'Roboto, Helvetica, Arial, sans-serif'
+			'stack': 'montserrat-normal-400-fallback, Roboto, Helvetica, Arial, sans-serif'
 		)
 	),
 	$theme-font-type-sans: 'roboto',

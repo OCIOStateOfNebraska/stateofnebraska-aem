@@ -23,9 +23,6 @@
 body {
 	display: none;
 	overflow-x: hidden;
-	font-family: Roboto, Helvetica, Arial, sans-serif, montserrat-normal-400-fallback, roboto-italic-400-fallback, roboto-normal-400-fallback;
-	font-size: 1.24rem;
-	line-height: 1.5;
 
 	&:has(header .header[data-block-status='loaded']),
 	&.appear { // stylelint-disable-line selector-no-qualifying-type
