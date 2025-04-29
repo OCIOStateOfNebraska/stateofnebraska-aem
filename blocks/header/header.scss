@@ -13,6 +13,10 @@
 		height: fit-content;
 	}
 	
+	.usa-col {
+		width: 100%;
+	}
+	
 	.usa-logo {
 		@include u-margin-y(3);
 		position: relative;
@@ -76,7 +80,7 @@
 	@include at-media('desktop') {
 		.usa-text-input {
 			border: 0;
-			background-color: color('primary-darkest');
+			background-color: color('primary-darker');
 			color: color('white');
 		}
 	
@@ -87,7 +91,11 @@
 				background-color: color(blue-50);
 			}
 		}
-	
+		
+		.usa-nav__submenu {
+			background-color: color('primary-darkest');
+		}
+
 		.usa-nav { // needs to be nested for styles to take 
 			border-color: color('primary-light');
 
@@ -99,6 +107,10 @@
 						&:after {
 							background-color: color('white');
 						}
+					}
+					
+					&[aria-expanded='true'] { // stylelint-disable-line selector-no-qualifying-type
+						background-color: color('primary-darkest');
 					}
 					
 					&:hover,
