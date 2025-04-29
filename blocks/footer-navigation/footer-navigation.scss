@@ -127,6 +127,7 @@
 			.#{$block} {
 				&__logo-img {
 					position: relative;
+					max-width: 100%;
 					
 					img {
 						object-position: left;
