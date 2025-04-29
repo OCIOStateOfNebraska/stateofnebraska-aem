@@ -1,0 +1,85 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+@use 'sass:math';
+
+.linked-card-grid-wrapper {
+	$block: 'usa-card';
+	$icon-size: px-to-rem(48px);
+
+	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
+	
+	margin-bottom: units($component-spacing);
+
+	.#{$block} {
+		margin-bottom: units(2);
+		
+		&:last-child {
+			margin-bottom: units(2);
+		}
+
+		p {
+			font-size: size('body', 'sm');
+		}
+		
+		&-group {
+			margin-bottom: units(-2);
+		}
+
+		&__heading {
+			color: color('primary');
+		}
+
+		&__body {
+			display: flex;
+			flex-direction: column;
+			gap: units(4);
+		}
+
+		&__container {
+			position: relative;
+			border-top: 2px solid color(secondary);
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+
+			&:has(a) {
+				cursor: pointer;
+
+				&:hover { // focus state handled by uswds
+					transition: box-shadow $transition-slow, border $transition-slow;
+					border-top: 2px solid transparent;
+					box-shadow: 0 0 0 3px color(secondary), 0 8px 16px 0 rgb(0 0 0 / 10%); // maps to shadow(3), mixin doesn't work with a custom one
+				
+					.usa-button__wrap {
+						transform: translateX(units(0.5)); 
+						transition: transform $transition;
+					}
+					
+					.#{$block}__heading {
+						text-decoration: underline;
+						text-decoration-thickness: 2px;
+					}
+				}
+			}
+
+			a {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				text-decoration: none;  
+				z-index: 1;             
+				inset: 0; // shorthand for top: 0; right: 0; bottom: 0; left: 0;
+			}
+		}
+
+		.usa-button__wrap {
+			height: $icon-size;
+			margin-top: auto;
+
+			svg {
+				width: $icon-size;
+				height: $icon-size;
+				fill: color(primary);
+			}
+		}
+	}
+}

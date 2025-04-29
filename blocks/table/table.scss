@@ -1,0 +1,24 @@
+@use '../../styles/ne-global-imports' as *;
+@use '~uswds/usa-table/src/styles/usa-table';
+@use 'sass:math';
+$block: 'usa-table';
+
+.table {
+	@include u-padding-y(4);
+	@include u-margin-bottom($component-spacing);
+
+	margin-bottom: units($component-spacing);
+}
+
+.#{$block} {
+	@include u-margin(0);
+	width: 100%;
+	
+	caption {
+		@include u-margin-top(3);
+		@include u-margin-bottom(0);
+		font-size: size('body', 'md');
+		font-weight: font-weight('normal');
+		caption-side: bottom;
+	}
+}

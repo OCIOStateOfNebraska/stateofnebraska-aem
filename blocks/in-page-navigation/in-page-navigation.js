@@ -1,4 +1,5 @@
 import { domEl } from '../../scripts/dom-helpers.js';
+import { inPageNavigation } from '../../scripts/deps/bundle-uswds.js';
 
 export default async function decorate( block ) {
 	const sidenav = domEl( 'aside', {
@@ -15,4 +16,5 @@ export default async function decorate( block ) {
 	block.appendChild( sidenav );
 
 	block.parentNode.classList.add( 'usa-in-page-nav-container' );
+	inPageNavigation.on();
 }

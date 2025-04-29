@@ -1,0 +1,44 @@
+@use '../../styles/ne-global-imports' as *;
+@use '../hero/hero-base';
+
+$block: 'usa-hero';
+
+.#{$block} {
+
+	p {
+		margin-top: 0;
+	}
+
+	&__desc,
+	&__btns {
+		margin-top: units(4);
+	}
+
+	&__btns {
+		display: flex;
+		flex-wrap: wrap;
+		max-width: 100%;
+		gap: units(1.5);
+
+		.usa-button {
+			margin: 0;
+		}
+	}
+
+	&__svg {
+		svg {
+			aspect-ratio: 1728 / 103;
+		}
+	}
+
+	&__svg-back {
+		opacity: .75;
+	}
+
+	@include at-media('tablet') {
+		&__callout {
+			padding-top: px-to-rem(260px);
+			padding-bottom: px-to-rem(120px);
+		}
+	}
+}

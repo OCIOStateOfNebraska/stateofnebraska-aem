@@ -8,7 +8,8 @@
     "lint:css": "stylelint blocks/**/*.scss styles/*.scss",
     "lint": "npm run lint:js && npm run lint:css",
     "sass": "node sass-compile.js",
-    "dev": "node sass-compile.js watch & aem up"
+    "dev": "npm run bundle && node sass-compile.js watch & aem up",
+    "bundle": "microbundle ./scripts/bundle-uswds.js -o ./scripts/deps/bundle-uswds.js -f modern --no-sourcemap --target web; mv ./scripts/deps/bundle-uswds.modern.mjs ./scripts/deps/bundle-uswds.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.31.0",
+    "microbundle": "^0.15.1",
     "sass": "^1.86.0",
     "stylelint": "^16.16.0",
     "stylelint-config-standard": "36.0.1",
