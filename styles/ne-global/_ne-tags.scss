@@ -1,16 +1,16 @@
 // basic tag styles here, NO BLOCKS
 /* fallback font for Montserrat (normal - 400) */
 @font-face {
-	font-family: "montserrat-normal-400-fallback";
+	font-family: 'montserrat-normal-400-fallback';
 	size-adjust: 101.3%;
-	src: local("Arial");
+	src: local('Arial');
 }
 
 /* fallback font for Roboto (normal - 400) */
 @font-face {
-	font-family: "roboto-normal-400-fallback";
+	font-family: 'roboto-normal-400-fallback';
 	size-adjust: 101.9%;
-	src: local("Arial");
+	src: local('Arial');
 }
 
 body {
@@ -31,5 +31,3 @@ picture {
 img {
 	height: auto;
 }
-
-/
