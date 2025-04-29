@@ -47,7 +47,7 @@ export default function decorate( block ) {
 				const imgTag = domEl( 'img', { 'class': 'usa-collection__img', 'src': div.querySelector( 'picture > img' ).getAttribute( 'src' ) } );
 				li.prepend( imgTag );
 				div.remove();
-			} else if ( div.children.length > 1 ) {
+			} else if ( div.children.length >= 1 ) {
 				div.classList.add( 'usa-collection__body' );
 				setHeadingStyle ( div );
 				div.querySelectorAll( 'p' ).forEach( ( ele ) => {
