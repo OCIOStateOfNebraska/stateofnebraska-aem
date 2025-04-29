@@ -2,6 +2,9 @@
 body {
 	display: none;
 	overflow-x: hidden;
+	font-family: Roboto, Helvetica, Arial, sans-serif, montserrat-normal-400-fallback, roboto-italic-400-fallback, roboto-normal-400-fallback;
+	font-size: 1.24rem;
+	line-height: 1.5;
 
 	&:has(header .header[data-block-status='loaded']),
 	&.appear { // stylelint-disable-line selector-no-qualifying-type
@@ -16,4 +19,25 @@ picture {
 
 img {
 	height: auto;
+}
+
+/* fallback font for Montserrat (normal - 400) */
+@font-face {
+	font-family: "montserrat-normal-400-fallback";
+	size-adjust: 101.3%;
+	src: local("Arial");
+}
+
+/* fallback font for Roboto (italic - 400) */
+@font-face {
+	font-family: "roboto-italic-400-fallback";
+	size-adjust: 101.9%;
+	src: local("Arial");
+}
+
+/* fallback font for Roboto (normal - 400) */
+@font-face {
+	font-family: "roboto-normal-400-fallback";
+	size-adjust: 101.9%;
+	src: local("Arial");
 }
