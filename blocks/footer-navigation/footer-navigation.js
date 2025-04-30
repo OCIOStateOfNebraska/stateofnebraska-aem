@@ -1,5 +1,5 @@
 import {domEl} from '../../scripts/dom-helpers.js';
-import {removeEmptyChildren, checkIfRowExists } from '../../scripts/utils.js';
+import {removeEmptyChildren, checkIfRowExists, getIndividualIcon } from '../../scripts/utils.js';
 import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 
 /**
@@ -37,11 +37,14 @@ export default async function decorate( block ) {
 	
 	const [siteMap, infoAndSocial, accreditation, footerLinks] = children.map( ( child, index ) => { return checkIfRowExists( children, index ); } );
 
-	// TODO: Back to Top
+	/**
+	 * Styles the back to top button
+	 */
 	function styleBackToTop() {
 		const container = domEl( 'div', { class: 'grid-container usa-footer__return-to-top'} );
-		const a = domEl( 'a', { 'href': '#'}, 'Return to top' );
+		const a = domEl( 'a', { class: 'usa-button usa-button--outline', 'href': '#'}, 'Return to top' );
 		container.append( a );
+		getIndividualIcon( a, 'arrow_upward' );
 		block.prepend( container );
 	}
 	
