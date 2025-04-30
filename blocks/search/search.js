@@ -170,7 +170,7 @@ function filterData( searchTerms, data ) {
 			return;
 		}
 
-		const metaContents = `${result.title} ${result.description} ${result.path.split( '/' ).pop()}`.toLowerCase();
+		const metaContents = `${result.title} ${result.description} ${result.path.split( '/' ).pop()} ${result.tags?.join(' ')} ${result.keywords} ${result.h2s?.join(' ')} ${result.body}`.toLowerCase();
 		searchTerms.forEach( ( term ) => {
 			const idx = metaContents.indexOf( term );
 			if ( idx < 0 ) return;
