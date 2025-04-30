@@ -6,6 +6,11 @@ import {
 
 const searchParams = new URLSearchParams( window.location.search );
 
+/**
+ * Finds the appropriate heading level for search results based on preceding headings
+ * @param {HTMLElement} el - The element to start searching from
+ * @returns {string} - The appropriate heading tag (H2-H6)
+ */
 function findNextHeading( el ) {
 	let preceedingEl = el.parentElement.previousElement || el.parentElement.parentElement;
 	let h = 'H2';
@@ -22,6 +27,11 @@ function findNextHeading( el ) {
 	return h;
 }
 
+/**
+ * Highlights search terms within text elements by wrapping them in <mark> tags
+ * @param {string[]} terms - Array of search terms to highlight
+ * @param {HTMLElement[]} elements - Array of elements to search within
+ */
 function highlightTextElements( terms, elements ) {
 	elements.forEach( ( element ) => {
 		if ( !element || !element.textContent ) return;
@@ -65,6 +75,11 @@ function highlightTextElements( terms, elements ) {
 	} );
 }
 
+/**
+ * Fetches data from the specified source URL
+ * @param {string} source - URL to fetch data from
+ * @returns {Promise<Object|null>} - JSON data or null if fetch fails
+ */
 export async function fetchData( source ) {
 	const response = await fetch( source );
 	if ( !response.ok ) {
@@ -83,6 +98,13 @@ export async function fetchData( source ) {
 	return json.data;
 }
 
+/**
+ * Renders a single search result item
+ * @param {Object} result - The search result data
+ * @param {string[]} searchTerms - Terms to highlight in the result
+ * @param {string} titleTag - HTML tag to use for the result title
+ * @returns {HTMLElement} - The rendered search result list item
+ */
 function renderResult( result, searchTerms, titleTag ) {
 	const li = document.createElement( 'li' );
 	const a = document.createElement( 'a' );
@@ -114,11 +136,19 @@ function renderResult( result, searchTerms, titleTag ) {
 	return li;
 }
 
+/**
+ * Clears the search results container
+ * @param {HTMLElement} block - The search block element
+ */
 function clearSearchResults( block ) {
 	const searchResults = block.querySelector( '.search-results' );
 	searchResults.innerHTML = '';
 }
 
+/**
+ * Clears search results and resets URL parameters
+ * @param {HTMLElement} block - The search block element
+ */
 function clearSearch( block ) {
 	clearSearchResults( block );
 	if ( window.history.replaceState ) {
@@ -129,6 +159,13 @@ function clearSearch( block ) {
 	}
 }
 
+/**
+ * Renders search results in the search block
+ * @param {HTMLElement} block - The search block element
+ * @param {Object} config - Configuration object with placeholders
+ * @param {Array} filteredData - Filtered search results
+ * @param {string[]} searchTerms - Search terms to highlight
+ */
 async function renderResults( block, config, filteredData, searchTerms ) {
 	clearSearchResults( block );
 	const searchResults = block.querySelector( '.search-results' );
@@ -148,10 +185,22 @@ async function renderResults( block, config, filteredData, searchTerms ) {
 	}
 }
 
+/**
+ * Comparison function for sorting search results by match position
+ * @param {Object} hit1 - First search hit with minIdx property
+ * @param {Object} hit2 - Second search hit with minIdx property
+ * @returns {number} - Comparison result for sorting
+ */
 function compareFound( hit1, hit2 ) {
 	return hit1.minIdx - hit2.minIdx;
 }
 
+/**
+ * Filters data based on search terms
+ * @param {string[]} searchTerms - Array of search terms
+ * @param {Array} data - Data to filter
+ * @returns {Array} - Filtered data sorted by relevance
+ */
 function filterData( searchTerms, data ) {
 	const foundInHeader = [];
 	const foundInMeta = [];
@@ -188,6 +237,12 @@ function filterData( searchTerms, data ) {
 	].map( ( item ) => item.result );
 }
 
+/**
+ * Handles search input events
+ * @param {Event} e - Input event
+ * @param {HTMLElement} block - The search block element
+ * @param {Object} config - Configuration object
+ */
 async function handleSearch( e, block, config ) {
 	const searchValue = e.target.value;
 	searchParams.set( 'q', searchValue );
@@ -208,6 +263,11 @@ async function handleSearch( e, block, config ) {
 	await renderResults( block, config, filteredData, searchTerms );
 }
 
+/**
+ * Creates a container for search results
+ * @param {HTMLElement} block - The search block element
+ * @returns {HTMLElement} - The search results container element
+ */
 function searchResultsContainer( block ) {
 	const results = document.createElement( 'ul' );
 	results.className = 'search-results';
@@ -215,6 +275,12 @@ function searchResultsContainer( block ) {
 	return results;
 }
 
+/**
+ * Creates the search input field
+ * @param {HTMLElement} block - The search block element
+ * @param {Object} config - Configuration object with placeholders
+ * @returns {HTMLElement} - The search input element
+ */
 function searchInput( block, config ) {
 	const input = document.createElement( 'input' );
 	input.setAttribute( 'type', 'search' );
@@ -233,12 +299,22 @@ function searchInput( block, config ) {
 	return input;
 }
 
+/**
+ * Creates the search icon element
+ * @returns {HTMLElement} - The search icon element
+ */
 function searchIcon() {
 	const icon = document.createElement( 'span' );
 	icon.classList.add( 'icon', 'icon-search' );
 	return icon;
 }
 
+/**
+ * Creates the search box container with input and icon
+ * @param {HTMLElement} block - The search block element
+ * @param {Object} config - Configuration object
+ * @returns {HTMLElement} - The search box container
+ */
 function searchBox( block, config ) {
 	const box = document.createElement( 'div' );
 	box.classList.add( 'search-box' );
@@ -250,6 +326,10 @@ function searchBox( block, config ) {
 	return box;
 }
 
+/**
+ * Decorates the search block with search functionality
+ * @param {HTMLElement} block - The block element to decorate
+ */
 export default async function decorate( block ) {
 	const placeholders = await fetchPlaceholders();
 	const source = block.querySelector( 'a[href]' ) ? block.querySelector( 'a[href]' ).href : '/query-index.json';
