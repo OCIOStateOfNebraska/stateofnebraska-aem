@@ -7,41 +7,41 @@
 .usa-header {
 	height: fit-content;
 	background-color: color('primary-dark');
-	
+
 	.usa-navbar {
 		justify-content: space-between;
 		height: fit-content;
 		border-bottom: 0;
 	}
-	
+
 	.usa-col {
 		width: 100%;
 	}
-	
+
 	.usa-logo {
 		@include u-margin-y(3);
 		position: relative;
 		flex: 0 0 auto;
 
-		
+
 		width: px-to-rem(180px);
 		height: px-to-rem(50px);
-		
+
 		&__text,
-		a, 
-		picture, 
+		a,
+		picture,
 		img {
 			position: absolute;
 			inset: 0;
 			width: 100%;
 			height: 100%;
 		}
-		
+
 		img {
 			object-fit: scale-down;
 		}
 	}
-	
+
 	.usa-menu-btn {
 		$button-context: 'Button';
 
@@ -64,27 +64,27 @@
 		&.usa-button--active {
 			@include set-text-and-bg('secondary-lighter', $context: $button-context);
 		}
-		
+
 	}
-	
+
 	.usa-text-input {
 		border: 1px solid color('black');
 	}
-	
+
 	.usa-button {
 		&[type='submit'] {
 			border-top-right-radius: 0;
 			border-bottom-right-radius: 0;
 		}
 	}
-	
+
 	@include at-media('desktop') {
 		.usa-text-input {
 			border: 0;
 			background-color: color('primary-darker');
 			color: color('white');
 		}
-	
+
 		.usa-button {
 			&[type='submit'] {
 				border-top-right-radius: radius(sm);
@@ -92,45 +92,48 @@
 				background-color: color(blue-50);
 			}
 		}
-		
+
 		.usa-nav__submenu {
 			background-color: color('primary-darkest');
 		}
 
-		.usa-nav { // needs to be nested for styles to take 
+		.usa-nav {
+			// needs to be nested for styles to take
 			border-color: color('primary-light');
 
 			&__primary {
 				button {
-					> span {
+					>span {
 						color: color('white');
 
 						&:after {
 							background-color: color('white');
 						}
 					}
-					
-					&[aria-expanded='true'] { // stylelint-disable-line selector-no-qualifying-type
+
+					&[aria-expanded='true'] {
+						// stylelint-disable-line selector-no-qualifying-type
 						background-color: color('primary-darkest');
 					}
-					
+
 					&:hover,
 					&:focus {
-						> span {
+						>span {
 
-							&:after { // stylelint-disable-line max-nesting-depth
+							&:after {
+								// stylelint-disable-line max-nesting-depth
 								background-color: color('white');
 							}
 						}
 					}
 				}
-				
-                
+
+
 				&:after {
 					background-color: color('primary-light');
 				}
 			}
-			
+
 			.usa-current {
 				&:after {
 					background-color: color('primary-dark');

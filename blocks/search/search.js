@@ -10,27 +10,6 @@ import {
 const searchParams = new URLSearchParams( window.location.search );
 
 /**
- * Finds the appropriate heading level for search results based on preceding headings
- * @param {HTMLElement} el - The element to start searching from
- * @returns {string} - The appropriate heading tag (H2-H6)
- */
-function findNextHeading( el ) {
-	let preceedingEl = el.parentElement.previousElement || el.parentElement.parentElement;
-	let h = 'H2';
-	while ( preceedingEl ) {
-		const lastHeading = [...preceedingEl.querySelectorAll( 'h1, h2, h3, h4, h5, h6' )].pop();
-		if ( lastHeading ) {
-			const level = parseInt( lastHeading.nodeName[1], 10 );
-			h = level < 6 ? `H${level + 1}` : 'H6';
-			preceedingEl = false;
-		} else {
-			preceedingEl = preceedingEl.previousElement || preceedingEl.parentElement;
-		}
-	}
-	return h;
-}
-
-/**
  * Highlights search terms within text elements by wrapping them in <mark> tags
  * @param {string[]} terms - Array of search terms to highlight
  * @param {HTMLElement[]} elements - Array of elements to search within
@@ -101,32 +80,54 @@ export async function fetchData( source ) {
 }
 
 /**
- * Renders a single search result item
+ * Renders a single search result item using the USA collection item template
  * @param {Object} result - The search result data
  * @param {string[]} searchTerms - Terms to highlight in the result
  * @param {string} titleTag - HTML tag to use for the result title
  * @returns {HTMLElement} - The rendered search result list item
  */
 function renderResult( result, searchTerms, titleTag ) {
-	const resultLink = a( { href: result.path } );
+	const resultItem = li( { class: 'usa-collection__item' } );
+
+	// Add image if available
 	if ( result.image ) {
-		const pic = createOptimizedPicture( result.image, '', false, [{ width: '375' }] );
-		resultLink.append( div( { class: 'search-result-image' }, pic ) );
+		const pic = createOptimizedPicture( result.image, result.title || '', false, [{ width: '375' }] );
+		pic.className = 'usa-collection__img';
+		resultItem.appendChild( pic );
 	}
 
+	// Create collection body container
+	const collectionBody = div( { class: 'usa-collection__body' } );
+
+	// Add title
 	if ( result.title ) {
-		const link = a( { href: result.path }, result.title );
-		highlightTextElements( searchTerms, [link] );
-		resultLink.append( domEl( titleTag, { class: 'search-result-title' }, link ) );
+		const titleLink = a( { href: result.path, class: 'usa-link' }, result.title );
+		highlightTextElements( searchTerms, [titleLink] );
+		const heading = domEl( titleTag, { class: 'usa-collection__heading' }, titleLink );
+		collectionBody.appendChild( heading );
 	}
 
+	// Add description
 	if ( result.description ) {
-		const description = p( {}, result.description );
+		const description = p( { class: 'usa-collection__description' }, result.description );
 		highlightTextElements( searchTerms, [description] );
-		resultLink.append( description );
+		collectionBody.appendChild( description );
 	}
 
-	return li( {}, resultLink );
+	// Add tags if available
+	if ( result.tags && result.tags.length > 0 ) {
+		const tagsList = ul( { class: 'usa-collection__meta', 'aria-label': 'Topics' } );
+
+		result.tags.forEach( ( tag, index ) => {
+			const tagClass = index === 0 && result.isNew ? 'usa-collection__meta-item usa-tag usa-tag--new' : 'usa-collection__meta-item usa-tag';
+			tagsList.appendChild( li( { class: tagClass }, tag ) );
+		} );
+
+		collectionBody.appendChild( tagsList );
+	}
+
+	resultItem.appendChild( collectionBody );
+	return resultItem;
 }
 
 /**
@@ -171,7 +172,7 @@ async function renderResults( block, config, filteredData, searchTerms ) {
 		} );
 	} else {
 		searchResults.classList.add( 'no-results' );
-		searchResults.append( li( {}, config.placeholders.searchNoResults || 'No results found.' ) );
+		searchResults.append( li( { class: 'usa-collection__item' }, config.placeholders.searchNoResults || 'No results found.' ) );
 	}
 }
 
@@ -259,10 +260,11 @@ async function handleSearch( e, block, config ) {
  * @returns {HTMLElement} - The search results container element
  */
 function searchResultsContainer( block ) {
-	return ul( {
-		class: 'search-results',
-		dataset: { h: findNextHeading( block ) }
+	let container = ul( {
+		class: 'search-results usa-collection',
 	} );
+	container.dataset.h = 'H4';
+	return container;
 }
 
 /**
@@ -272,11 +274,13 @@ function searchResultsContainer( block ) {
  * @returns {HTMLElement} - The search input element
  */
 function searchInput( block, config ) {
-	const searchPlaceholder = config.placeholders.searchPlaceholder || 'Search...';
+	const searchPlaceholder = (config.placeholders.searchPlaceholder || 'Search') + '...';
 
 	const searchInputEl = input( {
 		type: 'search',
-		class: 'search-input',
+		class: 'usa-input usa-text-input',
+		id: 'search-block-field',
+		name: 'q',
 		placeholder: searchPlaceholder,
 		'aria-label': searchPlaceholder,
 		oninput: ( e ) => handleSearch( e, block, config ),
@@ -290,8 +294,12 @@ function searchInput( block, config ) {
  * Creates the search icon element
  * @returns {HTMLElement} - The search icon element
  */
-function searchIcon() {
-	return span( { class: 'icon icon-search' } );
+function searchIcon( config ) {
+	const searchTxt = config.placeholders.searchPlaceholder || 'Search';
+	return domEl( 'button', { class: 'usa-button', type: 'submit' },
+		span( { class: 'usa-search__submit-text' }, searchTxt),
+		domEl( 'img', { class: 'usa-search__submit-icon', alt: searchTxt, src: '../../icons/usa-icons-bg/search--white.svg' } )
+	);
 }
 
 /**
@@ -301,9 +309,10 @@ function searchIcon() {
  * @returns {HTMLElement} - The search box container
  */
 function searchBox( block, config ) {
-	return div( { class: 'search-box' },
-		searchIcon(),
-		searchInput( block, config )
+	return domEl( 'form', { class: 'usa-search usa-search--big', role: 'search' },
+		domEl( 'label', { class: 'usa-sr-only', for: 'search-block-field' } ),
+		searchInput( block, config ),
+		searchIcon( config )
 	);
 }
 
