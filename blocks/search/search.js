@@ -259,7 +259,7 @@ async function handleSearch( e, block, config ) {
  * @param {HTMLElement} block - The search block element
  * @returns {HTMLElement} - The search results container element
  */
-function searchResultsContainer( block ) {
+function searchResultsContainer() {
 	let container = ul( {
 		class: 'search-results usa-collection',
 	} );
@@ -274,7 +274,7 @@ function searchResultsContainer( block ) {
  * @returns {HTMLElement} - The search input element
  */
 function searchInput( block, config ) {
-	const searchPlaceholder = (config.placeholders.searchPlaceholder || 'Search') + '...';
+	const searchPlaceholder = ( config.placeholders.searchPlaceholder || 'Search' ) + '...';
 
 	const searchInputEl = input( {
 		type: 'search',
@@ -297,7 +297,7 @@ function searchInput( block, config ) {
 function searchIcon( config ) {
 	const searchTxt = config.placeholders.searchPlaceholder || 'Search';
 	return domEl( 'button', { class: 'usa-button', type: 'submit' },
-		span( { class: 'usa-search__submit-text' }, searchTxt),
+		span( { class: 'usa-search__submit-text' }, searchTxt ),
 		domEl( 'img', { class: 'usa-search__submit-icon', alt: searchTxt, src: '../../icons/usa-icons-bg/search--white.svg' } )
 	);
 }
