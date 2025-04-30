@@ -36,17 +36,14 @@ export default async function decorate( block ) {
 	}
 	
 	const [siteMap, infoAndSocial, accreditation, footerLinks] = children.map( ( child, index ) => { return checkIfRowExists( children, index ); } );
-	
-	
 
-	// Section renderers
 	// TODO: Back to Top
-	// function styleBackToTop() {
-	// 	const container = domEl( 'div', { class: 'grid-container usa-footer__return-to-top'} );
-	// 	const a = domEl( 'a', { 'href': '#'}, 'Return to top' );
-	// 	container.append( a );
-	// 	block.prepend( container );
-	// }
+	function styleBackToTop() {
+		const container = domEl( 'div', { class: 'grid-container usa-footer__return-to-top'} );
+		const a = domEl( 'a', { 'href': '#'}, 'Return to top' );
+		container.append( a );
+		block.prepend( container );
+	}
 	
 	/**
 	 * Styles the sitemap section of the footer.
@@ -253,7 +250,7 @@ export default async function decorate( block ) {
 	if ( accreditation ) { styleAccreditation( accreditation ); }
 	styleIdentifierLinks( footerLinks );
 	styleCopyright();
-	//styleBackToTop(); // TODO: back to top
+	styleBackToTop();
 	
 	block.querySelectorAll( 'p' ).forEach( el => {
 		removeEmptyChildren( el ); // remove any empty p tags that are left over 
