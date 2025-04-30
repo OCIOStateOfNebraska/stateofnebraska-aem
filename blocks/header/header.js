@@ -22,14 +22,14 @@ async function loadBanner() {
 async function createSubMenu( subMenu, id ) {
 	let listItem = subMenu.querySelectorAll( 'ul > li' );
 	if ( listItem.length > 0 ) {
-		const button = domEl( 'button', { class: 'usa-accordion__button usa-nav__link usa-current', type: 'button', 'aria-expanded': false, 'aria-controls': 'extended-mega-nav-section-' + id} );
+		const button = domEl( 'button', { class: 'usa-accordion__button usa-nav__link usa-current', type: 'button', 'aria-expanded': false, 'aria-controls': 'extended-mega-nav-section-' + id } );
 		const span = domEl( 'span', {}, subMenu.firstElementChild.innerHTML );
 		button.append( span );
 		subMenu.prepend( button );
 		subMenu.querySelector( 'p' ).remove();
 
-		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu', hidden: true} );
-		const grid = domEl( 'div', { class: 'grid-row grid-gap-4'} );
+		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu', hidden: true } );
+		const grid = domEl( 'div', { class: 'grid-row grid-gap-4' } );
 		subNav.append( grid );
 		subMenu.append( subNav );
 
@@ -37,8 +37,8 @@ async function createSubMenu( subMenu, id ) {
 		let ul = '';
 		for ( const [index, element] of listItem.entries() ) {
 			if ( index % 3 === 0 ) {
-				column = domEl( 'div', { class: 'usa-col'} );
-				ul = domEl( 'ul', { class: 'usa-nav__submenu-list'} );
+				column = domEl( 'div', { class: 'usa-col' } );
+				ul = domEl( 'ul', { class: 'usa-nav__submenu-list' } );
 				column.append( ul );
 				grid.append( column );
 			}
@@ -51,13 +51,13 @@ async function createSubMenu( subMenu, id ) {
 	if ( subMenu.querySelector( 'ul' ) ) subMenu.querySelector( 'ul' ).remove();
 }
 
-function createSecondaryMenu( innerMenu ) {
-	const input = domEl( 'input', { class: 'usa-input usa-text-input', id: 'search-field', type: 'search', name: 'search'} );
-	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: '../../icons/usa-icons-bg/search--white.svg'} );
-	const searchButton = domEl( 'button', { class: 'usa-button', type: 'submit'} );
+function createSecondaryMenu( innerMenu, searchResultsUrl ) {
+	const input = domEl( 'input', { class: 'usa-input usa-text-input', id: 'search-field', type: 'search', name: 'q' } );
+	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: '../../icons/usa-icons-bg/search--white.svg' } );
+	const searchButton = domEl( 'button', { class: 'usa-button', type: 'submit' } );
 	searchButton.append( img );
-	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field'} );
-	const form = domEl( 'form', { class: 'usa-search usa-search--small', role: 'search'} );
+	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field' } );
+	const form = domEl( 'form', { class: 'usa-search usa-search--small', role: 'search', action: searchResultsUrl } );
 
 	form.append( label );
 	form.append( input );
@@ -65,14 +65,14 @@ function createSecondaryMenu( innerMenu ) {
 	let searchLabel = form.querySelector( '.usa-sr-only' );
 	searchLabel.innerHTML = 'Search';
 
-	const secondaryNav = domEl( 'div', { class: 'usa-nav__secondary'} );
-	const searchSection = domEl( 'section', { 'aria-label': 'Search component'} );
+	const secondaryNav = domEl( 'div', { class: 'usa-nav__secondary' } );
+	const searchSection = domEl( 'section', { 'aria-label': 'Search component' } );
 	searchSection.append( form );
 	secondaryNav.append( searchSection );
 	innerMenu.append( secondaryNav );
 
-	const closeImage = domEl( 'img', { role: 'img', alt: 'Close', src: '../../icons/usa-icons/close.svg'} );
-	const closeButton = domEl( 'button', { class: 'usa-nav__close', type: 'button'} );
+	const closeImage = domEl( 'img', { role: 'img', alt: 'Close', src: '../../icons/usa-icons/close.svg' } );
+	const closeButton = domEl( 'button', { class: 'usa-nav__close', type: 'button' } );
 	closeButton.append( closeImage );
 	innerMenu.prepend( closeButton );
 }
@@ -81,7 +81,7 @@ async function loadAndDecorateNav() {
 	const navMeta = getMetadata( 'nav' );
 	const navPath = navMeta ? new URL( navMeta, window.location ).pathname : '/nav';
 	const navFragment = await loadFragment( navPath );
-	const innerNav = domEl( 'div', { class: 'usa-nav__inner'} );
+	const innerNav = domEl( 'div', { class: 'usa-nav__inner' } );
 	let navChildren = navFragment.children;
 	for ( const element of navChildren ) {
 		if ( element.getElementsByTagName( 'ul' ).length > 0 ) {
@@ -96,11 +96,16 @@ async function loadAndDecorateNav() {
 		primaryItem.classList.add( 'usa-nav__primary-item' );
 		createSubMenu( primaryItem, index );
 	} );
-	createSecondaryMenu( innerNav );
-	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation'} );
+
+	// get url for search results page
+	const searchLink = navFragment.querySelector( 'div.section:last-child a' );
+	const searchResultsUrl = searchLink ? searchLink.href : '/search-results';
+
+	createSecondaryMenu( innerNav, searchResultsUrl );
+	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation' } );
 	nav.append( innerNav );
 	const container = domEl( 'div', {} );
-	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--extended'} );
+	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--extended' } );
 	container.append( nav );
 	const picture = navChildren[0].querySelector( 'picture' );
 	const link = navChildren[0].querySelector( 'a' );
@@ -110,13 +115,13 @@ async function loadAndDecorateNav() {
 		link.append( picture );
 	}
 
-	const img = domEl( 'div', { class: 'usa-logo__text'}, link );
+	const img = domEl( 'div', { class: 'usa-logo__text' }, link );
 
-	const logo = domEl( 'div', { class: 'usa-logo'} );
+	const logo = domEl( 'div', { class: 'usa-logo' } );
 	logo.append( img );
-	const navBar = domEl( 'div', { class: 'usa-navbar'} );
+	const navBar = domEl( 'div', { class: 'usa-navbar' } );
 	navBar.append( logo );
-	const menuButton = domEl( 'button', { class: 'usa-menu-btn', type: 'button'} );
+	const menuButton = domEl( 'button', { class: 'usa-menu-btn', type: 'button' } );
 	navBar.append( menuButton );
 	let menu = navBar.querySelector( '.usa-menu-btn' );
 	menu.innerHTML = 'Menu';
@@ -127,7 +132,7 @@ async function loadAndDecorateNav() {
 
 async function loadAndDecorateAlert() {
 	const alertMeta = getMetadata( 'alert' );
-	if( !alertMeta ) { return null; }
+	if ( !alertMeta ) { return null; }
 
 	const alertPath = new URL( alertMeta, window.location ).pathname;
 	const alertFragment = await loadFragment( alertPath );
@@ -139,7 +144,7 @@ async function loadAndDecorateAlert() {
 	Array.from( alerts ).forEach( wrap => {
 		const alertEle = wrap.querySelector( '.usa-alert' );
 		alertEle.parentNode.classList.add( 'usa-site-alert' );
-		if( alertEle.classList.contains( 'usa-alert--emergency' ) ) {
+		if ( alertEle.classList.contains( 'usa-alert--emergency' ) ) {
 			alertEle.classList.remove( 'usa-alert--emergency' );
 			alertEle.parentNode.classList.add( 'usa-site-alert--emergency' );
 		} else {
@@ -168,9 +173,9 @@ export default async function decorate( block ) {
 	const navEle = await loadAndDecorateNav();
 
 	block.innerHTML = '';
-	const overLay = domEl( 'div', { class: 'usa-overlay'} );
+	const overLay = domEl( 'div', { class: 'usa-overlay' } );
 	block.append( skipNav );
-	if( alertEle ) { block.append( alertEle ); }
+	if ( alertEle ) { block.append( alertEle ); }
 	block.appendChild( bannerEle );
 	block.appendChild( overLay );
 	block.appendChild( navEle );
