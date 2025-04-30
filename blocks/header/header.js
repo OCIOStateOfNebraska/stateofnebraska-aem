@@ -28,7 +28,7 @@ async function createSubMenu( subMenu, id ) {
 		subMenu.prepend( button );
 		subMenu.querySelector( 'p' ).remove();
 
-		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu', hidden: true} );
+		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu usa-megamenu', hidden: true} );
 		const grid = domEl( 'div', { class: 'grid-row grid-gap-4'} );
 		subNav.append( grid );
 		subMenu.append( subNav );
@@ -36,7 +36,7 @@ async function createSubMenu( subMenu, id ) {
 		let column = '';
 		let ul = '';
 		for ( const [index, element] of listItem.entries() ) {
-			if ( index % 3 === 0 ) {
+			if ( index % 8 === 0 ) {
 				column = domEl( 'div', { class: 'usa-col'} );
 				ul = domEl( 'ul', { class: 'usa-nav__submenu-list'} );
 				column.append( ul );
