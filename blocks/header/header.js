@@ -46,7 +46,7 @@ async function createSubMenu( subMenu, id ) {
 			element.classList.add( 'usa-nav__submenu-item' );
 		}
 	} else {
-		subMenu.firstChild.classList.add( 'usa-nav-link' );
+		// subMenu.firstChild.classList.add( 'usa-nav-link' );
 	}
 	if ( subMenu.querySelector( 'ul' ) ) subMenu.querySelector( 'ul' ).remove();
 }

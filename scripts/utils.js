@@ -103,7 +103,7 @@ async function fetchIndex( indexFile = 'query-index', sheet = null ) {
 
 // remove any empty children in a block 
 function removeEmptyChildren( el ) {
-	if ( el.innerText.trim().length === 0 ) {
+	if ( el.innerText.trim().length === 0 && el.querySelector( 'img, svg' ) === null ) {
 		el.remove();
 	}
 }
