@@ -1,3 +1,5 @@
+@use '../../styles/ne-global-imports' as *;
+
 // basic tag styles here, NO BLOCKS
 /* fallback font for Montserrat (normal - 400) */
 @font-face {
@@ -30,4 +32,26 @@ picture {
 
 img {
 	height: auto;
+}
+
+h2 {
+	&.h2--underline {
+		margin-bottom: units(5);
+
+		&,
+		em,
+		i {
+			font-style: normal;
+		}
+
+		&:after {
+			display: block;
+			width: px-to-rem(80px);
+			max-width: 100%;
+			height: 4px;
+			background-color: color('secondary');
+			margin-top: units(5);
+			content: '';
+		}
+	}
 }

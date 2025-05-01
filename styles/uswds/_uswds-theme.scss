@@ -144,7 +144,7 @@ in the form $setting: value,
 		'roboto': (
 			'display-name': 'Roboto',
 			'cap-height': 364px, // the default
-			'stack': 'roboto-italic-400-fallback, roboto-normal-400-fallback, Helvetica, Arial, sans-serif'
+			'stack': 'roboto-normal-400-fallback, Helvetica, Arial, sans-serif'
 		),
 		'montserrat': (
 			'display-name': 'Montserrat',
@@ -287,5 +287,12 @@ in the form $setting: value,
 	$theme-breadcrumb-padding-top: 2,
 	$theme-breadcrumb-padding-x: 0,
 	$theme-breadcrumb-padding-bottom: 2,
+
+	/////
+	/// Intro
+	/////
+	$theme-lead-font-family: 'sans',
+	$theme-lead-font-size: 'xl', // 32px
+	$theme-lead-line-height: 4,
 
 );
