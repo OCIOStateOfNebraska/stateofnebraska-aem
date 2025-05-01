@@ -139,6 +139,12 @@
 				}
 			}
 			
+			a {
+				&.usa-nav__link { // stylelint-disable-line selector-no-qualifying-type
+					color: color('white');
+				}
+			}
+			
 			.usa-current {
 				&:after {
 					background-color: color('primary-dark');
