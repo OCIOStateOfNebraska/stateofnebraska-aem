@@ -81,7 +81,7 @@
 	
 	@include at-media('desktop') {
 		.grid-col {
-			flex: 1 1 0%;
+			flex: 1 1 0%; // from uswds - makes them space evenly 
 			width: auto;
 		}
 	
