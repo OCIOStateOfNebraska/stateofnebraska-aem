@@ -14,7 +14,8 @@
 		border-bottom: 0;
 	}
 	
-	.usa-col {
+	.grid-col {
+		flex: 1 1 auto;
 		width: 100%;
 	}
 	
@@ -79,6 +80,11 @@
 	}
 	
 	@include at-media('desktop') {
+		.grid-col {
+			flex: 1 1 0%; // from uswds - makes them space evenly 
+			width: auto;
+		}
+	
 		.usa-text-input {
 			border: 0;
 			background-color: color('primary-darker');
@@ -94,7 +100,9 @@
 		}
 		
 		.usa-nav__submenu {
-			background-color: color('primary-darkest');
+			width: fit-content;
+			min-width: px-to-rem(350px);
+			background-color: color('primary-darkest'); 
 		}
 
 		.usa-nav { // needs to be nested for styles to take 
