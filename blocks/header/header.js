@@ -46,7 +46,10 @@ async function createSubMenu( subMenu, id ) {
 			element.classList.add( 'usa-nav__submenu-item' );
 		}
 	} else {
-		// subMenu.firstChild.classList.add( 'usa-nav-link' );
+		const link = subMenu.querySelector( 'a' );
+		link.className = 'usa-nav__link usa-current'; // TODO: make sure to update based on if its the current link or not 
+		subMenu.append( link );
+		subMenu.querySelector( 'p' ).remove();
 	}
 	if ( subMenu.querySelector( 'ul' ) ) subMenu.querySelector( 'ul' ).remove();
 }
