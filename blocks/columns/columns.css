@@ -1,1 +1,1 @@
-.columns{margin-bottom:1.5rem}.columns__grid-row{margin-bottom:-1rem}.columns__grid-col{margin-bottom:1rem}@media all and (min-width: 64em){.columns__grid-row{margin-bottom:-2rem}.columns__grid-col{margin-bottom:2rem}}
+.columns{margin-bottom:1.5rem}.columns__grid-row{row-gap:1rem}@media all and (min-width: 64em){.columns__grid-row{row-gap:2rem}}

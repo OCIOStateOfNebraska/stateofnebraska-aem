@@ -4,20 +4,12 @@
 	margin-bottom: units($component-spacing);
 
 	&__grid-row {
-		margin-bottom: units($theme-site-margins-mobile-width * -1)
-	}
-	
-	&__grid-col {
-		margin-bottom: units($theme-site-margins-mobile-width)
+		row-gap: units($theme-site-margins-mobile-width);
 	}
 	
 	@include at-media('desktop') {
 		&__grid-row {
-			margin-bottom: units($theme-site-margins-width * -1)
-		}
-		
-		&__grid-col {
-			margin-bottom: units($theme-site-margins-width)
+			row-gap: units($theme-site-margins-width)
 		}
 	}
 }
