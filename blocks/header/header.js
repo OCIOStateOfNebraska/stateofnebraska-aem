@@ -22,7 +22,7 @@ async function loadBanner() {
 async function createSubMenu( subMenu, id ) {
 	let listItem = subMenu.querySelectorAll( 'ul > li' );
 	if ( listItem.length > 0 ) {
-		const button = domEl( 'button', { class: 'usa-accordion__button usa-nav__link usa-current', type: 'button', 'aria-expanded': false, 'aria-controls': 'extended-mega-nav-section-' + id} );
+		const button = domEl( 'button', { class: 'usa-accordion__button usa-nav__link', type: 'button', 'aria-expanded': false, 'aria-controls': 'extended-mega-nav-section-' + id} );
 		const span = domEl( 'span', {}, subMenu.firstElementChild.innerHTML );
 		button.append( span );
 		subMenu.prepend( button );
@@ -37,19 +37,23 @@ async function createSubMenu( subMenu, id ) {
 		let ul = '';
 		for ( const [index, element] of listItem.entries() ) {
 			if ( index % 4 === 0 ) {
-				column = domEl( 'div', { class: 'grid-col'} );
+				column = domEl( 'div', { class: 'usa-col'} );
 				ul = domEl( 'ul', { class: 'usa-nav__submenu-list'} );
 				column.append( ul );
 				grid.append( column );
 			}
 			ul.append( element );
 			element.classList.add( 'usa-nav__submenu-item' );
+			let currentPagePath = window.location.pathname;
+			if ( element.firstElementChild.getAttribute( 'href' ) === currentPagePath ) {
+				button.classList.add( 'usa-current' );
+			}
 		}
 	} else {
-		const link = subMenu.querySelector( 'a' );
-		link.className = 'usa-nav__link usa-current'; // TODO: make sure to update based on if its the current link or not 
-		subMenu.append( link );
-		subMenu.querySelector( 'p' ).remove();
+		subMenu.prepend( subMenu.firstElementChild.firstElementChild );
+		subMenu.lastElementChild.remove();
+		subMenu.firstElementChild.classList.add( 'usa-nav-link' );
+		subMenu.firstElementChild.classList.remove( 'usa-button' );
 	}
 	if ( subMenu.querySelector( 'ul' ) ) subMenu.querySelector( 'ul' ).remove();
 }
