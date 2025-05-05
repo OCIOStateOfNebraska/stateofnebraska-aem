@@ -54,6 +54,10 @@ async function createSubMenu( subMenu, id ) {
 		subMenu.lastElementChild.remove();
 		subMenu.firstElementChild.classList.add( 'usa-nav-link' );
 		subMenu.firstElementChild.classList.remove( 'usa-button' );
+		let currentPagePath = window.location.pathname;
+		if ( subMenu.firstElementChild.getAttribute( 'href' ) === currentPagePath ) {
+			subMenu.firstElementChild.classList.add( 'usa-current' );
+		}
 	}
 	if ( subMenu.querySelector( 'ul' ) ) subMenu.querySelector( 'ul' ).remove();
 }
