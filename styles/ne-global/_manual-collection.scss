@@ -1,0 +1,12 @@
+@use '../../styles/ne-global-imports' as *;
+@use '~uswds/usa-collection/src/styles/usa-collection';
+
+.manual-collection {
+	$block: 'usa-collection';
+    
+	.#{$block} {
+		&__item {
+			border-color: color('base-lighter');
+		}
+	}
+}

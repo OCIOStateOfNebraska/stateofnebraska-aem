@@ -323,11 +323,14 @@ function searchBox( block, config ) {
 export default async function decorate( block ) {
 	const placeholders = await fetchPlaceholders();
 	const source = block.querySelector( 'a[href]' ) ? block.querySelector( 'a[href]' ).href : '/query-index.json';
+	const manualCollection = domEl( 'div', {class: 'manual-collection' }, searchResultsContainer( block ) );
 	block.innerHTML = '';
 	block.append(
 		searchBox( block, { source, placeholders } ),
-		searchResultsContainer( block )
+		manualCollection
 	);
+	
+	
 
 	if ( searchParams.get( 'q' ) ) {
 		const input = block.querySelector( 'input' );

@@ -1,19 +1,19 @@
 @use '../../styles/ne-global-imports' as *;
-@use '~uswds/usa-collection/src/styles/usa-collection';
 
 .search-wrapper {
 	.usa-search {
 		max-width: 70ex;
+		margin-bottom: units(7);
 
 		.usa-input {
 			width: 100%;
+			border: 1px solid color('ink');
 		}
 
 		.usa-button {
 			&[type='submit'] {
-				border-top-right-radius: radius(sm);
-				border-bottom-right-radius: radius(sm);
-				background-color: color(blue-50);
+				border: 1px solid color('primary');
+				background-color: color('primary');
 			}
 		}
 	}
