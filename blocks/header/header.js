@@ -37,7 +37,7 @@ async function createSubMenu( subMenu, id ) {
 		let ul = '';
 		for ( const [index, element] of listItem.entries() ) {
 			if ( index % 4 === 0 ) {
-				column = domEl( 'div', { class: 'grid-col'} );
+				column = domEl( 'div', { class: 'grid-col' } );
 				ul = domEl( 'ul', { class: 'usa-nav__submenu-list'} );
 				column.append( ul );
 				grid.append( column );
