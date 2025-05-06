@@ -1,18 +1,17 @@
-export default function decorate( block ) {
-	const cols = [...block.firstElementChild.children];
-	block.classList.add( `columns-${cols.length}-cols` );
+import { domEl } from '../../scripts/dom-helpers.js';
 
-	// setup image columns
+
+export default function decorate( block ) {
+	// append to one main Row just in case they author the wrong number of columns. This way we don't have any gaps 
+	const mainRow = domEl( 'div', {class: 'columns__grid-row grid-row grid-gap'} );
+
 	[...block.children].forEach( ( row ) => {
 		[...row.children].forEach( ( col ) => {
-			const pic = col.querySelector( 'picture' );
-			if ( pic ) {
-				const picWrapper = pic.closest( 'div' );
-				if ( picWrapper && picWrapper.children.length === 1 ) {
-					// picture is only content in column
-					picWrapper.classList.add( 'columns-img-col' );
-				}
-			}
+			col.classList.add( 'columns__grid-col', 'grid-col-12', 'desktop:grid-col-6' );
+			mainRow.append( col );
 		} );
 	} );
+	
+	block.innerText = '';
+	block.append( mainRow );
 }
