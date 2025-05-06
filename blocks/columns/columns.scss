@@ -1,34 +1,15 @@
-// stylelint-disable
-.columns > div {
-	display: flex;
-	flex-direction: column;
-}
+@use '../../styles/ne-global-imports' as *;
 
-.columns img {
-	width: 100%;
-}
+.columns {
+	margin-bottom: units($component-spacing);
 
-.columns > div > div {
-	order: 1;
-}
-
-.columns > div > .columns-img-col {
-	order: 0;
-}
-
-.columns > div > .columns-img-col img {
-	display: block;
-}
-
-@media (width >= 900px) {
-	.columns > div {
-		align-items: center;
-		flex-direction: unset;
-		gap: 24px;
+	&__grid-row {
+		row-gap: units($theme-site-margins-mobile-width);
 	}
-
-	.columns > div > div {
-		flex: 1;
-		order: unset;
+	
+	@include at-media('desktop') {
+		&__grid-row {
+			row-gap: units($theme-site-margins-width)
+		}
 	}
 }

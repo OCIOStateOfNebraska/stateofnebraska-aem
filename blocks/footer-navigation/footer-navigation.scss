@@ -69,8 +69,22 @@
 				}
 			}
 			
+			// Make back to top button match button outline style
 			a {
 				text-decoration: none;
+				
+				&:hover {
+					text-decoration: underline;
+				}
+				
+				&:hover,
+				&:focus {
+					color: color('primary-dark');
+				}
+				
+				&:focus-visible {
+					outline-offset: units(0.5);
+				}
 			}
 		}
 		
