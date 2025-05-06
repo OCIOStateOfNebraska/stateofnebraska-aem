@@ -25,7 +25,10 @@ window.siteIndexCache = window.siteIndexCache || {};
  */
 function buildHeroBlock( main, templateName ) {
 	const h1 = main.querySelector( 'h1' );
-	const heroSection = h1.closest( '.section' );
+	let heroSection;
+	if ( h1 ) {
+		heroSection = h1.closest( '.section' );
+	}
 	const multipleSections = main.querySelectorAll( '.section' ).length > 1;
 
 	let picture = null;
@@ -37,12 +40,12 @@ function buildHeroBlock( main, templateName ) {
 
 	const container = document.createElement( 'div' );
 	let heroBlock;
-	if( templateName === 'homepage' ) {
+	if ( templateName === 'homepage' ) {
 		let desc;
 		if ( heroSection && multipleSections ) {
 			desc = heroSection.querySelectorAll( 'p, ul, ol' );
 		}
-		heroBlock = buildBlock( 'hero-homepage', { elems: [picture, h1, ...desc ] } );
+		heroBlock = buildBlock( 'hero-homepage', { elems: [picture, h1, ...desc] } );
 	} else {
 		heroBlock = buildBlock( 'hero', { elems: [picture, h1] } );
 	}
