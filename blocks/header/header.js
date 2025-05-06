@@ -36,9 +36,9 @@ async function createSubMenu( subMenu, id ) {
 		let column = '';
 		let ul = '';
 		for ( const [index, element] of listItem.entries() ) {
-			if ( index % 3 === 0 ) {
-				column = domEl( 'div', { class: 'usa-col' } );
-				ul = domEl( 'ul', { class: 'usa-nav__submenu-list' } );
+			if ( index % 4 === 0 ) {
+				column = domEl( 'div', { class: 'grid-col'} );
+				ul = domEl( 'ul', { class: 'usa-nav__submenu-list'} );
 				column.append( ul );
 				grid.append( column );
 			}
@@ -46,7 +46,10 @@ async function createSubMenu( subMenu, id ) {
 			element.classList.add( 'usa-nav__submenu-item' );
 		}
 	} else {
-		subMenu.firstChild.classList.add( 'usa-nav-link' );
+		const link = subMenu.querySelector( 'a' );
+		link.className = 'usa-nav__link usa-current'; // TODO: make sure to update based on if its the current link or not 
+		subMenu.append( link );
+		subMenu.querySelector( 'p' ).remove();
 	}
 	if ( subMenu.querySelector( 'ul' ) ) subMenu.querySelector( 'ul' ).remove();
 }

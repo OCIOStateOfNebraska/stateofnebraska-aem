@@ -13,8 +13,9 @@
 		height: fit-content;
 		border-bottom: 0;
 	}
-
-	.usa-col {
+	
+	.grid-col {
+		flex: 1 1 auto;
 		width: 100%;
 	}
 
@@ -79,6 +80,11 @@
 	}
 
 	@include at-media('desktop') {
+		.grid-col {
+			flex: 1 1 0%; // from uswds - makes them space evenly 
+			width: auto;
+		}
+	
 		.usa-text-input {
 			border: 0;
 			background-color: color('primary-darker');
@@ -94,7 +100,9 @@
 		}
 
 		.usa-nav__submenu {
-			background-color: color('primary-darkest');
+			width: fit-content;
+			min-width: px-to-rem(350px);
+			background-color: color('primary-darkest'); 
 		}
 
 		.usa-nav {
@@ -133,7 +141,13 @@
 					background-color: color('primary-light');
 				}
 			}
-
+			
+			a {
+				&.usa-nav__link { // stylelint-disable-line selector-no-qualifying-type
+					color: color('white');
+				}
+			}
+			
 			.usa-current {
 				&:after {
 					background-color: color('primary-dark');

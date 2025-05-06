@@ -1,1 +1,1 @@
-.columns>div{display:flex;flex-direction:column}.columns img{width:100%}.columns>div>div{order:1}.columns>div>.columns-img-col{order:0}.columns>div>.columns-img-col img{display:block}@media(width >= 900px){.columns>div{align-items:center;flex-direction:unset;gap:24px}.columns>div>div{flex:1;order:unset}}
+.columns{margin-bottom:1.5rem}.columns__grid-row{row-gap:1rem}@media all and (min-width: 64em){.columns__grid-row{row-gap:2rem}}

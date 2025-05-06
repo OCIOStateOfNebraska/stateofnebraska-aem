@@ -164,6 +164,20 @@ function decorateButtons( element ) {
 }
 
 /**
+ * Decorates h2 elements with a class
+ * @param {Element} element container element
+ */
+function decorateH2s( element ) {
+	element.querySelectorAll( 'h2' ).forEach( ( h2 ) => {
+		const childEleTag = h2.children.length === 1 && h2.firstElementChild.tagName.toLowerCase();
+		// contains only emphasized text
+		if ( childEleTag && ( childEleTag === 'em' || childEleTag === 'i' ) ) {
+			h2.classList.add( 'h2--underline' );
+		}
+	} );
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
@@ -176,6 +190,7 @@ export function decorateMain( main ) {
 export function decorateInner( container ) {
 	decorateButtons( container );
 	decorateIcons( container );
+	decorateH2s( container );
 	decorateSections( container );
 	decorateBlocks( container );
 	decorateUnstyledLinks( container );
