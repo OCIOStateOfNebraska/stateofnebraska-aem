@@ -19,17 +19,58 @@ async function loadBanner() {
 	return loadBlock( bannerBlock );
 }
 
+function normalizePath( path ) {
+	if ( !path ) return '';
+	try {
+		// Use URL constructor relative to a base to handle relative paths correctly
+		const url = new URL( path, window.location.origin );
+		let normPath = url.pathname;
+		// Remove trailing slash if not the root path
+		if ( normPath !== '/' && normPath.endsWith( '/' ) ) {
+			normPath = normPath.slice( 0, -1 );
+		}
+		// Remove .html extension
+		if ( normPath.endsWith( '.html' ) ) {
+			normPath = normPath.slice( 0, -5 );
+		}
+		return normPath;
+	} catch ( e ) {
+		// Fallback for invalid paths or environments without URL constructor
+		const mainPath = path.split( '?' )[0].split( '#' )[0];
+		const noTrailingSlash = ( mainPath !== '/' && mainPath.endsWith( '/' ) ) ? mainPath.slice( 0, -1 ) : mainPath;
+		return noTrailingSlash.endsWith( '.html' ) ? noTrailingSlash.slice( 0, -5 ) : noTrailingSlash;
+	}
+}
+
+/**
+ * Gets the normalized paths of all ancestor pages for a given path.
+ * Example: getAncestors('/us/en/products/detail') returns ['/us', '/us/en', '/us/en/products']
+ * @param {string} path - The normalized path of the page.
+ * @returns {string[]} An array of normalized ancestor paths.
+ */
+function getAncestors( path ) {
+	const ancestors = [];
+	const segments = path.split( '/' ).filter( Boolean ); // Filter out empty strings
+	let currentPath = '';
+	// Iterate up to length - 1 to get ancestors, not the path itself
+	for ( let i = 0; i < segments.length - 1; i += 1 ) {
+		currentPath += `/${segments[i]}`;
+		ancestors.push( currentPath );
+	}
+	return ancestors;
+}
+
 async function createSubMenu( subMenu, id ) {
 	let listItem = subMenu.querySelectorAll( 'ul > li' );
 	if ( listItem.length > 0 ) {
-		const button = domEl( 'button', { class: 'usa-accordion__button usa-nav__link', type: 'button', 'aria-expanded': false, 'aria-controls': 'extended-mega-nav-section-' + id} );
+		const button = domEl( 'button', { class: 'usa-accordion__button usa-nav__link', type: 'button', 'aria-expanded': false, 'aria-controls': 'extended-mega-nav-section-' + id } );
 		const span = domEl( 'span', {}, subMenu.firstElementChild.innerHTML );
 		button.append( span );
 		subMenu.prepend( button );
 		subMenu.querySelector( 'p' ).remove();
 
-		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu', hidden: true} );
-		const grid = domEl( 'div', { class: 'grid-row grid-gap-4'} );
+		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu', hidden: true } );
+		const grid = domEl( 'div', { class: 'grid-row grid-gap-4' } );
 		subNav.append( grid );
 		subMenu.append( subNav );
 
@@ -37,38 +78,50 @@ async function createSubMenu( subMenu, id ) {
 		let ul = '';
 		for ( const [index, element] of listItem.entries() ) {
 			if ( index % 4 === 0 ) {
-				column = domEl( 'div', { class: 'usa-col'} );
+				column = domEl( 'div', { class: 'grid-col' } );
 				ul = domEl( 'ul', { class: 'usa-nav__submenu-list'} );
 				column.append( ul );
 				grid.append( column );
 			}
 			ul.append( element );
 			element.classList.add( 'usa-nav__submenu-item' );
+			let link = element.querySelector( 'a' );
+			if ( link.classList.contains( 'usa-button' ) ) { // remove extra wrapper if there is one
+				element.append( link );
+				link.className = '';
+				element.querySelector( '.usa-button__wrap' ).remove();
+			}
+			const pagePathNormalized = normalizePath( element.firstElementChild.getAttribute( 'href' ) );
 			let currentPagePath = window.location.pathname;
-			if ( element.firstElementChild.getAttribute( 'href' ) === currentPagePath ) {
+			const ancestors = getAncestors( pagePathNormalized );
+			const topLevel = ancestors[0];
+			if ( currentPagePath.includes( topLevel ) ) {
 				button.classList.add( 'usa-current' );
 			}
 		}
 	} else {
 		subMenu.prepend( subMenu.firstElementChild.firstElementChild );
 		subMenu.lastElementChild.remove();
-		subMenu.firstElementChild.classList.add( 'usa-nav-link' );
+		subMenu.firstElementChild.classList.add( 'usa-nav__link' );
 		subMenu.firstElementChild.classList.remove( 'usa-button' );
+		const pagePathNormalized = normalizePath( subMenu.firstElementChild.getAttribute( 'href' ) );
 		let currentPagePath = window.location.pathname;
-		if ( subMenu.firstElementChild.getAttribute( 'href' ) === currentPagePath ) {
+		const ancestors = getAncestors( pagePathNormalized );
+		const topLevel = ancestors.length ? ancestors[0] : pagePathNormalized;
+		if ( currentPagePath.includes( topLevel ) ) {
 			subMenu.firstElementChild.classList.add( 'usa-current' );
 		}
-	}
+	} 
 	if ( subMenu.querySelector( 'ul' ) ) subMenu.querySelector( 'ul' ).remove();
 }
 
-function createSecondaryMenu( innerMenu ) {
-	const input = domEl( 'input', { class: 'usa-input usa-text-input', id: 'search-field', type: 'search', name: 'search'} );
-	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: '../../icons/usa-icons-bg/search--white.svg'} );
-	const searchButton = domEl( 'button', { class: 'usa-button', type: 'submit'} );
+function createSecondaryMenu( innerMenu, searchResultsUrl ) {
+	const input = domEl( 'input', { class: 'usa-input usa-text-input', id: 'search-field', type: 'search', name: 'q' } );
+	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: '../../icons/usa-icons-bg/search--white.svg' } );
+	const searchButton = domEl( 'button', { class: 'usa-button', type: 'submit' } );
 	searchButton.append( img );
-	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field'} );
-	const form = domEl( 'form', { class: 'usa-search usa-search--small', role: 'search'} );
+	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field' } );
+	const form = domEl( 'form', { class: 'usa-search usa-search--small', role: 'search', action: searchResultsUrl } );
 
 	form.append( label );
 	form.append( input );
@@ -76,14 +129,14 @@ function createSecondaryMenu( innerMenu ) {
 	let searchLabel = form.querySelector( '.usa-sr-only' );
 	searchLabel.innerHTML = 'Search';
 
-	const secondaryNav = domEl( 'div', { class: 'usa-nav__secondary'} );
-	const searchSection = domEl( 'section', { 'aria-label': 'Search component'} );
+	const secondaryNav = domEl( 'div', { class: 'usa-nav__secondary' } );
+	const searchSection = domEl( 'section', { 'aria-label': 'Search component' } );
 	searchSection.append( form );
 	secondaryNav.append( searchSection );
 	innerMenu.append( secondaryNav );
 
-	const closeImage = domEl( 'img', { role: 'img', alt: 'Close', src: '../../icons/usa-icons/close.svg'} );
-	const closeButton = domEl( 'button', { class: 'usa-nav__close', type: 'button'} );
+	const closeImage = domEl( 'img', { role: 'img', alt: 'Close', src: '../../icons/usa-icons/close.svg' } );
+	const closeButton = domEl( 'button', { class: 'usa-nav__close', type: 'button' } );
 	closeButton.append( closeImage );
 	innerMenu.prepend( closeButton );
 }
@@ -92,7 +145,7 @@ async function loadAndDecorateNav() {
 	const navMeta = getMetadata( 'nav' );
 	const navPath = navMeta ? new URL( navMeta, window.location ).pathname : '/nav';
 	const navFragment = await loadFragment( navPath );
-	const innerNav = domEl( 'div', { class: 'usa-nav__inner'} );
+	const innerNav = domEl( 'div', { class: 'usa-nav__inner' } );
 	let navChildren = navFragment.children;
 	for ( const element of navChildren ) {
 		if ( element.getElementsByTagName( 'ul' ).length > 0 ) {
@@ -107,11 +160,16 @@ async function loadAndDecorateNav() {
 		primaryItem.classList.add( 'usa-nav__primary-item' );
 		createSubMenu( primaryItem, index );
 	} );
-	createSecondaryMenu( innerNav );
-	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation'} );
+
+	// get url for search results page
+	const searchLink = navFragment.querySelector( 'div.section:last-child a' );
+	const searchResultsUrl = searchLink ? searchLink.href : '/search-results';
+
+	createSecondaryMenu( innerNav, searchResultsUrl );
+	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation' } );
 	nav.append( innerNav );
 	const container = domEl( 'div', {} );
-	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--extended'} );
+	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--extended' } );
 	container.append( nav );
 	const picture = navChildren[0].querySelector( 'picture' );
 	const link = navChildren[0].querySelector( 'a' );
@@ -121,13 +179,13 @@ async function loadAndDecorateNav() {
 		link.append( picture );
 	}
 
-	const img = domEl( 'div', { class: 'usa-logo__text'}, link );
+	const img = domEl( 'div', { class: 'usa-logo__text' }, link );
 
-	const logo = domEl( 'div', { class: 'usa-logo'} );
+	const logo = domEl( 'div', { class: 'usa-logo' } );
 	logo.append( img );
-	const navBar = domEl( 'div', { class: 'usa-navbar'} );
+	const navBar = domEl( 'div', { class: 'usa-navbar' } );
 	navBar.append( logo );
-	const menuButton = domEl( 'button', { class: 'usa-menu-btn', type: 'button'} );
+	const menuButton = domEl( 'button', { class: 'usa-menu-btn', type: 'button' } );
 	navBar.append( menuButton );
 	let menu = navBar.querySelector( '.usa-menu-btn' );
 	menu.innerHTML = 'Menu';
@@ -138,7 +196,7 @@ async function loadAndDecorateNav() {
 
 async function loadAndDecorateAlert() {
 	const alertMeta = getMetadata( 'alert' );
-	if( !alertMeta ) { return null; }
+	if ( !alertMeta ) { return null; }
 
 	const alertPath = new URL( alertMeta, window.location ).pathname;
 	const alertFragment = await loadFragment( alertPath );
@@ -150,7 +208,7 @@ async function loadAndDecorateAlert() {
 	Array.from( alerts ).forEach( wrap => {
 		const alertEle = wrap.querySelector( '.usa-alert' );
 		alertEle.parentNode.classList.add( 'usa-site-alert' );
-		if( alertEle.classList.contains( 'usa-alert--emergency' ) ) {
+		if ( alertEle.classList.contains( 'usa-alert--emergency' ) ) {
 			alertEle.classList.remove( 'usa-alert--emergency' );
 			alertEle.parentNode.classList.add( 'usa-site-alert--emergency' );
 		} else {
@@ -179,9 +237,9 @@ export default async function decorate( block ) {
 	const navEle = await loadAndDecorateNav();
 
 	block.innerHTML = '';
-	const overLay = domEl( 'div', { class: 'usa-overlay'} );
+	const overLay = domEl( 'div', { class: 'usa-overlay' } );
 	block.append( skipNav );
-	if( alertEle ) { block.append( alertEle ); }
+	if ( alertEle ) { block.append( alertEle ); }
 	block.appendChild( bannerEle );
 	block.appendChild( overLay );
 	block.appendChild( navEle );
