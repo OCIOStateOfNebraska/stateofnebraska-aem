@@ -19,10 +19,51 @@ async function loadBanner() {
 	return loadBlock( bannerBlock );
 }
 
+function normalizePath( path ) {
+	if ( !path ) return '';
+	try {
+		// Use URL constructor relative to a base to handle relative paths correctly
+		const url = new URL( path, window.location.origin );
+		let normPath = url.pathname;
+		// Remove trailing slash if not the root path
+		if ( normPath !== '/' && normPath.endsWith( '/' ) ) {
+			normPath = normPath.slice( 0, -1 );
+		}
+		// Remove .html extension
+		if ( normPath.endsWith( '.html' ) ) {
+			normPath = normPath.slice( 0, -5 );
+		}
+		return normPath;
+	} catch ( e ) {
+		// Fallback for invalid paths or environments without URL constructor
+		const mainPath = path.split( '?' )[0].split( '#' )[0];
+		const noTrailingSlash = ( mainPath !== '/' && mainPath.endsWith( '/' ) ) ? mainPath.slice( 0, -1 ) : mainPath;
+		return noTrailingSlash.endsWith( '.html' ) ? noTrailingSlash.slice( 0, -5 ) : noTrailingSlash;
+	}
+}
+
+/**
+ * Gets the normalized paths of all ancestor pages for a given path.
+ * Example: getAncestors('/us/en/products/detail') returns ['/us', '/us/en', '/us/en/products']
+ * @param {string} path - The normalized path of the page.
+ * @returns {string[]} An array of normalized ancestor paths.
+ */
+function getAncestors( path ) {
+	const ancestors = [];
+	const segments = path.split( '/' ).filter( Boolean ); // Filter out empty strings
+	let currentPath = '';
+	// Iterate up to length - 1 to get ancestors, not the path itself
+	for ( let i = 0; i < segments.length - 1; i += 1 ) {
+		currentPath += `/${segments[i]}`;
+		ancestors.push( currentPath );
+	}
+	return ancestors;
+}
+
 async function createSubMenu( subMenu, id ) {
 	let listItem = subMenu.querySelectorAll( 'ul > li' );
 	if ( listItem.length > 0 ) {
-		const button = domEl( 'button', { class: 'usa-accordion__button usa-nav__link usa-current', type: 'button', 'aria-expanded': false, 'aria-controls': 'extended-mega-nav-section-' + id } );
+		const button = domEl( 'button', { class: 'usa-accordion__button usa-nav__link', type: 'button', 'aria-expanded': false, 'aria-controls': 'extended-mega-nav-section-' + id } );
 		const span = domEl( 'span', {}, subMenu.firstElementChild.innerHTML );
 		button.append( span );
 		subMenu.prepend( button );
@@ -44,13 +85,33 @@ async function createSubMenu( subMenu, id ) {
 			}
 			ul.append( element );
 			element.classList.add( 'usa-nav__submenu-item' );
+			let link = element.querySelector( 'a' );
+			if ( link.classList.contains( 'usa-button' ) ) { // remove extra wrapper if there is one
+				element.append( link );
+				link.className = '';
+				element.querySelector( '.usa-button__wrap' ).remove();
+			}
+			const pagePathNormalized = normalizePath( element.firstElementChild.getAttribute( 'href' ) );
+			let currentPagePath = window.location.pathname;
+			const ancestors = getAncestors( pagePathNormalized );
+			const topLevel = ancestors[0];
+			if ( currentPagePath.includes( topLevel ) ) {
+				button.classList.add( 'usa-current' );
+			}
 		}
 	} else {
-		const link = subMenu.querySelector( 'a' );
-		link.className = 'usa-nav__link usa-current'; // TODO: make sure to update based on if its the current link or not 
-		subMenu.append( link );
-		subMenu.querySelector( 'p' ).remove();
-	}
+		subMenu.prepend( subMenu.firstElementChild.firstElementChild );
+		subMenu.lastElementChild.remove();
+		subMenu.firstElementChild.classList.add( 'usa-nav__link' );
+		subMenu.firstElementChild.classList.remove( 'usa-button' );
+		const pagePathNormalized = normalizePath( subMenu.firstElementChild.getAttribute( 'href' ) );
+		let currentPagePath = window.location.pathname;
+		const ancestors = getAncestors( pagePathNormalized );
+		const topLevel = ancestors.length ? ancestors[0] : pagePathNormalized;
+		if ( currentPagePath.includes( topLevel ) ) {
+			subMenu.firstElementChild.classList.add( 'usa-current' );
+		}
+	} 
 	if ( subMenu.querySelector( 'ul' ) ) subMenu.querySelector( 'ul' ).remove();
 }
 

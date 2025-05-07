@@ -145,12 +145,19 @@
 			a {
 				&.usa-nav__link { // stylelint-disable-line selector-no-qualifying-type
 					color: color('white');
+					
+					&:hover,
+					&:focus {
+						&:after {
+							background-color: color('primary-light');
+						}
+					}
 				}
 			}
 			
 			.usa-current {
 				&:after {
-					background-color: color('primary-dark');
+					background-color: color('primary-light');
 				}
 
 				&:hover,
