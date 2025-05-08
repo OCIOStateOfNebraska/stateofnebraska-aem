@@ -1,19 +1,21 @@
 @use '../../styles/ne-global-imports' as *;
-@use '~uswds/usa-collection/src/styles/usa-collection';
 
 .search-wrapper {
 	.usa-search {
-		max-width: 70ex;
+		$button-width: px-to-rem(124px); // it will always have search as the text, so we can set the width
+		margin-bottom: units(7);
 
 		.usa-input {
 			width: 100%;
+			max-width: calc(measure($theme-text-measure) - $button-width);
+			border: 1px solid color('ink');
 		}
 
 		.usa-button {
 			&[type='submit'] {
-				border-top-right-radius: radius(sm);
-				border-bottom-right-radius: radius(sm);
-				background-color: color(blue-50);
+				width: $button-width;
+				border: 1px solid color('primary');
+				background-color: color('primary');
 			}
 		}
 	}
