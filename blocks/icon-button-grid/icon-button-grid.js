@@ -8,13 +8,13 @@ import { domEl } from '../../scripts/dom-helpers.js';
 function generateContent( div, container ) {
 	const wrap = div.querySelector( '.usa-button__wrap' );
 	const a = wrap ? wrap.querySelector( 'a' ) : null;
-	const heading = domEl( 'p', {class: 'usa-card__heading'}, a.textContent );
+	const heading = domEl( 'p', {class: 'icon-button-card__heading'}, a.textContent );
 	let header = '';
-	div.className = 'usa-card__body';
+	div.className = 'icon-button-card__body';
 
 	// take out the heading and put into its own container
 	if ( heading ) {
-		header = domEl( 'div', { class: 'usa-card__header' }, heading );
+		header = domEl( 'div', { class: 'icon-button-card__header' }, heading );
 		container.append( header );
 		
 		// Wrap the link in the header 
@@ -22,13 +22,8 @@ function generateContent( div, container ) {
 			a.textContent = ''; 
 			a.className = '';
 			heading.append( a );
-		} 
-	} else {
-		if ( wrap ) {
 			wrap.remove();
-			// eslint-disable-next-line no-console
-			console.error( 'No heading provided. Please re-author with the appropriate heading' );
-		}
+		} 
 	}
 }
 
@@ -48,11 +43,11 @@ function generateWholeCard( container ) {
 */
 export default function decorate( block ) {
 	const grid = 'grid-col-12 tablet:grid-col-6 desktop:grid-col-4';
-	const ul = domEl( 'ul', { class: 'usa-card-group grid-row' } );
+	const ul = domEl( 'ul', { class: 'icon-button-card-group grid-row grid-gap-4' } );
 
 	[...block.children].forEach( ( row ) => {
-		const li = domEl( 'li', { class: `usa-card ${grid}` } );
-		const cardContainer = domEl( 'div', { class: 'usa-card__container' } );
+		const li = domEl( 'li', { class: `icon-button-card ${grid}` } );
+		const cardContainer = domEl( 'div', { class: 'icon-button-card__container' } );
 
 		// add all the table row contents into a li with a container wrapper inside
 		while ( row.firstElementChild ) {
