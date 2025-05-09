@@ -1,5 +1,4 @@
 import {
-	createOptimizedPicture,
 	decorateIcons,
 	fetchPlaceholders
 } from '../../scripts/aem.js';
@@ -88,13 +87,6 @@ export async function fetchData( source ) {
  */
 function renderResult( result, searchTerms, titleTag ) {
 	const resultItem = li( { class: 'usa-collection__item' } );
-
-	// Add image if available
-	if ( result.image ) {
-		const pic = createOptimizedPicture( result.image, result.title || '', false, [{ width: '375' }] );
-		pic.className = 'usa-collection__img';
-		resultItem.appendChild( pic );
-	}
 
 	// Create collection body container
 	const collectionBody = div( { class: 'usa-collection__body' } );
