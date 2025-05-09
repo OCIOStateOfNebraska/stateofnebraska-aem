@@ -61,7 +61,7 @@ export default function decorate( block ) {
 	} );
 
 	table.prepend( thead );
-	if ( caption ) {
+	if ( p ) {
 		table.append( caption );
 	}
 	// grab the new Rows in the body after we generate the thead 
