@@ -1,20 +1,6 @@
 @use '../../styles/ne-global-imports' as *;
 
 .figure {
-	figure, img, picture {
-		height: auto;
-	}
-
-	figure {
-		@include u-margin-y(3);
-		@include u-margin-x(0);
-	}
-	
-	figcaption {
-		@include u-margin-top(2);
-		font-size: size('body', '3xs');
-	}
-
 	&.left,
 	&.right {
 		figure, img, picture {

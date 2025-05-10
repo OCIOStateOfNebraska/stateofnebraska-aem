@@ -25,13 +25,25 @@ body {
 	}
 }
 
+figure,
+picture,
+img {
+	height: auto;
+}
+
+figure {
+	@include u-margin-y(3);
+	@include u-margin-x(0);
+
+	figcaption {
+		@include u-margin-top(2);
+		font-size: size('body', '3xs');
+	}
+}
+
 picture {
 	display: block;
 	font-size: 0; // no extra space inside
-}
-
-img {
-	height: auto;
 }
 
 h2 {
