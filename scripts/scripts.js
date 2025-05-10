@@ -185,7 +185,7 @@ function decorateH2s( element ) {
  */
 function decorateYouTube( element ) {
 	element.querySelectorAll( 'a[href*="youtube.com"], a[href*="youtu.be"], a[href*="youtube-nocookie.com"]' ).forEach( ( link ) => {
-		const parent = link.closest( 'p' );
+		let parent = link.closest( 'p' );
 
 		// stop if it's a button
 		if( parent?.classList.contains( 'usa-button__wrap' ) ) return;
@@ -208,7 +208,7 @@ function decorateYouTube( element ) {
 		if ( id ) {
 			const wrapper = domEl( 'figure', { class: 'video-embed' } );
 			const iframe = domEl( 'iframe', {
-				src: `https://www.youtube.com/embed/${id}`,
+				src: `https://www.youtube.com/embed/${id}?rel=0&color=white`,
 				allowfullscreen: true,
 				loading: 'lazy',
 				frameborder: 0,
@@ -216,8 +216,22 @@ function decorateYouTube( element ) {
 				title: titleText || 'YouTube video player',
 			} );
 
-			wrapper.appendChild( iframe );
-			parent.replaceWith( wrapper );
+			wrapper.appendChild( div( iframe ) );
+
+			if ( !parent ) {
+				// likely inside a column, create a wrapper so that column classes aren't added directly to the iframe
+				parent = div();
+
+				let origParent = link.parentElement;
+				origParent.childNodes.forEach( ( child ) => {
+					parent.append( child );
+				} );
+				
+				origParent.textContent = '';
+				origParent.append( parent );
+			}
+
+			parent.replaceWith( wrapper );			
 		}
 	} );
 }
