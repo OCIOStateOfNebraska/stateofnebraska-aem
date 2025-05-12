@@ -14,6 +14,7 @@ import {
 	loadBlock,
 } from './aem.js';
 import { getIndividualIcon } from '../../scripts/utils.js';
+import { div, domEl } from '../../scripts/dom-helpers.js';
 
 // variable for caching site index
 window.siteIndexCache = window.siteIndexCache || {};
@@ -238,10 +239,68 @@ function decorateExternalLinks( element ) {
  */
 function decorateH2s( element ) {
 	element.querySelectorAll( 'h2' ).forEach( ( h2 ) => {
-		const childEleTag = h2.children.length === 1 && h2.firstElementChild.tagName.toLowerCase();
+		const childEleTag = h2.childNodes.length === 1 && h2.firstElementChild?.tagName.toLowerCase();
 		// contains only emphasized text
 		if ( childEleTag && ( childEleTag === 'em' || childEleTag === 'i' ) ) {
 			h2.classList.add( 'h2--underline' );
+		}
+	} );
+}
+
+/**
+ * Converts links to YouTube to embedded videos
+ * Leverages text within the same paragraph as the title for accessibility
+ * @param {Element} element container element
+ */
+function decorateYouTube( element ) {
+	element.querySelectorAll( 'a[href*="youtube.com"], a[href*="youtu.be"], a[href*="youtube-nocookie.com"]' ).forEach( ( link ) => {
+		let parent = link.closest( 'p' );
+
+		// stop if it's a button
+		if( parent?.classList.contains( 'usa-button__wrap' ) ) return;
+
+		// stop if there's text ahead of the link
+		if( link.previousSibling?.textContent.trim().length ) return;
+
+		// text after the link is used as alt text if wrapped in parentheses
+		const textAfter = link.nextSibling?.textContent.trim();
+		let titleText = '';
+		if( textAfter && textAfter[0] === '(' && textAfter[textAfter.length - 1] === ')' ) {
+			titleText = textAfter.substring( 1, textAfter.length - 1 );
+		}
+
+		// stop if there's text after which is not wrapped in parenthesis (assuming a paragraph)
+		if( textAfter && !titleText ) return;
+
+		const url = new URL( link.href );
+		const id = url.searchParams.get( 'v' ) || url.pathname.split( '/embed/' )?.[1] || url.pathname.substring( 1 );
+		if ( id ) {
+			const wrapper = domEl( 'figure', { class: 'video-embed' } );
+			const iframe = domEl( 'iframe', {
+				src: `https://www.youtube.com/embed/${id}?rel=0&color=white`,
+				allowfullscreen: true,
+				loading: 'lazy',
+				frameborder: 0,
+				allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+				title: titleText || 'YouTube video player',
+			} );
+
+			wrapper.appendChild( div( iframe ) );
+
+			if ( !parent ) {
+				// likely inside a column, create a wrapper so that column classes aren't added directly to the iframe
+				parent = div();
+
+				let origParent = link.parentElement;
+				origParent.childNodes.forEach( ( child ) => {
+					parent.append( child );
+				} );
+				
+				origParent.textContent = '';
+				origParent.append( parent );
+			}
+
+			parent.replaceWith( wrapper );			
 		}
 	} );
 }
@@ -260,6 +319,7 @@ export function decorateInner( container ) {
 	decorateButtons( container );
 	decorateIcons( container );
 	decorateH2s( container );
+	decorateYouTube( container );
 	decorateSections( container );
 	decorateBlocks( container );
 	decorateUnstyledLinks( container );
