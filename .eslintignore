@@ -2,3 +2,8 @@ helix-importer-ui
 scripts/uswds*
 scripts/deps
 gulpfile.js
+blocks/form/rules/*
+blocks/form/rules-doc/*
+scripts/editor-support-rte.js
+scripts/editor-support.js
+scripts/form-editor-support.js
