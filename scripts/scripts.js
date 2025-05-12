@@ -219,7 +219,7 @@ function isPDFUrl( url ) {
 function decorateExternalLinks( element ) {
 	element.querySelectorAll( 'a' ).forEach( ( a ) => {
 		a.title = a.title || a.textContent;
-		if ( a.href !== a.textContent && a.textContent ) { // only decorate if the link is wrapping text content
+		if ( a.textContent && a.href !== a.textContent ) { // only decorate if the link is wrapping text content
 			if ( !a.querySelector( 'img' ) ) {
 				if( isPDFUrl( a.href ) ) {
 					a.setAttribute( 'target', '_blank' );
