@@ -229,6 +229,10 @@ function decorateExternalLinks( element ) {
 					a.setAttribute( 'target', '_blank' );
 				}
 			}
+		} else if ( a.href !== a.textContent ) {
+			if ( !isSameDomainOrSubdomain( a.href ) ) {
+				a.setAttribute( 'target', '_blank' );
+			}
 		}
 	} );
 }

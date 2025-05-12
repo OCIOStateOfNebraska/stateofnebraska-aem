@@ -64,7 +64,7 @@
 			background-color: color('primary-vivid');
 			gap: units(2);
 			
-			&:has(a:focus),
+			&:has(a:focus-visible),
 			&:has(a:hover) { 
 				background-color: color('primary-lighter');
 
