@@ -164,6 +164,75 @@ function decorateButtons( element ) {
 }
 
 /**
+ * Checks if a URL is on the same domain or subdomain as the current page.
+ * @param {string} url The URL to check
+ * @returns {boolean} True if the URL is on the same domain or subdomain, false otherwise.
+ */
+function isSameDomainOrSubdomain( url ) {
+	try {
+	// Get the current page's hostname
+		const currentHostname = window.location.hostname;
+
+		// Construct a URL object for the link
+		const linkURL = new URL( url, window.location.href ); // Base URL for relative URLs
+		const linkHostname = linkURL.hostname;
+
+		// If the link and the current page have the exact same hostname, it's the same domain
+		if ( linkHostname === currentHostname ) {
+			return true;
+		}
+
+		// Check if the link is a subdomain of the current domain
+		if ( linkHostname.endsWith( '.' + currentHostname ) ) {
+			return true;
+		}
+
+		// Check if the current domain is a subdomain of the link
+		if ( currentHostname.endsWith( '.' + linkHostname ) ) {
+			return true;
+		}
+
+		// If none of the above conditions are met, it's not the same domain or a subdomain
+		return false;
+	} catch ( error ) {
+		// Handle invalid URLs and return false
+		// eslint-disable-next-line no-console
+		console.warn( `Invalid URL: ${url}`, error );
+		return false;
+	}
+}
+
+/**
+ * Checks if a URL is a pdf.
+ * @param {string} url The URL to check
+ * @returns {boolean} True if the URL ends with .pdf
+ */
+function isPDFUrl( url ) {
+	return url.toLowerCase().endsWith( '.pdf' );
+}
+
+/**
+ * Decorates paragraphs containing an external link. Separating out for managing.
+ * @param {Element} element container element
+ */
+function decorateExternalLinks( element ) {
+	element.querySelectorAll( 'a' ).forEach( ( a ) => {
+		a.title = a.title || a.textContent;
+		if ( a.href !== a.textContent && a.textContent ) { // only decorate if the link is wrapping text content
+			if ( !a.querySelector( 'img' ) ) {
+				if( isPDFUrl( a.href ) ) {
+					a.setAttribute( 'target', '_blank' );
+					getIndividualIcon( a, 'description', true );
+				} else if ( !isSameDomainOrSubdomain( a.href ) ) {
+					a.classList.add( 'usa-link--external' );
+					a.setAttribute( 'target', '_blank' );
+				}
+			}
+		}
+	} );
+}
+
+/**
  * Decorates h2 elements with a class
  * @param {Element} element container element
  */
@@ -194,6 +263,7 @@ export function decorateInner( container ) {
 	decorateSections( container );
 	decorateBlocks( container );
 	decorateUnstyledLinks( container );
+	decorateExternalLinks( container );
 }
 
 /**
@@ -273,7 +343,6 @@ async function loadLazy( doc ) {
 	if ( hash && element ) element.scrollIntoView();
 
 	loadFooter( doc.querySelector( 'footer' ) );
-
 	loadCSS( `${window.hlx.codeBasePath}/styles/lazy-styles.css` );
 	loadFonts();
 }
