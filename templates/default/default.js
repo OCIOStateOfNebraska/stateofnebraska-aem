@@ -57,7 +57,7 @@ export default async function decorate( doc ) {
 		usaGridRowDiv.after( usaGridSideNavDivMobile );
 	} else if( showInPageNav ) {
 		const inPageNav = buildBlock( 'in-page-navigation', '' );
-		usaContainerDiv.appendChild( inPageNav );
+		usaContainerDiv.prepend( inPageNav );
 		decorateBlock( inPageNav );
 		await loadBlock( inPageNav );
 	}

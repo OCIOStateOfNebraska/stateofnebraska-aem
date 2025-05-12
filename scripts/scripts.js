@@ -222,6 +222,7 @@ function decorateExternalLinks( element ) {
 		if ( a.textContent && a.href !== a.textContent ) { // only decorate if the link is wrapping text content
 			if ( !a.querySelector( 'img' ) ) {
 				if( isPDFUrl( a.href ) ) {
+					a.classList.add( 'usa-link--pdf' );
 					a.setAttribute( 'target', '_blank' );
 					getIndividualIcon( a, 'description', true );
 				} else if ( !isSameDomainOrSubdomain( a.href ) ) {
