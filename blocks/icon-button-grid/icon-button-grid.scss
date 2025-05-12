@@ -41,13 +41,14 @@
 					display: flex;
 					justify-content: center;
 				}
-				
-				svg {
-					width: $svg-size;
-					height: $svg-size;
-					fill: color('primary-lighter')
-				}
 
+			}
+			
+			svg {
+				width: $svg-size;
+				height: $svg-size;
+				fill: color('primary-lighter');
+				transition: fill $transition-slow;
 			}
 		}
 
@@ -59,25 +60,36 @@
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			background-color: color('primary-vivid'); // one-off color
+			transition: background-color $transition-slow;
+			background-color: color('primary-vivid');
 			gap: units(2);
 			
+			&:has(a:focus),
+			&:has(a:hover) { 
+				background-color: color('primary-lighter');
 
-			&:has(a) {
-				cursor: pointer;
-
-				&:hover { // focus state handled by uswds
-					transition: box-shadow $transition-slow, border $transition-slow;
-					box-shadow: 0 0 0 3px color(secondary), 0 8px 16px 0 rgb(0 0 0 / 10%); // maps to shadow(3), mixin doesn't work with a custom one
-
-					.#{$block}__heading {
-						text-decoration: underline;
-						text-decoration-thickness: 2px;
+				.#{$block}__heading {
+					color: color('primary-vivid');
+					text-decoration: underline;
+					text-decoration-thickness: 2px
+				}
+				
+				.#{$block}__body {
+					$svg-size: px-to-rem(120px);
+					height: $svg-size;
+		
+					svg {
+						fill: color('primary-vivid')
 					}
 				}
 			}
 
+			&:has(a) {
+				cursor: pointer;
+			}
+
 			a {
+				@include u-radius('md');
 				position: absolute;
 				width: 100%;
 				height: 100%;
@@ -118,11 +130,16 @@ main {
 	&:has(.in-page-navigation) {
 		.section {
 			&:has(.icon-button-grid-wrapper) {
-				padding: units(15) units(4);
+				padding: units($component-spacing) 0;
+				background-color: transparent;
 
 				&:before {
 					display: none;
 				}
+			}
+			
+			h2 {
+				color: color('ink');
 			}
 		}
 	}
