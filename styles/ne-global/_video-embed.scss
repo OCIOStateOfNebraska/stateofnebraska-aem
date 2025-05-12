@@ -1,0 +1,19 @@
+@use '../../styles/ne-global-imports' as *;
+
+.video-embed {
+	@include u-radius('lg');
+	width: 100%;
+	font-size: 0; // no extra space inside
+	overflow: hidden;
+
+	div {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+	}
+
+	iframe {
+		width: 100%;
+		height: 100%;
+		border: none;
+	}
+}
