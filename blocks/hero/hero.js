@@ -19,14 +19,16 @@ export default function decorate( block ) {
 	const container = div( { class: 'grid-container' } );
 	const content = div( { class: 'usa-hero__callout' } );
 	container.appendChild( content );
-	
+
 	buildBreadcrumbBlock( content );
 
 	const backgroundImg = block.querySelector( 'picture' );
 
 	const h1 = block.querySelector( 'h1' );
-	h1.classList.add( 'usa-hero__heading' );
-	content.appendChild( h1 );
+	if ( h1 ) {
+		h1.classList.add( 'usa-hero__heading' );
+		content.appendChild( h1 );
+	}
 
 	const svg = `
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1727 86" preserveAspectRatio="none">
@@ -37,9 +39,9 @@ export default function decorate( block ) {
 	`;
 	const svgDiv = div( { class: 'usa-hero__svg' } );
 	svgDiv.innerHTML = svg;
-	
+
 	block.innerText = '';
 	block.appendChild( container );
-	if( backgroundImg ) { container.before( backgroundImg ); }
+	if ( backgroundImg ) { container.before( backgroundImg ); }
 	block.appendChild( svgDiv );
 }

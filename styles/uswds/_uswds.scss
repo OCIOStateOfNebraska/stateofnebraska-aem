@@ -30,7 +30,7 @@
 // @forward "usa-collection/src/styles";
 // @forward "usa-embed-container/src/styles";
 // @forward "usa-footer/src/styles";
-// @forward "usa-form/src/styles";
+@forward 'usa-form/src/styles';
 // @forward "usa-graphic-list/src/styles";
 // @forward 'usa-header/src/styles';
 // @forward "usa-hero/src/styles";
@@ -46,7 +46,7 @@
 // @forward 'usa-nav/src/styles';
 // @forward "usa-pagination/src/styles";
 // @forward "usa-process-list/src/styles";
-// @forward "usa-search/src/styles";
+@forward 'usa-search/src/styles';
 // @forward "usa-section/src/styles";
 // @forward "usa-sidenav/src/styles";
 // @forward "usa-site-alert/src/styles";
@@ -54,7 +54,7 @@
 // @forward "usa-step-indicator/src/styles";
 // @forward "usa-summary-box/src/styles";
 // @forward "usa-table/src/styles";
-// @forward 'usa-tag/src/styles';
+@forward 'usa-tag/src/styles';
 // @forward "usa-tooltip/src/styles";
 // @forward "uswds-form-controls";
 

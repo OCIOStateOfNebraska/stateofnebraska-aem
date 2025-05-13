@@ -6,6 +6,7 @@ $block: 'usa-in-page-nav';
 @include at-media('tablet') {
 	.in-page-navigation {
 		align-self: stretch; // so that the inner .usa-in-page-navigation can be sticky within this space
+		order: 2;
 	}
 
 	.#{$block} {

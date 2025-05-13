@@ -25,9 +25,13 @@ function generateContent( div, container ) {
 	const buttonText = buttonLink.title;
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
 	div.className = 'backdrop-card__body';
-	const meta = domEl( 'span', { class: 'usa-tag' }, div.querySelector( 'p' ).textContent );
-	// remove meta p tag after we grab it
-	div.querySelector( 'p' ).remove();
+	let meta = '';
+	const pTags = div.querySelectorAll( 'p:not(.usa-button__wrap' );
+	
+	if ( pTags.length > 1 ) {
+		meta = domEl( 'span', { class: 'usa-tag' }, div.querySelector( 'p' ).textContent );
+		div.querySelector( 'p' ).remove(); // remove meta p tag after we grab it
+	}
 	
 	// take out the fake button and put into its own container
 	if ( button ) {

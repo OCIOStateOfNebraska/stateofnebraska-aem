@@ -15,6 +15,12 @@ $block: 'usa-button';
 			font-style: normal;
 		}
 	}
+	
+	&.usa-link--external {
+		&:after {
+			margin-top: 0;
+		}
+	}
 
 	&--secondary {
 		$button-context: 'Button';

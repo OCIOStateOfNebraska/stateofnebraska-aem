@@ -1,3 +1,5 @@
+@use '../../styles/ne-global-imports' as *;
+
 // basic tag styles here, NO BLOCKS
 /* fallback font for Montserrat (normal - 400) */
 @font-face {
@@ -23,11 +25,55 @@ body {
 	}
 }
 
+figure,
+picture,
+img {
+	height: auto;
+}
+
+a {
+	&.usa-link--pdf { // stylelint-disable-line selector-no-qualifying-type
+		.usa-icon { // stylelint-disable-line selector-no-qualifying-type
+			width: $external-link-size; // found in uswds 
+			height: $external-link-size;
+		}
+	}
+	
+}
+
+figure {
+	@include u-margin-y(3);
+	@include u-margin-x(0);
+
+	figcaption {
+		@include u-margin-top(2);
+		font-size: size('body', '3xs');
+	}
+}
+
 picture {
 	display: block;
 	font-size: 0; // no extra space inside
 }
 
-img {
-	height: auto;
+h2 {
+	&.h2--underline {
+		margin-bottom: units(5);
+
+		&,
+		em,
+		i {
+			font-style: normal;
+		}
+
+		&:after {
+			display: block;
+			width: px-to-rem(80px);
+			max-width: 100%;
+			height: 4px;
+			margin-top: units(5);
+			background-color: color('secondary');
+			content: '';
+		}
+	}
 }
