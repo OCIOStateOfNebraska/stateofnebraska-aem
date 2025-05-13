@@ -13,8 +13,8 @@ import {
 	loadCSS,
 	loadBlock,
 } from './aem.js';
-import { getIndividualIcon } from '../../scripts/utils.js';
-import { div, domEl } from '../../scripts/dom-helpers.js';
+import { getIndividualIcon } from './utils.js';
+import { div, domEl } from './dom-helpers.js';
 
 // variable for caching site index
 window.siteIndexCache = window.siteIndexCache || {};
@@ -300,12 +300,12 @@ function decorateYouTube( element ) {
 				origParent.childNodes.forEach( ( child ) => {
 					parent.append( child );
 				} );
-				
+
 				origParent.textContent = '';
 				origParent.append( parent );
 			}
 
-			parent.replaceWith( wrapper );			
+			parent.replaceWith( wrapper );
 		}
 	} );
 }
