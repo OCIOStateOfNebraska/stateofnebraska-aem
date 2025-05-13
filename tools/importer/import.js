@@ -203,16 +203,17 @@ export default {
 	} ) => {
 		const main = document.body;
 
-		const hero = document.querySelector( '.inside-hero' );
-		if ( hero ) {
-			const hr = document.createElement( 'hr' );
-			hero.after( hr );
-		}
-
 		const parentH1 = document.querySelector( '.inside-container .container .inside-title h1' );
-		const heading = document.querySelector( '.region.region-title' );
+		const heading = document.querySelector( '.region.region-title h1' );
 		if ( parentH1 && heading ) {
 			parentH1.replaceWith( heading );
+		}
+
+		const hero = document.querySelector( '.inside-hero' );
+		if ( hero && heading ) {
+			const hr = document.createElement( 'hr' );
+			heading.after( hero );
+			hero.after( hr );
 		}
 
 		createHomeHeroHeader( main, document );
