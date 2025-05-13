@@ -1,15 +1,15 @@
+/* global WebImporter */
+/* eslint-disable no-console */
+
 function createSummaryBoxBlock( main, document ) {
-	const summary = main.querySelectorAll( '.paragraphs-item-featured-well' );
-	if ( summary.length > 0 ) {
-		summary.forEach( ( each ) => {
-			const summaryContent = each.innerHTML;
-			const data = [
-				['summary-box'],
-				[summaryContent]
-			];
-			each.replaceWith( WebImporter.DOMUtils.createTable( data, document ) );
-		} );
-	}
+	main.querySelectorAll( '.paragraphs-item-featured-well' ).forEach( ( each ) => {
+		const summaryContent = each.innerHTML;
+		const data = [
+			['summary-box'],
+			[summaryContent]
+		];
+		each.replaceWith( WebImporter.DOMUtils.createTable( data, document ) );
+	} );
 	const columnInSummary = main.querySelectorAll( '.field .field--item .row .text-center' );
 	let colData = [];
 	if ( columnInSummary.length > 0 ) {
@@ -27,13 +27,10 @@ function createSummaryBoxBlock( main, document ) {
 }
 
 function createColumns( main, document ) {
-	const rows = main.querySelectorAll( '.field .field--item .row' );
-	if ( rows.length > 0 ) {
-		rows.forEach( ( row ) => {
-			process6Columns( row, document );
-			process4Columns( row, document );
-		} );
-	}
+	main.querySelectorAll( '.field .field--item .row' ).forEach( ( row ) => {
+		process6Columns( row, document );
+		process4Columns( row, document );
+	} );
 }
 
 function process6Columns( row, document ) {
@@ -150,6 +147,56 @@ function createCards( ele, document ) {
 	return card;
 }
 
+function handleIFrame( main ) {
+	main.querySelectorAll( 'iframe' ).forEach( ( iframe ) => {
+		const iframeSrc = iframe.getAttribute( 'src' );
+		iframe.parentNode.append( iframeSrc );
+		iframe.remove();
+	} );
+}
+
+function removeFileIcon( main ) {
+	const icons = main.querySelectorAll( '.file-icon' );
+	if ( icons.length > 0 ) {
+		icons.forEach( ( icon ) => {
+			icon.remove();
+		} );
+	}
+}
+
+function removeFileSize( main ) {
+	const fileSize = main.querySelectorAll( '.file-size' );
+	if ( fileSize.length > 0 ) {
+		fileSize.forEach( ( each ) => {
+			each.remove();
+		} );
+	}
+}
+
+function updateLinks( main, url ) {
+	main.querySelectorAll( 'a' ).forEach( ( a ) => {
+		const href = a.getAttribute( 'href' );
+		if ( href ) {
+			const u = new URL( href, url );
+			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname );
+			const newHref = new URL( newPath, 'https://main--stateofnebraska-aem--ociostateofnebraska.aem.page' ).toString();
+			a.setAttribute( 'href', newHref );
+		}
+	} );
+}
+
+function updateImageLinks( main, url ) {
+	main.querySelectorAll( 'img' ).forEach( ( img ) => {
+		const src = img.getAttribute( 'src' );
+		if ( src ) {
+			const u = new URL( src, url );
+			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname );
+			const newSrc = new URL( newPath, 'https://ndbf.nebraska.gov/' ).toString();
+			img.setAttribute( 'src', newSrc );
+		}
+	} );
+}
+
 export default {
 	transformDOM: ( {
 		document, url, params,
@@ -172,6 +219,9 @@ export default {
 		createSummaryBoxBlock( main, document );
 		createColumns( main, document );
 		createAccordion( main, document );
+		removeFileIcon( main, document );
+		removeFileSize( main, document );
+		handleIFrame( main );
 
 		WebImporter.DOMUtils.remove( main, [
 			'.skip-link',
@@ -187,6 +237,9 @@ export default {
 		WebImporter.rules.transformBackgroundImages( main, document );
 		WebImporter.rules.adjustImageUrls( main, url, params.originalURL );
 		WebImporter.rules.convertIcons( main, document );
+
+		updateLinks( main, url );
+		updateImageLinks( main, url );
 
 		return main;
 	},
