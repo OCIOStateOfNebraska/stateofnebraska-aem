@@ -252,6 +252,11 @@ export default {
 		if ( p.endsWith( '/' ) ) {
 			p = `${p}index`;
 		}
+
+		if ( p.startsWith( '/notice-' ) ) {
+			p = '/notices'.concat( p );
+		}
+
 		return decodeURIComponent( p )
 			.toLowerCase(  )
 			.replace( /\.html$/, '' )
