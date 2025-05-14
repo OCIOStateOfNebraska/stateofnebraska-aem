@@ -1,0 +1,14 @@
+@use '../../styles/ne-global-imports' as *;
+
+.usa-pagination {
+	&__link-text,
+	.usa-icon__wrap {
+		pointer-events: none;
+	}
+	
+	&__link {
+		&--disabled {
+			display: none;
+		}
+	}
+}

@@ -6,54 +6,92 @@ import {
 	a, div, li, p, span, ul, input, domEl
 } from '../../scripts/dom-helpers.js';
 import ffetch from '../../scripts/ffetch.js';
+import createPagination from '../../scripts/pagination.js';
 
-const searchParams = new URLSearchParams( window.location.search );
+const SEARCH_RESULTS_CONTAINER_CLASS = 'search-results usa-collection';
+const NO_RESULTS_CLASS = 'no-results';
+const OFFSET_PARAM = 'offset';
+const QUERY_PARAM = 'q';
 
 class SearchBlock {
 	constructor( block ) {
 		this.block = block;
 		this.placeholders = null;
-		this.source = this.block.querySelector( 'a[href]' ) ? this.block.querySelector( 'a[href]' ).href : '/query-index.json';
-		this.data = null;
-		this.allData = null; // Store all fetched data here
-		this.offset = 10;
-		this.test = true;
+		this.source = this.block.querySelector( 'a[href]' )?.href || '/query-index.json'; // Use optional chaining
+		this.limit = 1;
+		// TODO: trade this out 
+		this.showPagination = true;
+		this.showSearchBox = true;
+		this.form = null;
+		this.allData = null;
+		this.offset = null;
+		this.query = null;
+		this.urlParams = new URLSearchParams( window.location.search ); // Store URLSearchParams
 	}
 
 	async init() {
-		this.data = ffetch( this.source );
-		if ( !this.test ) {
-			this.allData = await this.data.all(); // Fetch all data using ffetch and store it
+		try {
+			this.allData = await ffetch( this.source ).all();
+			this.placeholders = await fetchPlaceholders();
+			this.render();
+			this.attachEventListeners();
+			this.handleInitialSearch();
+			decorateIcons( this.block );
+		} catch ( error ) {
+			// Handle the error gracefully, e.g., display an error message to the user
+			console.error( 'Error initializing SearchBlock:', error );
+			
 		}
-		
-		this.placeholders = await fetchPlaceholders();
+	}
+
+	render() {
 		this.block.innerHTML = '';
 		this.block.append(
-			this.searchBox(),
-			this.manualCollection()
+			this.createSearchForm(),
+			this.createManualCollection()
 		);
+		this.form = this.block.querySelector( 'form' );
+	}
 
-		if ( searchParams.get( 'q' ) ) {
-			const input = this.block.querySelector( 'input' );
-			input.value = searchParams.get( 'q' );
-			input.dispatchEvent( new Event( 'input' ) );
-		}
-
-		this.block.querySelector( 'form' ).addEventListener( 'submit', ( e ) => {
+	attachEventListeners() {
+		this.form.addEventListener( 'submit', ( e ) => {
 			e.preventDefault();
-			this.handleSearch( e );
+			this.handleSearch( true );
 		} );
-		decorateIcons( this.block );	
+
+		if ( this.showPagination ) {
+			this.offset = this.form.querySelector( 'input[name="offset"]' );
+		}
+		if ( this.showSearchBox ) {
+			this.query = this.form.querySelector( 'input[name="q"]' );
+		}
+	}
+
+	handleInitialSearch() {
+		const offsetParam = this.urlParams.get( OFFSET_PARAM );
+		const queryParam = this.urlParams.get( QUERY_PARAM );
+
+		if ( ( offsetParam && this.showPagination ) || ( queryParam && this.showSearchBox ) ) {
+			if ( offsetParam && this.showPagination ) {
+				this.offset.value = offsetParam;
+			}
+			if ( queryParam && this.showSearchBox ) {
+				this.query.value = queryParam;
+			}
+			this.handleSearch( false );
+		} else if ( !this.showSearchBox ) {
+			this.handleSearch( true ); // Load everything on load if no search box
+		}
 	}
 
 	/**
-   * Highlights search terms within text elements by wrapping them in <mark> tags
-   * @param {string[]} terms - Array of search terms to highlight
-   * @param {HTMLElement[]} elements - Array of elements to search within
-   */
+     * Highlights search terms within text elements by wrapping them in <mark> tags
+     * @param {string[]} terms - Array of search terms to highlight
+     * @param {HTMLElement[]} elements - Array of elements to search within
+     */
 	highlightTextElements( terms, elements ) {
 		elements.forEach( ( element ) => {
-			if ( !element || !element.textContent ) return;
+			if ( !element?.textContent ) return; 
 
 			const matches = [];
 			const { textContent } = element;
@@ -101,35 +139,34 @@ class SearchBlock {
 	}
 
 	/**
-   * Renders a single search result item using the USA collection item template
-   * @param {Object} result - The search result data
-   * @param {string[]} searchTerms - Terms to highlight in the result
-   * @param {string} titleTag - HTML tag to use for the result title
-   * @returns {HTMLElement} - The rendered search result list item
-   */
+     * Renders a single search result item using the USA collection item template
+     * @param {Object} result - The search result data
+     * @param {string[]} searchTerms - Terms to highlight in the result
+     * @param {string} titleTag - HTML tag to use for the result title
+     * @returns {HTMLElement} - The rendered search result list item
+     */
 	renderResult( result, searchTerms, titleTag ) {
 		const resultItem = li( { class: 'usa-collection__item' } );
-
-		// Create collection body container
 		const collectionBody = div( { class: 'usa-collection__body' } );
 
-		// Add title
 		if ( result.title ) {
 			const titleLink = a( { href: result.path, class: 'usa-link' }, result.title );
-			this.highlightTextElements( searchTerms, [titleLink] );
+			if ( searchTerms ) {
+				this.highlightTextElements( searchTerms, [titleLink] );
+			}
 			const heading = domEl( titleTag, { class: 'usa-collection__heading' }, titleLink );
 			collectionBody.appendChild( heading );
 		}
 
-		// Add description
 		if ( result.description ) {
 			const description = p( { class: 'usa-collection__description' }, result.description );
-			this.highlightTextElements( searchTerms, [description] );
+			if ( searchTerms ) {
+				this.highlightTextElements( searchTerms, [description] );
+			}
 			collectionBody.appendChild( description );
 		}
 
-		// Add tags if available
-		if ( result.tags && result.tags.length > 0 ) {
+		if ( result.tags?.length > 0 ) {
 			const tagsList = ul( { class: 'usa-collection__meta', 'aria-label': 'Topics' } );
 			result.tags.forEach( ( tag, index ) => {
 				const tagClass = index === 0 && result.isNew ? 'usa-collection__meta-item usa-tag usa-tag--new' : 'usa-collection__meta-item usa-tag';
@@ -143,68 +180,98 @@ class SearchBlock {
 	}
 
 	/**
-   * Clears the search results container
-   * @param {HTMLElement} block - The search block element
-   */
+     * Clears the search results container
+     */
 	clearSearchResults() {
-		const searchResults = this.block.querySelector( '.search-results' );
+		const searchResults = this.block.querySelector( '.' + SEARCH_RESULTS_CONTAINER_CLASS.split( ' ' ).join( '.' ) );
+		const pagination = this.block.querySelector( '.usa-pagination' );
+
+		if ( pagination ) {
+			pagination.remove();
+		}
+
 		searchResults.innerHTML = '';
 	}
 
 	/**
-   * Clears search results and resets URL parameters
-   * @param {HTMLElement} block - The search block element
-   */
+     * Clears search results and resets URL parameters
+     */
 	clearSearch() {
 		this.clearSearchResults();
 
 		if ( window.history.replaceState ) {
 			const url = new URL( window.location.href );
 			url.search = '';
-			searchParams.delete( 'q' );
+
+			if ( this.showPagination ) {
+				this.urlParams.delete( OFFSET_PARAM );
+				this.offset.value = 0;
+			}
+			if ( this.showSearchBox ) {
+				this.urlParams.delete( QUERY_PARAM );
+			}
+
 			window.history.replaceState( {}, '', url.toString() );
 		}
 	}
 
 	/**
-   * Renders search results in the search block
-   * @param {HTMLElement} block - The search block element
-   * @param {Object} config - Configuration object with placeholders
-   * @param {Array} filteredData - Filtered search results
-   * @param {string[]} searchTerms - Search terms to highlight
-   */
+     * Renders search results in the search block
+     * @param {Array} filteredData - Filtered search results
+     * @param {string[]} searchTerms - Search terms to highlight
+     */
 	async renderResults( filteredData, searchTerms ) {
 		this.clearSearchResults();
-		const searchResults = this.block.querySelector( '.search-results' );
+		const searchResults = this.block.querySelector( '.' + SEARCH_RESULTS_CONTAINER_CLASS.split( ' ' ).join( '.' ) );
 		const headingTag = searchResults.dataset.h;
 
 		if ( filteredData.length ) {
-			searchResults.classList.remove( 'no-results' );
-			filteredData.forEach( ( result ) => {
+			let data = filteredData;
+			let currentOffset;
+
+			if ( this.showPagination ) {
+				currentOffset = parseInt( this.offset.value, 10 );
+				data = filteredData.slice( currentOffset, ( currentOffset + this.limit ) );
+				createPagination( currentOffset, filteredData, this.limit, this.block );
+
+				const paginationContainerEle = this.block.querySelector( '.usa-pagination' );
+				paginationContainerEle.addEventListener( 'click', ( e ) => {
+					e.preventDefault();
+					if ( e.target.matches( 'a' ) ) {
+						console.log( 'click pagination' );
+						this.offset.value = e.target.dataset.paginationButton;
+						this.handleSearch( false );
+						//todo: add scroll to top handler
+					}
+				} );
+			}
+
+			searchResults.classList.remove( NO_RESULTS_CLASS );
+			data.forEach( result => {
 				searchResults.append( this.renderResult( result, searchTerms, headingTag ) );
 			} );
 		} else {
-			searchResults.classList.add( 'no-results' );
+			searchResults.classList.add( NO_RESULTS_CLASS );
 			searchResults.append( li( { class: 'usa-collection__item' }, this.placeholders.searchNoResults || 'No results found.' ) );
 		}
 	}
 
 	/**
-   * Comparison function for sorting search results by match position
-   * @param {Object} hit1 - First search hit with minIdx property
-   * @param {Object} hit2 - Second search hit with minIdx property
-   * @returns {number} - Comparison result for sorting
-   */
+     * Comparison function for sorting search results by match position
+     * @param {Object} hit1 - First search hit with minIdx property
+     * @param {Object} hit2 - Second search hit with minIdx property
+     * @returns {number} - Comparison result for sorting
+     */
 	compareFound( hit1, hit2 ) {
 		return hit1.minIdx - hit2.minIdx;
 	}
 
 	/**
-   * Filters data based on search terms
-   * @param {string[]} searchTerms - Array of search terms
-   * @param {Array} data - Data to filter
-   * @returns {Array} - Filtered data sorted by relevance
-   */
+     * Filters data based on search terms
+     * @param {string[]} searchTerms - Array of search terms
+     * @param {Array} data - Data to filter
+     * @returns {Array} - Filtered data sorted by relevance
+     */
 	filterData( searchTerms, data ) {
 		const foundInHeader = [];
 		const foundInMeta = [];
@@ -238,101 +305,54 @@ class SearchBlock {
 		return [
 			...foundInHeader.sort( this.compareFound ),
 			...foundInMeta.sort( this.compareFound ),
-		].map( ( item ) => item.result );
-	}
-	
-	async testDataFiltering( searchTerm ) {
-		// const entries = this.data;
-		// for await ( const entry of entries ) {
-		// 	console.log( entry.title );
-		// }
-		
-		const someentries = this.data
-			.filter( entry => {
-				const title = entry?.title || '';
-				return title.toLowerCase().includes( searchTerm );
-			} )
-			.map( ( entry ) => entry ); // this is extra but just playing :) 
-		
-		if ( this.test ) {
-			this.allData = await someentries.all();
-			console.log( this.allData );
-		} else {
-			console.log( await someentries.all() );
-		}
-		
+		].map(  ( item ) => item.result );
 	}
 
 	/**
-   * Handles search input events
-   * @param {Event} e - Input event
-   * @param {HTMLElement} block - The search block element
-   * @param {Object} config - Configuration object
-   */
-	async handleSearch( e ) {
-		const searchValue = e.target.querySelector( 'input[name="q"]' ).value;
-		searchParams.set( 'q', searchValue );
+     * Handles search input events
+     * @param {boolean} resetOffset - Whether to reset the offset to 0
+     */
+	async handleSearch( resetOffset ) {
+		let searchTerms = null;
+
+		if ( this.showSearchBox ) {
+			const searchValue = this.query.value;
+			this.urlParams.set( QUERY_PARAM, searchValue );
+			searchTerms = searchValue.toLowerCase().split( /\s+/ ).filter( term => !!term );
+		}
+
+		if ( this.showPagination ) {
+			if ( resetOffset ) {
+				this.offset.value = 0;
+			}
+			this.urlParams.set( OFFSET_PARAM, this.offset.value );
+		}
 
 		if ( window.history.replaceState ) {
 			const url = new URL( window.location.href );
-			url.search = searchParams.toString();
+			url.search = this.urlParams.toString();
 			window.history.replaceState( {}, '', url.toString() );
 		}
 
-		if ( searchValue.length < 3 ) {
-			this.clearSearch();
-			return;
-		}
-		const searchTerms = searchValue.toLowerCase().split( /\s+/ ).filter( ( term ) => !!term );
-		
-		if ( this.test ) {
-			await this.testDataFiltering( searchTerms ); // if we are testing, this.allData will be set with our map function
-		}
-		
-		const filteredData = this.filterData( searchTerms, this.allData ); // Using the stored allData
+		const filteredData = this.showSearchBox ? this.filterData( searchTerms, this.allData ) : this.allData;
 		await this.renderResults( filteredData, searchTerms );
 	}
 
 	/**
-   * Creates a container for search results
-   * @param {HTMLElement} block - The search block element
-   * @returns {HTMLElement} - The search results container element
-   */
-	searchResultsContainer() {
-		let container = ul( { class: 'search-results usa-collection' } );
+     * Creates a container for search results
+     * @returns {HTMLElement} - The search results container element
+     */
+	createSearchResultsContainer() {
+		let container = ul( { class: SEARCH_RESULTS_CONTAINER_CLASS } );
 		container.dataset.h = 'H4';
 		return container;
 	}
 
 	/**
-   * Creates the search input field
-   * @param {HTMLElement} block - The search block element
-   * @param {Object} config - Configuration object with placeholders
-   * @returns {HTMLElement} - The search input element
-   */
-	searchInput() {
-		const searchPlaceholder = ( this.placeholders.searchPlaceholder || 'Search' ) + '...';
-		const searchInputEl = input( {
-			type: 'search',
-			class: 'usa-input usa-text-input',
-			id: 'search-block-field',
-			name: 'q',
-			placeholder: searchPlaceholder,
-			'aria-label': searchPlaceholder,
-			onkeyup: ( e ) => {
-				if ( e.code === 'Escape' ) {
-					this.clearSearch();
-				}
-			}
-		} );
-		return searchInputEl;
-	}
-
-	/**
-   * Creates the search icon element
-   * @returns {HTMLElement} - The search icon element
-   */
-	searchIcon() {
+     * Creates the search icon element
+     * @returns {HTMLElement} - The search icon element
+     */
+	createSearchIcon() {
 		const searchTxt = this.placeholders.searchPlaceholder || 'Search';
 		return domEl( 'button', {
 			class: 'usa-button',
@@ -350,27 +370,54 @@ class SearchBlock {
 	}
 
 	/**
-   * Creates the search box container with input and icon
-   * @param {HTMLElement} block - The search block element
-   * @param {Object} config - Configuration object
-   * @returns {HTMLElement} - The search box container
-   */
-	searchBox() {
-		return domEl( 'form', { class: 'usa-search usa-search--big', role: 'search' },
-			domEl( 'label', { class: 'usa-sr-only', for: 'search-block-field' } ),
-			this.searchInput(),
-			this.searchIcon()
-		);
+     * Creates the search input field
+     * @returns {HTMLElement} - The search input element
+     */
+	createSearchInput() {
+		const searchPlaceholder = ( this.placeholders.searchPlaceholder || 'Search' ) + '...';
+		const searchLabelEl = domEl( 'label', { class: 'usa-sr-only', for: 'search-block-field' } );
+		const searchInputEl = input( {
+			type: 'search',
+			class: 'usa-input usa-text-input',
+			id: 'search-block-field',
+			name: 'q',
+			placeholder: searchPlaceholder,
+			'aria-label': searchPlaceholder,
+			onkeyup: ( e ) => {
+				if ( e.code === 'Escape' ) {
+					this.clearSearch();
+				}
+			}
+		} );
+		return domEl( 'div', { class: 'usa-input__wrapper' }, searchLabelEl, searchInputEl, this.createSearchIcon() );
 	}
 
 	/**
-   * Creates manual collection container
-   * @returns {HTMLElement} - The manual collection container
-   */
-	manualCollection() {
+     * Creates the search box container with input and icon
+     * @returns {HTMLElement} - The search box container
+     */
+	createSearchForm() {
+		let paginationInput = '';
+		let searchInputEl = '';
+
+		if ( this.showPagination ) {
+			paginationInput = input( { type: 'hidden', id: 'search-block-offset', name: 'offset', value: this.offset } );
+		}
+		if ( this.showSearchBox ) {
+			searchInputEl = this.createSearchInput();
+		}
+
+		return domEl( 'form', { class: 'usa-search usa-search--big', role: 'search' }, paginationInput, searchInputEl );
+	}
+
+	/**
+     * Creates manual collection container
+     * @returns {HTMLElement} - The manual collection container
+     */
+	createManualCollection() {
 		return domEl( 'div', {
 			class: 'manual-collection'
-		}, this.searchResultsContainer() );
+		}, this.createSearchResultsContainer() );
 	}
 }
 
