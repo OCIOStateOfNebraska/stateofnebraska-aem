@@ -14,10 +14,18 @@ class SearchBlock {
 		this.block = block;
 		this.placeholders = null;
 		this.source = this.block.querySelector( 'a[href]' ) ? this.block.querySelector( 'a[href]' ).href : '/query-index.json';
-		this.data = ffetch( this.source );
+		this.data = null;
+		this.allData = null; // Store all fetched data here
+		this.offset = 10;
+		this.test = true;
 	}
 
 	async init() {
+		this.data = ffetch( this.source );
+		if ( !this.test ) {
+			this.allData = await this.data.all(); // Fetch all data using ffetch and store it
+		}
+		
 		this.placeholders = await fetchPlaceholders();
 		this.block.innerHTML = '';
 		this.block.append(
@@ -30,23 +38,13 @@ class SearchBlock {
 			input.value = searchParams.get( 'q' );
 			input.dispatchEvent( new Event( 'input' ) );
 		}
-		
+
 		this.block.querySelector( 'form' ).addEventListener( 'submit', ( e ) => {
 			e.preventDefault();
 			this.handleSearch( e );
 		} );
-		//this.test();
-
-		decorateIcons( this.block );
+		decorateIcons( this.block );	
 	}
-	
-	async test() {
-		const entries = this.data;
-		for await ( const entry of entries ) {
-			console.log( entry.title );
-		}
-	}
-	
 
 	/**
    * Highlights search terms within text elements by wrapping them in <mark> tags
@@ -56,8 +54,10 @@ class SearchBlock {
 	highlightTextElements( terms, elements ) {
 		elements.forEach( ( element ) => {
 			if ( !element || !element.textContent ) return;
+
 			const matches = [];
 			const { textContent } = element;
+
 			terms.forEach( ( term ) => {
 				let start = 0;
 				let offset = textContent.toLowerCase().indexOf( term.toLowerCase(), start );
@@ -70,52 +70,34 @@ class SearchBlock {
 					offset = textContent.toLowerCase().indexOf( term.toLowerCase(), start );
 				}
 			} );
-			if ( !matches.length ) {
-				return;
-			}
+
+			if ( !matches.length ) { return; }
+
 			matches.sort( ( a, b ) => a.offset - b.offset );
+
 			let currentIndex = 0;
 			const fragment = matches.reduce( ( acc, { offset, term } ) => {
 				if ( offset < currentIndex ) return acc;
+
 				const textBefore = textContent.substring( currentIndex, offset );
 				if ( textBefore ) {
 					acc.appendChild( document.createTextNode( textBefore ) );
 				}
+
 				const markedTerm = domEl( 'mark', term );
 				acc.appendChild( markedTerm );
 				currentIndex = offset + term.length;
 				return acc;
 			}, document.createDocumentFragment() );
+
 			const textAfter = textContent.substring( currentIndex );
 			if ( textAfter ) {
 				fragment.appendChild( document.createTextNode( textAfter ) );
 			}
+
 			element.innerHTML = '';
 			element.appendChild( fragment );
 		} );
-	}
-
-	/**
-   * Fetches data from the specified source URL
-   * @param {string} source - URL to fetch data from
-   * @returns {Promise<Object|null>} - JSON data or null if fetch fails
-   */
-	async fetchData( source ) {
-		const response = await fetch( source );
-		if ( !response.ok ) {
-			// eslint-disable-next-line no-console
-			console.error( 'error loading API response', response );
-			return null;
-		}
-		const json = await response.json();
-		if ( !json ) {
-			// eslint-disable-next-line no-console
-			console.error( 'empty API response', source );
-			return null;
-		}
-		console.log( json );
-		
-		return json.data;
 	}
 
 	/**
@@ -126,31 +108,36 @@ class SearchBlock {
    * @returns {HTMLElement} - The rendered search result list item
    */
 	renderResult( result, searchTerms, titleTag ) {
-		const resultItem = li( {class: 'usa-collection__item'} );
+		const resultItem = li( { class: 'usa-collection__item' } );
+
 		// Create collection body container
-		const collectionBody = div( {class: 'usa-collection__body'} );
+		const collectionBody = div( { class: 'usa-collection__body' } );
+
 		// Add title
 		if ( result.title ) {
-			const titleLink = a( {href: result.path, class: 'usa-link'}, result.title );
+			const titleLink = a( { href: result.path, class: 'usa-link' }, result.title );
 			this.highlightTextElements( searchTerms, [titleLink] );
-			const heading = domEl( titleTag, {class: 'usa-collection__heading'}, titleLink );
+			const heading = domEl( titleTag, { class: 'usa-collection__heading' }, titleLink );
 			collectionBody.appendChild( heading );
 		}
+
 		// Add description
 		if ( result.description ) {
-			const description = p( {class: 'usa-collection__description'}, result.description );
+			const description = p( { class: 'usa-collection__description' }, result.description );
 			this.highlightTextElements( searchTerms, [description] );
 			collectionBody.appendChild( description );
 		}
+
 		// Add tags if available
 		if ( result.tags && result.tags.length > 0 ) {
-			const tagsList = ul( {class: 'usa-collection__meta', 'aria-label': 'Topics' } );
+			const tagsList = ul( { class: 'usa-collection__meta', 'aria-label': 'Topics' } );
 			result.tags.forEach( ( tag, index ) => {
 				const tagClass = index === 0 && result.isNew ? 'usa-collection__meta-item usa-tag usa-tag--new' : 'usa-collection__meta-item usa-tag';
 				tagsList.appendChild( li( { class: tagClass }, tag ) );
 			} );
 			collectionBody.appendChild( tagsList );
 		}
+
 		resultItem.appendChild( collectionBody );
 		return resultItem;
 	}
@@ -170,6 +157,7 @@ class SearchBlock {
    */
 	clearSearch() {
 		this.clearSearchResults();
+
 		if ( window.history.replaceState ) {
 			const url = new URL( window.location.href );
 			url.search = '';
@@ -189,6 +177,7 @@ class SearchBlock {
 		this.clearSearchResults();
 		const searchResults = this.block.querySelector( '.search-results' );
 		const headingTag = searchResults.dataset.h;
+
 		if ( filteredData.length ) {
 			searchResults.classList.remove( 'no-results' );
 			filteredData.forEach( ( result ) => {
@@ -219,32 +208,59 @@ class SearchBlock {
 	filterData( searchTerms, data ) {
 		const foundInHeader = [];
 		const foundInMeta = [];
+
 		data.forEach( ( result ) => {
 			let minIdx = -1;
+
 			searchTerms.forEach( ( term ) => {
 				const idx = ( result.header || result.title ).toLowerCase().indexOf( term );
 				if ( idx < 0 ) return;
 				if ( minIdx < idx ) minIdx = idx;
 			} );
+
 			if ( minIdx >= 0 ) {
 				foundInHeader.push( { minIdx, result } );
 				return;
 			}
+
 			const metaContents = `${result.title} ${result.description} ${result.path.split( '/' ).pop()} ${result.tags?.join( ' ' )} ${result.keywords} ${result.h2s?.join( ' ' )} ${result.body}`.toLowerCase();
 			searchTerms.forEach( ( term ) => {
 				const idx = metaContents.indexOf( term );
 				if ( idx < 0 ) return;
 				if ( minIdx < idx ) minIdx = idx;
 			} );
+
 			if ( minIdx >= 0 ) {
-				foundInMeta.push( { minIdx, result
-				} );
+				foundInMeta.push( { minIdx, result } );
 			}
 		} );
+
 		return [
 			...foundInHeader.sort( this.compareFound ),
 			...foundInMeta.sort( this.compareFound ),
 		].map( ( item ) => item.result );
+	}
+	
+	async testDataFiltering( searchTerm ) {
+		// const entries = this.data;
+		// for await ( const entry of entries ) {
+		// 	console.log( entry.title );
+		// }
+		
+		const someentries = this.data
+			.filter( entry => {
+				const title = entry?.title || '';
+				return title.toLowerCase().includes( searchTerm );
+			} )
+			.map( ( entry ) => entry ); // this is extra but just playing :) 
+		
+		if ( this.test ) {
+			this.allData = await someentries.all();
+			console.log( this.allData );
+		} else {
+			console.log( await someentries.all() );
+		}
+		
 	}
 
 	/**
@@ -256,18 +272,24 @@ class SearchBlock {
 	async handleSearch( e ) {
 		const searchValue = e.target.querySelector( 'input[name="q"]' ).value;
 		searchParams.set( 'q', searchValue );
+
 		if ( window.history.replaceState ) {
 			const url = new URL( window.location.href );
 			url.search = searchParams.toString();
 			window.history.replaceState( {}, '', url.toString() );
 		}
+
 		if ( searchValue.length < 3 ) {
 			this.clearSearch();
 			return;
 		}
 		const searchTerms = searchValue.toLowerCase().split( /\s+/ ).filter( ( term ) => !!term );
-		const data = await this.fetchData( this.source );
-		const filteredData = this.filterData( searchTerms, data );
+		
+		if ( this.test ) {
+			await this.testDataFiltering( searchTerms ); // if we are testing, this.allData will be set with our map function
+		}
+		
+		const filteredData = this.filterData( searchTerms, this.allData ); // Using the stored allData
 		await this.renderResults( filteredData, searchTerms );
 	}
 
@@ -315,10 +337,6 @@ class SearchBlock {
 		return domEl( 'button', {
 			class: 'usa-button',
 			type: 'submit',
-			onsubmit: ( e ) => { // Handle click on submit button
-				e.preventDefault(); // Prevent default form submission
-				this.handleSearch( e ); // Call handleSearch
-			}
 		},
 		span( {
 			class: 'usa-search__submit-text'
