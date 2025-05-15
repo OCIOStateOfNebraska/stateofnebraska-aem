@@ -12,14 +12,16 @@ const SEARCH_RESULTS_CONTAINER_CLASS = 'search-results usa-collection';
 const NO_RESULTS_CLASS = 'no-results';
 const OFFSET_PARAM = 'offset';
 const QUERY_PARAM = 'q';
+const SEARCH_SETTINGS_BOX = 'show-search-box';
+const SEARCH_SETTINGS_PAGINATION = 'show-pagination';
 
 class SearchBlock {
 	constructor( block ) {
 		this.block = block;
+
 		this.placeholders = null;
 		this.source = this.block.querySelector( 'a[href]' )?.href || '/query-index.json'; // Use optional chaining
 		this.limit = 1;
-		// TODO: trade this out 
 		this.showPagination = true;
 		this.showSearchBox = true;
 		this.form = null;
@@ -33,6 +35,15 @@ class SearchBlock {
 		try {
 			this.allData = await ffetch( this.source ).all();
 			this.placeholders = await fetchPlaceholders();
+			
+			// Set Pagination and Search Box
+			[...this.block.children].forEach( ( row, index ) => {
+				if ( index > 0 ) {
+					const settingName = row.firstElementChild;
+					this.checkSettings( settingName, row );
+				}
+			} );
+
 			this.render();
 			this.attachEventListeners();
 			this.handleInitialSearch();
@@ -41,6 +52,21 @@ class SearchBlock {
 			// Handle the error gracefully, e.g., display an error message to the user
 			console.error( 'Error initializing SearchBlock:', error );
 			
+		}
+	}
+	
+	checkSettings( settingName, row ) {
+		const validValues = ['yes', 'true'];
+		const key = settingName.querySelector( 'p' ).textContent;
+		const setting = row.firstElementChild.nextSibling.nextSibling.querySelector( 'p' ).textContent.toLowerCase().trim();
+		const settingVal = validValues.includes( setting ) ? true : false;
+
+		if ( key === SEARCH_SETTINGS_BOX ) {
+			this.showSearchBox = settingVal;
+		} 
+
+		if ( key === SEARCH_SETTINGS_PAGINATION ) {
+			this.showPagination = settingVal;
 		}
 	}
 
@@ -272,7 +298,7 @@ class SearchBlock {
      * @param {Array} data - Data to filter
      * @returns {Array} - Filtered data sorted by relevance
      */
-	filterData( searchTerms, data ) {
+	sortRelevance( searchTerms, data ) {
 		const foundInHeader = [];
 		const foundInMeta = [];
 
@@ -334,7 +360,7 @@ class SearchBlock {
 			window.history.replaceState( {}, '', url.toString() );
 		}
 
-		const filteredData = this.showSearchBox ? this.filterData( searchTerms, this.allData ) : this.allData;
+		const filteredData = this.showSearchBox ? this.sortRelevance( searchTerms, this.allData ) : this.allData;
 		await this.renderResults( filteredData, searchTerms );
 	}
 
