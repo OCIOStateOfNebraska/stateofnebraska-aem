@@ -56,6 +56,50 @@ function highlightTextElements( terms, elements ) {
 	} );
 }
 
+function renderTitle( result, titleTag, searchTerms, collectionBody ) {
+	if ( result.title ) {
+		const titleLink = a( { href: result.path, class: 'usa-link' }, result.title );
+		if ( searchTerms ) {
+			highlightTextElements( searchTerms, [titleLink] );
+		}
+		const heading = domEl( titleTag, { class: 'usa-collection__heading' }, titleLink );
+		collectionBody.appendChild( heading );
+	}
+}
+
+function renderDate( result, titleTag, searchTerms, collectionBody, filter ) {
+	if ( filter ) {
+		const date = new Events( result.lastModified );
+			
+		const dateWrap = domEl( 'li', { class: 'usa-collection__meta-item position-relative' }, date.longDate() );
+		getIndividualIcon( dateWrap, 'calendar_today', false, true );
+		const metaWrap = domEl( 'ul', { class: 'usa-collection__meta', 'aria-label': 'More Information' }, dateWrap );
+		collectionBody.appendChild( metaWrap );
+	}
+}
+
+function renderDescription( result, titleTag, searchTerms, collectionBody ) {
+	if ( result.description ) {
+		const description = p( { class: 'usa-collection__description' }, result.description );
+		if ( searchTerms ) {
+			highlightTextElements( searchTerms, [description] );
+		}
+		collectionBody.appendChild( description );
+	}
+}
+
+function renderTags( result, titleTag, searchTerms, collectionBody ) {
+	if ( result.tags?.length > 0 ) {
+		const tagsList = ul( { class: 'usa-collection__meta', 'aria-label': 'Topics' } );
+		result.tags.forEach( ( tag, index ) => {
+			const tagClass = index === 0 && result.isNew ? 'usa-collection__meta-item usa-tag usa-tag--new' : 'usa-collection__meta-item usa-tag';
+			tagsList.appendChild( li( { class: tagClass }, tag ) );
+		} );
+		collectionBody.appendChild( tagsList );
+	}
+}
+
+
 /**
  * Renders a single search result item using the USA collection item template
  * @param {Object} result - The search result data
@@ -65,43 +109,22 @@ function highlightTextElements( terms, elements ) {
  * @param {Boolean} filter - whether or not the search has been filtered
  * @returns {HTMLElement} - The rendered search result list item
  */
-export default function renderResult( result, searchTerms, titleTag, filter ) {
+export default function renderResult( result, searchTerms, titleTag, filter, dynamicCollection ) {
 	const resultItem = li( { class: 'usa-collection__item' } );
 	const collectionBody = div( { class: 'usa-collection__body' } );
 
-	if ( result.title ) {
-		const titleLink = a( { href: result.path, class: 'usa-link' }, result.title );
-		if ( searchTerms ) {
-			highlightTextElements( searchTerms, [titleLink] );
+	if ( dynamicCollection ) {
+		renderTitle( result, titleTag, searchTerms, collectionBody );
+		renderDate( result, titleTag, searchTerms, collectionBody, filter );
+	} else {
+		renderTitle( result, titleTag, searchTerms, collectionBody );
+		if ( filter ) {
+			renderDate( result, titleTag, searchTerms, collectionBody, filter );
 		}
-		const heading = domEl( titleTag, { class: 'usa-collection__heading' }, titleLink );
-		collectionBody.appendChild( heading );
-	}
-		
-	if ( filter ) {
-		const date = new Events( result.lastModified );
-			
-		const dateWrap = domEl( 'li', { class: 'usa-collection__meta-item position-relative' }, date.longDate() );
-		getIndividualIcon( dateWrap, 'calendar_today', false, true );
-		const metaWrap = domEl( 'ul', { class: 'usa-collection__meta', 'aria-label': 'More Information' }, dateWrap );
-		collectionBody.appendChild( metaWrap );
-	}
-
-	if ( result.description ) {
-		const description = p( { class: 'usa-collection__description' }, result.description );
-		if ( searchTerms ) {
-			highlightTextElements( searchTerms, [description] );
+		renderDescription( result, titleTag, searchTerms, collectionBody, filter );
+		if ( !filter ) {
+			renderTags( result, titleTag, searchTerms, collectionBody );
 		}
-		collectionBody.appendChild( description );
-	}
-
-	if ( result.tags?.length > 0 ) {
-		const tagsList = ul( { class: 'usa-collection__meta', 'aria-label': 'Topics' } );
-		result.tags.forEach( ( tag, index ) => {
-			const tagClass = index === 0 && result.isNew ? 'usa-collection__meta-item usa-tag usa-tag--new' : 'usa-collection__meta-item usa-tag';
-			tagsList.appendChild( li( { class: tagClass }, tag ) );
-		} );
-		collectionBody.appendChild( tagsList );
 	}
 
 	resultItem.appendChild( collectionBody );

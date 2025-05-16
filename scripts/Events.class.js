@@ -8,8 +8,6 @@ export default class Events {
 	constructor( date ) {
 		this.date = date;
 		this.event =  new Date( this.convertTimestampToISO( this.date ) );
-		
-		console.log( this.date );
 		this.lang = navigator.language;
 		this.TIMEZONE = 'America/Chicago'; // Lincoln, Nebraska is in Central Time
 

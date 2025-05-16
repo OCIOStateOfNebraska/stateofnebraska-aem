@@ -57,6 +57,8 @@ class SearchBlock {
 	constructor( block ) {
 		/** @member {HTMLElement} */
 		this.block = block;
+		/** @member {string} */
+		this.blockClassDynamicCollection = block.classList.contains( 'dynamic-collection' );
 		/** @member {object} */
 		this.placeholders = null;
 		/** @member {string} */
@@ -319,11 +321,13 @@ class SearchBlock {
 						//todo: add scroll to top handler
 					}
 				} );
+			} else if ( this.blockClassDynamicCollection ) {
+				data = filteredData.slice( 0, 3 ); // only first 3 results
 			}
 
 			searchResults.classList.remove( NO_RESULTS_CLASS );
 			data.forEach( result => {
-				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter ) );
+				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection ) );
 			} );
 		} else {
 			searchResults.classList.add( NO_RESULTS_CLASS );
@@ -379,8 +383,8 @@ class SearchBlock {
 		}
 		
 		const fuse = new Fuse( this.allData, fuseOptionsRelevance );
-		console.log( searchTerms.length );
-		if ( this.filter && !searchTerms.length ) {
+
+		if ( this.filter && ( !searchTerms || !searchTerms.length ) ) {
 			filteredData = this.allData; 
 		} else if ( searchTerms && searchTerms.length ) {
 			filteredData = this.flattenSearch( fuse.search( searchTermsFuse ) );
@@ -397,6 +401,7 @@ class SearchBlock {
 	createSearchResultsContainer() {
 		let container = ul( { class: SEARCH_RESULTS_CONTAINER_CLASS } );
 		container.dataset.h = 'H4';
+		// TODO: make this conditional -- needs to be h2 on search and h3 on homepage
 		return container;
 	}
 
