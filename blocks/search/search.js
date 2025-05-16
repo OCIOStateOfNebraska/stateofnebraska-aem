@@ -1,34 +1,63 @@
-import {
-	decorateIcons,
-	fetchPlaceholders
-} from '../../scripts/aem.js';
-import {
-	a, div, li, p, span, ul, input, domEl
-} from '../../scripts/dom-helpers.js';
+import { decorateIcons, fetchPlaceholders } from '../../scripts/aem.js';
+import { li, span, ul, input, domEl } from '../../scripts/dom-helpers.js';
 import ffetch from '../../scripts/ffetch.js';
-import createPagination from '../../scripts/pagination.js';
 
+import { Fuse } from '../../scripts/deps/bundle-uswds.js';
+import renderResult from './search-result.js';
+import createPagination from './search-pagination.js';
+
+// Settings for search
 const SEARCH_RESULTS_CONTAINER_CLASS = 'search-results usa-collection';
 const NO_RESULTS_CLASS = 'no-results';
 const OFFSET_PARAM = 'offset';
 const QUERY_PARAM = 'q';
 const SEARCH_SETTINGS_BOX = 'show-search-box';
 const SEARCH_SETTINGS_PAGINATION = 'show-pagination';
+const SEARCH_SETTINGS_SORTKEY = 'sort-key';
+const SEARCH_SETTINGS_FILTERTAG = 'filter-by';
+
+// FUSE.js relevance scoring options https://www.fusejs.io/concepts/scoring-theory.html#fuzziness-score
+const fuseOptionsRelevance = {
+	includeScore: true,
+	includeMatches: true,
+	threshold: 0.4,
+	minMatchCharLength: 3,
+	keys: [
+		{ name: 'path',weight: 0.2 },
+		{ name: 'body',weight: 0.1 },
+		{ name: 'tags',weight: 0.5 },
+		{ name: 'keywords',weight: 0.5 },
+		{ name: 'h2s',weight: 0.2 },
+		{ name: 'description',weight: 0.5 },
+		{ name: 'title',weight: 1 }
+	]
+};
+
+const fuseOptionsTags = {
+	includeMatches: true,
+	threshold: 0,
+	ignoreLocation: true,
+	keys: [
+		'tags', // will be assigned a `weight` of 1
+	]
+};
 
 class SearchBlock {
 	constructor( block ) {
 		this.block = block;
-
 		this.placeholders = null;
 		this.source = this.block.querySelector( 'a[href]' )?.href || '/query-index.json'; // Use optional chaining
 		this.limit = 1;
 		this.showPagination = true;
 		this.showSearchBox = true;
+		this.sort = 'relevance';
+		this.filter = null;
 		this.form = null;
 		this.allData = null;
 		this.offset = null;
 		this.query = null;
 		this.urlParams = new URLSearchParams( window.location.search ); // Store URLSearchParams
+		this.previousSearchTerm = null;
 	}
 
 	async init() {
@@ -36,30 +65,31 @@ class SearchBlock {
 			this.allData = await ffetch( this.source ).all();
 			this.placeholders = await fetchPlaceholders();
 			
-			// Set Pagination and Search Box
+			// Get Settings
 			[...this.block.children].forEach( ( row, index ) => {
 				if ( index > 0 ) {
 					const settingName = row.firstElementChild;
 					this.checkSettings( settingName, row );
 				}
 			} );
-
+			
+			this.filterData();
 			this.render();
 			this.attachEventListeners();
 			this.handleInitialSearch();
 			decorateIcons( this.block );
+			
 		} catch ( error ) {
 			// Handle the error gracefully, e.g., display an error message to the user
 			console.error( 'Error initializing SearchBlock:', error );
-			
 		}
 	}
 	
 	checkSettings( settingName, row ) {
-		const validValues = ['yes', 'true'];
+		const invalidValues = ['false', 'no'];
 		const key = settingName.querySelector( 'p' ).textContent;
-		const setting = row.firstElementChild.nextSibling.nextSibling.querySelector( 'p' ).textContent.toLowerCase().trim();
-		const settingVal = validValues.includes( setting ) ? true : false;
+		const setting = row.firstElementChild.nextSibling.nextSibling.querySelector( 'p' ).textContent;
+		const settingVal = invalidValues.includes( setting.toLowerCase().trim() ) ? false : true;
 
 		if ( key === SEARCH_SETTINGS_BOX ) {
 			this.showSearchBox = settingVal;
@@ -68,6 +98,51 @@ class SearchBlock {
 		if ( key === SEARCH_SETTINGS_PAGINATION ) {
 			this.showPagination = settingVal;
 		}
+		
+		if ( key === SEARCH_SETTINGS_SORTKEY && settingVal ) {
+			this.sort = setting;
+		}
+		
+		if ( key === SEARCH_SETTINGS_FILTERTAG && settingVal ) {
+			this.filter = setting;
+		}
+	}
+	
+	filterData() {
+		if ( this.sort !== 'relevance' ) {
+			const fuseTags = new Fuse( this.allData, fuseOptionsTags );
+			this.allData = this.flattenSearch( fuseTags.search( this.filter.toLowerCase().trim() ) );
+			const comparisonFunction = this.sortBy( this.sort );
+			this.allData.sort( comparisonFunction );
+		}
+			
+		this.allData = this.allData.filter( item => {
+			return item.title && item.title.trim() !== '' && item.path && item.path.trim() !== '';
+		} );
+	}
+	
+	sortBy( key ) {
+		return function innerSort( a, b ) {
+			if ( !Object.hasOwn( a, key ) || !Object.hasOwn( b, key ) ) {
+				return 0;
+			}
+
+			const varA = a[key];
+			const varB = b[key];
+
+			// If its not a number (i.e a timestamp), sort ascending else sort descending (greater time away from the epoch should come first)
+			const isString = typeof varA === 'string' && typeof varB === 'string';
+
+			let comparison = 0;
+			if ( varA > varB ) {
+				comparison = 1;
+			} else if ( varA < varB ) {
+				comparison = -1;
+			}
+
+			const order = isString ? 1 : -1;
+			return comparison * order;
+		};
 	}
 
 	render() {
@@ -105,104 +180,9 @@ class SearchBlock {
 				this.query.value = queryParam;
 			}
 			this.handleSearch( false );
-		} else if ( !this.showSearchBox ) {
+		} else {
 			this.handleSearch( true ); // Load everything on load if no search box
 		}
-	}
-
-	/**
-     * Highlights search terms within text elements by wrapping them in <mark> tags
-     * @param {string[]} terms - Array of search terms to highlight
-     * @param {HTMLElement[]} elements - Array of elements to search within
-     */
-	highlightTextElements( terms, elements ) {
-		elements.forEach( ( element ) => {
-			if ( !element?.textContent ) return; 
-
-			const matches = [];
-			const { textContent } = element;
-
-			terms.forEach( ( term ) => {
-				let start = 0;
-				let offset = textContent.toLowerCase().indexOf( term.toLowerCase(), start );
-				while ( offset >= 0 ) {
-					matches.push( {
-						offset,
-						term: textContent.substring( offset, offset + term.length )
-					} );
-					start = offset + term.length;
-					offset = textContent.toLowerCase().indexOf( term.toLowerCase(), start );
-				}
-			} );
-
-			if ( !matches.length ) { return; }
-
-			matches.sort( ( a, b ) => a.offset - b.offset );
-
-			let currentIndex = 0;
-			const fragment = matches.reduce( ( acc, { offset, term } ) => {
-				if ( offset < currentIndex ) return acc;
-
-				const textBefore = textContent.substring( currentIndex, offset );
-				if ( textBefore ) {
-					acc.appendChild( document.createTextNode( textBefore ) );
-				}
-
-				const markedTerm = domEl( 'mark', term );
-				acc.appendChild( markedTerm );
-				currentIndex = offset + term.length;
-				return acc;
-			}, document.createDocumentFragment() );
-
-			const textAfter = textContent.substring( currentIndex );
-			if ( textAfter ) {
-				fragment.appendChild( document.createTextNode( textAfter ) );
-			}
-
-			element.innerHTML = '';
-			element.appendChild( fragment );
-		} );
-	}
-
-	/**
-     * Renders a single search result item using the USA collection item template
-     * @param {Object} result - The search result data
-     * @param {string[]} searchTerms - Terms to highlight in the result
-     * @param {string} titleTag - HTML tag to use for the result title
-     * @returns {HTMLElement} - The rendered search result list item
-     */
-	renderResult( result, searchTerms, titleTag ) {
-		const resultItem = li( { class: 'usa-collection__item' } );
-		const collectionBody = div( { class: 'usa-collection__body' } );
-
-		if ( result.title ) {
-			const titleLink = a( { href: result.path, class: 'usa-link' }, result.title );
-			if ( searchTerms ) {
-				this.highlightTextElements( searchTerms, [titleLink] );
-			}
-			const heading = domEl( titleTag, { class: 'usa-collection__heading' }, titleLink );
-			collectionBody.appendChild( heading );
-		}
-
-		if ( result.description ) {
-			const description = p( { class: 'usa-collection__description' }, result.description );
-			if ( searchTerms ) {
-				this.highlightTextElements( searchTerms, [description] );
-			}
-			collectionBody.appendChild( description );
-		}
-
-		if ( result.tags?.length > 0 ) {
-			const tagsList = ul( { class: 'usa-collection__meta', 'aria-label': 'Topics' } );
-			result.tags.forEach( ( tag, index ) => {
-				const tagClass = index === 0 && result.isNew ? 'usa-collection__meta-item usa-tag usa-tag--new' : 'usa-collection__meta-item usa-tag';
-				tagsList.appendChild( li( { class: tagClass }, tag ) );
-			} );
-			collectionBody.appendChild( tagsList );
-		}
-
-		resultItem.appendChild( collectionBody );
-		return resultItem;
 	}
 
 	/**
@@ -230,14 +210,19 @@ class SearchBlock {
 			url.search = '';
 
 			if ( this.showPagination ) {
-				this.urlParams.delete( OFFSET_PARAM );
+				if ( !this.filter ) { this.urlParams.delete( OFFSET_PARAM ); }
 				this.offset.value = 0;
 			}
 			if ( this.showSearchBox ) {
-				this.urlParams.delete( QUERY_PARAM );
+				if ( !this.filter ) { this.urlParams.delete( QUERY_PARAM ); }
+				this.query.value = '';
 			}
 
 			window.history.replaceState( {}, '', url.toString() );
+		}
+		
+		if ( this.filter ) {
+			this.handleSearch( true );
 		}
 	}
 
@@ -248,6 +233,7 @@ class SearchBlock {
      */
 	async renderResults( filteredData, searchTerms ) {
 		this.clearSearchResults();
+
 		const searchResults = this.block.querySelector( '.' + SEARCH_RESULTS_CONTAINER_CLASS.split( ' ' ).join( '.' ) );
 		const headingTag = searchResults.dataset.h;
 
@@ -264,7 +250,6 @@ class SearchBlock {
 				paginationContainerEle.addEventListener( 'click', ( e ) => {
 					e.preventDefault();
 					if ( e.target.matches( 'a' ) ) {
-						console.log( 'click pagination' );
 						this.offset.value = e.target.dataset.paginationButton;
 						this.handleSearch( false );
 						//todo: add scroll to top handler
@@ -274,64 +259,22 @@ class SearchBlock {
 
 			searchResults.classList.remove( NO_RESULTS_CLASS );
 			data.forEach( result => {
-				searchResults.append( this.renderResult( result, searchTerms, headingTag ) );
+				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter ) );
 			} );
 		} else {
 			searchResults.classList.add( NO_RESULTS_CLASS );
 			searchResults.append( li( { class: 'usa-collection__item' }, this.placeholders.searchNoResults || 'No results found.' ) );
 		}
 	}
-
-	/**
-     * Comparison function for sorting search results by match position
-     * @param {Object} hit1 - First search hit with minIdx property
-     * @param {Object} hit2 - Second search hit with minIdx property
-     * @returns {number} - Comparison result for sorting
-     */
-	compareFound( hit1, hit2 ) {
-		return hit1.minIdx - hit2.minIdx;
-	}
-
-	/**
-     * Filters data based on search terms
-     * @param {string[]} searchTerms - Array of search terms
-     * @param {Array} data - Data to filter
-     * @returns {Array} - Filtered data sorted by relevance
-     */
-	sortRelevance( searchTerms, data ) {
-		const foundInHeader = [];
-		const foundInMeta = [];
-
-		data.forEach( ( result ) => {
-			let minIdx = -1;
-
-			searchTerms.forEach( ( term ) => {
-				const idx = ( result.header || result.title ).toLowerCase().indexOf( term );
-				if ( idx < 0 ) return;
-				if ( minIdx < idx ) minIdx = idx;
-			} );
-
-			if ( minIdx >= 0 ) {
-				foundInHeader.push( { minIdx, result } );
-				return;
-			}
-
-			const metaContents = `${result.title} ${result.description} ${result.path.split( '/' ).pop()} ${result.tags?.join( ' ' )} ${result.keywords} ${result.h2s?.join( ' ' )} ${result.body}`.toLowerCase();
-			searchTerms.forEach( ( term ) => {
-				const idx = metaContents.indexOf( term );
-				if ( idx < 0 ) return;
-				if ( minIdx < idx ) minIdx = idx;
-			} );
-
-			if ( minIdx >= 0 ) {
-				foundInMeta.push( { minIdx, result } );
-			}
+	
+	flattenSearch( filteredData ) {
+		const flattendArray = [];
+		
+		filteredData.forEach( ( entry ) => {
+			flattendArray.push( entry.item );
 		} );
-
-		return [
-			...foundInHeader.sort( this.compareFound ),
-			...foundInMeta.sort( this.compareFound ),
-		].map(  ( item ) => item.result );
+		
+		return flattendArray;
 	}
 
 	/**
@@ -340,11 +283,14 @@ class SearchBlock {
      */
 	async handleSearch( resetOffset ) {
 		let searchTerms = null;
+		let searchTermsFuse = null;
+		let filteredData = null;
 
 		if ( this.showSearchBox ) {
 			const searchValue = this.query.value;
 			this.urlParams.set( QUERY_PARAM, searchValue );
 			searchTerms = searchValue.toLowerCase().split( /\s+/ ).filter( term => !!term );
+			searchTermsFuse = searchTerms.join( ', ' );
 		}
 
 		if ( this.showPagination ) {
@@ -359,8 +305,15 @@ class SearchBlock {
 			url.search = this.urlParams.toString();
 			window.history.replaceState( {}, '', url.toString() );
 		}
+		
+		const fuse = new Fuse( this.allData, fuseOptionsRelevance );
+		console.log( searchTerms.length );
+		if ( this.filter && !searchTerms.length ) {
+			filteredData = this.allData; 
+		} else if ( searchTerms && searchTerms.length ) {
+			filteredData = this.flattenSearch( fuse.search( searchTermsFuse ) );
+		}
 
-		const filteredData = this.showSearchBox ? this.sortRelevance( searchTerms, this.allData ) : this.allData;
 		await this.renderResults( filteredData, searchTerms );
 	}
 
