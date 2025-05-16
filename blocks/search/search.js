@@ -6,6 +6,13 @@ import { Fuse } from '../../scripts/deps/bundle-uswds.js';
 import renderResult from './search-result.js';
 import createPagination from './search-pagination.js';
 
+/**
+ * @file search.js
+ * @description This module implements a search block that allows users to search for content within the site.
+ * It provides functionalities for creating a search UI, handling user input, filtering and sorting search results,
+ * rendering those results, and providing pagination.  It uses Fuse.js for fuzzy matching.
+ */
+
 // Settings for search
 const SEARCH_RESULTS_CONTAINER_CLASS = 'search-results usa-collection';
 const NO_RESULTS_CLASS = 'no-results';
@@ -43,23 +50,47 @@ const fuseOptionsTags = {
 };
 
 class SearchBlock {
+	/**
+	* Constructor for the SearchBlock class.
+    * @param {HTMLElement} block - The block element to which the search functionality will be added.  This should be the `<div class="search">` element.
+	*/
 	constructor( block ) {
+		/** @member {HTMLElement} */
 		this.block = block;
+		/** @member {object} */
 		this.placeholders = null;
+		/** @member {string} */
 		this.source = this.block.querySelector( 'a[href]' )?.href || '/query-index.json'; // Use optional chaining
+		/** @member {number} */
 		this.limit = 1;
+		/** @member {boolean} */
 		this.showPagination = true;
+		/** @member {boolean} */
 		this.showSearchBox = true;
+		/** @member {string} */
 		this.sort = 'relevance';
+		/** @member {string|null} */
 		this.filter = null;
+		/** @member {HTMLFormElement|null} */
 		this.form = null;
+		/** @member {Array<object>|null} */
 		this.allData = null;
+		/** @member {HTMLInputElement|null} */
 		this.offset = null;
+		/** @member {HTMLInputElement|null} */
 		this.query = null;
+		/** @member {URLSearchParams} */
 		this.urlParams = new URLSearchParams( window.location.search ); // Store URLSearchParams
+		/** @member {string|null} */
 		this.previousSearchTerm = null;
 	}
 
+	/**
+    * Initializes the search block.  Fetches data, placeholders, and applies settings.
+    * @async
+    * @function init
+    * @returns {Promise<void>}
+    */
 	async init() {
 		try {
 			this.allData = await ffetch( this.source ).all();
@@ -85,6 +116,12 @@ class SearchBlock {
 		}
 	}
 	
+	/**
+     * Checks settings for a specific setting name in a row and applies them to the SearchBlock instance.
+     * @function checkSettings
+     * @param {HTMLElement} settingName - The first element in the row containing the setting name.
+     * @param {HTMLElement} row - The row element containing the setting.
+     */
 	checkSettings( settingName, row ) {
 		const invalidValues = ['false', 'no'];
 		const key = settingName.querySelector( 'p' ).textContent;
@@ -108,6 +145,10 @@ class SearchBlock {
 		}
 	}
 	
+	/**
+     * Filters the search data based on the configured filter tag and sorts the data if a sort key is provided.
+     * @function filterData
+    */
 	filterData() {
 		if ( this.sort !== 'relevance' ) {
 			const fuseTags = new Fuse( this.allData, fuseOptionsTags );
@@ -120,7 +161,14 @@ class SearchBlock {
 			return item.title && item.title.trim() !== '' && item.path && item.path.trim() !== '';
 		} );
 	}
-	
+
+	/**
+     * Returns a comparison function to sort an array of objects by a specified key.
+     * Sorts strings ascending and other types (e.g., timestamps) descending.
+     * @function sortBy
+     * @param {string} key - The key to sort the array by.
+     * @returns {function(object, object): number} A comparison function for sorting.
+     */
 	sortBy( key ) {
 		return function innerSort( a, b ) {
 			if ( !Object.hasOwn( a, key ) || !Object.hasOwn( b, key ) ) {
@@ -145,6 +193,10 @@ class SearchBlock {
 		};
 	}
 
+	/**
+     * Renders the search UI, including the search form and the container for the search results.
+     * @function render
+    */
 	render() {
 		this.block.innerHTML = '';
 		this.block.append(
@@ -154,6 +206,10 @@ class SearchBlock {
 		this.form = this.block.querySelector( 'form' );
 	}
 
+	/**
+     * Attaches event listeners to the search form.
+     * @function attachEventListeners
+     */
 	attachEventListeners() {
 		this.form.addEventListener( 'submit', ( e ) => {
 			e.preventDefault();
@@ -168,6 +224,10 @@ class SearchBlock {
 		}
 	}
 
+	/**
+     * Handles the initial search when the page loads with existing query parameters.
+     * @function handleInitialSearch
+     */
 	handleInitialSearch() {
 		const offsetParam = this.urlParams.get( OFFSET_PARAM );
 		const queryParam = this.urlParams.get( QUERY_PARAM );
@@ -186,8 +246,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Clears the search results container
-     */
+     * Clears the search results container and pagination.
+     * @function clearSearchResults
+    */
 	clearSearchResults() {
 		const searchResults = this.block.querySelector( '.' + SEARCH_RESULTS_CONTAINER_CLASS.split( ' ' ).join( '.' ) );
 		const pagination = this.block.querySelector( '.usa-pagination' );
@@ -200,8 +261,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Clears search results and resets URL parameters
-     */
+     * Clears search results, resets URL parameters, and optionally performs a new search if a filter is present to show all results.
+     * @function clearSearch
+    */
 	clearSearch() {
 		this.clearSearchResults();
 
@@ -227,9 +289,11 @@ class SearchBlock {
 	}
 
 	/**
-     * Renders search results in the search block
-     * @param {Array} filteredData - Filtered search results
-     * @param {string[]} searchTerms - Search terms to highlight
+     * Renders search results in the search block.
+     * @async
+     * @function renderResults
+     * @param {Array<object>} filteredData - Filtered search results.
+     * @param {Array<string>} searchTerms - Search terms to highlight.
      */
 	async renderResults( filteredData, searchTerms ) {
 		this.clearSearchResults();
@@ -267,6 +331,12 @@ class SearchBlock {
 		}
 	}
 	
+	/**
+     * Flattens an array of Fuse.js search results into a simple array of the original data items.
+     * @function flattenSearch
+     * @param {Array<object>} filteredData - An array of Fuse.js search result objects.
+     * @returns {Array<object>} A flattened array of data items.
+     */
 	flattenSearch( filteredData ) {
 		const flattendArray = [];
 		
@@ -278,8 +348,10 @@ class SearchBlock {
 	}
 
 	/**
-     * Handles search input events
-     * @param {boolean} resetOffset - Whether to reset the offset to 0
+     * Handles search input events, updating the URL parameters and rendering the search results.
+     * @async
+     * @function handleSearch
+     * @param {boolean} resetOffset - Whether to reset the offset to 0.
      */
 	async handleSearch( resetOffset ) {
 		let searchTerms = null;
@@ -318,8 +390,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Creates a container for search results
-     * @returns {HTMLElement} - The search results container element
+     * Creates a container for search results.
+     * @function createSearchResultsContainer
+     * @returns {HTMLElement} The search results container element.
      */
 	createSearchResultsContainer() {
 		let container = ul( { class: SEARCH_RESULTS_CONTAINER_CLASS } );
@@ -328,8 +401,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Creates the search icon element
-     * @returns {HTMLElement} - The search icon element
+     * Creates the search icon/button element.
+     * @function createSearchIcon
+     * @returns {HTMLElement} The search icon element.
      */
 	createSearchIcon() {
 		const searchTxt = this.placeholders.searchPlaceholder || 'Search';
@@ -349,8 +423,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Creates the search input field
-     * @returns {HTMLElement} - The search input element
+     * Creates the search input field.
+     * @function createSearchInput
+     * @returns {HTMLElement} The search input element.
      */
 	createSearchInput() {
 		const searchPlaceholder = ( this.placeholders.searchPlaceholder || 'Search' ) + '...';
@@ -372,8 +447,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Creates the search box container with input and icon
-     * @returns {HTMLElement} - The search box container
+     * Creates the search box container with input and icon/button.
+     * @function createSearchForm
+     * @returns {HTMLElement} The search box container.
      */
 	createSearchForm() {
 		let paginationInput = '';
@@ -390,9 +466,10 @@ class SearchBlock {
 	}
 
 	/**
-     * Creates manual collection container
-     * @returns {HTMLElement} - The manual collection container
-     */
+     * Creates manual collection container.
+     * @function createManualCollection
+     * @returns {HTMLElement} The manual collection container.
+    */
 	createManualCollection() {
 		return domEl( 'div', {
 			class: 'manual-collection'
@@ -402,6 +479,8 @@ class SearchBlock {
 
 /**
  * Decorates the search block with search functionality
+ * @async
+ * @function decorate
  * @param {HTMLElement} block - The block element to decorate
  */
 export default async function decorate( block ) {

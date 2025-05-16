@@ -62,6 +62,7 @@ function highlightTextElements( terms, elements ) {
  * @param {string[]} searchTerms - Terms to highlight in the result
  * @param {string} titleTag - HTML tag to use for the result title
  * @param {Object} searchBlock - The SearchBlock instance, needed for context and methods like highlightTextElements and filter
+ * @param {Boolean} filter - whether or not the search has been filtered
  * @returns {HTMLElement} - The rendered search result list item
  */
 export default function renderResult( result, searchTerms, titleTag, filter ) {
