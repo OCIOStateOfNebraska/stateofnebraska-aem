@@ -176,7 +176,7 @@ function removeFileSize( main ) {
 function updateLinks( main, url ) {
 	main.querySelectorAll( 'a' ).forEach( ( a ) => {
 		const href = a.getAttribute( 'href' );
-		if ( href ) {
+		if ( href && !href.endsWith( '.pdf' ) ) {
 			const u = new URL( href, url );
 			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname );
 			const newHref = new URL( newPath, 'https://main--stateofnebraska-aem--ociostateofnebraska.aem.page' ).toString();
@@ -289,11 +289,26 @@ export default {
 		updateImageLinks( main, url );
 
 		const results = [];
+		const path = ( ( u ) => {
+			let p = new URL( url ).pathname;
+			if ( p.endsWith( '/' ) ) {
+				p = `${p}index`;
+			}
+
+			if ( p.startsWith( '/notice-' ) ) {
+				p = '/notices'.concat( p );
+			}
+
+			return decodeURIComponent( p )
+				.toLowerCase(  )
+				.replace( /\.html$/, '' )
+				.replace( /[^a-z0-9/]/gm, '-' );
+		} )( url );
 
 		// main page import - "element" is provided, i.e. a docx will be created
 		results.push({
 		  element: main,
-		  path: new URL(url).pathname
+		  path: path
 		});
 
 		// find pdf links
@@ -317,23 +332,5 @@ export default {
 		});
 
 		return results;
-	},
-
-	generateDocumentPath: ( {
-		url
-	} ) => {
-		let p = new URL( url ).pathname;
-		if ( p.endsWith( '/' ) ) {
-			p = `${p}index`;
-		}
-
-		if ( p.startsWith( '/notice-' ) ) {
-			p = '/notices'.concat( p );
-		}
-
-		return decodeURIComponent( p )
-			.toLowerCase(  )
-			.replace( /\.html$/, '' )
-			.replace( /[^a-z0-9/]/gm, '-' );
 	},
 };
