@@ -28,6 +28,6 @@ export const SUBMISSION_SERVICE = 'https://forms.adobe.com/adobe/forms/af/submit
 // 	submitBaseUrl = url;
 // }
 
-// export function getSubmitBaseUrl() {
-// 	return submitBaseUrl;
-// }
+export function getSubmitBaseUrl() {
+	return submitBaseUrl;
+}
