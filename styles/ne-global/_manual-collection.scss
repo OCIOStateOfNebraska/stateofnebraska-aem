@@ -8,5 +8,12 @@
 		&__item {
 			border-color: color('base-lighter');
 		}
+		
+		&__meta-item {
+			display: flex;
+			align-items: center;
+			gap: px-to-rem(4px);
+			
+		}
 	}
 }
