@@ -64,7 +64,7 @@ class SearchBlock {
 		/** @member {string} */
 		this.source = this.block.querySelector( 'a[href]' )?.href || '/query-index.json'; // Use optional chaining
 		/** @member {number} */
-		this.limit = 1;
+		this.limit = 10;
 		/** @member {boolean} */
 		this.showPagination = true;
 		/** @member {boolean} */
@@ -318,7 +318,7 @@ class SearchBlock {
 					if ( e.target.matches( 'a' ) ) {
 						this.offset.value = e.target.dataset.paginationButton;
 						this.handleSearch( false );
-						//todo: add scroll to top handler
+						this.form.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 					}
 				} );
 			} else if ( this.blockClassDynamicCollection ) {
