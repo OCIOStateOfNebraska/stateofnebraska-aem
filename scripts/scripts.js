@@ -436,8 +436,6 @@ async function loadPage() {
 	loadDelayed();
 }
 
-await loadPage();
-
 // add class to to make the content appear in case header gets stuck
 ( function bodyAppear() {
 
@@ -452,3 +450,5 @@ await loadPage();
 	if ( !new URL( window.location.href ).searchParams.get( 'dapreview' ) ) return;
 	import( 'https://da.live/scripts/dapreview.js' ).then( ( { default: daPreview } ) => daPreview( loadPage ) );
 }() );
+
+await loadPage();
