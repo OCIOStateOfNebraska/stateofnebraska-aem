@@ -259,6 +259,12 @@ function decorateH2s( element ) {
  */
 function decorateYouTube( element ) {
 	element.querySelectorAll( 'a[href*="youtube.com"], a[href*="youtu.be"], a[href*="youtube-nocookie.com"]' ).forEach( ( link ) => {
+
+		// extract the video ID from the link
+		const youtubeRegex = /(?:https?:\/\/(?:m\.)?(?:www\.)?youtu(?:\.be\/|(?:be-nocookie|be)\.com\/)(?:watch|\w+\?(?:feature=\w+\.\w+&)?v=|v\/|e\/|embed\/|live\/|shorts\/|user\/(?:[\w#]+\/)+))([^&#?\n]+)/i;
+		const id = youtubeRegex.exec( link.href )?.[1];
+		if( !id ) return;
+
 		let parent = link.closest( 'p' );
 
 		// stop if it's a button
@@ -277,36 +283,32 @@ function decorateYouTube( element ) {
 		// stop if there's text after which is not wrapped in parenthesis (assuming a paragraph)
 		if( textAfter && !titleText ) return;
 
-		const url = new URL( link.href );
-		const id = url.searchParams.get( 'v' ) || url.pathname.split( '/embed/' )?.[1] || url.pathname.substring( 1 );
-		if ( id ) {
-			const wrapper = domEl( 'figure', { class: 'video-embed' } );
-			const iframe = domEl( 'iframe', {
-				src: `https://www.youtube.com/embed/${id}?rel=0&color=white`,
-				allowfullscreen: true,
-				loading: 'lazy',
-				frameborder: 0,
-				allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
-				title: titleText || 'YouTube video player',
+		const wrapper = domEl( 'figure', { class: 'video-embed' } );
+		const iframe = domEl( 'iframe', {
+			src: `https://www.youtube.com/embed/${id}?rel=0&color=white`,
+			allowfullscreen: true,
+			loading: 'lazy',
+			frameborder: 0,
+			allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+			title: titleText || 'YouTube video player',
+		} );
+
+		wrapper.appendChild( div( iframe ) );
+
+		if ( !parent ) {
+			// likely inside a column, create a wrapper so that column classes aren't added directly to the iframe
+			parent = div();
+
+			let origParent = link.parentElement;
+			origParent.childNodes.forEach( ( child ) => {
+				parent.append( child );
 			} );
 
-			wrapper.appendChild( div( iframe ) );
-
-			if ( !parent ) {
-				// likely inside a column, create a wrapper so that column classes aren't added directly to the iframe
-				parent = div();
-
-				let origParent = link.parentElement;
-				origParent.childNodes.forEach( ( child ) => {
-					parent.append( child );
-				} );
-
-				origParent.textContent = '';
-				origParent.append( parent );
-			}
-
-			parent.replaceWith( wrapper );
+			origParent.textContent = '';
+			origParent.append( parent );
 		}
+
+		parent.replaceWith( wrapper );
 	} );
 }
 
