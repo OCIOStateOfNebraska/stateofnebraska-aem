@@ -16,6 +16,12 @@
 		&:last-child {
 			margin-bottom: units(2);
 		}
+		
+		a {
+			svg {
+				display: none; // backup because sometimes the external link svg renders when it should not
+			}
+		}
 
 		p {
 			font-size: size('body', 'sm');
