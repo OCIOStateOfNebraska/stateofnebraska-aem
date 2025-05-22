@@ -14,7 +14,7 @@ function createPagination( currentOffset, data, limit, block ) {
 	const prevA = domEl( 'a', {
 		href: 'javascript:void(0);',
 		class: 'usa-pagination__link usa-pagination__previous-page',
-		'title': 'Previous page',  
+		'title': 'Previous',  
 		'data-pagination-button': currentOffset - limit,
 		'role': 'button'
 	} );
@@ -99,7 +99,7 @@ function createPagination( currentOffset, data, limit, block ) {
 	const nextA = domEl( 'a', {
 		href: 'javascript:void(0);',
 		class: 'usa-pagination__link usa-pagination__next-page',
-		'title': 'Next page',
+		'title': 'Next',
 		'data-pagination-button': currentOffset + limit,
 		'role': 'button'
 	} );
