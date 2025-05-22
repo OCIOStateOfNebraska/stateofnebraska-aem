@@ -313,6 +313,86 @@ function decorateYouTube( element ) {
 }
 
 /**
+ * Converts links to YouTube to embedded videos
+ * Leverages text within the same paragraph as the title for accessibility
+ * @param {Element} element container element
+ */
+function decorateGoogleMaps( element ) {
+	element.querySelectorAll( 'a[href*="google.com/maps"]' ).forEach( ( link ) => {
+		let parent = link.closest( 'p' );
+
+		// stop if it's a button
+		if ( parent?.classList.contains( 'usa-button__wrap' ) ) return;
+
+		// stop if there's text ahead of the link
+		if ( link.previousSibling?.textContent.trim().length ) return;
+
+		// text after the link is used as alt text if wrapped in parentheses
+		const textAfter = link.nextSibling?.textContent.trim();
+		let titleText = '';
+		if ( textAfter && textAfter[0] === '(' && textAfter[textAfter.length - 1] === ')' ) {
+			titleText = textAfter.substring( 1, textAfter.length - 1 );
+		}
+
+		// stop if there's text after which is not wrapped in parenthesis (assuming a paragraph)
+		if ( textAfter && !titleText ) return;
+
+
+		// Helper function to create the iframe
+		const createIframe = ( embedURL, parent, titleText, link ) => {
+			const wrapper = domEl( 'figure', { class: 'map-embed' } );
+			const iframe = domEl( 'iframe', {
+				src: embedURL,
+				style: 'border:0',
+				allowfullscreen: '',
+				loading: 'lazy',
+				referrerpolicy: 'no-referrer-when-downgrade',
+				title: titleText || 'Google Map',
+			} );
+
+			wrapper.appendChild( iframe );
+
+			if ( !parent ) {
+				// likely inside a column, create a wrapper so that column classes aren't added directly to the iframe
+				parent = domEl( 'div' );
+				let origParent = link.parentElement;
+				origParent.childNodes.forEach( ( child ) => {
+					parent.append( child );
+				} );
+				origParent.textContent = '';
+				origParent.append( parent );
+			}
+			parent.replaceWith( wrapper );
+		};
+
+		const url = new URL( link.href );
+
+		// Check if the link is an embed URL
+		if ( url.href.startsWith( 'https://www.google.com/maps/embed' ) ) {
+			createIframe( url.href, parent, titleText, link );
+		}
+		//If it isn't an embed URL, then it must be a google maps URL
+		else if ( url.href.startsWith( 'https://www.google.com/maps/' ) ) {
+			let embedURL = null;
+			const match = url.searchParams.get( 'q' ) || url.searchParams.get( 'api=1&query' ) || url.searchParams.get( 'cid' );
+
+			if ( match ) {
+				embedURL = `https://maps.google.com/maps?q=${match}&output=embed`;
+			} else {
+				const pathParts = url.pathname.split( '@' )[1]?.split( ',' );
+				if ( pathParts?.length >= 2 ) {
+					const latitude = parseFloat( pathParts[0] );
+					const longitude = parseFloat( pathParts[1] );
+					embedURL = `https://maps.google.com/maps?q=${latitude},${longitude}&output=embed`;
+				}
+			}
+			if ( embedURL ) {
+				createIframe( embedURL, parent, titleText, link );
+			}
+		}
+	} );
+}
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
@@ -327,6 +407,7 @@ export function decorateInner( container ) {
 	decorateIcons( container );
 	decorateH2s( container );
 	decorateYouTube( container );
+	decorateGoogleMaps( container );
 	decorateSections( container );
 	decorateBlocks( container );
 	decorateUnstyledLinks( container );
