@@ -224,7 +224,7 @@ function decorateExternalLinks( element ) {
 				if( isPDFUrl( a.href ) ) {
 					a.classList.add( 'usa-link--pdf' );
 					a.setAttribute( 'target', '_blank' );
-					getIndividualIcon( a, 'description', true );
+					getIndividualIcon( a, 'file-pdf' );
 				} else if ( !isSameDomainOrSubdomain( a.href ) ) {
 					a.classList.add( 'usa-link--external' );
 					a.setAttribute( 'target', '_blank' );
