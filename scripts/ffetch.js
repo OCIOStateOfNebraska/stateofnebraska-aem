@@ -1,3 +1,6 @@
+/* eslint-disable */
+// https://github.com/adobe/ffetch/commit/9d1cf423bba98d79cd5b6786b1df0acddc7b160b
+
 /*
  * Copyright 2023 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");

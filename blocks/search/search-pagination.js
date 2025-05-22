@@ -14,8 +14,9 @@ function createPagination( currentOffset, data, limit, block ) {
 	const prevA = domEl( 'a', {
 		href: 'javascript:void(0);',
 		class: 'usa-pagination__link usa-pagination__previous-page',
-		'aria-label': 'Previous page',  
-		'data-pagination-button': currentOffset - limit
+		'title': 'Previous page',  
+		'data-pagination-button': currentOffset - limit,
+		'role': 'button'
 	} );
 
 	if ( currentPage === 1 ) {
@@ -36,8 +37,9 @@ function createPagination( currentOffset, data, limit, block ) {
 		const pageA = domEl( 'a', {
 			href: 'javascript:void(0);',
 			class: 'usa-pagination__button',
-			'aria-label': `Page ${pageNumber}`,
+			'title': `Page ${pageNumber}`,
 			'data-pagination-button': ( pageNumber - 1 ) * limit,
+			'role': 'button'
 		}, pageNumber.toString() );
 		
 		if ( pageNumber === currentPage ) {
@@ -97,8 +99,9 @@ function createPagination( currentOffset, data, limit, block ) {
 	const nextA = domEl( 'a', {
 		href: 'javascript:void(0);',
 		class: 'usa-pagination__link usa-pagination__next-page',
-		'aria-label': 'Next page',
-		'data-pagination-button': currentOffset + limit
+		'title': 'Next page',
+		'data-pagination-button': currentOffset + limit,
+		'role': 'button'
 	} );
 	if ( currentPage === totalPages ) {
 		nextA.classList.add( 'usa-pagination__link--disabled' );

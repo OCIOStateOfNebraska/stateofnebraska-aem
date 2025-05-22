@@ -9,7 +9,7 @@ import Events from '../../scripts/Events.class.js';
 */
 function highlightTextElements( terms, elements ) {
 	elements.forEach( ( element ) => {
-		if ( !element?.textContent ) return; 
+		if ( !element?.textContent.trim() ) return; 
 
 		const matches = [];
 		const { textContent } = element;
@@ -69,6 +69,7 @@ function renderTitle( result, titleTag, searchTerms, collectionBody ) {
 
 function renderDate( result, titleTag, searchTerms, collectionBody, filter ) {
 	if ( filter ) {
+		// TODO: switch out with publication
 		const date = new Events( result.lastModified );
 			
 		const dateWrap = domEl( 'li', { class: 'usa-collection__meta-item position-relative' }, date.longDate() );
@@ -89,6 +90,7 @@ function renderDescription( result, titleTag, searchTerms, collectionBody ) {
 }
 
 function renderTags( result, titleTag, searchTerms, collectionBody ) {
+	// TODO: combine with renderDate
 	if ( result.tags?.length > 0 ) {
 		const tagsList = ul( { class: 'usa-collection__meta', 'aria-label': 'Topics' } );
 		result.tags.forEach( ( tag, index ) => {
