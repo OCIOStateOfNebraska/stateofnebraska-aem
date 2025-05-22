@@ -179,7 +179,7 @@ function updateLinks( main, url ) {
 		if ( href && !href.endsWith( '.pdf' ) ) {
 			const u = new URL( href, url );
 			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname );
-			const newHref = new URL( newPath, 'https://main--stateofnebraska-aem--ociostateofnebraska.aem.page' ).toString();
+			const newHref = new URL( newPath, 'https://main--ndbf-eds--ociostateofnebraska.aem.page' ).toString();
 			a.setAttribute( 'href', newHref );
 		}
 	} );
@@ -197,9 +197,16 @@ function updateImageLinks( main, url ) {
 	} );
 }
 
+function removeEmptyTable ( main, document ) {
+	main.querySelectorAll( 'table' ).forEach( (each) => {
+		if ( !each.querySelector( 'th' ) ) {
+			each.remove();
+		}
+	} );
+}
+
 const createMetadataBlock = ( main, document, url ) => {
 	const meta = {};
-	console.log("URL - {}", url);
 	// find the <title> element
 	const title = document.querySelector( 'title' );
 	if ( title ) {
@@ -287,6 +294,7 @@ export default {
 
 		updateLinks( main, url );
 		updateImageLinks( main, url );
+		removeEmptyTable( main, document );
 
 		const results = [];
 		const path = ( ( u ) => {
@@ -330,7 +338,7 @@ export default {
 				// this is required to be able to follow the links in Word
 				// you will need to replace "main--repo--owner" by your project setup
 				const newHref = new URL( newPath, 'https://main--ndbf-eds--ociostateofnebraska.aem.page' ).toString();
-				a.setAttribute( 'href', newPath );
+				a.setAttribute( 'href', newHref );
 			}
 		} );
 
