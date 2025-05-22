@@ -129,7 +129,7 @@ function checkIfRowExists( el, rowNum ) {
 const svgCache = {};
 
 // Return a promise for fetching (or getting from cache)
-async function getIndividualIcon( el, iconName, google = false, prefix = '' ) {
+async function getIndividualIcon( el, iconName, google = false, prepend = false, prefix = '' ) {
 	let link;
 	if ( google ) {
 		link = `${window.hlx.codeBasePath}${prefix}/icons/material-icons/${iconName}.svg`;
@@ -148,7 +148,11 @@ async function getIndividualIcon( el, iconName, google = false, prefix = '' ) {
 	try {
 		const svgContent = await svgCache[link];
 		const originalText = el.innerHTML;
-		el.innerHTML = originalText + svgContent; // append the SVG
+		if ( prepend ) {
+			el.innerHTML = svgContent + originalText; // prepend the SVG
+		} else {
+			el.innerHTML = originalText + svgContent; // append the SVG
+		}
 		const svg = el.querySelector( 'svg' );
 		svg.classList.add( 'usa-icon' );
 		svg.setAttribute( 'aria-hidden', 'true' );
