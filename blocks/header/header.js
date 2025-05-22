@@ -146,6 +146,8 @@ async function loadAndDecorateNav() {
 	const navPath = navMeta ? new URL( navMeta, window.location ).pathname : '/nav';
 	const navFragment = await loadFragment( navPath );
 	const innerNav = domEl( 'div', { class: 'usa-nav__inner' } );
+	if ( !navFragment ) return innerNav;
+
 	let navChildren = navFragment.children;
 	for ( const element of navChildren ) {
 		if ( element.getElementsByTagName( 'ul' ).length > 0 ) {
