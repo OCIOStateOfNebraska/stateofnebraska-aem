@@ -46,5 +46,8 @@
     "stylelint-config-standard-scss": "^14.0.0",
     "stylelint-order": "^6.0.4",
     "stylelint-scss": "^6.11.1"
+  },
+  "dependencies": {
+    "fuse.js": "^7.1.0"
   }
 }
