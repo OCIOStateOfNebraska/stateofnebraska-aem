@@ -33,7 +33,9 @@ $block: 'usa-hero';
 		}
 
 		.#{$block}__callout {
-			padding-top: units(4);
+			&:has(.usa-breadcrumb) {
+				padding-top: units(4);
+			}
 		}
 	}
 }
