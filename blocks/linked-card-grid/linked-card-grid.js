@@ -7,7 +7,7 @@ import { getIndividualIcon } from '../../scripts/utils.js';
 * @param {HTMLElement} container - The card wrapper the content should be in.
 */
 function generateContent( div, container ) {
-	const wrap = div.querySelector( 'p' );
+	const wrap = div.querySelector( 'p:has(a)' ); //
 	wrap.className = 'usa-button__wrap';
 	const a = div.querySelector( 'a' ) ? div.querySelector( 'a' ) : null;
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
