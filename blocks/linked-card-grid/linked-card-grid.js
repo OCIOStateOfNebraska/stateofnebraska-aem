@@ -7,8 +7,9 @@ import { getIndividualIcon } from '../../scripts/utils.js';
 * @param {HTMLElement} container - The card wrapper the content should be in.
 */
 function generateContent( div, container ) {
-	const wrap = div.querySelector( '.usa-button__wrap' );
-	const a = wrap ? wrap.querySelector( 'a' ) : null;
+	const wrap = div.querySelector( 'p:has(a)' ); //
+	wrap.className = 'usa-button__wrap';
+	const a = div.querySelector( 'a' ) ? div.querySelector( 'a' ) : null;
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
 	let header = '';
 	div.className = 'usa-card__body';
@@ -20,7 +21,7 @@ function generateContent( div, container ) {
 		container.prepend( header );
 		
 		// Wrap the link in the header 
-		if ( a && wrap ) {
+		if ( a ) {
 			a.textContent = ''; 
 			a.className = '';
 			heading.append( a );
