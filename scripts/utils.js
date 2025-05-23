@@ -165,4 +165,43 @@ async function getIndividualIcon( el, iconName, google = false, prepend = false,
 	}
 }
 
-export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon  };
+/**
+ * Checks if a URL is on the same domain or subdomain as the current page.
+ * @param {string} url The URL to check
+ * @returns {boolean} True if the URL is on the same domain or subdomain, false otherwise.
+ */
+function isSameDomainOrSubdomain( url ) {
+	try {
+	// Get the current page's hostname
+		const currentHostname = window.location.hostname;
+
+		// Construct a URL object for the link
+		const linkURL = new URL( url, window.location.href ); // Base URL for relative URLs
+		const linkHostname = linkURL.hostname;
+
+		// If the link and the current page have the exact same hostname, it's the same domain
+		if ( linkHostname === currentHostname ) {
+			return true;
+		}
+
+		// Check if the link is a subdomain of the current domain
+		if ( linkHostname.endsWith( '.' + currentHostname ) ) {
+			return true;
+		}
+
+		// Check if the current domain is a subdomain of the link
+		if ( currentHostname.endsWith( '.' + linkHostname ) ) {
+			return true;
+		}
+
+		// If none of the above conditions are met, it's not the same domain or a subdomain
+		return false;
+	} catch ( error ) {
+		// Handle invalid URLs and return false
+		// eslint-disable-next-line no-console
+		console.warn( `Invalid URL: ${url}`, error );
+		return false;
+	}
+}
+
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon, isSameDomainOrSubdomain  };

@@ -2,6 +2,7 @@ import { getMetadata, decorateBlock, loadBlock, buildBlock, fetchPlaceholders } 
 import { loadFragment } from '../fragment/fragment.js';
 import { a, domEl } from '../../scripts/dom-helpers.js';
 import { header, accordion } from '../../scripts/deps/bundle-uswds.js';
+import { getIndividualIcon, isSameDomainOrSubdomain } from '../../scripts/utils.js';
 
 
 async function decorateSkipnav( placeholders ) {
@@ -104,11 +105,19 @@ async function createSubMenu( subMenu, id ) {
 		subMenu.lastElementChild.remove();
 		subMenu.firstElementChild.classList.add( 'usa-nav__link' );
 		subMenu.firstElementChild.classList.remove( 'usa-button' );
+		const isExternal = !isSameDomainOrSubdomain( subMenu.firstElementChild.getAttribute( 'href' ) );
+		
+		if( isExternal ) {
+			const externalLink = domEl( 'span', {} );
+			subMenu.firstElementChild.append( externalLink );
+			getIndividualIcon( subMenu.querySelector( 'span' ), 'launch' );
+		}
+		
 		const pagePathNormalized = normalizePath( subMenu.firstElementChild.getAttribute( 'href' ) );
 		let currentPagePath = window.location.pathname;
 		const ancestors = getAncestors( pagePathNormalized );
 		const topLevel = ancestors.length ? ancestors[0] : pagePathNormalized;
-		if ( currentPagePath.includes( topLevel ) ) {
+		if ( currentPagePath.includes( topLevel ) && !isExternal ) {
 			subMenu.firstElementChild.classList.add( 'usa-current' );
 		}
 	} 
