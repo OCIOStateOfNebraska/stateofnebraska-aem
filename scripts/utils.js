@@ -123,19 +123,14 @@ function checkIfRowExists( el, rowNum ) {
  * @function getIndividualIcon
  * @param {HTMLElement} el     - The element to inject the SVG into.
  * @param {string} iconName    - The icon name (e.g., 'arrow_back').
- * @param {bool} google        - If the icon is a material icon. defaults to false 
  * @param {string} [prefix=''] - Optional prefix to prepend to the icon path.
  */
 const svgCache = {};
 
 // Return a promise for fetching (or getting from cache)
-async function getIndividualIcon( el, iconName, google = false, prepend = false, prefix = '' ) {
+async function getIndividualIcon( el, iconName, prepend = false, prefix = '' ) {
 	let link;
-	if ( google ) {
-		link = `${window.hlx.codeBasePath}${prefix}/icons/material-icons/${iconName}.svg`;
-	} else {
-		link = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
-	}
+	link = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
 
 	// Cache based on the link, since that's what's fetched
 	if ( !svgCache[link] ) {
