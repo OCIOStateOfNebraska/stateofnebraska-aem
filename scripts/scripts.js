@@ -13,7 +13,7 @@ import {
 	loadCSS,
 	loadBlock,
 } from './aem.js';
-import { getIndividualIcon } from './utils.js';
+import { getIndividualIcon, isSameDomainOrSubdomain } from './utils.js';
 import { div, domEl } from './dom-helpers.js';
 
 // variable for caching site index
@@ -165,45 +165,6 @@ function decorateButtons( element ) {
 }
 
 /**
- * Checks if a URL is on the same domain or subdomain as the current page.
- * @param {string} url The URL to check
- * @returns {boolean} True if the URL is on the same domain or subdomain, false otherwise.
- */
-function isSameDomainOrSubdomain( url ) {
-	try {
-	// Get the current page's hostname
-		const currentHostname = window.location.hostname;
-
-		// Construct a URL object for the link
-		const linkURL = new URL( url, window.location.href ); // Base URL for relative URLs
-		const linkHostname = linkURL.hostname;
-
-		// If the link and the current page have the exact same hostname, it's the same domain
-		if ( linkHostname === currentHostname ) {
-			return true;
-		}
-
-		// Check if the link is a subdomain of the current domain
-		if ( linkHostname.endsWith( '.' + currentHostname ) ) {
-			return true;
-		}
-
-		// Check if the current domain is a subdomain of the link
-		if ( currentHostname.endsWith( '.' + linkHostname ) ) {
-			return true;
-		}
-
-		// If none of the above conditions are met, it's not the same domain or a subdomain
-		return false;
-	} catch ( error ) {
-		// Handle invalid URLs and return false
-		// eslint-disable-next-line no-console
-		console.warn( `Invalid URL: ${url}`, error );
-		return false;
-	}
-}
-
-/**
  * Checks if a URL is a pdf.
  * @param {string} url The URL to check
  * @returns {boolean} True if the URL ends with .pdf
@@ -224,7 +185,7 @@ function decorateExternalLinks( element ) {
 				if( isPDFUrl( a.href ) ) {
 					a.classList.add( 'usa-link--pdf' );
 					a.setAttribute( 'target', '_blank' );
-					getIndividualIcon( a, 'description', true );
+					getIndividualIcon( a, 'file-pdf' );
 				} else if ( !isSameDomainOrSubdomain( a.href ) ) {
 					a.classList.add( 'usa-link--external' );
 					a.setAttribute( 'target', '_blank' );
@@ -259,6 +220,12 @@ function decorateH2s( element ) {
  */
 function decorateYouTube( element ) {
 	element.querySelectorAll( 'a[href*="youtube.com"], a[href*="youtu.be"], a[href*="youtube-nocookie.com"]' ).forEach( ( link ) => {
+
+		// extract the video ID from the link
+		const youtubeRegex = /(?:https?:\/\/(?:m\.)?(?:www\.)?youtu(?:\.be\/|(?:be-nocookie|be)\.com\/)(?:watch|\w+\?(?:feature=\w+\.\w+&)?v=|v\/|e\/|embed\/|live\/|shorts\/|user\/(?:[\w#]+\/)+))([^&#?\n]+)/i;
+		const id = youtubeRegex.exec( link.href )?.[1];
+		if( !id ) return;
+
 		let parent = link.closest( 'p' );
 
 		// stop if it's a button
@@ -277,36 +244,32 @@ function decorateYouTube( element ) {
 		// stop if there's text after which is not wrapped in parenthesis (assuming a paragraph)
 		if( textAfter && !titleText ) return;
 
-		const url = new URL( link.href );
-		const id = url.searchParams.get( 'v' ) || url.pathname.split( '/embed/' )?.[1] || url.pathname.substring( 1 );
-		if ( id ) {
-			const wrapper = domEl( 'figure', { class: 'video-embed' } );
-			const iframe = domEl( 'iframe', {
-				src: `https://www.youtube.com/embed/${id}?rel=0&color=white`,
-				allowfullscreen: true,
-				loading: 'lazy',
-				frameborder: 0,
-				allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
-				title: titleText || 'YouTube video player',
+		const wrapper = domEl( 'figure', { class: 'video-embed' } );
+		const iframe = domEl( 'iframe', {
+			src: `https://www.youtube.com/embed/${id}?rel=0&color=white`,
+			allowfullscreen: true,
+			loading: 'lazy',
+			frameborder: 0,
+			allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+			title: titleText || 'YouTube video player',
+		} );
+
+		wrapper.appendChild( div( iframe ) );
+
+		if ( !parent ) {
+			// likely inside a column, create a wrapper so that column classes aren't added directly to the iframe
+			parent = div();
+
+			let origParent = link.parentElement;
+			origParent.childNodes.forEach( ( child ) => {
+				parent.append( child );
 			} );
 
-			wrapper.appendChild( div( iframe ) );
-
-			if ( !parent ) {
-				// likely inside a column, create a wrapper so that column classes aren't added directly to the iframe
-				parent = div();
-
-				let origParent = link.parentElement;
-				origParent.childNodes.forEach( ( child ) => {
-					parent.append( child );
-				} );
-
-				origParent.textContent = '';
-				origParent.append( parent );
-			}
-
-			parent.replaceWith( wrapper );
+			origParent.textContent = '';
+			origParent.append( parent );
 		}
+
+		parent.replaceWith( wrapper );
 	} );
 }
 
