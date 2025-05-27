@@ -359,16 +359,6 @@ function decorateGoogleMaps( element ) {
  * @param {Element} element The container element
  */
 function decorateIconList( element ) {
-	
-	function namedNodeMapToObject( namedNodeMap ) {
-		const obj = {};
-		for( let i = 0; i < namedNodeMap.length; i++ ) {
-			const attr = namedNodeMap.item( i );
-			obj[attr.name] = attr.value;
-		}
-		return obj;
-	}
-
 	element.querySelectorAll( 'ul' ).forEach( ( ul ) => {
 		// already decorated
 		if ( ul.classList.contains( 'usa-icon-list' ) ) return; 
