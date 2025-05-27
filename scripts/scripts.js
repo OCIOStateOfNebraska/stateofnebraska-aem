@@ -419,8 +419,8 @@ export function decorateMain( main ) {
 }
 
 export function decorateInner( container ) {
-	decorateIcons( container );
 	decorateButtons( container );
+	decorateIcons( container );
 	decorateH2s( container );
 	decorateYouTube( container );
 	decorateGoogleMaps( container );
