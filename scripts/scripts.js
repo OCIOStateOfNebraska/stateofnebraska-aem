@@ -389,10 +389,10 @@ function decorateIconList( element ) {
 				if( child.tagName && ['H2', 'H3', 'H4'].includes( child.tagName.toUpperCase() ) ) {
 					const after = document.createElement( 'p' );
 					let found = false;
-					child.childNodes.forEach(c => {
+					child.childNodes.forEach( c => {
 						if( found ) {
 							after.appendChild( c );
-						} else if (c.tagName == 'BR') {
+						} else if ( c.tagName == 'BR' ) {
 							found = true;
 						}
 					} );
