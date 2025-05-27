@@ -64,3 +64,7 @@ indices:
         select: none
         value: |
           parseTimestamp(headers['last-modified'], 'ddd, DD MMM YYYY hh:mm:ss GMT')
+      publication:
+        select: head > meta[name="publication-date"]
+        value: |
+          attribute(el, 'content')
