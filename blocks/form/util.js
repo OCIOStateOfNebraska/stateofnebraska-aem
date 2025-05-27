@@ -90,7 +90,7 @@ export function createLabel( fd, tagName = 'label' ) {
 			const abbr = document.createElement( 'abbr' );
 			abbr.title = 'required';
 			abbr.className = 'usa-hint usa-hint--required';
-			abbr.textContent = '*'; // Or use innerHTML if you want to add more complex content
+			abbr.textContent = '*';
 			label.appendChild( abbr );
 		}
 		return label;
