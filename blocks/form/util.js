@@ -65,7 +65,15 @@ export function createLabel( fd, tagName = 'label' ) {
 	if ( fd.label && fd.label.value ) {
 		const label = document.createElement( tagName );
 		label.setAttribute( 'for', fd.id );
-		label.className = 'field-label';
+		
+		if ( fd.fieldType === 'checkbox' ) {
+			label.className = 'field-label usa-checkbox__label';
+		} else if ( fd.fieldType === 'radio' ) {
+			label.className = 'field-label usa-radio__label';
+		} else {
+			label.className = 'field-label usa-label';
+			
+		}
 		if ( fd.label.richText === true ) {
 			label.innerHTML = stripTags( fd.label.value );
 		} else {
@@ -76,6 +84,14 @@ export function createLabel( fd, tagName = 'label' ) {
 		}
 		if ( fd.tooltip ) {
 			label.title = stripTags( fd.tooltip, '' );
+		}
+		
+		if ( fd.required && ( fd.fieldType !== 'checkbox' ) && ( fd.fieldType !== 'radio' ) ) {
+			const abbr = document.createElement( 'abbr' );
+			abbr.title = 'required';
+			abbr.className = 'usa-hint usa-hint--required';
+			abbr.textContent = '*'; // Or use innerHTML if you want to add more complex content
+			label.appendChild( abbr );
 		}
 		return label;
 	}
@@ -102,7 +118,16 @@ export function createFieldWrapper( fd, tagName = 'div', labelFn = createLabel )
 	if ( fd?.fieldType === 'number-input' && fd?.type ) {
 		fieldWrapper.dataset.type = fd.type;
 	}
+	if ( renderType === 'checkbox' ) {
+		fieldWrapper.classList.add( 'usa-checkbox' );
+		fieldWrapper.classList.add( 'usa-fieldset' );
+	} else if  ( renderType === 'radio' ) { 
+		fieldWrapper.classList.add( 'usa-radio' );
+	} else {
+		fieldWrapper.classList.add( 'usa-fieldset' );
+	}
 	fieldWrapper.classList.add( 'field-wrapper' );
+	
 	if ( fd.label && fd.label.value && typeof labelFn === 'function' ) {
 		const label = labelFn( fd );
 		if ( label ) { fieldWrapper.append( label ); }
@@ -114,11 +139,17 @@ export function createButton( fd ) {
 	const wrapper = createFieldWrapper( fd );
 	if ( fd.buttonType ) {
 		wrapper.classList.add( `${fd?.buttonType}-wrapper` );
+		wrapper.classList.add( 'usa-button__wrap' );
 	}
 	const button = document.createElement( 'button' );
 	button.textContent = fd?.label?.visible === false ? '' : fd?.label?.value;
 	button.type = fd.buttonType || 'button';
 	button.classList.add( 'button' );
+	button.classList.add( 'usa-button' );
+
+	if ( fd.buttonType !== 'submit' ) {
+		button.classList.add( 'usa-button--secondary' );
+	}
 	button.id = fd.id;
 	button.name = fd.name;
 	if ( fd?.label?.visible === false ) {

@@ -222,6 +222,13 @@ function createRadioOrCheckboxGroup( fd ) {
 		if ( ( index === 0 && type === 'radio' ) || type === 'checkbox' ) {
 			input.required = fd.required;
 		}
+		if ( type === 'checkbox' ) {
+			input.classList.add( 'usa-checkbox__input' );
+			input.classList.add( 'usa-checkbox__input--tile' );
+		} else if ( type === 'radio' ){ 
+			input.classList.add( 'usa-radio__input' );
+			input.classList.add( 'usa-radio__input--tile' );
+		}
 		if ( fd.enabled === false || fd.readOnly === true ) {
 			input.setAttribute( 'disabled', 'disabled' );
 		}
@@ -344,6 +351,7 @@ function inputDecorator( field, element ) {
 		if ( input.type === 'email' ) {
 			input.pattern = emailPattern;
 		}
+		input.classList.add( 'usa-input' );
 		setConstraintsMessage( element, field.constraintMessages );
 		element.dataset.required = field.required;
 	}
@@ -459,6 +467,7 @@ export async function createForm( formDef, data ) {
 	const form = document.createElement( 'form' );
 	form.dataset.action = formPath;
 	form.noValidate = true;
+	form.className = 'usa-form usa-form--large';
 	if ( formDef.appliedCssClassNames ) {
 		form.className = formDef.appliedCssClassNames;
 	}
@@ -626,6 +635,7 @@ export default async function decorate( block ) {
 		if ( source === 'aem' && formDef.properties ) {
 			form.dataset.formpath = formDef.properties['fd:path'];
 		}
+		form.className = 'usa-form usa-form--large';
 		container.replaceWith( form );
 	}
 }
