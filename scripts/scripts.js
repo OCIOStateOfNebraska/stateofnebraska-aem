@@ -353,6 +353,61 @@ function decorateGoogleMaps( element ) {
 		}
 	} );
 }
+
+/** Converts list with icons into an icon list component
+ * Has "Big" variant
+ * @param {Element} element The container element
+ */
+function decorateIconList( element ) {
+	element.querySelectorAll( 'ul' ).forEach( ( ul ) => {
+		// already decorated
+		if ( ul.classList.contains( 'usa-icon-list' ) ) return; 
+		
+		// only decorate if all li elements have an icon
+		const lis = ul.querySelectorAll( ':scope > li' );
+		if( ul.querySelectorAll( ':scope > li .icon:first-child' ).length !== lis.length ) return;
+
+		ul.classList.add( 'usa-icon-list' );
+		if( ul.querySelector( 'h2, h3, h4' ) ) {
+			ul.classList.add( 'usa-icon-list--size-lg' );
+		}
+
+		lis.forEach( ( li ) => {
+			li.classList.add( 'usa-icon-list__item' );
+			
+			// leaving as a span because decorateIcon is still potentially working with it asynchronously
+			const iconEle = li.querySelector( '.icon' );
+			iconEle.classList.add( 'usa-icon-list__icon' );
+
+			const contentWrapper = div( { class: 'usa-icon-list__content' } );
+			while( li.firstChild ) {
+				const child = li.firstChild;
+				
+				// move everything after the br to a new paragraph
+				if( child.tagName && ['H2', 'H3', 'H4'].includes( child.tagName.toUpperCase() ) ) {
+					const after = document.createElement( 'p' );
+					let found = false;
+					child.childNodes.forEach( c => {
+						if( found ) {
+							after.appendChild( c );
+						} else if ( c.tagName == 'BR' ) {
+							found = true;
+						}
+					} );
+					
+					contentWrapper.appendChild( child ); // the title
+					contentWrapper.appendChild( after );
+				} else {
+					contentWrapper.appendChild( child );
+				}
+			}
+			li.appendChild( contentWrapper );
+			
+			li.prepend( iconEle ); // pull the icon back out to the front
+		} );
+	} );
+}
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -369,6 +424,7 @@ export function decorateInner( container ) {
 	decorateH2s( container );
 	decorateYouTube( container );
 	decorateGoogleMaps( container );
+	decorateIconList( container );
 	decorateSections( container );
 	decorateBlocks( container );
 	decorateUnstyledLinks( container );
