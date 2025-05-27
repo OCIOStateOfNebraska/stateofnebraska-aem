@@ -1,9 +1,6 @@
-/**
- * output the dates that require specific formats.
- */
 export default class Events {
 	/**
-     * @param {object} date - Date passed through in yyyy-MM-ddTHH:mm:zzz-00:00 format or "May 16, 2024 - 8:00 am" format
+     * @param {object} date - Date passed through in a timestamp format or "May 16, 2024 - 8:00 am" format
      */
 	constructor( date ) {
 		this.date = this.convertTimestampToISO( date );
@@ -35,11 +32,11 @@ export default class Events {
 				return new Date( timestamp ).toISOString();
 			} catch ( error ) {
 				console.warn( `Could not parse date string: ${timestamp}`, error );
-				return null; // Or throw an error, depending on your needs
+				return null;
 			}
 		}
 
-		return null; // Or throw an error if the input is not valid
+		return null;
 	}
 	/**
      * Parses a date string in "May 16, 2024 - 8:00 am" format and returns a Date object.
