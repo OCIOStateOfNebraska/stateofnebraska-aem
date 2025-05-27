@@ -366,8 +366,6 @@ function decorateIconList( element ) {
 		// only decorate if all li elements have an icon
 		const lis = ul.querySelectorAll( ':scope > li' );
 		if( ul.querySelectorAll( ':scope > li .icon:first-child' ).length !== lis.length ) return;
-		
-		console.log( 'decorating icon list', ul );
 
 		ul.classList.add( 'usa-icon-list' );
 		if( ul.querySelector( 'h2, h3, h4' ) ) {
