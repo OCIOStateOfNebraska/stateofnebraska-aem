@@ -497,7 +497,7 @@ class SearchBlock {
 		let searchInputEl = '';
 
 		if ( this.showPagination ) {
-			paginationInput = input( { type: 'hidden', id: 'search-block-offset', name: 'offset', value: this.offset } );
+			paginationInput = input( { type: 'hidden', id: 'search-block-offset', name: 'offset', value: this.offset || 0 } );
 		}
 		if ( this.showSearchBox ) {
 			searchInputEl = this.createSearchInput();

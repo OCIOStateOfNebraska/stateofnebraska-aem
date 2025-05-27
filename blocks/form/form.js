@@ -351,7 +351,11 @@ function inputDecorator( field, element ) {
 		if ( input.type === 'email' ) {
 			input.pattern = emailPattern;
 		}
+		if ( input.type === 'textarea' ) {
+			input.classList.add( 'usa-textarea' );
+		}
 		input.classList.add( 'usa-input' );
+		
 		setConstraintsMessage( element, field.constraintMessages );
 		element.dataset.required = field.required;
 	}
