@@ -67,13 +67,13 @@ function renderTitle( result, titleTag, searchTerms, collectionBody ) {
 	}
 }
 
-function renderDate( result, titleTag, searchTerms, collectionBody, filter ) {
+function renderDate( result, titleTag, searchTerms, collectionBody, filter, sort ) {
+	
 	if ( filter ) {
-		// TODO: switch out with publication
-		const date = new Events( result.lastModified );
-			
+		const date = new Events( result[sort] );
+
 		const dateWrap = domEl( 'li', { class: 'usa-collection__meta-item position-relative' }, date.longDate() );
-		getIndividualIcon( dateWrap, 'calendar_today', false, true );
+		getIndividualIcon( dateWrap, 'calendar_today', true );
 		const metaWrap = domEl( 'ul', { class: 'usa-collection__meta', 'aria-label': 'More Information' }, dateWrap );
 		collectionBody.appendChild( metaWrap );
 	}
@@ -101,7 +101,6 @@ function renderTags( result, titleTag, searchTerms, collectionBody ) {
 	}
 }
 
-
 /**
  * Renders a single search result item using the USA collection item template
  * @param {Object} result - The search result data
@@ -111,17 +110,18 @@ function renderTags( result, titleTag, searchTerms, collectionBody ) {
  * @param {Boolean} filter - whether or not the search has been filtered
  * @returns {HTMLElement} - The rendered search result list item
  */
-export default function renderResult( result, searchTerms, titleTag, filter, dynamicCollection ) {
+export default function renderResult( result, searchTerms, titleTag, filter, dynamicCollection, sort ) {
 	const resultItem = li( { class: 'usa-collection__item' } );
 	const collectionBody = div( { class: 'usa-collection__body' } );
+	console.log(sort)
 
 	if ( dynamicCollection ) {
 		renderTitle( result, titleTag, searchTerms, collectionBody );
-		renderDate( result, titleTag, searchTerms, collectionBody, filter );
+		renderDate( result, titleTag, searchTerms, collectionBody, filter, sort );
 	} else {
 		renderTitle( result, titleTag, searchTerms, collectionBody );
 		if ( filter ) {
-			renderDate( result, titleTag, searchTerms, collectionBody, filter );
+			renderDate( result, titleTag, searchTerms, collectionBody, filter, sort );
 		}
 		renderDescription( result, titleTag, searchTerms, collectionBody, filter );
 		if ( !filter ) {

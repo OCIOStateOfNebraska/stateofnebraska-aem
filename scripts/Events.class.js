@@ -3,85 +3,107 @@
  */
 export default class Events {
 	/**
-	 * @param {object} date - Date passed through in yyyy-MM-ddTHH:mm:zzz-00:00 format
-	 */
+     * @param {object} date - Date passed through in yyyy-MM-ddTHH:mm:zzz-00:00 format or "May 16, 2024 - 8:00 am" format
+     */
 	constructor( date ) {
-		this.date = date;
-		this.event =  new Date( this.convertTimestampToISO( this.date ) );
-		this.lang = navigator.language;
-		this.TIMEZONE = 'America/Chicago'; // Lincoln, Nebraska is in Central Time
-
-		this.longDateOptions = {
-			weekday: 'long',
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-			timeZone: this.TIMEZONE
-		};
-		
-		this.shortMonth = {
-			month: 'short',
-			timeZone: this.TIMEZONE
-		};
-		
-		this.dayNum = {
-			day: 'numeric',
-			timeZone: this.TIMEZONE
-		};
-		
-		this.timeOptions = {
-			hour: 'numeric',
-			minute: 'numeric',
-			timeZone: this.TIMEZONE
-		};
+		this.date = this.convertTimestampToISO( date );
 	}
-	
-	convertTimestampToISO( timestamp ) {
-		// Multiply by 1000 to convert seconds to milliseconds
-		const date = new Date( timestamp * 1000 );
 
-		if ( isNaN( date.getTime() ) ) {
-			return null; // Or throw an error, indicating invalid timestamp
+	/**
+     * Converts a timestamp or a date string in "May 16, 2024 - 8:00 am" format to ISO format.
+     * @param {string|number} timestamp - The timestamp (in milliseconds) or the date string to convert.
+     * @returns {string} - The ISO formatted date string.
+     */
+	convertTimestampToISO( timestamp ) {
+		if ( typeof timestamp === 'number' ) {
+			return new Date( timestamp ).toISOString();
 		}
 
-		const year = date.getFullYear();
-		const month = String( date.getMonth() + 1 ).padStart( 2, '0' ); // Months are 0-indexed
-		const day = String( date.getDate() ).padStart( 2, '0' );
-		const hours = String( date.getHours() ).padStart( 2, '0' );
-		const minutes = String( date.getMinutes() ).padStart( 2, '0' );
-		const seconds = String( date.getSeconds() ).padStart( 2, '0' );
-		const milliseconds = String( date.getMilliseconds() ).padStart( 3, '0' );
+		if ( typeof timestamp === 'string' ) {
+			// Attempt to parse "May 16, 2024 - 8:00 am" format
+			const parsedDate = this.parseCustomDate( timestamp );
+			if ( parsedDate ) {
+				return parsedDate.toISOString();
+			}
 
-		// Assuming -07:00 is the desired timezone offset
-		const timezoneOffset = '-06:00';
+			try {
+				// Attempt to parse as standard date string (e.g., ISO format)
+				return new Date( timestamp ).toISOString();
+			} catch ( error ) {
+				console.warn( `Could not parse date string: ${timestamp}`, error );
+				return null; // Or throw an error, depending on your needs
+			}
+		}
 
-		const isoDateString = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${timezoneOffset}`;
+		return null; // Or throw an error if the input is not valid
+	}
 
-		return isoDateString;
+	/**
+     * Parses a date string in "May 16, 2024 - 8:00 am" format and returns a Date object.
+     * @param {string} dateString - The date string to parse.
+     * @returns {Date|null} - A Date object or null if parsing fails.
+     */
+	parseCustomDate( dateString ) {
+		try {
+			const parts = dateString.split( ' - ' );
+			const datePart = parts[0];
+			const timePart = parts[1];
+
+			const [month, day, year] = datePart.split( ' ' );
+			const numericMonth = this.getMonthNumber( month );
+
+			const date = new Date( `${year}-${numericMonth}-${day}` ); // yyyy-MM-dd
+			const [time, ampm] = timePart.split( ' ' );
+			const [hours, minutes] = time.split( ':' );
+			let numericHours = parseInt( hours, 10 );
+
+			if ( ampm.toLowerCase() === 'pm' && numericHours !== 12 ) {
+				numericHours += 12;
+			} else if ( ampm.toLowerCase() === 'am' && numericHours === 12 ) {
+				numericHours = 0; // Midnight
+			}
+
+			date.setHours( numericHours );
+			date.setMinutes( parseInt( minutes, 10 ) );
+			date.setSeconds( 0 );
+			date.setMilliseconds( 0 );
+
+			return date;
+		} catch ( error ) {
+			console.warn( `Could not parse custom date string: ${dateString}`, error );
+			return null;
+		}
+	}
+
+	/**
+     * Converts a month name (e.g., "May") to its numeric representation (e.g., "05").
+     * @param {string} monthName - The month name to convert.
+     * @returns {string} - The numeric representation of the month (1-12).
+     */
+	getMonthNumber( monthName ) {
+		const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+			'July', 'August', 'September', 'October', 'November', 'December'];
+		const monthIndex = monthNames.findIndex( month => month.toLowerCase() === monthName.toLowerCase() );
+		return ( monthIndex + 1 ).toString().padStart( 2, '0' );
 	}
 
 	getDate() {
-		let event = this.event.toLocaleDateString( this.lang, {timeZone: this.TIMEZONE} );
-		return event;
+		return new Date( this.date );
 	}
-	
+
 	day() {
-		let event = this.event.toLocaleDateString( this.lang, this.dayNum );
-		return event;
+		return this.getDate().toLocaleDateString( 'en-US', { weekday: 'long' } );
 	}
-	
+
 	monthAbbr() {
-		let event = this.event.toLocaleDateString( this.lang, this.shortMonth );
-		return event;
+		return this.getDate().toLocaleDateString( 'en-US', { month: 'short' } );
 	}
-	
+
 	longDate() {
-		let event = this.event.toLocaleDateString( this.lang, this.longDateOptions );
-		return event;
+		return this.getDate().toLocaleDateString( 'en-US', { year: 'numeric', month: 'long', day: 'numeric' } );
 	}
-    
+
 	time() {
-		let event = this.event.toLocaleString( this.lang, this.timeOptions );
-		return event;
+		return this.getDate().toLocaleTimeString( 'en-US', { hour: '2-digit', minute: '2-digit' } );
 	}
 }
