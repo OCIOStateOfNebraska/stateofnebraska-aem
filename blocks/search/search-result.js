@@ -68,9 +68,10 @@ function renderTitle( result, titleTag, searchTerms, collectionBody ) {
 }
 
 function renderDate( result, titleTag, searchTerms, collectionBody, filter, sort ) {
-	
+	console.log(result[sort] );
 	if ( filter ) {
 		const date = new Events( result[sort] );
+		console.log( 'Date object after Events initialization:', date.longDate()  )
 
 		const dateWrap = domEl( 'li', { class: 'usa-collection__meta-item position-relative' }, date.longDate() );
 		getIndividualIcon( dateWrap, 'calendar_today', true );
@@ -113,7 +114,6 @@ function renderTags( result, titleTag, searchTerms, collectionBody ) {
 export default function renderResult( result, searchTerms, titleTag, filter, dynamicCollection, sort ) {
 	const resultItem = li( { class: 'usa-collection__item' } );
 	const collectionBody = div( { class: 'usa-collection__body' } );
-	console.log(sort)
 
 	if ( dynamicCollection ) {
 		renderTitle( result, titleTag, searchTerms, collectionBody );

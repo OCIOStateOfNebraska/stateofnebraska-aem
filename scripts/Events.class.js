@@ -11,11 +11,15 @@ export default class Events {
 
 	/**
      * Converts a timestamp or a date string in "May 16, 2024 - 8:00 am" format to ISO format.
-     * @param {string|number} timestamp - The timestamp (in milliseconds) or the date string to convert.
+     * @param {string|number} timestamp - The timestamp (in seconds or milliseconds) or the date string to convert.
      * @returns {string} - The ISO formatted date string.
      */
 	convertTimestampToISO( timestamp ) {
 		if ( typeof timestamp === 'number' ) {
+			// Check if the timestamp is likely in seconds (older timestamps are likely in seconds)
+			if ( timestamp < 10000000000 ) { //Arbitrary Number
+				timestamp = timestamp * 1000; // Convert seconds to milliseconds
+			}
 			return new Date( timestamp ).toISOString();
 		}
 
@@ -37,7 +41,6 @@ export default class Events {
 
 		return null; // Or throw an error if the input is not valid
 	}
-
 	/**
      * Parses a date string in "May 16, 2024 - 8:00 am" format and returns a Date object.
      * @param {string} dateString - The date string to parse.
@@ -100,7 +103,7 @@ export default class Events {
 	}
 
 	longDate() {
-		return this.getDate().toLocaleDateString( 'en-US', { year: 'numeric', month: 'long', day: 'numeric' } );
+		return this.getDate().toLocaleDateString( 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } );
 	}
 
 	time() {
