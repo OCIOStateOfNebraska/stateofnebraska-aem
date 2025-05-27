@@ -36,6 +36,7 @@ a {
 		.usa-icon { // stylelint-disable-line selector-no-qualifying-type
 			width: $external-link-size; // found in uswds 
 			height: $external-link-size;
+			margin-left: px-to-rem(4px);
 		}
 	}
 	

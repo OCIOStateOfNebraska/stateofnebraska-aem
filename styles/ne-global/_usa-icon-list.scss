@@ -1,0 +1,27 @@
+@use '../../styles/ne-global-imports' as *;
+
+.usa-icon-list {
+	.usa-icon {
+		width: units(3);
+		height: units(3);
+		fill: color('primary');
+	}
+
+	&__content {
+		&,
+		p {
+			font-size: size($theme-icon-list-font-family, 'sm');
+		}
+
+		h3,
+		p {
+			margin: 0;
+		}
+	}
+
+	&.usa-icon-list--size-lg {
+		.usa-icon {
+			fill: var(--theme-icons, #{color('primary')});
+		}
+	}
+}

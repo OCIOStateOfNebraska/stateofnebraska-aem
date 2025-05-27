@@ -13,7 +13,7 @@ import {
 	loadCSS,
 	loadBlock,
 } from './aem.js';
-import { getIndividualIcon } from './utils.js';
+import { getIndividualIcon, isSameDomainOrSubdomain } from './utils.js';
 import { div, domEl } from './dom-helpers.js';
 
 // variable for caching site index
@@ -162,45 +162,6 @@ function decorateButtons( element ) {
 			}
 		}
 	} );
-}
-
-/**
- * Checks if a URL is on the same domain or subdomain as the current page.
- * @param {string} url The URL to check
- * @returns {boolean} True if the URL is on the same domain or subdomain, false otherwise.
- */
-function isSameDomainOrSubdomain( url ) {
-	try {
-	// Get the current page's hostname
-		const currentHostname = window.location.hostname;
-
-		// Construct a URL object for the link
-		const linkURL = new URL( url, window.location.href ); // Base URL for relative URLs
-		const linkHostname = linkURL.hostname;
-
-		// If the link and the current page have the exact same hostname, it's the same domain
-		if ( linkHostname === currentHostname ) {
-			return true;
-		}
-
-		// Check if the link is a subdomain of the current domain
-		if ( linkHostname.endsWith( '.' + currentHostname ) ) {
-			return true;
-		}
-
-		// Check if the current domain is a subdomain of the link
-		if ( currentHostname.endsWith( '.' + linkHostname ) ) {
-			return true;
-		}
-
-		// If none of the above conditions are met, it's not the same domain or a subdomain
-		return false;
-	} catch ( error ) {
-		// Handle invalid URLs and return false
-		// eslint-disable-next-line no-console
-		console.warn( `Invalid URL: ${url}`, error );
-		return false;
-	}
 }
 
 /**
@@ -392,6 +353,61 @@ function decorateGoogleMaps( element ) {
 		}
 	} );
 }
+
+/** Converts list with icons into an icon list component
+ * Has "Big" variant
+ * @param {Element} element The container element
+ */
+function decorateIconList( element ) {
+	element.querySelectorAll( 'ul' ).forEach( ( ul ) => {
+		// already decorated
+		if ( ul.classList.contains( 'usa-icon-list' ) ) return; 
+		
+		// only decorate if all li elements have an icon
+		const lis = ul.querySelectorAll( ':scope > li' );
+		if( ul.querySelectorAll( ':scope > li .icon:first-child' ).length !== lis.length ) return;
+
+		ul.classList.add( 'usa-icon-list' );
+		if( ul.querySelector( 'h2, h3, h4' ) ) {
+			ul.classList.add( 'usa-icon-list--size-lg' );
+		}
+
+		lis.forEach( ( li ) => {
+			li.classList.add( 'usa-icon-list__item' );
+			
+			// leaving as a span because decorateIcon is still potentially working with it asynchronously
+			const iconEle = li.querySelector( '.icon' );
+			iconEle.classList.add( 'usa-icon-list__icon' );
+
+			const contentWrapper = div( { class: 'usa-icon-list__content' } );
+			while( li.firstChild ) {
+				const child = li.firstChild;
+				
+				// move everything after the br to a new paragraph
+				if( child.tagName && ['H2', 'H3', 'H4'].includes( child.tagName.toUpperCase() ) ) {
+					const after = document.createElement( 'p' );
+					let found = false;
+					child.childNodes.forEach( c => {
+						if( found ) {
+							after.appendChild( c );
+						} else if ( c.tagName == 'BR' ) {
+							found = true;
+						}
+					} );
+					
+					contentWrapper.appendChild( child ); // the title
+					contentWrapper.appendChild( after );
+				} else {
+					contentWrapper.appendChild( child );
+				}
+			}
+			li.appendChild( contentWrapper );
+			
+			li.prepend( iconEle ); // pull the icon back out to the front
+		} );
+	} );
+}
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -408,6 +424,7 @@ export function decorateInner( container ) {
 	decorateH2s( container );
 	decorateYouTube( container );
 	decorateGoogleMaps( container );
+	decorateIconList( container );
 	decorateSections( container );
 	decorateBlocks( container );
 	decorateUnstyledLinks( container );
