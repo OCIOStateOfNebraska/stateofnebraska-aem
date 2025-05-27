@@ -106,6 +106,7 @@
 		padding: units(15) 0;
 		background-color: color('primary-dark');
 
+		// stylelint-disable-next-line scss/selector-nest-combinators
 		+ .section.icon-button-grid-container {
 			// close up the space between dark backgrounds
 			margin-top: -1 * units($component-spacing);
@@ -139,6 +140,7 @@ main {
 				padding: 0;
 				background-color: transparent;
 
+				// stylelint-disable-next-line scss/selector-nest-combinators
 				+ .section.icon-button-grid-container {
 					margin-top: 0; // normal spacing
 				}
