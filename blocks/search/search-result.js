@@ -70,7 +70,6 @@ function renderTitle( result, titleTag, searchTerms, collectionBody ) {
 function renderDate( result, titleTag, searchTerms, collectionBody, filter, sort ) {
 	if ( filter && ( sort === 'lastModified' || sort === 'publicationDate' ) ) {
 		const date = new Events( result[sort] );
-		console.log( 'Date object after Events initialization:', date.longDate()  );
 
 		const dateWrap = domEl( 'li', { class: 'usa-collection__meta-item position-relative' }, date.longDate() );
 		getIndividualIcon( dateWrap, 'calendar_today', true );
