@@ -43,8 +43,11 @@ a {
 }
 
 figure {
-	@include u-margin-y(3);
-	@include u-margin-x(0);
+	margin: units($component-spacing) 0;
+
+	picture {
+		margin: 0;
+	}
 
 	figcaption {
 		@include u-margin-top(2);
@@ -54,6 +57,7 @@ figure {
 
 picture {
 	display: block;
+	margin: units($component-spacing) 0;
 	font-size: 0; // no extra space inside
 }
 
@@ -72,9 +76,21 @@ h2 {
 			width: px-to-rem(80px);
 			max-width: 100%;
 			height: 4px;
-			margin-top: units(5);
+			margin-top: units(3);
 			background-color: color('secondary');
 			content: '';
 		}
 	}
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin-bottom: 1em;
+}
+
+.default-content-wrapper {
+	margin-bottom: units($component-spacing);
 }

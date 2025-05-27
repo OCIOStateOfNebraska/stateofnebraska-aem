@@ -3,9 +3,7 @@
 
 .icon-button-grid-wrapper {
 	$block: 'icon-button-card';
-	
-	margin-top: units(9);
-	
+
 	ul {
 		margin: 0;
 		padding: 0;
@@ -104,8 +102,15 @@
 .section {
 	&:has(.icon-button-grid-wrapper) {
 		position: relative;
+		margin-bottom: units($component-spacing);
 		padding: units(15) 0;
 		background-color: color('primary-dark');
+
+		+ .section.icon-button-grid-container {
+			// close up the space between dark backgrounds
+			margin-top: -1 * units($component-spacing);
+			padding-top: 0;
+		}
 
 		&:before {
 			position: absolute;
@@ -130,8 +135,13 @@ main {
 	&:has(.in-page-navigation) {
 		.section {
 			&:has(.icon-button-grid-wrapper) {
-				padding: units($component-spacing) 0;
+				margin: 0 0 units($component-spacing);
+				padding: 0;
 				background-color: transparent;
+
+				+ .section.icon-button-grid-container {
+					margin-top: 0; // normal spacing
+				}
 
 				&:before {
 					display: none;
@@ -139,6 +149,7 @@ main {
 			}
 			
 			h2 {
+				margin-top: 1.5em;
 				color: color('ink');
 			}
 		}

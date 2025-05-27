@@ -3,6 +3,7 @@
 .map-embed {
 	position: relative;
 	width: 100%;
+	margin-bottom: units($component-spacing);
 	font-size: 0; // no extra space inside
 	overflow: hidden;
 	aspect-ratio: 16 / 9;

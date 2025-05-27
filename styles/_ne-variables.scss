@@ -1,6 +1,11 @@
 $transition: .3s ease-in-out;
 $transition-slow: .5s ease-in-out;
-$component-spacing: 3; // TODO: change this unit once we get spacing
+
+// Spacing variables
+$component-spacing: 3;
+$hero-spacing-sm: 10; 
+$hero-spacing-lg: 15; 
+
 
 // Custom red
 $ne-color-red: #B3314E;
