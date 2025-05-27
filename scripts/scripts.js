@@ -360,6 +360,8 @@ function decorateGoogleMaps( element ) {
  */
 function decorateIconList( element ) {
 	element.querySelectorAll( 'ul' ).forEach( ( ul ) => {
+		if( !ul.closest( 'body' ) ) { return; } // skip if ul is not in the DOM (i.e. a fragment)
+
 		// already decorated
 		if ( ul.classList.contains( 'usa-icon-list' ) ) return; 
 		
