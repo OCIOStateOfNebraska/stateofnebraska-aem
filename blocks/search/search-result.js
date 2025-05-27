@@ -68,10 +68,10 @@ function renderTitle( result, titleTag, searchTerms, collectionBody ) {
 }
 
 function renderDate( result, titleTag, searchTerms, collectionBody, filter, sort ) {
-	console.log(result[sort] );
+	console.log( result[sort] );
 	if ( filter ) {
 		const date = new Events( result[sort] );
-		console.log( 'Date object after Events initialization:', date.longDate()  )
+		console.log( 'Date object after Events initialization:', date.longDate()  );
 
 		const dateWrap = domEl( 'li', { class: 'usa-collection__meta-item position-relative' }, date.longDate() );
 		getIndividualIcon( dateWrap, 'calendar_today', true );
