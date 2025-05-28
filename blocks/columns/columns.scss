@@ -5,6 +5,15 @@
 
 	&__grid-row {
 		row-gap: units($theme-site-margins-mobile-width);
+
+		:first-child {
+			margin-top: 0;
+		}
+
+		:last-child {
+			margin-bottom: 0;
+		}
+
 	}
 	
 	@include at-media('desktop') {

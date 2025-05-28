@@ -7,6 +7,8 @@ $uswds-block: 'usa-banner';
 .form-wrapper {
 	@include meta.load-css('~uswds/uswds-form-controls/index'); // avoid affecting top search
 
+	margin-bottom: units($component-spacing);
+
 	&__header-text {
 		@include u-padding-y(1.5);
 	}

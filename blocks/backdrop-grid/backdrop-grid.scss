@@ -6,6 +6,7 @@
 .backdrop-grid {
 	$block: 'backdrop-card';
 	$body-gap: units(2);
+
 	margin-bottom: units($component-spacing);
 
 	.#{$block} {

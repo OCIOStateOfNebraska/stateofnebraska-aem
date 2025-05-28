@@ -4,6 +4,8 @@
 $block: 'usa-hero';
 
 .#{$block} {
+	margin-bottom: units($hero-spacing-sm);
+
 	// stylelint-disable-next-line scss/selector-nest-combinators
 	.usa-breadcrumb,
 	.usa-breadcrumb a.usa-breadcrumb__link {
@@ -37,5 +39,9 @@ $block: 'usa-hero';
 				padding-top: units(4);
 			}
 		}
+	}
+
+	@include at-media('desktop') {
+		margin-bottom: units($hero-spacing-lg);
 	}
 }

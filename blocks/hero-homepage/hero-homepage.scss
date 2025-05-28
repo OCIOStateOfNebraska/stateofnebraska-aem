@@ -4,6 +4,7 @@
 $block: 'usa-hero';
 
 .#{$block} {
+	margin-bottom: units($hero-spacing-sm);
 
 	p {
 		margin-top: 0;
@@ -40,5 +41,9 @@ $block: 'usa-hero';
 			padding-top: px-to-rem(260px);
 			padding-bottom: px-to-rem(120px);
 		}
+	}
+
+	@include at-media('desktop') {
+		margin-bottom: units($hero-spacing-lg);
 	}
 }

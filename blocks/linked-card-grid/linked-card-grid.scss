@@ -11,12 +11,11 @@
 	margin-bottom: units($component-spacing);
 
 	.#{$block} {
-		margin-bottom: units(2);
-		
+		&,
 		&:last-child {
-			margin-bottom: units(2);
+			margin: 0;
 		}
-		
+
 		a {
 			svg {
 				display: none; // backup because sometimes the external link svg renders when it should not
@@ -28,7 +27,8 @@
 		}
 		
 		&-group {
-			margin-bottom: units(-2);
+			margin-bottom: 0;
+			row-gap: units($theme-card-gap); // .usa-card__container handles the column gap via margins
 		}
 
 		&__heading {
