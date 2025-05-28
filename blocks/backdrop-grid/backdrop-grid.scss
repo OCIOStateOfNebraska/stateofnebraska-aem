@@ -5,9 +5,19 @@
 
 .backdrop-grid {
 	$block: 'backdrop-card';
+	$between-cards-gap: units(3);
 	$body-gap: units(2);
 
-	margin-bottom: units($component-spacing);
+	margin-bottom: units($component-spacing-lg);
+
+	// when there's 2 right next to each other, look like a single unit
+	&-wrapper {
+		+ .backdrop-grid-wrapper {
+			.backdrop-grid {
+				margin-top: $between-cards-gap - units($component-spacing-lg);
+			}
+		}
+	}
 
 	.#{$block} {
 		height: 100%;
@@ -15,8 +25,8 @@
 
 		&-group {
 			display: grid;
-			grid-column-gap: units(3); 
-			grid-row-gap: units(3);
+			grid-column-gap: $between-cards-gap;
+			grid-row-gap: $between-cards-gap;
 		}
 
 		&__container {

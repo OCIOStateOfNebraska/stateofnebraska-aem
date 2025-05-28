@@ -43,7 +43,7 @@ a {
 }
 
 figure {
-	margin: units($component-spacing) 0;
+	margin: units($component-spacing-sm) 0;
 
 	picture {
 		margin: 0;
@@ -57,7 +57,7 @@ figure {
 
 picture {
 	display: block;
-	margin: units($component-spacing) 0;
+	margin: units($component-spacing-sm) 0;
 	font-size: 0; // no extra space inside
 }
 
@@ -92,5 +92,5 @@ h6 {
 }
 
 .default-content-wrapper {
-	margin-bottom: units($component-spacing);
+	margin-bottom: units($component-spacing-sm);
 }

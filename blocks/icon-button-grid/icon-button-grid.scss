@@ -10,15 +10,13 @@
 		list-style: none;
 	}
 
+	li {
+		margin: 0;
+	}
+
 	.#{$block} {
-		margin-bottom: units(4);
-		
-		&:last-child {
-			margin-bottom: units(4);
-		}
-		
 		&-group {
-			margin-bottom: units(-4);
+			row-gap: units(4); // match .grid-gap-4 column spacing
 		}
 
 		&__heading {
@@ -26,7 +24,6 @@
 			font-family: family($theme-font-role-heading);
 			font-size: size('body', 'md'); 
 			font-weight: font-weight('bold');
-			
 		}
 
 		&__body {
@@ -34,12 +31,10 @@
 			height: $svg-size;
 
 			p {
-
 				span {
 					display: flex;
 					justify-content: center;
 				}
-
 			}
 			
 			svg {
@@ -102,14 +97,15 @@
 .section {
 	&:has(.icon-button-grid-wrapper) {
 		position: relative;
-		margin-bottom: units($component-spacing);
+		margin-top: units($component-spacing-lg);
+		margin-bottom: units($component-spacing-lg);
 		padding: units(15) 0;
 		background-color: color('primary-dark');
 
 		// stylelint-disable-next-line scss/selector-nest-combinators
 		+ .section.icon-button-grid-container {
 			// close up the space between dark backgrounds
-			margin-top: -1 * units($component-spacing);
+			margin-top: -1 * units($component-spacing-lg);
 			padding-top: 0;
 		}
 
@@ -136,7 +132,6 @@ main {
 	&:has(.in-page-navigation) {
 		.section {
 			&:has(.icon-button-grid-wrapper) {
-				margin: 0 0 units($component-spacing);
 				padding: 0;
 				background-color: transparent;
 

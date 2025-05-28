@@ -38,7 +38,9 @@
 			height: 100%;
 		}
 
+		picture,
 		img {
+			margin: 0;
 			object-fit: scale-down;
 		}
 	}

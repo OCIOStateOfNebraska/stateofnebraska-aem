@@ -6,6 +6,11 @@ $block: 'usa-hero';
 .#{$block} {
 	margin-bottom: units($hero-spacing-sm);
 
+	picture,
+	img {
+		margin: 0;
+	}
+
 	// stylelint-disable-next-line scss/selector-nest-combinators
 	.usa-breadcrumb,
 	.usa-breadcrumb a.usa-breadcrumb__link {

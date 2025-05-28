@@ -1,7 +1,7 @@
 @use '../../styles/ne-global-imports' as *;
 
 .usa-list {
-	margin-bottom: units($component-spacing);
+	margin-bottom: units($component-spacing-sm);
 
 	&.usa-list__unstyled-link-list { // uswds has a unstyled list style, but I needed one specifically to make the list when on the page have more spacing
 		@include u-margin-top(3);
