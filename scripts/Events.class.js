@@ -14,7 +14,13 @@ export default class Events {
 	convertTimestampToISO( timestamp ) {
 		if ( typeof timestamp === 'number' ) {
 			// Check if the timestamp is likely in seconds (older timestamps are likely in seconds)
-			if ( timestamp < 10000000000 ) { //Arbitrary Number
+
+			// Get the approximate year 2000 in milliseconds and seconds
+			const year2000Milliseconds = 946684800000;
+			const year2000Seconds = year2000Milliseconds / 1000;
+
+			// If timestamp is smaller than year2000 in seconds, assume it is in milliseconds else assume that the seconds are off
+			if ( timestamp < year2000Seconds ) {
 				timestamp = timestamp * 1000; // Convert seconds to milliseconds
 			}
 			return new Date( timestamp ).toISOString();
@@ -38,6 +44,7 @@ export default class Events {
 
 		return null;
 	}
+
 	/**
      * Parses a date string in "May 16, 2024 - 8:00 am" format and returns a Date object.
      * @param {string} dateString - The date string to parse.
@@ -46,13 +53,19 @@ export default class Events {
 	parseCustomDate( dateString ) {
 		try {
 			const parts = dateString.split( ' - ' );
-			const datePart = parts[0];
-			const timePart = parts[1];
+			if ( parts.length !== 2 ) return null;
+
+			const datePart = parts[0].trim(); // Trim whitespace
+			const timePart = parts[1].trim(); // Trim whitespace
 
 			const [month, day, year] = datePart.split( ' ' );
 			const numericMonth = this.getMonthNumber( month );
 
+			if ( !numericMonth ) return null; // Invalid month
+
 			const date = new Date( `${year}-${numericMonth}-${day}` ); // yyyy-MM-dd
+			if ( isNaN( date.getTime() ) ) return null; // Invalid Date
+
 			const [time, ampm] = timePart.split( ' ' );
 			const [hours, minutes] = time.split( ':' );
 			let numericHours = parseInt( hours, 10 );
@@ -81,9 +94,10 @@ export default class Events {
      * @returns {string} - The numeric representation of the month (1-12).
      */
 	getMonthNumber( monthName ) {
-		const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-			'July', 'August', 'September', 'October', 'November', 'December'];
-		const monthIndex = monthNames.findIndex( month => month.toLowerCase() === monthName.toLowerCase() );
+		const monthNames = ['january', 'february', 'march', 'april', 'may', 'june',
+			'july', 'august', 'september', 'october', 'november', 'december'];
+		const monthIndex = monthNames.findIndex( month => month === monthName.toLowerCase() );
+		if ( monthIndex === -1 ) return null;
 		return ( monthIndex + 1 ).toString().padStart( 2, '0' );
 	}
 
@@ -100,7 +114,12 @@ export default class Events {
 	}
 
 	longDate() {
-		return this.getDate().toLocaleDateString( 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } );
+		return this.getDate().toLocaleDateString( 'en-US', {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		} );
 	}
 
 	time() {
