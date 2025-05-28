@@ -67,7 +67,6 @@
 		&.usa-button--active {
 			@include set-text-and-bg('secondary-lighter', $context: $button-context);
 		}
-
 	}
 
 	.usa-text-input {
@@ -78,6 +77,7 @@
 		&[type='submit'] {
 			border-top-right-radius: 0;
 			border-bottom-right-radius: 0;
+			background-color: color('secondary');
 		}
 	}
 	
@@ -121,7 +121,6 @@
 			&[type='submit'] {
 				border-top-right-radius: radius(sm);
 				border-bottom-right-radius: radius(sm);
-				background-color: color(blue-50);
 			}
 		}
 

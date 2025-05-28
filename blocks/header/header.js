@@ -125,8 +125,10 @@ async function createSubMenu( subMenu, id ) {
 }
 
 function createSecondaryMenu( innerMenu, searchResultsUrl ) {
+	const url = new URL( window.location );
+	const domain = url.origin;
 	const input = domEl( 'input', { class: 'usa-input usa-text-input', id: 'search-field', type: 'search', name: 'q' } );
-	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: '../../icons/usa-icons-bg/search--white.svg' } );
+	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: `${domain}/icons/usa-icons/search.svg` } );
 	const searchButton = domEl( 'button', { class: 'usa-button', type: 'submit' } );
 	searchButton.append( img );
 	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field' } );

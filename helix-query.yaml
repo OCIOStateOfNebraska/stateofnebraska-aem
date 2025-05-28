@@ -6,6 +6,7 @@ indices:
       - footer
       - nav
       - alert
+      - search-results
     target: /query-index.json
     properties:
       title:
