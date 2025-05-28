@@ -2,7 +2,9 @@ $transition: .3s ease-in-out;
 $transition-slow: .5s ease-in-out;
 
 // Spacing variables
-$component-spacing: 3;
+$component-spacing-sm: 3; // for "small" components that can sit right next to others (like text)
+$component-spacing-lg: 15; // for big bulky components that need more space around them
+
 $hero-spacing-sm: 10; 
 $hero-spacing-lg: 15; 
 

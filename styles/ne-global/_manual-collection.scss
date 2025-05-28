@@ -3,7 +3,7 @@
 
 .manual-collection {
 	$block: 'usa-collection';
-	margin-bottom: units($component-spacing);
+	margin-bottom: units($component-spacing-sm);
     
 	.#{$block} {
 

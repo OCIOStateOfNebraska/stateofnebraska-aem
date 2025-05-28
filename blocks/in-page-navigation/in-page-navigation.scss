@@ -3,6 +3,19 @@
 
 $block: 'usa-in-page-nav';
 
+.usa-in-page-nav-container {
+	.main-content {
+		// remove bottom margin from last component in the last section, as well as last section (not collapsing with flex layout)
+		// stylelint-disable-next-line scss/selector-nest-combinators
+		> .section:last-child {
+			&,
+			> :last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+}
+
 @include at-media('tablet') {
 	.in-page-navigation {
 		align-self: stretch; // so that the inner .usa-in-page-navigation can be sticky within this space

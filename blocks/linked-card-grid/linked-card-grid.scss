@@ -8,7 +8,7 @@
 
 	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
 	
-	margin-bottom: units($component-spacing);
+	margin-bottom: units($component-spacing-lg);
 
 	.#{$block} {
 		&,

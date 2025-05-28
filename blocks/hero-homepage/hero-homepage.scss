@@ -10,6 +10,11 @@ $block: 'usa-hero';
 		margin-top: 0;
 	}
 
+	picture,
+	img {
+		margin: 0;
+	}
+
 	&__desc,
 	&__btns {
 		margin-top: units(4);

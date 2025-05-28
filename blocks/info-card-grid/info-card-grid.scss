@@ -7,7 +7,7 @@
 
 	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
 	
-	margin-bottom: units($component-spacing);
+	margin-bottom: units($component-spacing-lg);
 
 	.#{$block} {
 		margin-bottom: units(2);
@@ -26,6 +26,11 @@
 		
 		picture {
 			height: 100%;
+		}
+
+		picture,
+		img {
+			margin: 0;
 		}
 
 		.usa-button {
