@@ -110,12 +110,20 @@
 			@include u-margin-top(8);
 			position: relative;
 			background-color: $bg;
-
+			
 			svg {
 				position: relative;
 				top: -1px;
 				min-width: 100%;
 				height: px-to-rem(80px);
+			}
+			
+			.usa-link--pdf {
+				svg {
+					position: block;
+					min-width: unset;
+					height: $external-link-size;
+				}
 			}
 			
 			a {

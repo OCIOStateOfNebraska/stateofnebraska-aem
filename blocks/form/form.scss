@@ -6,6 +6,7 @@ $uswds-block: 'usa-banner';
 
 .form-wrapper {
 	@include meta.load-css('~uswds/uswds-form-controls/index'); // avoid affecting top search
+	margin-bottom: units($component-spacing);
 
 	&__header-text {
 		@include u-padding-y(1.5);
@@ -100,5 +101,13 @@ $uswds-block: 'usa-banner';
 		@include u-font-weight('bold');
 		margin-top: units(.5);
 		color: color('error-dark');
+	}
+	
+	fieldset { // due to classes in aem forms, I need to override spacing for chrome 
+		margin-top: units(3) !important; // stylelint-disable-line declaration-no-important
+		
+		legend {
+			margin-top: 0 !important; // stylelint-disable-line declaration-no-important
+		}
 	}
 }
