@@ -114,7 +114,7 @@ function containsOnlyLinks( ulElement ) {
 }
 
 /**
- * Decorates paragraphs containing a list of links as an unstyled link list.
+ * Decorates content containing a list of links as an unstyled link list.
  * @param {Element} element container element
  */
 function decorateUnstyledLinks( element ) {
@@ -410,6 +410,27 @@ function decorateIconList( element ) {
 	} );
 }
 
+function decorateImgs( element ) {
+	element.querySelectorAll( 'p img:only-child, p picture:only-child, p figure:only-child' ).forEach( ( img ) => {
+		// if there is nothing else in the paragraph, unwrap the image
+		if( !img.closest( 'body' ) ) { return; } // skip if ul is not in the DOM (i.e. a fragment)
+
+		const pEle = img.closest( 'p' );
+		let isOnlyNode = true;
+		pEle.childNodes.forEach( ( childNode ) => {
+			if( childNode !== img && childNode.textContent.trim().length > 0 ) {
+				isOnlyNode = false;
+			}
+		} );
+
+		if( isOnlyNode ) {
+			pEle.replaceWith( img );
+		}
+	} );
+}
+		
+
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -421,11 +442,12 @@ export function decorateMain( main ) {
 }
 
 export function decorateInner( container ) {
-	decorateButtons( container );
-	decorateIcons( container );
 	decorateH2s( container );
+	decorateImgs( container );
+	decorateButtons( container );
 	decorateYouTube( container );
 	decorateGoogleMaps( container );
+	decorateIcons( container );
 	decorateIconList( container );
 	decorateSections( container );
 	decorateBlocks( container );
