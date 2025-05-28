@@ -13,17 +13,21 @@ export default class Events {
      */
 	convertTimestampToISO( timestamp ) {
 		if ( typeof timestamp === 'number' ) {
-			// Check if the timestamp is likely in seconds (older timestamps are likely in seconds)
-
-			// Get the approximate year 2000 in milliseconds and seconds
-			const year2000Milliseconds = 946684800000;
-			const year2000Seconds = year2000Milliseconds / 1000;
-
-			// If timestamp is smaller than year2000 in seconds, assume it is in milliseconds else assume that the seconds are off
-			if ( timestamp < year2000Seconds ) {
-				timestamp = timestamp * 1000; // Convert seconds to milliseconds
+			// Multiply by 1000 to convert seconds to milliseconds
+			const date = new Date( timestamp * 1000 );
+			if ( isNaN( date.getTime() ) ) {
+				return null; // Or throw an error, indicating invalid timestamp
 			}
-			return new Date( timestamp ).toISOString();
+			const year = date.getFullYear();
+			const month = String( date.getMonth() + 1 ).padStart( 2, '0' ); // Months are 0-indexed
+			const day = String( date.getDate() ).padStart( 2, '0' );
+			const hours = String( date.getHours() ).padStart( 2, '0' );
+			const minutes = String( date.getMinutes() ).padStart( 2, '0' );
+			const seconds = String( date.getSeconds() ).padStart( 2, '0' );
+			const milliseconds = String( date.getMilliseconds() ).padStart( 3, '0' );
+
+			const isoDateString = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}`;
+			return isoDateString;
 		}
 
 		if ( typeof timestamp === 'string' ) {

@@ -162,8 +162,6 @@ class SearchBlock {
 		this.allData = this.allData.filter( item => {
 			return item.title && item.title.trim() !== '' && item.path && item.path.trim() !== '';
 		} );
-		
-		console.log( this.allData );
 	}
 	
 	/**
