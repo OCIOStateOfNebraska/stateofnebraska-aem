@@ -1,6 +1,7 @@
 import { decorateIcons, fetchPlaceholders } from '../../scripts/aem.js';
 import { li, span, ul, input, domEl } from '../../scripts/dom-helpers.js';
 import ffetch from '../../scripts/ffetch.js';
+import Events from '../../scripts/Events.class.js';
 
 import { Fuse } from '../../scripts/deps/bundle-uswds.js';
 import renderResult from './search-result.js';
@@ -97,7 +98,6 @@ class SearchBlock {
 		try {
 			this.allData = await ffetch( this.source ).all();
 			this.placeholders = await fetchPlaceholders();
-			
 			// Get Settings
 			[...this.block.children].forEach( ( row, index ) => {
 				if ( index > 0 ) {
@@ -155,13 +155,47 @@ class SearchBlock {
 		if ( this.sort !== 'relevance' ) {
 			const fuseTags = new Fuse( this.allData, fuseOptionsTags );
 			this.allData = this.flattenSearch( fuseTags.search( this.filter.toLowerCase().trim() ) );
-			const comparisonFunction = this.sortBy( this.sort );
+			const comparisonFunction = this.sort === 'publicationDate' ? this.sortByPublicationDate.bind( this ) : this.sortBy( this.sort );
 			this.allData.sort( comparisonFunction );
 		}
 			
 		this.allData = this.allData.filter( item => {
 			return item.title && item.title.trim() !== '' && item.path && item.path.trim() !== '';
 		} );
+	}
+	
+	/**
+     * Sorts the search results by publication date.
+     * @function sortByPublicationDate
+     * @param {object} a - The first object to compare.
+     * @param {object} b - The second object to compare.
+     * @returns {number} - A number indicating the order of the objects.
+     */
+	sortByPublicationDate( a, b ) {
+		let dateA, dateB;
+		try {
+			dateA = new Events( a.publicationDate ).getDate(); // Make sure publicationDate is always in 'May 16, 2024 - 8:00 am' format
+		} catch ( error ) {
+			console.warn( 'Could not parse publicationDate for item:', a, error );
+			dateA = null; // Handle parsing errors
+		}
+
+		try {
+			dateB = new Events( b.publicationDate ).getDate();
+		} catch ( error ) {
+			console.warn( 'Could not parse publicationDate for item:', b, error );
+			dateB = null; // Handle parsing errors
+		}
+
+		if ( dateA && dateB ) {
+			return dateB.getTime() - dateA.getTime(); // Sort in descending order (most recent first)
+		} else if ( dateA ) {
+			return -1; // dateA is valid, dateB is not, so a comes first
+		} else if ( dateB ) {
+			return 1; // dateB is valid, dateA is not, so b comes first
+		} else {
+			return 0; // Both dates are invalid, so maintain the original order
+		}
 	}
 
 	/**
@@ -327,7 +361,7 @@ class SearchBlock {
 
 			searchResults.classList.remove( NO_RESULTS_CLASS );
 			data.forEach( result => {
-				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection ) );
+				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection, this.sort ) );
 			} );
 		} else {
 			searchResults.classList.add( NO_RESULTS_CLASS );
@@ -461,7 +495,7 @@ class SearchBlock {
 		let searchInputEl = '';
 
 		if ( this.showPagination ) {
-			paginationInput = input( { type: 'hidden', id: 'search-block-offset', name: 'offset', value: this.offset } );
+			paginationInput = input( { type: 'hidden', id: 'search-block-offset', name: 'offset', value: this.offset || 0 } );
 		}
 		if ( this.showSearchBox ) {
 			searchInputEl = this.createSearchInput();

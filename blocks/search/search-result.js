@@ -67,13 +67,12 @@ function renderTitle( result, titleTag, searchTerms, collectionBody ) {
 	}
 }
 
-function renderDate( result, titleTag, searchTerms, collectionBody, filter ) {
-	if ( filter ) {
-		// TODO: switch out with publication
-		const date = new Events( result.lastModified );
-			
+function renderDate( result, titleTag, searchTerms, collectionBody, filter, sort ) {
+	if ( filter && ( sort === 'lastModified' || sort === 'publicationDate' ) ) {
+		const date = new Events( result[sort] );
+
 		const dateWrap = domEl( 'li', { class: 'usa-collection__meta-item position-relative' }, date.longDate() );
-		getIndividualIcon( dateWrap, 'calendar_today', false, true );
+		getIndividualIcon( dateWrap, 'calendar_today', true );
 		const metaWrap = domEl( 'ul', { class: 'usa-collection__meta', 'aria-label': 'More Information' }, dateWrap );
 		collectionBody.appendChild( metaWrap );
 	}
@@ -90,7 +89,6 @@ function renderDescription( result, titleTag, searchTerms, collectionBody ) {
 }
 
 function renderTags( result, titleTag, searchTerms, collectionBody ) {
-	// TODO: combine with renderDate
 	if ( result.tags?.length > 0 ) {
 		const tagsList = ul( { class: 'usa-collection__meta', 'aria-label': 'Topics' } );
 		result.tags.forEach( ( tag, index ) => {
@@ -101,7 +99,6 @@ function renderTags( result, titleTag, searchTerms, collectionBody ) {
 	}
 }
 
-
 /**
  * Renders a single search result item using the USA collection item template
  * @param {Object} result - The search result data
@@ -109,19 +106,20 @@ function renderTags( result, titleTag, searchTerms, collectionBody ) {
  * @param {string} titleTag - HTML tag to use for the result title
  * @param {Object} searchBlock - The SearchBlock instance, needed for context and methods like highlightTextElements and filter
  * @param {Boolean} filter - whether or not the search has been filtered
+ * @param {string} sort - the item to sort by
  * @returns {HTMLElement} - The rendered search result list item
  */
-export default function renderResult( result, searchTerms, titleTag, filter, dynamicCollection ) {
+export default function renderResult( result, searchTerms, titleTag, filter, dynamicCollection, sort ) {
 	const resultItem = li( { class: 'usa-collection__item' } );
 	const collectionBody = div( { class: 'usa-collection__body' } );
 
 	if ( dynamicCollection ) {
 		renderTitle( result, titleTag, searchTerms, collectionBody );
-		renderDate( result, titleTag, searchTerms, collectionBody, filter );
+		renderDate( result, titleTag, searchTerms, collectionBody, filter, sort );
 	} else {
 		renderTitle( result, titleTag, searchTerms, collectionBody );
 		if ( filter ) {
-			renderDate( result, titleTag, searchTerms, collectionBody, filter );
+			renderDate( result, titleTag, searchTerms, collectionBody, filter, sort );
 		}
 		renderDescription( result, titleTag, searchTerms, collectionBody, filter );
 		if ( !filter ) {

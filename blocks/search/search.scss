@@ -31,9 +31,16 @@
 			display: none;
 		}
 	}
+	
+	.manual-collection {
+		margin-bottom: units(7);
+	}
 }
 
 .usa-pagination {
+	max-width: measure($theme-text-measure);
+	font-size: font-size('body', 5);
+
 	&__link-text,
 	.usa-icon__wrap {
 		pointer-events: none;
@@ -43,6 +50,10 @@
 		&--disabled {
 			display: none;
 		}
+	}
+	
+	&__button {
+		border-radius: radius('sm');
 	}
 	
 	.usa-current {
