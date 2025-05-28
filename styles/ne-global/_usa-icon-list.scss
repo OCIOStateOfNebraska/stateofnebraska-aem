@@ -1,6 +1,11 @@
 @use '../../styles/ne-global-imports' as *;
 
 .usa-icon-list {
+	&,
+	.usa-prose & {
+		margin-bottom: units($component-spacing);
+	}
+
 	.usa-icon {
 		width: units(3);
 		height: units(3);
