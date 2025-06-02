@@ -81,6 +81,17 @@
 		}
 	}
 	
+	.usa-nav__search-header {
+		@include u-font('heading', $theme-h5-font-size);
+		@include u-text('semibold');
+	}
+
+	&.usa-header--small {
+		.usa-search {
+			margin-top: units(.5);
+		}
+	}
+
 	a {
 		&.usa-nav__link { // stylelint-disable-line selector-no-qualifying-type
 			&.usa-link--external { // stylelint-disable-line selector-no-qualifying-type
@@ -133,6 +144,10 @@
 		.usa-nav {
 			// needs to be nested for styles to take
 			border-color: color('primary-light');
+			
+			&__search-header {
+				display: none;
+			}
 
 			&__primary {
 				button {
@@ -229,6 +244,13 @@
 						background-color: color('primary-light');
 					}
 				}
+			}
+		}
+		
+		&.usa-header--small {
+			.usa-nav__secondary {
+				bottom: units(4); // in official USWDS this was labeled as "magic number" -- I just needed it halved in order to align correctly
+				margin-bottom: 0;
 			}
 		}
 	}
