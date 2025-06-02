@@ -37,7 +37,8 @@ const fuseOptionsRelevance = {
 		{ name: 'keywords',weight: 0.5 },
 		{ name: 'h2s',weight: 0.2 },
 		{ name: 'description',weight: 0.5 },
-		{ name: 'title',weight: 1 }
+		{ name: 'title',weight: 1 },
+		{ name: 'publicationDate',weight: 0.5 },
 	]
 };
 
