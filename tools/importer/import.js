@@ -176,7 +176,19 @@ function removeFileSize( main ) {
 function updateLinks( main, url ) {
 	main.querySelectorAll( 'a' ).forEach( ( a ) => {
 		const href = a.getAttribute( 'href' );
-		if ( href && !href.endsWith( '.pdf' ) ) {
+		if ( href && !href.endsWith( '.pdf' ) && !href.startsWith( 'http://' ) && !href.startsWith( 'https://' ) ) {
+			const u = new URL( href, url );
+			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname );
+			const newHref = new URL( newPath, 'https://main--ndbf-eds--ociostateofnebraska.aem.page' ).toString();
+			a.setAttribute( 'href', newHref );
+		}
+	} );
+}
+
+function updatePdfLinks( main, url ) {
+	main.querySelectorAll( 'a' ).forEach( ( a ) => {
+		const href = a.getAttribute( 'href' );
+		if ( href && href.endsWith( '.pdf' ) && !href.startsWith( 'http://' ) && !href.startsWith( 'https://' ) ) {
 			const u = new URL( href, url );
 			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname );
 			const newHref = new URL( newPath, 'https://main--ndbf-eds--ociostateofnebraska.aem.page' ).toString();
@@ -214,16 +226,16 @@ const createMetadataBlock = ( main, document, url ) => {
 	}
 
 	// find the <meta property="og:title"> element
-	const ogTitle = document.querySelector( '[property="og:title"]' );
+	/*const ogTitle = document.querySelector( '[property="og:title"]' );
 	if ( ogTitle ) {
 		meta['og:title'] = ogTitle.content.replace( /[\n\t]/gm, '' ).replace( '| Nebraska Banking and Finance', '' );
-	}
+	}*/
 
 	// find the <meta property="og:description"> element
-	const desc = document.querySelector( '[property="og:description"]' );
+	/*const desc = document.querySelector( '[property="og:description"]' );
 	if ( desc ) {
 		meta.Description = desc.content;
-	}
+	}*/
 
 	// find the <meta property="og:image"> element
 	const img = document.querySelector( '[property="og:image"]' );
@@ -262,7 +274,7 @@ export default {
 			parentH1.replaceWith( heading );
 		}
 
-		const hero = document.querySelector( '.inside-hero' );
+		const hero = document.querySelector( '.header-overlay' ).parentElement ;
 		if ( hero && heading ) {
 			const hr = document.createElement( 'hr' );
 			heading.after( hero );
@@ -305,7 +317,7 @@ export default {
 
 			if ( p.startsWith( '/notice-' ) ) {
 				p = '/notices'.concat( p );
-			} else if ( main.innerHTML.includes( 'Publication Date' ) ) {
+			} else if ( main.querySelector( '.field--name-field-publication-date' ) ) {
 				const pArr = p.split( '/' );
 				p = '/notices/'.concat( pArr[pArr.length - 1] );
 			}
@@ -316,16 +328,12 @@ export default {
 				.replace( /[^a-z0-9/]/gm, '-' );
 		} )( url );
 
-		// main page import - "element" is provided, i.e. a docx will be created
-		results.push( {
-		  element: main,
-		  path: path
-		} );
+
 
 		// find pdf links
 		main.querySelectorAll( 'a' ).forEach( ( a ) => {
 			const href = a.getAttribute( 'href' );
-			if ( href && href.endsWith( '.pdf' ) ) {
+			if ( href && href.endsWith( '.pdf' ) && !href.startsWith( 'http://' ) && !href.startsWith( 'https://' ) ) {
 				const u = new URL( href, url );
 				const newPath = WebImporter.FileUtils.sanitizePath( u.pathname ).replace( '/sites/default/', '/' );
 				// no "element", the "from" property is provided instead - importer will download the "from" resource as "path"
@@ -340,6 +348,13 @@ export default {
 				const newHref = new URL( newPath, 'https://main--ndbf-eds--ociostateofnebraska.aem.page' ).toString();
 				a.setAttribute( 'href', newHref );
 			}
+		} );
+
+		updatePdfLinks( main, url );
+		// main page import - "element" is provided, i.e. a docx will be created
+		results.push( {
+		  element: main,
+		  path: path
 		} );
 
 		return results;
