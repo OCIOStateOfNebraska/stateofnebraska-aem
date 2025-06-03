@@ -88,7 +88,6 @@ function buildNavLevel( parentPath, currentLevel, maxLevel, indexData, currentPa
 
 	// Find direct children of the parentPath
 	const children = indexData.filter( page => {
-		console.log( page.path, page.hideInSideNav );
 		const pagePathNormalized = normalizePath( page.path );
 		// Handle root level check
 		if ( parentPath === '/' ) {
