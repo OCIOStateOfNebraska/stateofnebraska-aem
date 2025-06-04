@@ -37,6 +37,7 @@ indices:
       - footer
       - nav
       - alert
+      - test-pages/**
     target: /search-index.json
     properties:
       title:
