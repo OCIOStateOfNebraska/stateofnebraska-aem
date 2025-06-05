@@ -209,8 +209,8 @@ function updateImageLinks( main, url ) {
 	} );
 }
 
-function removeEmptyTable ( main, document ) {
-	main.querySelectorAll( 'table' ).forEach( (each) => {
+function removeEmptyTable ( main ) {
+	main.querySelectorAll( 'table' ).forEach( ( each ) => {
 		if ( !each.querySelector( 'th' ) ) {
 			each.remove();
 		}
@@ -306,10 +306,10 @@ export default {
 
 		updateLinks( main, url );
 		updateImageLinks( main, url );
-		removeEmptyTable( main, document );
+		removeEmptyTable( main );
 
 		const results = [];
-		const path = ( ( u ) => {
+		const path = ( () => {
 			let p = new URL( url ).pathname;
 			if ( p.endsWith( '/' ) ) {
 				p = `${p}index`;
@@ -353,8 +353,8 @@ export default {
 		updatePdfLinks( main, url );
 		// main page import - "element" is provided, i.e. a docx will be created
 		results.push( {
-		  element: main,
-		  path: path
+			element: main,
+			path: path
 		} );
 
 		return results;
