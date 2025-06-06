@@ -4,10 +4,7 @@
 $block: 'usa-table';
 
 .table {
-	@include u-padding-y(4);
-	@include u-margin-bottom($component-spacing);
-
-	margin-bottom: units($component-spacing);
+	margin: units($component-spacing-sm) 0;
 }
 
 .#{$block} {

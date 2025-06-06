@@ -1,1 +1,6 @@
+@use '../../styles/ne-global-imports' as *;
 // usa-intro styles included in the usa-typography file already
+
+.usa-intro {
+	margin-bottom: units($component-spacing-sm);
+}

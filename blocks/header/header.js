@@ -2,6 +2,7 @@ import { getMetadata, decorateBlock, loadBlock, buildBlock, fetchPlaceholders } 
 import { loadFragment } from '../fragment/fragment.js';
 import { a, domEl } from '../../scripts/dom-helpers.js';
 import { header, accordion } from '../../scripts/deps/bundle-uswds.js';
+import { getIndividualIcon, isSameDomainOrSubdomain } from '../../scripts/utils.js';
 
 
 async function decorateSkipnav( placeholders ) {
@@ -17,47 +18,6 @@ async function loadBanner() {
 	bannerWrapper.appendChild( bannerBlock );
 	decorateBlock( bannerBlock );
 	return loadBlock( bannerBlock );
-}
-
-function normalizePath( path ) {
-	if ( !path ) return '';
-	try {
-		// Use URL constructor relative to a base to handle relative paths correctly
-		const url = new URL( path, window.location.origin );
-		let normPath = url.pathname;
-		// Remove trailing slash if not the root path
-		if ( normPath !== '/' && normPath.endsWith( '/' ) ) {
-			normPath = normPath.slice( 0, -1 );
-		}
-		// Remove .html extension
-		if ( normPath.endsWith( '.html' ) ) {
-			normPath = normPath.slice( 0, -5 );
-		}
-		return normPath;
-	} catch ( e ) {
-		// Fallback for invalid paths or environments without URL constructor
-		const mainPath = path.split( '?' )[0].split( '#' )[0];
-		const noTrailingSlash = ( mainPath !== '/' && mainPath.endsWith( '/' ) ) ? mainPath.slice( 0, -1 ) : mainPath;
-		return noTrailingSlash.endsWith( '.html' ) ? noTrailingSlash.slice( 0, -5 ) : noTrailingSlash;
-	}
-}
-
-/**
- * Gets the normalized paths of all ancestor pages for a given path.
- * Example: getAncestors('/us/en/products/detail') returns ['/us', '/us/en', '/us/en/products']
- * @param {string} path - The normalized path of the page.
- * @returns {string[]} An array of normalized ancestor paths.
- */
-function getAncestors( path ) {
-	const ancestors = [];
-	const segments = path.split( '/' ).filter( Boolean ); // Filter out empty strings
-	let currentPath = '';
-	// Iterate up to length - 1 to get ancestors, not the path itself
-	for ( let i = 0; i < segments.length - 1; i += 1 ) {
-		currentPath += `/${segments[i]}`;
-		ancestors.push( currentPath );
-	}
-	return ancestors;
 }
 
 async function createSubMenu( subMenu, id ) {
@@ -91,33 +51,28 @@ async function createSubMenu( subMenu, id ) {
 				link.className = '';
 				element.querySelector( '.usa-button__wrap' ).remove();
 			}
-			const pagePathNormalized = normalizePath( element.firstElementChild.getAttribute( 'href' ) );
-			let currentPagePath = window.location.pathname;
-			const ancestors = getAncestors( pagePathNormalized );
-			const topLevel = ancestors[0];
-			if ( currentPagePath.includes( topLevel ) ) {
-				button.classList.add( 'usa-current' );
-			}
 		}
 	} else {
 		subMenu.prepend( subMenu.firstElementChild.firstElementChild );
 		subMenu.lastElementChild.remove();
 		subMenu.firstElementChild.classList.add( 'usa-nav__link' );
 		subMenu.firstElementChild.classList.remove( 'usa-button' );
-		const pagePathNormalized = normalizePath( subMenu.firstElementChild.getAttribute( 'href' ) );
-		let currentPagePath = window.location.pathname;
-		const ancestors = getAncestors( pagePathNormalized );
-		const topLevel = ancestors.length ? ancestors[0] : pagePathNormalized;
-		if ( currentPagePath.includes( topLevel ) ) {
-			subMenu.firstElementChild.classList.add( 'usa-current' );
+		const isExternal = !isSameDomainOrSubdomain( subMenu.firstElementChild.getAttribute( 'href' ) );
+		
+		if( isExternal ) {
+			const externalLink = domEl( 'span', {} );
+			subMenu.firstElementChild.append( externalLink );
+			getIndividualIcon( subMenu.querySelector( 'span' ), 'launch' );
 		}
 	} 
 	if ( subMenu.querySelector( 'ul' ) ) subMenu.querySelector( 'ul' ).remove();
 }
 
-function createSecondaryMenu( innerMenu, searchResultsUrl ) {
+function createSecondaryMenu( innerMenu, searchResultsUrl, showDropdowns ) {
+	const url = new URL( window.location );
+	const domain = url.origin;
 	const input = domEl( 'input', { class: 'usa-input usa-text-input', id: 'search-field', type: 'search', name: 'q' } );
-	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: '../../icons/usa-icons-bg/search--white.svg' } );
+	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: `${domain}/icons/usa-icons/search.svg` } );
 	const searchButton = domEl( 'button', { class: 'usa-button', type: 'submit' } );
 	searchButton.append( img );
 	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field' } );
@@ -131,6 +86,11 @@ function createSecondaryMenu( innerMenu, searchResultsUrl ) {
 
 	const secondaryNav = domEl( 'div', { class: 'usa-nav__secondary' } );
 	const searchSection = domEl( 'section', { 'aria-label': 'Search component' } );
+	let searchHeader;
+	if ( !showDropdowns ) {
+		searchHeader = domEl( 'p', { class: 'usa-nav__search-header' }, 'Search' );
+		searchSection.append( searchHeader );
+	}
 	searchSection.append( form );
 	secondaryNav.append( searchSection );
 	innerMenu.append( secondaryNav );
@@ -146,30 +106,39 @@ async function loadAndDecorateNav() {
 	const navPath = navMeta ? new URL( navMeta, window.location ).pathname : '/nav';
 	const navFragment = await loadFragment( navPath );
 	const innerNav = domEl( 'div', { class: 'usa-nav__inner' } );
+	
+	if ( !navFragment ) return innerNav;
+
 	let navChildren = navFragment.children;
-	for ( const element of navChildren ) {
-		if ( element.getElementsByTagName( 'ul' ).length > 0 ) {
-			let ulList = element.getElementsByTagName( 'ul' );
-			innerNav.append( ulList[0] );
-			break;
+	const showDropdowns = navChildren.length > 2;
+	
+	if ( showDropdowns ) {
+		for ( const element of navChildren ) {
+			if ( element.getElementsByTagName( 'ul' ).length > 0 ) {
+				let ulList = element.getElementsByTagName( 'ul' );
+				innerNav.append( ulList[0] );
+				break;
+			}
 		}
+		innerNav.firstElementChild.classList.add( 'usa-nav__primary' );
+		innerNav.firstElementChild.classList.add( 'usa-accordion' );
+		
+		innerNav.querySelectorAll( '.usa-nav__primary > li' ).forEach( ( primaryItem, index ) => {
+			primaryItem.classList.add( 'usa-nav__primary-item' );
+			createSubMenu( primaryItem, index );
+		} );
 	}
-	innerNav.firstElementChild.classList.add( 'usa-nav__primary' );
-	innerNav.firstElementChild.classList.add( 'usa-accordion' );
-	innerNav.querySelectorAll( '.usa-nav__primary > li' ).forEach( ( primaryItem, index ) => {
-		primaryItem.classList.add( 'usa-nav__primary-item' );
-		createSubMenu( primaryItem, index );
-	} );
 
 	// get url for search results page
 	const searchLink = navFragment.querySelector( 'div.section:last-child a' );
 	const searchResultsUrl = searchLink ? searchLink.href : '/search-results';
 
-	createSecondaryMenu( innerNav, searchResultsUrl );
+	createSecondaryMenu( innerNav, searchResultsUrl, showDropdowns );
 	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation' } );
 	nav.append( innerNav );
 	const container = domEl( 'div', {} );
-	const navWrapper = domEl( 'div', { class: 'usa-header usa-header--extended' } );
+	const navClass = `usa-header usa-header--extended${!showDropdowns ? ' usa-header--small' : '' }`;
+	const navWrapper = domEl( 'div', { class: navClass } );
 	container.append( nav );
 	const picture = navChildren[0].querySelector( 'picture' );
 	const link = navChildren[0].querySelector( 'a' );

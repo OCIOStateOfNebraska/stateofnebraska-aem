@@ -1,0 +1,18 @@
+@use '../../styles/ne-global-imports' as *;
+
+.map-embed {
+	position: relative;
+	width: 100%;
+	margin-bottom: units($component-spacing-sm);
+	font-size: 0; // no extra space inside
+	overflow: hidden;
+	aspect-ratio: 16 / 9;
+
+	iframe {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+}
