@@ -8,3 +8,4 @@ test/*
 _*.json
 *.scss
 helix-configs/*
+tools/*
