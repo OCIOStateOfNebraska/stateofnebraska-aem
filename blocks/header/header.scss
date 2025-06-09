@@ -25,7 +25,7 @@
 		flex: 0 0 auto;
 
 
-		width: px-to-rem(180px);
+		width: px-to-rem(320px);
 		height: px-to-rem(50px);
 
 		&__text,
@@ -38,8 +38,11 @@
 			height: 100%;
 		}
 
+		picture,
 		img {
+			margin: 0;
 			object-fit: scale-down;
+			object-position: left;
 		}
 	}
 
@@ -65,7 +68,6 @@
 		&.usa-button--active {
 			@include set-text-and-bg('secondary-lighter', $context: $button-context);
 		}
-
 	}
 
 	.usa-text-input {
@@ -76,6 +78,42 @@
 		&[type='submit'] {
 			border-top-right-radius: 0;
 			border-bottom-right-radius: 0;
+			background-color: color('secondary');
+		}
+	}
+	
+	.usa-nav__search-header {
+		@include u-font('heading', $theme-h5-font-size);
+		@include u-text('semibold');
+	}
+
+	&.usa-header--small {
+		.usa-search {
+			margin-top: units(.5);
+		}
+	}
+
+	a {
+		&.usa-nav__link { // stylelint-disable-line selector-no-qualifying-type
+			&.usa-link--external { // stylelint-disable-line selector-no-qualifying-type
+				display: flex;
+				justify-content: space-between;
+				padding-right: 0;
+
+				&:after {
+					display: none;
+				}
+
+				svg {
+					fill: color('ink');
+				}
+			}
+		}
+	}
+
+	@include at-media('tablet') {
+		.usa-nav__secondary {
+			margin-bottom: units(1);
 		}
 	}
 
@@ -84,7 +122,7 @@
 			flex: 1 1 0%; // from uswds - makes them space evenly 
 			width: auto;
 		}
-	
+
 		.usa-text-input {
 			border: 0;
 			background-color: color('primary-darker');
@@ -95,7 +133,6 @@
 			&[type='submit'] {
 				border-top-right-radius: radius(sm);
 				border-bottom-right-radius: radius(sm);
-				background-color: color(blue-50);
 			}
 		}
 
@@ -108,6 +145,10 @@
 		.usa-nav {
 			// needs to be nested for styles to take
 			border-color: color('primary-light');
+			
+			&__search-header {
+				display: none;
+			}
 
 			&__primary {
 				button {
@@ -142,6 +183,15 @@
 				}
 			}
 			
+			.usa-nav__link {
+				&:hover,
+				&:focus { 
+					&:after {
+						background-color: color('primary-light');
+					}
+				}
+			}
+			
 			a {
 				&.usa-nav__link { // stylelint-disable-line selector-no-qualifying-type
 					color: color('white');
@@ -150,6 +200,35 @@
 					&:focus {
 						&:after {
 							background-color: color('primary-light');
+						}
+					}
+					
+					&.usa-link--external { // stylelint-disable-line selector-no-qualifying-type
+						padding-right: units(2);
+
+						&:after {
+							display: none;
+						}
+						
+						&:hover,
+						&:focus {
+							&:after { // stylelint-disable-line max-nesting-depth
+								display: block;
+								width: inherit;
+								margin: 0;
+								padding: 0;
+								background-color: color('primary-light');
+								mask-image: none;
+							}
+						}
+						
+						span {
+							margin-left: px-to-rem(4px);
+						}
+						
+						svg {
+							fill: color('white');
+							
 						}
 					}
 				}
@@ -166,6 +245,13 @@
 						background-color: color('primary-light');
 					}
 				}
+			}
+		}
+		
+		&.usa-header--small {
+			.usa-nav__secondary {
+				bottom: units(4); // in official USWDS this was labeled as "magic number" -- I just needed it halved in order to align correctly
+				margin-bottom: 0;
 			}
 		}
 	}

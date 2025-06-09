@@ -1,14 +1,20 @@
 @use '../../styles/ne-global-imports' as *;
+@use '~uswds/usa-pagination/src/styles/usa-pagination';
 
-.search-wrapper {
+.search {
 	.usa-search {
 		$button-width: px-to-rem(124px); // it will always have search as the text, so we can set the width
+		
 		margin-bottom: units(7);
 
 		.usa-input {
 			width: 100%;
 			max-width: calc(measure($theme-text-measure) - $button-width);
 			border: 1px solid color('ink');
+			
+			&__wrapper {
+				width: 100%;
+			}
 		}
 
 		.usa-button {
@@ -18,5 +24,43 @@
 				background-color: color('primary');
 			}
 		}
+	}
+	
+	&.dynamic-collection {
+		form {
+			display: none;
+		}
+	}
+	
+	.manual-collection {
+		margin-bottom: units(7);
+	}
+}
+
+.usa-pagination {
+	max-width: measure($theme-text-measure);
+	font-size: font-size('body', 5);
+
+	&__link-text,
+	.usa-icon__wrap {
+		pointer-events: none;
+	}
+	
+	&__link {
+		&--disabled {
+			display: none;
+		}
+	}
+	
+	&__button {
+		border-radius: radius('sm');
+	}
+	
+	.usa-current {
+		background-color: color(primary);
+	}
+	
+	.usa-icon__wrap {
+		display: flex;
 	}
 }

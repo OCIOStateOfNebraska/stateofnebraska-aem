@@ -13,6 +13,13 @@ Before using the aem-boilerplate, we recommand you to go through the documentati
 3. [Web Performance](https://www.aem.live/developer/keeping-it-100)
 4. [Markup, Sections, Blocks, and Auto Blocking](https://www.aem.live/developer/markup-sections-blocks)
 
+
+## EDS Index Configurations
+- Index configurations have been moved to the [configuration service](https://www.aem.live/docs/config-service-setup) in order to allow different configurations per site.
+- Current configurations are versioned in ./helix-configs/index, with each site's yaml configuration defined.
+- Deployment of configurations is done manually via the [configuration service api](https://www.aem.live/docs/admin.html#tag/indexConfig/operation/updateIndexConfig).
+
+
 ## Node Version
 This project requires Node.js 22.
 
@@ -52,3 +59,6 @@ npm run sass
 1. Create .env file with the following content: AEM_PAGES_URL=https://main--stateofnebraska-aem--ociostateofnebraska.aem.page (where the url the env where you want to pull the content from)
 1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
 1. Start AEM Proxy: `aem up` (opens your browser at `http://localhost:3000`)
+
+
+

@@ -8,7 +8,7 @@
 	$accordion-circle: px-to-rem(28px);
 	$accordion-button-gap: units(1);
 
-	margin-bottom: units($component-spacing);
+	margin-bottom: units($component-spacing-sm);
 
 	.#{$block}__heading {
 		&:not(:first-child) {

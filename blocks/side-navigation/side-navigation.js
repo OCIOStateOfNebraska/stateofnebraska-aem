@@ -118,59 +118,63 @@ function buildNavLevel( parentPath, currentLevel, maxLevel, indexData, currentPa
 
 	// Process each child page found
 	children.forEach( page => {
+		const invalidValues = ['false', 'no'];
 		const pagePathNormalized = normalizePath( page.path );
 		const isCurrent = pagePathNormalized === currentPagePath;
+		const isHidden = page.hideInSideNav && !invalidValues.includes( page.hideInSideNav.toLowerCase().trim() ) ? true : false;
 		// Check if this page is the specific top-level ancestor we identified
 		const isTopLevelAncestor = pagePathNormalized === topLevelAncestorPath;
 		// Still need to know if it's *any* ancestor for expansion logic
 		const isActiveAncestor = ancestors.includes( pagePathNormalized );
+		
+		if ( !isHidden ) {
+			// Create the list item (LI) and link (A)
+			const li = document.createElement( 'li' );
+			li.classList.add( 'usa-sidenav__item' );
 
-		// Create the list item (LI) and link (A)
-		const li = document.createElement( 'li' );
-		li.classList.add( 'usa-sidenav__item' );
+			const a = document.createElement( 'a' );
+			a.textContent = page.title || pagePathNormalized.split( '/' ).pop() || '';
+			a.href = page.path;
+			a.classList.add( 'usa-sidenav__link' );
 
-		const a = document.createElement( 'a' );
-		a.textContent = page.title || pagePathNormalized.split( '/' ).pop() || '';
-		a.href = page.path;
-		a.classList.add( 'usa-sidenav__link' );
-
-		// --- Apply current/ancestor styling and ARIA attribute ---
-		if ( isCurrent ) {
+			// --- Apply current/ancestor styling and ARIA attribute ---
+			if ( isCurrent ) {
 			// Actual current page: Add ARIA attribute and styling class
-			a.setAttribute( 'aria-current', 'page' );
-			a.classList.add( 'usa-current' );
-		} else if ( isTopLevelAncestor && currentLevel === 1 ) {
+				a.setAttribute( 'aria-current', 'page' );
+				a.classList.add( 'usa-current' );
+			} else if ( isTopLevelAncestor && currentLevel === 1 ) {
 			// Top-level ancestor (must be level 1): Add styling class only
-			a.classList.add( 'usa-current' );
-		}
-		// --- End of styling logic ---
-
-		li.appendChild( a );
-
-		// --- Recursive Call ---
-		// Check if we should render the next level down:
-		// - We haven't reached the max level yet.
-		// - EITHER this page IS the current page OR it's *any* ancestor of the current page.
-		//   (This ensures we only expand the branch leading to the current page, using the full ancestor list)
-		if ( currentLevel < maxLevel && ( isCurrent || isActiveAncestor ) ) {
-			const nestedUl = buildNavLevel(
-				pagePathNormalized,
-				currentLevel + 1, // Increment level
-				maxLevel,
-				indexData,
-				currentPagePath,
-				ancestors, // Pass full ancestor list for expansion check
-				topLevelAncestorPath // Pass specific top-level ancestor for styling check
-			);
-
-			// If the recursive call generated a list (found children), append it
-			if ( nestedUl ) {
-				li.appendChild( nestedUl );
+				a.classList.add( 'usa-current' );
 			}
-		}
+			// --- End of styling logic ---
 
-		// Add the completed list item to the list for the current level
-		ul.appendChild( li );
+			li.appendChild( a );
+
+			// --- Recursive Call ---
+			// Check if we should render the next level down:
+			// - We haven't reached the max level yet.
+			// - EITHER this page IS the current page OR it's *any* ancestor of the current page.
+			//   (This ensures we only expand the branch leading to the current page, using the full ancestor list)
+			if ( currentLevel < maxLevel && ( isCurrent || isActiveAncestor ) ) {
+				const nestedUl = buildNavLevel(
+					pagePathNormalized,
+					currentLevel + 1, // Increment level
+					maxLevel,
+					indexData,
+					currentPagePath,
+					ancestors, // Pass full ancestor list for expansion check
+					topLevelAncestorPath // Pass specific top-level ancestor for styling check
+				);
+
+				// If the recursive call generated a list (found children), append it
+				if ( nestedUl ) {
+					li.appendChild( nestedUl );
+				}
+			}
+
+			// Add the completed list item to the list for the current level
+			ul.appendChild( li );
+		}
 	} );
 
 	return ul;
@@ -186,7 +190,7 @@ function buildNavLevel( parentPath, currentLevel, maxLevel, indexData, currentPa
 export default async function decorate( block ) {
 	block.textContent = '';
 	const maxDepth = 3; // Define the fixed depth
-
+	
 	const indexData = await getIndexData();
 
 	if ( !indexData || indexData.length === 0 ) {

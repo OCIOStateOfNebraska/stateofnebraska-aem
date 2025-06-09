@@ -1,10 +1,19 @@
 @use '../../styles/ne-global-imports' as *;
 
 .columns {
-	margin-bottom: units($component-spacing);
+	margin-bottom: units($component-spacing-sm);
 
 	&__grid-row {
 		row-gap: units($theme-site-margins-mobile-width);
+
+		:first-child {
+			margin-top: 0;
+		}
+
+		:last-child {
+			margin-bottom: 0;
+		}
+
 	}
 	
 	@include at-media('desktop') {

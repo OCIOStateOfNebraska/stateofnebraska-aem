@@ -13,7 +13,7 @@ import {
 	loadCSS,
 	loadBlock,
 } from './aem.js';
-import { getIndividualIcon } from './utils.js';
+import { getIndividualIcon, isSameDomainOrSubdomain } from './utils.js';
 import { div, domEl } from './dom-helpers.js';
 
 // variable for caching site index
@@ -114,7 +114,7 @@ function containsOnlyLinks( ulElement ) {
 }
 
 /**
- * Decorates paragraphs containing a list of links as an unstyled link list.
+ * Decorates content containing a list of links as an unstyled link list.
  * @param {Element} element container element
  */
 function decorateUnstyledLinks( element ) {
@@ -165,45 +165,6 @@ function decorateButtons( element ) {
 }
 
 /**
- * Checks if a URL is on the same domain or subdomain as the current page.
- * @param {string} url The URL to check
- * @returns {boolean} True if the URL is on the same domain or subdomain, false otherwise.
- */
-function isSameDomainOrSubdomain( url ) {
-	try {
-	// Get the current page's hostname
-		const currentHostname = window.location.hostname;
-
-		// Construct a URL object for the link
-		const linkURL = new URL( url, window.location.href ); // Base URL for relative URLs
-		const linkHostname = linkURL.hostname;
-
-		// If the link and the current page have the exact same hostname, it's the same domain
-		if ( linkHostname === currentHostname ) {
-			return true;
-		}
-
-		// Check if the link is a subdomain of the current domain
-		if ( linkHostname.endsWith( '.' + currentHostname ) ) {
-			return true;
-		}
-
-		// Check if the current domain is a subdomain of the link
-		if ( currentHostname.endsWith( '.' + linkHostname ) ) {
-			return true;
-		}
-
-		// If none of the above conditions are met, it's not the same domain or a subdomain
-		return false;
-	} catch ( error ) {
-		// Handle invalid URLs and return false
-		// eslint-disable-next-line no-console
-		console.warn( `Invalid URL: ${url}`, error );
-		return false;
-	}
-}
-
-/**
  * Checks if a URL is a pdf.
  * @param {string} url The URL to check
  * @returns {boolean} True if the URL ends with .pdf
@@ -224,7 +185,7 @@ function decorateExternalLinks( element ) {
 				if( isPDFUrl( a.href ) ) {
 					a.classList.add( 'usa-link--pdf' );
 					a.setAttribute( 'target', '_blank' );
-					getIndividualIcon( a, 'description', true );
+					getIndividualIcon( a, 'file-pdf' );
 				} else if ( !isSameDomainOrSubdomain( a.href ) ) {
 					a.classList.add( 'usa-link--external' );
 					a.setAttribute( 'target', '_blank' );
@@ -259,6 +220,12 @@ function decorateH2s( element ) {
  */
 function decorateYouTube( element ) {
 	element.querySelectorAll( 'a[href*="youtube.com"], a[href*="youtu.be"], a[href*="youtube-nocookie.com"]' ).forEach( ( link ) => {
+
+		// extract the video ID from the link
+		const youtubeRegex = /(?:https?:\/\/(?:m\.)?(?:www\.)?youtu(?:\.be\/|(?:be-nocookie|be)\.com\/)(?:watch|\w+\?(?:feature=\w+\.\w+&)?v=|v\/|e\/|embed\/|live\/|shorts\/|user\/(?:[\w#]+\/)+))([^&#?\n]+)/i;
+		const id = youtubeRegex.exec( link.href )?.[1];
+		if( !id ) return;
+
 		let parent = link.closest( 'p' );
 
 		// stop if it's a button
@@ -277,38 +244,192 @@ function decorateYouTube( element ) {
 		// stop if there's text after which is not wrapped in parenthesis (assuming a paragraph)
 		if( textAfter && !titleText ) return;
 
-		const url = new URL( link.href );
-		const id = url.searchParams.get( 'v' ) || url.pathname.split( '/embed/' )?.[1] || url.pathname.substring( 1 );
-		if ( id ) {
-			const wrapper = domEl( 'figure', { class: 'video-embed' } );
-			const iframe = domEl( 'iframe', {
-				src: `https://www.youtube.com/embed/${id}?rel=0&color=white`,
-				allowfullscreen: true,
-				loading: 'lazy',
-				frameborder: 0,
-				allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
-				title: titleText || 'YouTube video player',
+		const wrapper = domEl( 'figure', { class: 'video-embed' } );
+		const iframe = domEl( 'iframe', {
+			src: `https://www.youtube.com/embed/${id}?rel=0&color=white`,
+			allowfullscreen: true,
+			loading: 'lazy',
+			frameborder: 0,
+			allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+			title: titleText || 'YouTube video player',
+		} );
+
+		wrapper.appendChild( div( iframe ) );
+
+		if ( !parent ) {
+			// likely inside a column, create a wrapper so that column classes aren't added directly to the iframe
+			parent = div();
+
+			let origParent = link.parentElement;
+			origParent.childNodes.forEach( ( child ) => {
+				parent.append( child );
 			} );
 
-			wrapper.appendChild( div( iframe ) );
+			origParent.textContent = '';
+			origParent.append( parent );
+		}
+
+		parent.replaceWith( wrapper );
+	} );
+}
+
+/**
+ * Converts links to YouTube to embedded videos
+ * Leverages text within the same paragraph as the title for accessibility
+ * @param {Element} element container element
+ */
+function decorateGoogleMaps( element ) {
+	element.querySelectorAll( 'a[href*="google.com/maps"]' ).forEach( ( link ) => {
+		let parent = link.closest( 'p' );
+
+		// stop if it's a button
+		if ( parent?.classList.contains( 'usa-button__wrap' ) ) return;
+
+		// stop if there's text ahead of the link
+		if ( link.previousSibling?.textContent.trim().length ) return;
+
+		// text after the link is used as alt text if wrapped in parentheses
+		const textAfter = link.nextSibling?.textContent.trim();
+		let titleText = '';
+		if ( textAfter && textAfter[0] === '(' && textAfter[textAfter.length - 1] === ')' ) {
+			titleText = textAfter.substring( 1, textAfter.length - 1 );
+		}
+
+		// stop if there's text after which is not wrapped in parenthesis (assuming a paragraph)
+		if ( textAfter && !titleText ) return;
+
+
+		// Helper function to create the iframe
+		const createIframe = ( embedURL, parent, titleText, link ) => {
+			const wrapper = domEl( 'figure', { class: 'map-embed' } );
+			const iframe = domEl( 'iframe', {
+				src: embedURL,
+				style: 'border:0',
+				allowfullscreen: '',
+				loading: 'lazy',
+				referrerpolicy: 'no-referrer-when-downgrade',
+				title: titleText || 'Google Map',
+			} );
+
+			wrapper.appendChild( iframe );
 
 			if ( !parent ) {
 				// likely inside a column, create a wrapper so that column classes aren't added directly to the iframe
-				parent = div();
-
+				parent = domEl( 'div' );
 				let origParent = link.parentElement;
 				origParent.childNodes.forEach( ( child ) => {
 					parent.append( child );
 				} );
-
 				origParent.textContent = '';
 				origParent.append( parent );
 			}
-
 			parent.replaceWith( wrapper );
+		};
+
+		const url = new URL( link.href );
+
+		// Check if the link is an embed URL
+		if ( url.href.startsWith( 'https://www.google.com/maps/embed' ) ) {
+			createIframe( url.href, parent, titleText, link );
+		}
+		//If it isn't an embed URL, then it must be a google maps URL
+		else if ( url.href.startsWith( 'https://www.google.com/maps/' ) ) {
+			let embedURL = null;
+			const match = url.searchParams.get( 'q' ) || url.searchParams.get( 'api=1&query' ) || url.searchParams.get( 'cid' );
+
+			if ( match ) {
+				embedURL = `https://maps.google.com/maps?q=${match}&output=embed`;
+			} else {
+				const pathParts = url.pathname.split( '@' )[1]?.split( ',' );
+				if ( pathParts?.length >= 2 ) {
+					const latitude = parseFloat( pathParts[0] );
+					const longitude = parseFloat( pathParts[1] );
+					embedURL = `https://maps.google.com/maps?q=${latitude},${longitude}&output=embed`;
+				}
+			}
+			if ( embedURL ) {
+				createIframe( embedURL, parent, titleText, link );
+			}
 		}
 	} );
 }
+
+/** Converts list with icons into an icon list component
+ * Has "Big" variant
+ * @param {Element} element The container element
+ */
+function decorateIconList( element ) {
+	element.querySelectorAll( 'ul' ).forEach( ( ul ) => {
+		if( !ul.closest( 'body' ) ) { return; } // skip if ul is not in the DOM (i.e. a fragment)
+
+		// already decorated
+		if ( ul.classList.contains( 'usa-icon-list' ) ) return; 
+		
+		// only decorate if all li elements have an icon
+		const lis = ul.querySelectorAll( ':scope > li' );
+		if( ul.querySelectorAll( ':scope > li .icon:first-child' ).length !== lis.length ) return;
+
+		ul.classList.add( 'usa-icon-list' );
+		if( ul.querySelector( 'h2, h3, h4' ) ) {
+			ul.classList.add( 'usa-icon-list--size-lg' );
+		}
+
+		lis.forEach( ( li ) => {
+			li.classList.add( 'usa-icon-list__item' );
+			
+			// leaving as a span because decorateIcon is still potentially working with it asynchronously
+			const iconEle = li.querySelector( '.icon' );
+			iconEle.classList.add( 'usa-icon-list__icon' );
+
+			const contentWrapper = div( { class: 'usa-icon-list__content' } );
+			while( li.firstChild ) {
+				const child = li.firstChild;
+				
+				// move everything after the br to a new paragraph
+				if( child.tagName && ['H2', 'H3', 'H4'].includes( child.tagName.toUpperCase() ) ) {
+					const after = document.createElement( 'p' );
+					let found = false;
+					child.childNodes.forEach( c => {
+						if( found ) {
+							after.appendChild( c );
+						} else if ( c.tagName == 'BR' ) {
+							found = true;
+						}
+					} );
+					
+					contentWrapper.appendChild( child ); // the title
+					contentWrapper.appendChild( after );
+				} else {
+					contentWrapper.appendChild( child );
+				}
+			}
+			li.appendChild( contentWrapper );
+			
+			li.prepend( iconEle ); // pull the icon back out to the front
+		} );
+	} );
+}
+
+function decorateImgs( element ) {
+	element.querySelectorAll( 'p img:only-child, p picture:only-child, p figure:only-child' ).forEach( ( img ) => {
+		// if there is nothing else in the paragraph, unwrap the image
+		if( !img.closest( 'body' ) ) { return; } // skip if ul is not in the DOM (i.e. a fragment)
+
+		const pEle = img.closest( 'p' );
+		let isOnlyNode = true;
+		pEle.childNodes.forEach( ( childNode ) => {
+			if( childNode !== img && childNode.textContent.trim().length > 0 ) {
+				isOnlyNode = false;
+			}
+		} );
+
+		if( isOnlyNode ) {
+			pEle.replaceWith( img );
+		}
+	} );
+}
+		
+
 
 /**
  * Decorates the main element.
@@ -321,10 +442,13 @@ export function decorateMain( main ) {
 }
 
 export function decorateInner( container ) {
-	decorateButtons( container );
-	decorateIcons( container );
 	decorateH2s( container );
+	decorateImgs( container );
+	decorateButtons( container );
 	decorateYouTube( container );
+	decorateGoogleMaps( container );
+	decorateIcons( container );
+	decorateIconList( container );
 	decorateSections( container );
 	decorateBlocks( container );
 	decorateUnstyledLinks( container );
@@ -447,7 +571,7 @@ await loadPage();
 	setTimeout( addClass, 2000 );
 } )();
 
-// document authoring snippet
+// enable document authoring snippet
 ( async function loadDa() {
 	if ( !new URL( window.location.href ).searchParams.get( 'dapreview' ) ) return;
 	import( 'https://da.live/scripts/dapreview.js' ).then( ( { default: daPreview } ) => daPreview( loadPage ) );

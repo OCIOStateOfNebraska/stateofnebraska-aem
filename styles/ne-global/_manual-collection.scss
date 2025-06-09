@@ -3,10 +3,34 @@
 
 .manual-collection {
 	$block: 'usa-collection';
+	margin-bottom: units($component-spacing-sm);
     
 	.#{$block} {
+
 		&__item {
 			border-color: color('base-lighter');
 		}
+		
+		&__meta-item {
+			&:has( svg ) {
+				display: flex;
+				align-items: center;
+				gap: px-to-rem(4px);
+			}
+		}
+		
+		.homepage & {
+			&__item {
+				width: 100%;
+				max-width: 100%;
+			}
+			
+			&__description {
+				width: 100%;
+				max-width: 100%;
+			}
+		}
 	}
+	
+	
 }

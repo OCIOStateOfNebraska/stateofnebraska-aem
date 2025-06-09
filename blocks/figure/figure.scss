@@ -1,6 +1,18 @@
 @use '../../styles/ne-global-imports' as *;
 
 .figure {
+	margin-bottom: units($component-spacing-sm);
+
+	&-wrapper {
+		margin-top: units($component-spacing-sm); // putting up here to avoid float not collapsing
+	}
+
+	figure,
+	img,
+	picture {
+		margin: 0;
+	}
+
 	&.left,
 	&.right {
 		figure, img, picture {
