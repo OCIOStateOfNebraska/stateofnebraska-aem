@@ -9,7 +9,7 @@ import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 export default async function decorate( block ) {
 	block.classList.add( 'usa-footer', 'usa-footer--big' );
 	// generate wrapper domEls
-	
+
 	const svg = `
 		<svg class="usa-footer__svg-graphic" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1730.1 86.006" preserveAspectRatio="none">
 			<path class="usa-footer__svg-background" d="M1126.5 33.5C950.5 9.7 820.8 8.7 624.7 7.3 457.8 6 245.9 12.3 0 39.1V0h1730v47c-166.2-12.2-287.5-18.3-304.4-18.6-22.2-.4-45.1-.6-45.1-.6h-1.6c-52.2-.4-138.8 0-248.8 5.5-1.2 0-2.5.1-3.7.2h.1Z" />
@@ -22,19 +22,19 @@ export default async function decorate( block ) {
 	const secondarySection = domEl( 'div', { class: 'usa-footer__secondary-section' } );
 	const secondaryGridContainer = domEl( 'div', { class: 'secondary' } );
 	// Get each of our rows for each section. They are all different and need to be grabbed one by one
-	
+
 	primarySection.innerHTML = svg;
-	
+
 	const children = [...block.children];
-	
-	// Authored table MUST have four columns 
-	if ( children && children.length !== 4 ) { // if they didn't author right, bail, don't render anything 
+
+	// Authored table MUST have four columns
+	if ( children && children.length !== 4 ) { // if they didn't author right, bail, don't render anything
 		block.innerHTML = '';
 		// eslint-disable-next-line no-console
 		console.error( 'Footer has wrong number of rows. Please reauthor' );
-		return; 
+		return;
 	}
-	
+
 	const [siteMap, infoAndSocial, accreditation, footerLinks] = children.map( ( child, index ) => { return checkIfRowExists( children, index ); } );
 
 	/**
@@ -47,7 +47,7 @@ export default async function decorate( block ) {
 		getIndividualIcon( a, 'arrow_upward' );
 		block.prepend( container );
 	}
-	
+
 	/**
 	 * Styles the sitemap section of the footer.
 	 *
@@ -67,13 +67,13 @@ export default async function decorate( block ) {
 						el.previousElementSibling.classList.add( 'usa-footer__primary-link' );
 					}
 				} );
-				
+
 				child.querySelectorAll( 'li' ).forEach( el => {
 					el.classList.add( 'usa-footer__secondary-link' );
 				} );
-				
+
 				section.append( child.firstElementChild );
-			} 
+			}
 			rows.append( section );
 			grid.append( rows );
 		} );
@@ -83,7 +83,7 @@ export default async function decorate( block ) {
 		block.append( primarySection );
 		block.removeChild( block.firstElementChild );
 	}
-	
+
 	/**
 	 * Styles the logo and social media section of the footer.
 	 *
@@ -108,7 +108,7 @@ export default async function decorate( block ) {
 		block.append( secondarySection );
 		block.removeChild( block.firstElementChild ); // remove the empty div the children used to be in
 	}
-	
+
 	// todo: add alt text
 	/**
 	* Styles the logo section of the footer.
@@ -123,13 +123,13 @@ export default async function decorate( block ) {
 			col.append( el );
 			logoColumn.append( col );
 		} );
-		
+
 		if ( logoColumn.querySelector( 'picture' ) ) {
 			logoColumn.querySelector( 'picture' ).querySelectorAll( 'img' ).forEach( ( img ) => {
 				const optimizedPicture = createOptimizedPicture( img.src, img.alt, false, [{ width: '250' }] );
 				img.closest( 'picture' ).replaceWith( optimizedPicture );
 			} );
-			// after we replace the picture tag, add the class to the new tag 
+			// after we replace the picture tag, add the class to the new tag
 			logoColumn.querySelector( 'picture' ).classList.add( 'usa-footer__logo-img' );
 		}
 	}
@@ -145,11 +145,11 @@ export default async function decorate( block ) {
 		if ( optionalButton ){
 			optionalButton.classList.remove( 'usa-button' );
 		}
-			
+
 		if ( socialLinks ) {
 			socialColumn.classList.add( 'usa-footer__contact-links', 'mobile-lg:grid-col-6' );
 			socialLinks.classList.add( 'usa-footer__social-links', 'grid-row', 'grid-gap-1', 'usa-list', 'usa-list--unstyled' );
-				
+
 			Array.from( socialLinks.children ).forEach( li => {
 				const link = li.querySelector( 'a' );
 				const icon = li.querySelector( 'span' );
@@ -169,18 +169,18 @@ export default async function decorate( block ) {
 		const pictureWrapper = domEl( 'div', { class: 'usa-footer__accreditations' } );
 		Array.from( row ).forEach( child => {
 			child.classList.add( 'grid-container', 'usa-footer__accreditations-row' );
-			
+
 			child.querySelectorAll( 'img' ).forEach( ( img ) => {
 				const optimizedPicture = createOptimizedPicture( img.src, img.alt, false, [{ width: '100' }] );
 				img.closest( 'picture' ).replaceWith( optimizedPicture );
 			} );
-			
+
 			// select pictures only after the element has been replaced
 			const pictures = child.querySelectorAll( 'picture' );
 
 			[...pictures].forEach( ( picture ) => {
 				const next = picture.parentNode.nextElementSibling;
-				if ( next && next.querySelector( 'a' ) ) { // wrap picture in a link if link is authored 
+				if ( next && next.querySelector( 'a' ) ) { // wrap picture in a link if link is authored
 					const a = next.querySelector( 'a' );
 					if ( a && a.textContent.startsWith( 'https://' ) ) {
 						a.innerHTML = '';
@@ -194,15 +194,15 @@ export default async function decorate( block ) {
 					pictureWrapper.append( picture );
 				}
 			} );
-			
+
 			child.prepend( pictureWrapper );
 			secondaryGridContainer.append( child );
 		} );
-		
-		
+
+
 		block.removeChild( block.firstElementChild ); // remove the empty div the children used to be in
 	}
-	
+
 	/**
 	 * Styles the footer links section of the footer.
 	 *
@@ -210,26 +210,26 @@ export default async function decorate( block ) {
 	 */
 	function styleIdentifierLinks( row ) {
 		const container = secondaryGridContainer;
-		const nav = domEl( 'nav', { class: 'usa-identifier grid-container', 'aria-label': 'Footer navigation'} );
+		const nav = domEl( 'nav', { class: 'usa-identifier grid-container', 'aria-label': 'Footer state sites navigation'} );
 		const grid = domEl( 'section', { class: 'usa-identifier__section usa-identifier__section--required-links' } );
 		Array.from( row ).forEach( child => {
 			while ( child.firstElementChild ) {
 				child.querySelectorAll( 'ul' ).forEach( el => {
 					el.classList.add( 'usa-list--unstyled', 'usa-list', 'usa-identifier__required-links-list' );
 				} );
-				
+
 				child.querySelectorAll( 'li' ).forEach( el => {
 					el.classList.add( 'usa-identifier__required-links-item' );
 				} );
-				
+
 				grid.append( child.firstElementChild );
-			} 
+			}
 		} );
 		nav.append( grid );
 		container.append( nav );
 		block.removeChild( block.firstElementChild ); // remove the empty div the children used to be in
 	}
-	
+
 	/**
 	 * Styles the copyright section of the footer.
 	 */
@@ -247,15 +247,15 @@ export default async function decorate( block ) {
 	}
 
 	//decorate footer DOM
-	
+
 	if ( siteMap ) { styleSitemap( siteMap ); }
 	styleLogoAndSocial( infoAndSocial );
 	if ( accreditation ) { styleAccreditation( accreditation ); }
 	styleIdentifierLinks( footerLinks );
 	styleCopyright();
 	styleBackToTop();
-	
+
 	block.querySelectorAll( 'p' ).forEach( el => {
-		removeEmptyChildren( el ); // remove any empty p tags that are left over 
+		removeEmptyChildren( el ); // remove any empty p tags that are left over
 	} );
 }
