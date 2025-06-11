@@ -5,9 +5,8 @@
 $uswds-block: 'usa-alert';
 
 // stylelint-disable-next-line scss/selector-nest-combinators
-.usa-site-alert .#{$uswds-block},
-.#{$uswds-block} {
-
+.usa-site-alert 
+.#{$uswds-block}, .#{$uswds-block} {
 	.#{$uswds-block}__heading {
 		@include u-font('heading', 'lg');
 		@include u-font-weight('bold');
@@ -15,6 +14,69 @@ $uswds-block: 'usa-alert';
 
 	.#{$uswds-block}__body {
 		font-size: size('body', 'sm');
+		
+		.usa-button {
+			$button-context: 'Button';
+			$alert-context: 'Alert';
+
+			&,
+			&:visited {
+				@include set-text-from-bg('primary', $context: $button-context);
+			}
+		
+			&--secondary {
+				$button-context: 'Button';
+
+				&,
+				&:visited {
+					@include set-text-from-bg('secondary', $context: $button-context);
+				}
+
+				&:hover,
+				&.usa-button--hover {
+					@include set-text-and-bg('secondary-light', $context: $button-context);
+				}
+
+				&:active,
+				&.usa-button--active {
+					@include set-text-and-bg('secondary-lighter', $context: $button-context);
+				}
+			}
+			
+			&--outline {
+				color: color($theme-text-color);
+				
+				&:visited, 
+				&:hover,
+				&.usa-button--hover ,
+				&:active,
+				&.usa-button--active {
+					color: color($theme-text-color);
+				}
+				
+				
+			}
+		}
+		
+	}
+	
+	&.#{$uswds-block}--emergency {
+		.#{$uswds-block}__body {
+		
+			.usa-button {
+				&--outline {
+					color: color('white');
+
+					&:visited, 
+					&:hover,
+					&.usa-button--hover ,
+					&:active,
+					&.usa-button--active {
+						color: color('white');
+					}
+				}
+			}
+		}
 	}
 }
 

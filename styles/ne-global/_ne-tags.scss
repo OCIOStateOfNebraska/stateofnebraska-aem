@@ -25,6 +25,10 @@ body {
 	}
 }
 
+main {
+	overflow-x: hidden; // https://stackoverflow.com/questions/14270084/overflow-xhidden-doesnt-prevent-content-from-overflowing-in-mobile-browsers
+}
+
 figure,
 picture,
 img {
