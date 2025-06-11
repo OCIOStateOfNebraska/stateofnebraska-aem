@@ -5,7 +5,7 @@
 $uswds-block: 'usa-alert';
 
 // stylelint-disable-next-line scss/selector-nest-combinators
-.usa-site-alert .#{$uswds-block}, 
+.usa-site-alert .#{$uswds-block},
 .#{$uswds-block} {
 	.#{$uswds-block}__heading {
 		@include u-font('heading', 'lg');
@@ -53,13 +53,10 @@ $uswds-block: 'usa-alert';
 				&.usa-button--active {
 					color: color($theme-text-color);
 				}
-				
-				
 			}
 		}
-		
 	}
-	
+
 	&.#{$uswds-block}--emergency {
 		.#{$uswds-block}__body {
 			.usa-button {
