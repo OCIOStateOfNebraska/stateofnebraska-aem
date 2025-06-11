@@ -5,8 +5,8 @@
 $uswds-block: 'usa-alert';
 
 // stylelint-disable-next-line scss/selector-nest-combinators
-.usa-site-alert 
-.#{$uswds-block}, .#{$uswds-block} {
+.usa-site-alert .#{$uswds-block}, 
+.#{$uswds-block} {
 	.#{$uswds-block}__heading {
 		@include u-font('heading', 'lg');
 		@include u-font-weight('bold');
@@ -62,7 +62,6 @@ $uswds-block: 'usa-alert';
 	
 	&.#{$uswds-block}--emergency {
 		.#{$uswds-block}__body {
-		
 			.usa-button {
 				&--outline {
 					color: color('white');
@@ -87,5 +86,25 @@ $uswds-block: 'usa-alert';
 .usa-site-alert {
 	.#{$uswds-block} {
 		margin-bottom: 0;
+	}
+
+	&.usa-site-alert--emergency {
+		.#{$uswds-block} {
+			.#{$uswds-block}__body {
+				.usa-button {
+					&--outline {
+						color: color('white');
+
+						&:visited, 
+						&:hover,
+						&.usa-button--hover ,
+						&:active,
+						&.usa-button--active {
+							color: color('white');
+						}
+					}
+				}
+			}
+		}
 	}
 }
