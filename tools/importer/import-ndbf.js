@@ -248,8 +248,11 @@ const createMetadataBlock = ( main, document, url ) => {
 
 	const pageUrl = new URL( url );
 	const path = pageUrl.pathname;
-	if ( path.startsWith( '/notices' ) || path.startsWith( '/notice-' ) ) {
+	const pubDateEle = main.querySelector( '.field--name-field-publication-date' );
+	if ( path.startsWith( '/notices' ) || path.startsWith( '/notice-' ) || pubDateEle ) {
 		meta.tags = [ 'notice' ];
+		const time = pubDateEle.querySelector( 'time' ).getAttribute( 'datetime' );
+		meta[ 'publication-date' ] = formatDate( new Date( time ) );
 	}
 
 	// helper to create the metadata block
@@ -261,6 +264,11 @@ const createMetadataBlock = ( main, document, url ) => {
 	// returning the meta object might be usefull to other rules
 	return meta;
 };
+
+const formatDate = ( date ) => {
+	return new Intl.DateTimeFormat( 'en-US', { month: 'long', day: 'numeric', year: 'numeric'} ).format( date ) +
+	' - ' + new Intl.DateTimeFormat( 'en-US', { hour: 'numeric', minute: '2-digit', hour12: true} ).format( date ).toLowerCase();
+}
 
 export default {
 	transform: ( {
