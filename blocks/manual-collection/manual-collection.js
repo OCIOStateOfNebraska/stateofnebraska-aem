@@ -28,10 +28,10 @@ function setDate( div ) {
 }
 
 function setHeadingStyle( div ) {
-	if ( div.querySelector( 'h4' ) ) {
-		const h4 = div.querySelector( 'h4' );
-		h4.classList.add( 'usa-collection__heading' );
-		const anchor = h4.querySelector( 'a' );
+	if ( div.querySelector( 'h2, h3, h4, h5, h6' ) ) {
+		const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
+		heading.classList.add( 'usa-collection__heading' );
+		const anchor = heading.querySelector( 'a' );
 		anchor.classList.add( 'usa-link' );
 	}
 }

@@ -23,10 +23,12 @@
 		@include u-margin-y(3);
 		position: relative;
 		flex: 0 0 auto;
-
-
-		width: px-to-rem(320px);
+		width: px-to-rem(180px);
 		height: px-to-rem(50px);
+		
+		@include at-media('tablet') {
+			width: px-to-rem(320px);
+		}
 
 		&__text,
 		a,
