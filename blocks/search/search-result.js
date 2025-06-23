@@ -58,7 +58,7 @@ function highlightTextElements( terms, elements ) {
 
 function renderTitle( result, titleTag, searchTerms, collectionBody, externalURL ) {
 	if ( result.title ) {
-		const titleLink = a( { href: ( externalURL + result.path ), class: 'usa-link' }, result.title );
+		const titleLink = a( { href: ( 'https://' + externalURL + result.path ), class: 'usa-link' }, result.title );
 		if ( searchTerms ) {
 			highlightTextElements( searchTerms, [titleLink] );
 		}

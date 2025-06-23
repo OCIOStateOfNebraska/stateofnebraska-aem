@@ -23,7 +23,6 @@ const SEARCH_SETTINGS_BOX = 'show-search-box';
 const SEARCH_SETTINGS_PAGINATION = 'show-pagination';
 const SEARCH_SETTINGS_SORTKEY = 'sort-key';
 const SEARCH_SETTINGS_FILTERTAG = 'filter-by';
-const SEARCH_SETTINGS_EXTERNAL = 'external-url';
 
 // FUSE.js relevance scoring options https://www.fusejs.io/concepts/scoring-theory.html#fuzziness-score
 const fuseOptionsRelevance = {
@@ -66,7 +65,7 @@ class SearchBlock {
 		this.placeholders = null;
 		/** @member {string} */
 		// Getting text content since the hostname is stripped in the href
-		this.source = this.block.querySelector( 'a[href]' )?.textContent || '/query-index.json'; // Use optional chaining
+		this.source = this.block.querySelector( 'a[href]' )?.href || '/query-index.json'; // Use optional chaining
 		/** @member {number} */
 		this.limit = 10;
 		/** @member {boolean} */
@@ -74,7 +73,7 @@ class SearchBlock {
 		/** @member {boolean} */
 		this.showSearchBox = true;
 		/** @member {boolean} */
-		this.externalUrl = '';
+		this.externalUrl = new URL( this.source ).hostname;
 		/** @member {string} */
 		this.sort = 'relevance';
 		/** @member {string|null} */
@@ -148,10 +147,6 @@ class SearchBlock {
 		
 		if ( key === SEARCH_SETTINGS_FILTERTAG && settingVal ) {
 			this.filter = setting;
-		}
-		
-		if ( key === SEARCH_SETTINGS_EXTERNAL && settingVal ) {
-			this.externalUrl = setting;
 		}
 	}
 	
