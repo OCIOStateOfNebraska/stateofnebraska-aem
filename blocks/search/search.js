@@ -65,6 +65,7 @@ class SearchBlock {
 		/** @member {object} */
 		this.placeholders = null;
 		/** @member {string} */
+		// Getting text content since the hostname is stripped in the href
 		this.source = this.block.querySelector( 'a[href]' )?.textContent || '/query-index.json'; // Use optional chaining
 		/** @member {number} */
 		this.limit = 10;
