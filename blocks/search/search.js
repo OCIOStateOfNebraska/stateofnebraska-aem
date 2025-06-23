@@ -23,6 +23,7 @@ const SEARCH_SETTINGS_BOX = 'show-search-box';
 const SEARCH_SETTINGS_PAGINATION = 'show-pagination';
 const SEARCH_SETTINGS_SORTKEY = 'sort-key';
 const SEARCH_SETTINGS_FILTERTAG = 'filter-by';
+const SEARCH_SETTINGS_EXTERNAL = 'external-url';
 
 // FUSE.js relevance scoring options https://www.fusejs.io/concepts/scoring-theory.html#fuzziness-score
 const fuseOptionsRelevance = {
@@ -64,13 +65,15 @@ class SearchBlock {
 		/** @member {object} */
 		this.placeholders = null;
 		/** @member {string} */
-		this.source = this.block.querySelector( 'a[href]' )?.href || '/query-index.json'; // Use optional chaining
+		this.source = this.block.querySelector( 'a[href]' )?.textContent || '/query-index.json'; // Use optional chaining
 		/** @member {number} */
 		this.limit = 10;
 		/** @member {boolean} */
 		this.showPagination = true;
 		/** @member {boolean} */
 		this.showSearchBox = true;
+		/** @member {boolean} */
+		this.externalUrl = '';
 		/** @member {string} */
 		this.sort = 'relevance';
 		/** @member {string|null} */
@@ -112,7 +115,6 @@ class SearchBlock {
 			this.attachEventListeners();
 			this.handleInitialSearch();
 			decorateIcons( this.block );
-			
 		} catch ( error ) {
 			// Handle the error gracefully, e.g., display an error message to the user
 			console.error( 'Error initializing SearchBlock:', error );
@@ -145,6 +147,10 @@ class SearchBlock {
 		
 		if ( key === SEARCH_SETTINGS_FILTERTAG && settingVal ) {
 			this.filter = setting;
+		}
+		
+		if ( key === SEARCH_SETTINGS_EXTERNAL && settingVal ) {
+			this.externalUrl = setting;
 		}
 	}
 	
@@ -362,7 +368,7 @@ class SearchBlock {
 
 			searchResults.classList.remove( NO_RESULTS_CLASS );
 			data.forEach( result => {
-				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection, this.sort ) );
+				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection, this.sort, this.externalUrl ) );
 			} );
 		} else {
 			searchResults.classList.add( NO_RESULTS_CLASS );
