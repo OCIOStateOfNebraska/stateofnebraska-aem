@@ -31,14 +31,14 @@ const fuseOptionsRelevance = {
 	threshold: 0.4,
 	minMatchCharLength: 3,
 	keys: [
-		{ name: 'path',weight: 0.2 },
-		{ name: 'body',weight: 0.1 },
-		{ name: 'tags',weight: 0.5 },
-		{ name: 'keywords',weight: 0.5 },
-		{ name: 'h2s',weight: 0.2 },
-		{ name: 'description',weight: 0.5 },
-		{ name: 'title',weight: 1 },
-		{ name: 'publicationDate',weight: 0.5 },
+		{ name: 'path', weight: 0.2 },
+		{ name: 'body', weight: 0.1 },
+		{ name: 'tags', weight: 0.5 },
+		{ name: 'keywords', weight: 0.5 },
+		{ name: 'h2s', weight: 0.2 },
+		{ name: 'description', weight: 0.5 },
+		{ name: 'title', weight: 1 },
+		{ name: 'publicationDate', weight: 0.5 },
 	]
 };
 
@@ -54,7 +54,7 @@ const fuseOptionsTags = {
 class SearchBlock {
 	/**
 	* Constructor for the SearchBlock class.
-    * @param {HTMLElement} block - The block element to which the search functionality will be added.  This should be the `<div class="search">` element.
+		* @param {HTMLElement} block - The block element to which the search functionality will be added.  This should be the `<div class="search">` element.
 	*/
 	constructor( block ) {
 		/** @member {HTMLElement} */
@@ -93,11 +93,11 @@ class SearchBlock {
 	}
 
 	/**
-    * Initializes the search block.  Fetches data, placeholders, and applies settings.
-    * @async
-    * @function init
-    * @returns {Promise<void>}
-    */
+		* Initializes the search block.  Fetches data, placeholders, and applies settings.
+		* @async
+		* @function init
+		* @returns {Promise<void>}
+		*/
 	async init() {
 		try {
 			this.allData = await ffetch( this.source ).all();
@@ -109,7 +109,7 @@ class SearchBlock {
 					this.checkSettings( settingName, row );
 				}
 			} );
-			
+
 			this.filterData();
 			this.render();
 			this.attachEventListeners();
@@ -120,60 +120,60 @@ class SearchBlock {
 			console.error( 'Error initializing SearchBlock:', error );
 		}
 	}
-	
+
 	/**
-     * Checks settings for a specific setting name in a row and applies them to the SearchBlock instance.
-     * @function checkSettings
-     * @param {HTMLElement} settingName - The first element in the row containing the setting name.
-     * @param {HTMLElement} row - The row element containing the setting.
-     */
+		 * Checks settings for a specific setting name in a row and applies them to the SearchBlock instance.
+		 * @function checkSettings
+		 * @param {HTMLElement} settingName - The first element in the row containing the setting name.
+		 * @param {HTMLElement} row - The row element containing the setting.
+		 */
 	checkSettings( settingName, row ) {
 		const invalidValues = ['false', 'no'];
 		const key = settingName.querySelector( 'p' ).textContent;
-		const setting = row.firstElementChild.nextSibling.nextSibling.querySelector( 'p' ).textContent;
-		const settingVal = invalidValues.includes( setting.toLowerCase().trim() ) ? false : true;
+		const setting = row.firstElementChild.nextSibling.nextSibling.querySelector( 'p' )?.textContent;
+		const settingVal = invalidValues.includes( setting?.toLowerCase().trim() ) ? false : true;
 
 		if ( key === SEARCH_SETTINGS_BOX ) {
 			this.showSearchBox = settingVal;
-		} 
+		}
 
 		if ( key === SEARCH_SETTINGS_PAGINATION ) {
 			this.showPagination = settingVal;
 		}
-		
+
 		if ( key === SEARCH_SETTINGS_SORTKEY && settingVal ) {
 			this.sort = setting;
 		}
-		
+
 		if ( key === SEARCH_SETTINGS_FILTERTAG && settingVal ) {
 			this.filter = setting;
 		}
 	}
-	
+
 	/**
-     * Filters the search data based on the configured filter tag and sorts the data if a sort key is provided.
-     * @function filterData
-    */
+		 * Filters the search data based on the configured filter tag and sorts the data if a sort key is provided.
+		 * @function filterData
+		*/
 	filterData() {
 		if ( this.sort !== 'relevance' ) {
 			const fuseTags = new Fuse( this.allData, fuseOptionsTags );
-			this.allData = this.flattenSearch( fuseTags.search( this.filter.toLowerCase().trim() ) );
+			this.allData = this.flattenSearch( fuseTags.search( this.filter ? this.filter.toLowerCase().trim() : '' ) );
 			const comparisonFunction = this.sort === 'publicationDate' ? this.sortByPublicationDate.bind( this ) : this.sortBy( this.sort );
 			this.allData.sort( comparisonFunction );
 		}
-			
+
 		this.allData = this.allData.filter( item => {
 			return item.title && item.title.trim() !== '' && item.path && item.path.trim() !== '';
 		} );
 	}
-	
+
 	/**
-     * Sorts the search results by publication date.
-     * @function sortByPublicationDate
-     * @param {object} a - The first object to compare.
-     * @param {object} b - The second object to compare.
-     * @returns {number} - A number indicating the order of the objects.
-     */
+		 * Sorts the search results by publication date.
+		 * @function sortByPublicationDate
+		 * @param {object} a - The first object to compare.
+		 * @param {object} b - The second object to compare.
+		 * @returns {number} - A number indicating the order of the objects.
+		 */
 	sortByPublicationDate( a, b ) {
 		let dateA, dateB;
 		try {
@@ -202,12 +202,12 @@ class SearchBlock {
 	}
 
 	/**
-     * Returns a comparison function to sort an array of objects by a specified key.
-     * Sorts strings ascending and other types (e.g., timestamps) descending.
-     * @function sortBy
-     * @param {string} key - The key to sort the array by.
-     * @returns {function(object, object): number} A comparison function for sorting.
-     */
+		 * Returns a comparison function to sort an array of objects by a specified key.
+		 * Sorts strings ascending and other types (e.g., timestamps) descending.
+		 * @function sortBy
+		 * @param {string} key - The key to sort the array by.
+		 * @returns {function(object, object): number} A comparison function for sorting.
+		 */
 	sortBy( key ) {
 		return function innerSort( a, b ) {
 			if ( !Object.hasOwn( a, key ) || !Object.hasOwn( b, key ) ) {
@@ -233,9 +233,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Renders the search UI, including the search form and the container for the search results.
-     * @function render
-    */
+		 * Renders the search UI, including the search form and the container for the search results.
+		 * @function render
+		*/
 	render() {
 		this.block.innerHTML = '';
 		this.block.append(
@@ -246,9 +246,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Attaches event listeners to the search form.
-     * @function attachEventListeners
-     */
+		 * Attaches event listeners to the search form.
+		 * @function attachEventListeners
+		 */
 	attachEventListeners() {
 		this.form.addEventListener( 'submit', ( e ) => {
 			e.preventDefault();
@@ -264,9 +264,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Handles the initial search when the page loads with existing query parameters.
-     * @function handleInitialSearch
-     */
+		 * Handles the initial search when the page loads with existing query parameters.
+		 * @function handleInitialSearch
+		 */
 	handleInitialSearch() {
 		const offsetParam = this.urlParams.get( OFFSET_PARAM );
 		const queryParam = this.urlParams.get( QUERY_PARAM );
@@ -285,9 +285,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Clears the search results container and pagination.
-     * @function clearSearchResults
-    */
+		 * Clears the search results container and pagination.
+		 * @function clearSearchResults
+		*/
 	clearSearchResults() {
 		const searchResults = this.block.querySelector( '.' + SEARCH_RESULTS_CONTAINER_CLASS.split( ' ' ).join( '.' ) );
 		const pagination = this.block.querySelector( '.usa-pagination' );
@@ -300,9 +300,9 @@ class SearchBlock {
 	}
 
 	/**
-     * Clears search results, resets URL parameters, and optionally performs a new search if a filter is present to show all results.
-     * @function clearSearch
-    */
+		 * Clears search results, resets URL parameters, and optionally performs a new search if a filter is present to show all results.
+		 * @function clearSearch
+		*/
 	clearSearch() {
 		this.clearSearchResults();
 
@@ -321,19 +321,19 @@ class SearchBlock {
 
 			window.history.replaceState( {}, '', url.toString() );
 		}
-		
+
 		if ( this.filter ) {
 			this.handleSearch( true );
 		}
 	}
 
 	/**
-     * Renders search results in the search block.
-     * @async
-     * @function renderResults
-     * @param {Array<object>} filteredData - Filtered search results.
-     * @param {Array<string>} searchTerms - Search terms to highlight.
-     */
+		 * Renders search results in the search block.
+		 * @async
+		 * @function renderResults
+		 * @param {Array<object>} filteredData - Filtered search results.
+		 * @param {Array<string>} searchTerms - Search terms to highlight.
+		 */
 	async renderResults( filteredData, searchTerms ) {
 		this.clearSearchResults();
 
@@ -371,29 +371,29 @@ class SearchBlock {
 			searchResults.append( li( { class: 'usa-collection__item' }, this.placeholders.searchNoResults || 'No results found.' ) );
 		}
 	}
-	
+
 	/**
-     * Flattens an array of Fuse.js search results into a simple array of the original data items.
-     * @function flattenSearch
-     * @param {Array<object>} filteredData - An array of Fuse.js search result objects.
-     * @returns {Array<object>} A flattened array of data items.
-     */
+		 * Flattens an array of Fuse.js search results into a simple array of the original data items.
+		 * @function flattenSearch
+		 * @param {Array<object>} filteredData - An array of Fuse.js search result objects.
+		 * @returns {Array<object>} A flattened array of data items.
+		 */
 	flattenSearch( filteredData ) {
 		const flattendArray = [];
-		
+
 		filteredData.forEach( ( entry ) => {
 			flattendArray.push( entry.item );
 		} );
-		
+
 		return flattendArray;
 	}
 
 	/**
-     * Handles search input events, updating the URL parameters and rendering the search results.
-     * @async
-     * @function handleSearch
-     * @param {boolean} resetOffset - Whether to reset the offset to 0.
-     */
+		 * Handles search input events, updating the URL parameters and rendering the search results.
+		 * @async
+		 * @function handleSearch
+		 * @param {boolean} resetOffset - Whether to reset the offset to 0.
+		 */
 	async handleSearch( resetOffset ) {
 		let searchTerms = null;
 		let searchTermsFuse = null;
@@ -418,11 +418,11 @@ class SearchBlock {
 			url.search = this.urlParams.toString();
 			window.history.replaceState( {}, '', url.toString() );
 		}
-		
+
 		const fuse = new Fuse( this.allData, fuseOptionsRelevance );
 
 		if ( this.filter && ( !searchTerms || !searchTerms.length ) ) {
-			filteredData = this.allData; 
+			filteredData = this.allData;
 		} else if ( searchTerms && searchTerms.length ) {
 			filteredData = this.flattenSearch( fuse.search( searchTermsFuse ) );
 		}
@@ -431,10 +431,10 @@ class SearchBlock {
 	}
 
 	/**
-     * Creates a container for search results.
-     * @function createSearchResultsContainer
-     * @returns {HTMLElement} The search results container element.
-     */
+		 * Creates a container for search results.
+		 * @function createSearchResultsContainer
+		 * @returns {HTMLElement} The search results container element.
+		 */
 	createSearchResultsContainer() {
 		let container = ul( { class: SEARCH_RESULTS_CONTAINER_CLASS } );
 		container.dataset.h = 'H4';
@@ -443,10 +443,10 @@ class SearchBlock {
 	}
 
 	/**
-     * Creates the search icon/button element.
-     * @function createSearchIcon
-     * @returns {HTMLElement} The search icon element.
-     */
+		 * Creates the search icon/button element.
+		 * @function createSearchIcon
+		 * @returns {HTMLElement} The search icon element.
+		 */
 	createSearchIcon() {
 		const searchTxt = this.placeholders.searchPlaceholder || 'Search';
 		return domEl( 'button', {
@@ -465,10 +465,10 @@ class SearchBlock {
 	}
 
 	/**
-     * Creates the search input field.
-     * @function createSearchInput
-     * @returns {HTMLElement} The search input element.
-     */
+		 * Creates the search input field.
+		 * @function createSearchInput
+		 * @returns {HTMLElement} The search input element.
+		 */
 	createSearchInput() {
 		const searchPlaceholder = ( this.placeholders.searchPlaceholder || 'Search' ) + '...';
 		const searchLabelEl = domEl( 'label', { class: 'usa-sr-only', for: 'search-block-field' } );
@@ -489,10 +489,10 @@ class SearchBlock {
 	}
 
 	/**
-     * Creates the search box container with input and icon/button.
-     * @function createSearchForm
-     * @returns {HTMLElement} The search box container.
-     */
+		 * Creates the search box container with input and icon/button.
+		 * @function createSearchForm
+		 * @returns {HTMLElement} The search box container.
+		 */
 	createSearchForm() {
 		let paginationInput = '';
 		let searchInputEl = '';
@@ -508,10 +508,10 @@ class SearchBlock {
 	}
 
 	/**
-     * Creates manual collection container.
-     * @function createManualCollection
-     * @returns {HTMLElement} The manual collection container.
-    */
+		 * Creates manual collection container.
+		 * @function createManualCollection
+		 * @returns {HTMLElement} The manual collection container.
+		*/
 	createManualCollection() {
 		return domEl( 'div', {
 			class: 'manual-collection'
