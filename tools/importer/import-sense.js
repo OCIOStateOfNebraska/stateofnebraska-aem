@@ -51,8 +51,9 @@ function addHeader(main, document) {
   }
 }
 
+// this grabs the hero section if it exists
 function addHeroSection(main, document) {
-  // Find the main hero heading and subheading
+  // find the main hero heading and subheading
   const heroTitle = document.querySelector('h1');
   const heroSubtitle = document.querySelector('h2');
   const aboutLink = Array.from(document.querySelectorAll('a')).find(a => a.textContent.trim().toLowerCase().includes('about this initiative'));
@@ -67,14 +68,15 @@ function addHeroSection(main, document) {
   }
 }
 
+// this one builds the columns for smart saver and fraud fighter
 function addColumnsBlock(main, document) {
-  // Find the two main columns: Smart Saver and Fraud Fighter
+  // look for those two main columns
   const allBs = Array.from(document.querySelectorAll('b'));
   const saverHeader = allBs.find(b => b.textContent.trim().toLowerCase().includes('be a smart saver'));
   const fraudHeader = allBs.find(b => b.textContent.trim().toLowerCase().includes('be a fraud fighter'));
 
   if (saverHeader && fraudHeader) {
-    // Try to find the next sibling UL for each header
+    // try to find the next sibling ul for each header
     const saverList = saverHeader.nextElementSibling && saverHeader.nextElementSibling.tagName === 'UL' ? saverHeader.nextElementSibling : null;
     const fraudList = fraudHeader.nextElementSibling && fraudHeader.nextElementSibling.tagName === 'UL' ? fraudHeader.nextElementSibling : null;
     const saverBtn = Array.from(document.querySelectorAll('a')).find(a => a.textContent.trim().toLowerCase().includes('get started'));
@@ -91,8 +93,9 @@ function addColumnsBlock(main, document) {
   }
 }
 
+// grabs the 'i want to' section if those links are around
 function addWantSection(main, document) {
-  // Find the 'I want to' section by looking for links/buttons with relevant text
+  // look for the 'i want to' links/buttons
   const checkLicense = Array.from(document.querySelectorAll('a')).find(a => a.textContent.trim().toLowerCase().includes('check a license'));
   const fileComplaint = Array.from(document.querySelectorAll('a')).find(a => a.textContent.trim().toLowerCase().includes('file a complaint'));
   const visitMain = Array.from(document.querySelectorAll('a')).find(a => a.textContent.trim().toLowerCase().includes('main site'));
@@ -124,19 +127,21 @@ function addWantSection(main, document) {
   }
 }
 
+// this one finds the recent news section if it's there
 function addNewsSection(main, document) {
-  // Find the Recent News section
+  // look for the recent news heading
   const newsHeader = Array.from(document.querySelectorAll('h2, h3')).find(h => h.textContent.trim().toLowerCase().includes('recent news'));
   if (newsHeader) {
     const newsSection = document.createElement('section');
     newsSection.appendChild(newsHeader.cloneNode(true));
-    // Optionally, add news items if present
+    // you could add news items here if you want
     main.append(newsSection);
   }
 }
 
+// footer, just grabs whatever looks like copyright or address
 function addFooter(main, document) {
-  // Find the footer by looking for copyright or address
+  // look for copyright or address
   const copyright = Array.from(document.querySelectorAll('footer, div, p')).find(e => e.textContent.trim().toLowerCase().includes('copyright'));
   if (copyright) {
     const footer = document.createElement('footer');
@@ -145,6 +150,7 @@ function addFooter(main, document) {
   }
 }
 
+// this is the homepage builder, just calls the helpers above
 function buildHomePage(main, document) {
   addAlertBar(main, document);
   addHeader(main, document);
@@ -155,6 +161,7 @@ function buildHomePage(main, document) {
   addFooter(main, document);
 }
 
+// this builds the protect your money page
 function buildProtectYourMoneyPage(main, document) {
   // Emergency alert and header (reuse logic)
   addHeader(main, document);
@@ -259,6 +266,7 @@ function buildProtectYourMoneyPage(main, document) {
   addFooter(main, document);
 }
 
+// this builds the check a license page
 function buildCheckLicensePage(main, document) {
   // Emergency alert and header (reuse logic)
   addHeader(main, document);
@@ -328,6 +336,7 @@ function buildCheckLicensePage(main, document) {
   addFooter(main, document);
 }
 
+// this builds the finfluencer article page
 function buildFinfluencerPage(main, document) {
   // Emergency alert and header (reuse logic)
   addHeader(main, document);
