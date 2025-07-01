@@ -25,7 +25,7 @@ const getAllPathsExceptCurrent = async ( paths ) => {
 	const pathsList = paths.replace( /^\/|\/$/g, '' ).split( '/' );
 	for ( let i = 0; i < pathsList.length - 1; i += 1 ) {
 		const pathPart = pathsList[i];
-		const prevPath = result[i - 1] ? result[i - 1].path : '';
+		const prevPath = pathsList[i - 1] ? `/${pathsList[i - 1]}` : '';
 		const path = `${prevPath}/${pathPart}`;
 		const url = `${window.location.origin}${path}/`;
 		/* eslint-disable-next-line no-await-in-loop */
