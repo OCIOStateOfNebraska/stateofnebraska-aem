@@ -118,7 +118,7 @@ function createAccordion( main, document ) {
 			if ( index === 0 ) {
 				item.closest( '.field--item' ).replaceWith( WebImporter.DOMUtils.createTable( data, document ) );
 			} else {
-				item.closest( '.field--item' ).remove(  );
+				item.closest( '.field--item' ).remove();
 			}
 		} );
 	}
@@ -185,16 +185,31 @@ function updateLinks( main, url ) {
 	} );
 }
 
-function updatePdfLinks( main, url ) {
+function processPdfLinks( main, url ) {
+	const results = [];
 	main.querySelectorAll( 'a' ).forEach( ( a ) => {
 		const href = a.getAttribute( 'href' );
 		if ( href && href.endsWith( '.pdf' ) && !href.startsWith( 'http://' ) && !href.startsWith( 'https://' ) ) {
 			const u = new URL( href, url );
-			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname );
+			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname ).replace( '/sites/default/', '/' );
+			// no "element", the "from" property is provided instead - importer will download the "from" resource as "path"
+			results.push( {
+				path: newPath,
+				from: u.toString(),
+				report: {
+					'proxy-pdf-url': u.toString()
+				}
+			} );
+
+			// update the link to new path on the target host
+			// this is required to be able to follow the links in Word
+			// you will need to replace "main--repo--owner" by your project setup
 			const newHref = new URL( newPath, 'https://main--ndbf-eds--ociostateofnebraska.aem.page' ).toString();
 			a.setAttribute( 'href', newHref );
 		}
 	} );
+
+	return results;
 }
 
 function updateImageLinks( main, url ) {
@@ -209,7 +224,7 @@ function updateImageLinks( main, url ) {
 	} );
 }
 
-function removeEmptyTable ( main ) {
+function removeEmptyTable( main ) {
 	main.querySelectorAll( 'table' ).forEach( ( each ) => {
 		if ( !each.querySelector( 'th' ) ) {
 			each.remove();
@@ -250,9 +265,9 @@ const createMetadataBlock = ( main, document, url ) => {
 	const path = pageUrl.pathname;
 	const pubDateEle = main.querySelector( '.field--name-field-publication-date' );
 	if ( path.startsWith( '/notices' ) || path.startsWith( '/notice-' ) || pubDateEle ) {
-		meta.tags = [ 'notice' ];
+		meta.tags = ['notice'];
 		const time = pubDateEle.querySelector( 'time' ).getAttribute( 'datetime' );
-		meta[ 'publication-date' ] = formatDate( new Date( time ) );
+		meta['publication-date'] = formatDate( new Date( time ) );
 	}
 
 	// helper to create the metadata block
@@ -266,8 +281,8 @@ const createMetadataBlock = ( main, document, url ) => {
 };
 
 const formatDate = ( date ) => {
-	return new Intl.DateTimeFormat( 'en-US', { month: 'long', day: 'numeric', year: 'numeric'} ).format( date ) +
-	' - ' + new Intl.DateTimeFormat( 'en-US', { hour: 'numeric', minute: '2-digit', hour12: true} ).format( date ).toLowerCase();
+	return new Intl.DateTimeFormat( 'en-US', { month: 'long', day: 'numeric', year: 'numeric' } ).format( date ) +
+		' - ' + new Intl.DateTimeFormat( 'en-US', { hour: 'numeric', minute: '2-digit', hour12: true } ).format( date ).toLowerCase();
 };
 
 export default {
@@ -275,28 +290,9 @@ export default {
 		document, url, params,
 	} ) => {
 		const main = document.body;
+		const results = [];
 
-		const parentH1 = document.querySelector( '.inside-container .container .inside-title h1' );
-		const heading = document.querySelector( '.region.region-title h1' );
-		if ( parentH1 && heading ) {
-			parentH1.replaceWith( heading );
-		}
-
-		const hero = document.querySelector( '.header-overlay' ).parentElement ;
-		if ( hero && heading ) {
-			const hr = document.createElement( 'hr' );
-			heading.after( hero );
-			hero.after( hr );
-		}
-
-		createHomeHeroHeader( main, document );
-		createSummaryBoxBlock( main, document );
-		createColumns( main, document );
-		createAccordion( main, document );
-		removeFileIcon( main, document );
-		removeFileSize( main, document );
-		handleIFrame( main );
-
+		//remove unneeded elements
 		WebImporter.DOMUtils.remove( main, [
 			'.skip-link',
 			'.navbar',
@@ -307,63 +303,116 @@ export default {
 			'.footer'
 		] );
 
-		createMetadataBlock( main, document, url );
-		WebImporter.rules.transformBackgroundImages( main, document );
-		WebImporter.rules.adjustImageUrls( main, url, params.originalURL );
-		WebImporter.rules.convertIcons( main, document );
+		const parentH1 = document.querySelector( '.inside-container .container .inside-title h1' );
+		const heading = document.querySelector( '.region.region-title h1' );
+		if ( parentH1 && heading ) {
+			parentH1.replaceWith( heading );
+		}
 
-		updateLinks( main, url );
-		updateImageLinks( main, url );
-		removeEmptyTable( main );
+		// check if this is the news-publications page, if so, need to break out and process each article individually
+		if ( new URL( url ).pathname.endsWith( 'news-publications/archive' ) ) {
+			const newsArticles = main.querySelectorAll( '.view-id-news_releases_interior_page .ui-accordion-content .views-row' );
+			// convert each article into its own page/result
+			newsArticles.forEach( ( articleEle ) => {
+				const h3 = articleEle.querySelector( 'h3' );
+				if ( h3 ) {
+					const title = h3.textContent;
+					const h1 = document.createElement( 'h1' );
+					h1.textContent = title;
+					h3.replaceWith( h1 );
 
-		const results = [];
-		const path = ( () => {
-			let p = new URL( url ).pathname;
-			if ( p.endsWith( '/' ) ) {
-				p = `${p}index`;
+					// find pdf links
+					const pdfResults = processPdfLinks( main, url );
+					results.push( ...pdfResults );
+
+					//cleanup
+					WebImporter.DOMUtils.remove( articleEle, [
+						'.file-icon',
+					] );
+
+					const meta = {};
+					meta.Title = title;
+					const pubDateEle = articleEle.querySelector( '.views-field-field-news-release-date' );
+					const time = pubDateEle.querySelector( 'time' ).getAttribute( 'datetime' );
+					const date = new Date( time );
+					meta['publication-date'] = formatDate( date );
+					meta.tags = ['news'];
+
+					// helper to create the metadata block
+					const block = WebImporter.Blocks.getMetadataBlock( document, meta );
+
+					// append the block to the main element
+					articleEle.append( block );
+
+					// create a URL-friendly path from the H3 content
+					const pageName = title.toLowerCase()
+						.replace( /[^a-z0-9]+/g, '-' )
+						.replace( /^-+|-+$/g, '' );
+
+					const path = `/about/news-publications/${date.getFullYear()}/${pageName}`;
+
+					results.push( {
+						element: articleEle,
+						path: WebImporter.FileUtils.sanitizePath( path ),
+					} );
+				}
+			} );
+		} else {
+
+			const hero = document.querySelector( '.header-overlay' )?.parentElement;
+			if ( hero && heading ) {
+				const hr = document.createElement( 'hr' );
+				heading.after( hero );
+				hero.after( hr );
 			}
 
-			if ( p.startsWith( '/notice-' ) ) {
-				p = '/notices'.concat( p );
-			} else if ( main.querySelector( '.field--name-field-publication-date' ) ) {
-				const pArr = p.split( '/' );
-				p = '/notices/'.concat( pArr[pArr.length - 1] );
-			}
-
-			return decodeURIComponent( p )
-				.toLowerCase(  )
-				.replace( /\.html$/, '' )
-				.replace( /[^a-z0-9/]/gm, '-' );
-		} )( url );
+			createHomeHeroHeader( main, document );
+			createSummaryBoxBlock( main, document );
+			createColumns( main, document );
+			createAccordion( main, document );
+			removeFileIcon( main, document );
+			removeFileSize( main, document );
+			handleIFrame( main );
 
 
+			createMetadataBlock( main, document, url );
+			WebImporter.rules.transformBackgroundImages( main, document );
+			WebImporter.rules.adjustImageUrls( main, url, params.originalURL );
+			WebImporter.rules.convertIcons( main, document );
 
-		// find pdf links
-		main.querySelectorAll( 'a' ).forEach( ( a ) => {
-			const href = a.getAttribute( 'href' );
-			if ( href && href.endsWith( '.pdf' ) && !href.startsWith( 'http://' ) && !href.startsWith( 'https://' ) ) {
-				const u = new URL( href, url );
-				const newPath = WebImporter.FileUtils.sanitizePath( u.pathname ).replace( '/sites/default/', '/' );
-				// no "element", the "from" property is provided instead - importer will download the "from" resource as "path"
-				results.push( {
-					path: newPath,
-					from: u.toString(),
-				} );
+			updateLinks( main, url );
+			updateImageLinks( main, url );
+			removeEmptyTable( main );
 
-				// update the link to new path on the target host
-				// this is required to be able to follow the links in Word
-				// you will need to replace "main--repo--owner" by your project setup
-				const newHref = new URL( newPath, 'https://main--ndbf-eds--ociostateofnebraska.aem.page' ).toString();
-				a.setAttribute( 'href', newHref );
-			}
-		} );
+			const path = ( () => {
+				let p = new URL( url ).pathname;
+				if ( p.endsWith( '/' ) ) {
+					p = `${p}index`;
+				}
 
-		updatePdfLinks( main, url );
-		// main page import - "element" is provided, i.e. a docx will be created
-		results.push( {
-			element: main,
-			path: path
-		} );
+				if ( p.startsWith( '/notice-' ) ) {
+					p = '/notices'.concat( p );
+				} else if ( main.querySelector( '.field--name-field-publication-date' ) ) {
+					const pArr = p.split( '/' );
+					p = '/notices/'.concat( pArr[pArr.length - 1] );
+				}
+
+				return decodeURIComponent( p )
+					.toLowerCase()
+					.replace( /\.html$/, '' )
+					.replace( /[^a-z0-9/]/gm, '-' );
+			} )( url );
+
+			// find pdf links
+			const pdfResults = processPdfLinks( main, url );
+			results.push( ...pdfResults );
+
+			// main page import - "element" is provided, i.e. a docx will be created
+			results.push( {
+				element: main,
+				path: path
+			} );
+		}
 
 		return results;
 	},
