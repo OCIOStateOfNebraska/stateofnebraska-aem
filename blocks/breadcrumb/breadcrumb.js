@@ -8,15 +8,17 @@ import {
 	span
 } from '../../scripts/dom-helpers.js';
 
-const getPageTitle = async ( url ) => {
+const getPageDetails = async ( url ) => {
 	const resp = await fetch( url );
 	if ( resp.ok ) {
 		const html = document.createElement( 'div' );
 		html.innerHTML = await resp.text();
-		return html.querySelector( 'title' ).innerText;
+		const name = html.querySelector( 'title' ).innerText;
+		const meta = html.querySelector( 'meta[name="hide-in-breadcrumbs"]' );
+		const hide = meta ? meta.content.toLowerCase() === 'true' : false;
+		return { name, hide };
 	}
-
-	return '';
+	return null;
 };
 
 const getAllPathsExceptCurrent = async ( paths ) => {
@@ -29,9 +31,9 @@ const getAllPathsExceptCurrent = async ( paths ) => {
 		const path = `${prevPath}/${pathPart}`;
 		const url = `${window.location.origin}${path}/`;
 		/* eslint-disable-next-line no-await-in-loop */
-		const name = await getPageTitle( url );
-		if ( name ) {
-			result.push( { path, name, url, position: i + 2 } );
+		const pageDetails = await getPageDetails( url );
+		if ( pageDetails && !pageDetails.hide ) {
+			result.push( { path, name: pageDetails.name, url, position: i + 2 } );
 		}
 	}
 	return result;
