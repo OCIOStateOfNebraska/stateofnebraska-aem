@@ -31,22 +31,22 @@ function buildCheckLicensePage(main, document) {
   const cardGridData = [
     ['info-card-grid'],
     [
-      '<img src="https://images.unsplash.com/photo-1.jpg" alt="Bank" />', '<a href="#">Bank</a>'
+      '<img src="https://images.unsplash.com/photo-1.jpg" alt="Bank" />', '<a href="#" class="card-link" target="_blank"><strong>Bank</strong></a>'
     ],
     [
-      '<img src="https://images.unsplash.com/photo-2.jpg" alt="Credit Union" />', '<a href="#">Credit Union</a>'
+      '<img src="https://images.unsplash.com/photo-2.jpg" alt="Credit Union" />', '<a href="#" class="card-link" target="_blank"><strong>Credit Union</strong></a>'
     ],
     [
-      '<img src="https://images.unsplash.com/photo-3.jpg" alt="Money Transmitters" />', '<a href="#">Money Transmitters</a>'
+      '<img src="https://images.unsplash.com/photo-3.jpg" alt="Money Transmitters" />', '<a href="#" class="card-link" target="_blank"><strong>Money Transmitters</strong></a>'
     ],
     [
-      '<img src="https://images.unsplash.com/photo-4.jpg" alt="Mortgage Services" />', '<a href="#">Mortgage Services</a>'
+      '<img src="https://images.unsplash.com/photo-4.jpg" alt="Mortgage Services" />', '<a href="#" class="card-link" target="_blank"><strong>Mortgage Services</strong></a>'
     ],
     [
-      '<img src="https://images.unsplash.com/photo-5.jpg" alt="Investment Advisors" />', '<a href="#">Investment Advisors</a>'
+      '<img src="https://images.unsplash.com/photo-5.jpg" alt="Investment Advisors" />', '<a href="#" class="card-link" target="_blank"><strong>Investment Advisors</strong></a>'
     ],
     [
-      '<img src="https://images.unsplash.com/photo-6.jpg" alt="Broker-Dealers" />', '<a href="#">Broker-Dealers</a>'
+      '<img src="https://images.unsplash.com/photo-6.jpg" alt="Broker-Dealers" />', '<a href="#" class="card-link" target="_blank"><strong>Broker-Dealers</strong></a>'
     ]
   ];
   main.append(WebImporter.DOMUtils.createTable(cardGridData, document));
@@ -219,15 +219,15 @@ function buildProtectYourMoneyPage(main, document) {
     ['info-card-grid'],
     [
       '<img src="https://images.unsplash.com/photo-1.jpg" alt="AI Fraud" />',
-      '<strong>Artificial Intelligence and Investment Fraud</strong><br />A scam artificial intelligence (AI) is everywhere. It\'s easy to access and use, which means scammers use it, too.<br /><p class="usa-button__wrap"><a href="#" class="usa-button" target="_blank">Read More</a></p>'
+      '<strong>Artificial Intelligence and Investment Fraud</strong><br />A scam artificial intelligence (AI) is everywhere. It\'s easy to access and use, which means scammers use it, too.<br /><p class="usa-button__wrap"><a href="#" class="usa-button usa-button--black" target="_blank">Read More</a></p>'
     ],
     [
       '<img src="https://images.unsplash.com/photo-2.jpg" alt="Complaint" />',
-      '<strong>How to Report a Scam or Suspicious Investment</strong><br />Feeling uncomfortable about an investment you\'ve been considering? Not sure if you should believe your friend or why they say the opportunity is too good to be missed?<br /><p class="usa-button__wrap"><a href="#" class="usa-button" target="_blank">Read More</a></p>'
+      '<strong>How to Report a Scam or Suspicious Investment</strong><br />Feeling uncomfortable about an investment you\'ve been considering? Not sure if you should believe your friend or why they say the opportunity is too good to be missed?<br /><p class="usa-button__wrap"><a href="#" class="usa-button usa-button--black" target="_blank">Read More</a></p>'
     ],
     [
       '<img src="https://images.unsplash.com/photo-3.jpg" alt="Financial Scams" />',
-      '<strong>Protect Yourself from Financial Scams</strong><br />Taking proactive steps to guard against financial fraud is a good way to prevent the stress that comes with losing money to scams.<br /><p class="usa-button__wrap"><a href="#" class="usa-button" target="_blank">Read More</a></p>'
+      '<strong>Protect Yourself from Financial Scams</strong><br />Taking proactive steps to guard against financial fraud is a good way to prevent the stress that comes with losing money to scams.<br /><p class="usa-button__wrap"><a href="#" class="usa-button usa-button--black" target="_blank">Read More</a></p>'
     ]
   ];
   main.append(WebImporter.DOMUtils.createTable(cardGridData, document));
