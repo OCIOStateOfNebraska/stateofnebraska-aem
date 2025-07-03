@@ -406,25 +406,137 @@ function buildAboutInitiativePage(main, document) {
   main.append(WebImporter.DOMUtils.createTable(metaData, document));
 }
 
+function buildMainPage(main, document) {
+  main.innerHTML = '';
+
+  // h1 heading
+  const h1 = document.createElement('h1');
+  h1.textContent = 'Make Cents Make Sense';
+  main.appendChild(h1);
+
+  // hero image
+  const heroImg = document.createElement('img');
+  heroImg.src = 'https://images.unsplash.com/photo-1606761568499-6c0c1b1b1b1b'; // placeholder
+  heroImg.alt = 'Coins and bills';
+  heroImg.setAttribute('style', 'max-width:100%;height:auto;');
+  main.appendChild(heroImg);
+
+  // About this Initiative button (yellow, prominent)
+  const aboutBtnDiv = document.createElement('div');
+  aboutBtnDiv.setAttribute('style', 'margin: 1.5em 0;');
+  const aboutBtn = document.createElement('a');
+  aboutBtn.href = '/about-this-initiative';
+  aboutBtn.className = 'usa-button usa-button--yellow';
+  aboutBtn.innerHTML = 'About this Initiative <span aria-hidden="true">&#8599;</span>';
+  aboutBtnDiv.appendChild(aboutBtn);
+  main.appendChild(aboutBtnDiv);
+
+  // section break
+  main.appendChild(document.createElement('hr'));
+
+  // columns block
+  const columnsData = [
+    ['columns'],
+    [
+      '<strong>Be a Smart Saver and Investor</strong><br /><span>Save and grow your money:</span><ul>' +
+        '<li>&#10003; Create a budget</li>' +
+        '<li>&#10003; Leverage the power of compound interest</li>' +
+        '<li>&#10003; Make an investment plan</li>' +
+        '<li>&#10003; Learn about investment products</li>' +
+      '</ul><p><a href="#" class="usa-button usa-button--primary" target="_blank">Get Started</a></p>',
+      '<strong>Be a Fraud Fighter</strong><br /><span>Protect your money and investments:</span><ul>' +
+        '<li>&#10003; Spot signs of frauds and scams</li>' +
+        '<li>&#10003; Understand how scams work</li>' +
+        '<li>&#10003; Know what questions to ask</li>' +
+        '<li>&#10003; What to do if you are a victim of a scam</li>' +
+      '</ul><p><a href="#" class="usa-button usa-button--primary" target="_blank">Protect Your Money</a></p>'
+    ]
+  ];
+  main.append(WebImporter.DOMUtils.createTable(columnsData, document));
+
+  // section break
+  main.appendChild(document.createElement('hr'));
+
+  // I want to: section with yellow underline
+  const iWantDiv = document.createElement('div');
+  const iWantTitle = document.createElement('h2');
+  iWantTitle.textContent = 'I want to:';
+  iWantDiv.appendChild(iWantTitle);
+  const iWantUnderline = document.createElement('hr');
+  iWantUnderline.setAttribute('style', 'width: 60px; height: 3px; background: #f7c948; border: none; margin: 0 0 24px 0;');
+  iWantDiv.appendChild(iWantUnderline);
+  main.appendChild(iWantDiv);
+
+  // icon-button-grid block
+  const iconButtonGridData = [
+    ['icon-button-grid'],
+    ['search', '<a href="/check-a-license">Check a License</a>'],
+    ['announcement', '<a href="/file-a-complaint">File a Complaint</a>'],
+    ['arrow_upward', '<a href="https://ndbf.nebraska.gov/">Visit the Main NDBF Site</a>']
+  ];
+  main.append(WebImporter.DOMUtils.createTable(iconButtonGridData, document));
+
+  // section break
+  main.appendChild(document.createElement('hr'));
+
+  // Recent News section with yellow underline
+  const newsDiv = document.createElement('div');
+  const newsTitle = document.createElement('h2');
+  newsTitle.textContent = 'Recent News';
+  newsDiv.appendChild(newsTitle);
+  const newsUnderline = document.createElement('hr');
+  newsUnderline.setAttribute('style', 'width: 60px; height: 3px; background: #f7c948; border: none; margin: 0 0 24px 0;');
+  newsDiv.appendChild(newsUnderline);
+  main.appendChild(newsDiv);
+
+  // search (dynamic-collection) block for news
+  const searchData = [
+    ['search (dynamic-collection)'],
+    ['https://main--stateofnebraska-aem--ocistateofnebraska.aem.live/search-index.json'],
+    ['show-search-box', 'no', 'Option to show the search box'],
+    ['show-pagination', 'no', 'Option to show Pagination'],
+    ['sort-key', 'lastModified', 'Option sort results by one of the following keys: - lastModified - publicationDate - relevance'],
+    ['filter-by', 'notice', 'option to pre-filter the results by a page tag set within the metadata of the displayed page']
+  ];
+  main.append(WebImporter.DOMUtils.createTable(searchData, document));
+
+  // return to top button
+  const returnDiv = document.createElement('div');
+  const returnBtn = document.createElement('a');
+  returnBtn.href = '#';
+  returnBtn.textContent = 'Return to top';
+  returnDiv.appendChild(returnBtn);
+  main.appendChild(returnDiv);
+
+  // section break
+  main.appendChild(document.createElement('hr'));
+
+  // metadata block
+  const metaData = [
+    ['metadata'],
+    ['template', 'homepage']
+  ];
+  main.append(WebImporter.DOMUtils.createTable(metaData, document));
+}
+
 export default {
   transform: ({ document }) => {
     const main1 = document.createElement('main');
     buildCheckLicensePage(main1, document);
-
     const main2 = document.createElement('main');
     buildFinfluencerPage(main2, document);
-
     const main3 = document.createElement('main');
     buildProtectYourMoneyPage(main3, document);
-
     const main4 = document.createElement('main');
     buildAboutInitiativePage(main4, document);
-
+    const main5 = document.createElement('main');
+    buildMainPage(main5, document);
     return [
       { element: main1, path: '/check-a-license' },
       { element: main2, path: '/finfluencer' },
       { element: main3, path: '/protect-your-money' },
-      { element: main4, path: '/about-this-initiative' }
+      { element: main4, path: '/about-this-initiative' },
+      { element: main5, path: '/' }
     ];
   }
 }
