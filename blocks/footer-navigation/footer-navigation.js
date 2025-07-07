@@ -1,5 +1,5 @@
-import {domEl} from '../../scripts/dom-helpers.js';
-import {removeEmptyChildren, checkIfRowExists, getIndividualIcon } from '../../scripts/utils.js';
+import { domEl } from '../../scripts/dom-helpers.js';
+import { removeEmptyChildren, checkIfRowExists, getIndividualIcon } from '../../scripts/utils.js';
 import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 
 /**
@@ -41,8 +41,8 @@ export default async function decorate( block ) {
 	 * Styles the back to top button
 	 */
 	function styleBackToTop() {
-		const container = domEl( 'div', { class: 'grid-container usa-footer__return-to-top'} );
-		const a = domEl( 'a', { class: 'usa-button usa-button--outline', 'href': '#'}, 'Return to top' );
+		const container = domEl( 'div', { class: 'grid-container usa-footer__return-to-top' } );
+		const a = domEl( 'a', { class: 'usa-button usa-button--outline', 'href': '#' }, 'Return to top' );
 		container.append( a );
 		getIndividualIcon( a, 'arrow_upward' );
 		block.prepend( container );
@@ -54,7 +54,7 @@ export default async function decorate( block ) {
 	 * @param {HTMLCollection} row - The sitemap section of the footer.
 	 */
 	function styleSitemap( row ) {
-		const container = domEl( 'nav', { class: 'usa-footer__nav', 'aria-label': 'Footer navigation'} );
+		const container = domEl( 'nav', { class: 'usa-footer__nav', 'aria-label': 'Footer navigation' } );
 		const sectionClass = 'usa-footer__primary-content usa-footer__primary-content--collapsible ';
 		const grid = domEl( 'div', { class: 'grid-row grid-gap' } );
 		Array.from( row ).forEach( child => {
@@ -142,7 +142,7 @@ export default async function decorate( block ) {
 	function styleSocial( socialColumn ) {
 		const socialLinks = socialColumn.querySelector( 'ul' );
 		const optionalButton = socialColumn.querySelector( '.usa-button' );
-		if ( optionalButton ){
+		if ( optionalButton ) {
 			optionalButton.classList.remove( 'usa-button' );
 		}
 
@@ -209,24 +209,26 @@ export default async function decorate( block ) {
 	 * @param {HTMLCollection} row - The footer links section of the footer.
 	 */
 	function styleIdentifierLinks( row ) {
-		const container = secondaryGridContainer;
-		const nav = domEl( 'nav', { class: 'usa-identifier grid-container', 'aria-label': 'Footer state sites navigation'} );
-		const grid = domEl( 'section', { class: 'usa-identifier__section usa-identifier__section--required-links' } );
-		Array.from( row ).forEach( child => {
-			while ( child.firstElementChild ) {
-				child.querySelectorAll( 'ul' ).forEach( el => {
-					el.classList.add( 'usa-list--unstyled', 'usa-list', 'usa-identifier__required-links-list' );
-				} );
+		if ( row ) {
+			const container = secondaryGridContainer;
+			const nav = domEl( 'nav', { class: 'usa-identifier grid-container', 'aria-label': 'Footer state sites navigation' } );
+			const grid = domEl( 'section', { class: 'usa-identifier__section usa-identifier__section--required-links' } );
+			Array.from( row ).forEach( child => {
+				while ( child.firstElementChild ) {
+					child.querySelectorAll( 'ul' ).forEach( el => {
+						el.classList.add( 'usa-list--unstyled', 'usa-list', 'usa-identifier__required-links-list' );
+					} );
 
-				child.querySelectorAll( 'li' ).forEach( el => {
-					el.classList.add( 'usa-identifier__required-links-item' );
-				} );
+					child.querySelectorAll( 'li' ).forEach( el => {
+						el.classList.add( 'usa-identifier__required-links-item' );
+					} );
 
-				grid.append( child.firstElementChild );
-			}
-		} );
-		nav.append( grid );
-		container.append( nav );
+					grid.append( child.firstElementChild );
+				}
+			} );
+			nav.append( grid );
+			container.append( nav );
+		}
 		block.removeChild( block.firstElementChild ); // remove the empty div the children used to be in
 	}
 
