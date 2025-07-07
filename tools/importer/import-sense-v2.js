@@ -31,6 +31,10 @@ function getFirstSentence( text ) {
 
 function createAccordion( main, document ) {
 	const accordionItems = main.querySelectorAll( '.field-content .row .accordion' );
+	if (accordionItems.length == 0) {
+		return;
+	}
+
 	const accordionContainer = accordionItems[0].closest( '.field-content' );
 
 	if ( accordionItems.length > 0 ) {
@@ -88,19 +92,21 @@ function convertCarouselToInfoCards( main, document ) {
 			];
 			carouselItems.forEach( ( slide ) => {
 				let row = [];
-				const slideImg = slide.querySelector( '.carousel-caption img' );
+				const slideImg = slide.querySelector( 'img' );
 				row.push( slideImg );
 				const h2 = document.createElement( 'h2' );
-				h2.innerText = slide.querySelector( '.card-header a' ).innerText;
+				h2.innerText = slide.querySelector( '.carousel-caption h3' ).innerText;
 				const contentDiv = document.createElement( 'div' );
 				contentDiv.append( h2 );
 				const cardContent = slide.querySelector( '.card-body-content' );
-				const cta = cardContent.querySelector( 'a' );
-				cta.innerText = 'Read More';
-				cardContent.remove( cta );
-				cardContent.innerText = getFirstSentence( cardContent.innerText );
-				contentDiv.append( cardContent );
-				contentDiv.append( cta );
+				if (cardContent) {
+					const cta = cardContent.querySelector( 'a' );
+					cta.innerText = 'Read More';
+					cardContent.remove( cta );
+					cardContent.innerText = getFirstSentence( cardContent.innerText );
+					contentDiv.append( cardContent );
+					contentDiv.append( cta );
+				}
 				row.push( contentDiv );
 				data.push( row );
 			} );
@@ -116,7 +122,7 @@ function updateLinks( main, url ) {
 		if ( href && !href.endsWith( '.pdf' ) && !href.startsWith( 'http://' ) && !href.startsWith( 'https://' ) ) {
 			const u = new URL( href, url );
 			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname );
-			const newHref = new URL( newPath, 'https://main--ndbf-eds--ociostateofnebraska.aem.page' ).toString();
+			const newHref = new URL( newPath, 'https://main--makecentsmakesense--ociostateofnebraska.aem.page' ).toString();
 			a.setAttribute( 'href', newHref );
 		}
 	} );
@@ -128,7 +134,7 @@ function updatePdfLinks( main, url ) {
 		if ( href && href.endsWith( '.pdf' ) && !href.startsWith( 'http://' ) && !href.startsWith( 'https://' ) ) {
 			const u = new URL( href, url );
 			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname );
-			const newHref = new URL( newPath, 'https://main--ndbf-eds--ociostateofnebraska.aem.page' ).toString();
+			const newHref = new URL( newPath, 'https://main--makecentsmakesense--ociostateofnebraska.aem.page' ).toString();
 			a.setAttribute( 'href', newHref );
 		}
 	} );
@@ -197,10 +203,27 @@ export default {
 		] );
 
 		const h1 = document.createElement( 'h1' );
+		let h2;
 		const hr = document.createElement( 'hr' );
 		h1.after( hr );
-		const currentHeading = document.querySelector( 'h2.block-title' );
-		h1.innerText = currentHeading?.innerText;
+		let currentHeading = document.querySelector( 'h2.block-title' );
+		if (!currentHeading) {
+			const headerSection = document.querySelector( '.view-header .file_header_text' );
+			if (headerSection) {
+				currentHeading = headerSection.firstElementChild;
+				h2 = document.createElement('h2');
+				const em = document.createElement('em');
+				const secondHeading = headerSection.children[1];
+				em.innerText = secondHeading.innerText;
+				h2.appendChild(em);
+				headerSection.removeChild(secondHeading);
+			}
+		}
+		h1.innerText = currentHeading.innerText;
+		if (h2) {
+			currentHeading.after(h2);
+		}
+		currentHeading.after( hr );
 		currentHeading.replaceWith( h1 );
 
 
