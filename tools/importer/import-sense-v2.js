@@ -42,7 +42,36 @@ function createAccordion( main, document ) {
 			const h2 = document.createElement( 'h2' );
 			h2.innerText = accordion.firstElementChild.innerText
 			row.push( h2 );
-			row.push( accordion.nextElementSibling.firstElementChild );
+
+			//process drawer contents into lists
+			const listItems = accordion.nextElementSibling.firstElementChild.querySelectorAll('p');
+			if (listItems && listItems.length > 0) {
+
+				const contents = document.createElement('div');
+
+				let ul = null;
+				listItems.forEach((pItem) => {
+					//check for headings (which would mean multiple lists needed)
+					if (pItem.firstElementChild.tagName === 'STRONG') {
+						ul = document.createElement('ul');
+						const h3 = document.createElement('h3');
+						h3.innerText = pItem.firstElementChild.innerText;
+						contents.append(h3);
+						contents.append(ul);
+					} else if (pItem.firstElementChild.tagName === 'A') {
+						const li = document.createElement('li');
+						li.append(pItem.firstElementChild);
+						if (ul == null) {
+							ul = document.createElement('ul');
+							contents.append(ul);
+						}
+						ul.append(li);
+					}
+				});
+
+				row.push( contents );
+			}
+
 			data.push( row );
 		} );
 		accordionContainer.replaceWith( WebImporter.DOMUtils.createTable( data, document ) );
