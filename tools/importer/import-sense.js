@@ -409,29 +409,22 @@ function buildAboutInitiativePage(main, document) {
 function buildMainPage(main, document) {
   main.innerHTML = '';
 
-  // h1 heading
-  const h1 = document.createElement('h1');
-  h1.textContent = 'Make Cents Make Sense';
-  main.appendChild(h1);
+  // Use hero-homepage block instead of hero to avoid conflicts
+  const heroBlock = [
+    ['hero-homepage'],
+    [
+      `<h1>Make Cents Make Sense</h1>
+       <p>
+         <a href="/about-this-initiative" class="usa-button usa-button--yellow" target="_blank">
+           About this Initiative <span aria-hidden="true">&#8599;</span>
+         </a>
+       </p>
+       <img src="https://images.unsplash.com/photo-1606761568499-6c0c1b1b1b1b" alt="Coins and bills" style="max-width:100%;height:auto;" />`
+    ]
+  ];
+  main.append(WebImporter.DOMUtils.createTable(heroBlock, document));
 
-  // hero image
-  const heroImg = document.createElement('img');
-  heroImg.src = 'https://images.unsplash.com/photo-1606761568499-6c0c1b1b1b1b'; // placeholder
-  heroImg.alt = 'Coins and bills';
-  heroImg.setAttribute('style', 'max-width:100%;height:auto;');
-  main.appendChild(heroImg);
-
-  // About this Initiative button (yellow, prominent)
-  const aboutBtnDiv = document.createElement('div');
-  aboutBtnDiv.setAttribute('style', 'margin: 1.5em 0;');
-  const aboutBtn = document.createElement('a');
-  aboutBtn.href = '/about-this-initiative';
-  aboutBtn.className = 'usa-button usa-button--yellow';
-  aboutBtn.innerHTML = 'About this Initiative <span aria-hidden="true">&#8599;</span>';
-  aboutBtnDiv.appendChild(aboutBtn);
-  main.appendChild(aboutBtnDiv);
-
-  // section break
+  // Only one section break after hero
   main.appendChild(document.createElement('hr'));
 
   // columns block
