@@ -329,7 +329,7 @@ function decorateGoogleMaps( element ) {
 		const url = new URL( link.href );
 
 		// Check if the link is an embed URL
-		if ( url.href.startsWith( 'https://www.google.com/maps/embed' ) ) {
+		if ( url.href.startsWith( 'https://www.google.com/maps/embed' ) || url.href.startsWith( 'https://www.google.com/maps/d/embed' ) ) {
 			createIframe( url.href, parent, titleText, link );
 		}
 		//If it isn't an embed URL, then it must be a google maps URL
