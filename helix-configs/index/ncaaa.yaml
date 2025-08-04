@@ -1,4 +1,4 @@
-version: 2
+version: 1
 indices:
   site:
     exclude:
@@ -37,6 +37,7 @@ indices:
       - footer
       - nav
       - alert
+      - test-pages/**
     target: /search-index.json
     properties:
       title:
