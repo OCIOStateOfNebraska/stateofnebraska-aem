@@ -34,15 +34,3 @@
 	
 	
 }
-
-.manual-collection.bigger {
-	$block: 'usa-collection';
-
-	@media (min-width: 40em) {
-		.#{$block} {
-			&__img {
-				width: 15rem;
-			}
-		}
-	}
-}
