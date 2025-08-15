@@ -60,13 +60,13 @@ export default {
 			'.navbar',
 			'.footer',
 			'aside',
-			"nav",
-			".header-bg",
-			"ol.breadcrumb",
-			"a.skip-link",
+			'nav',
+			'.header-bg',
+			'ol.breadcrumb',
+			'a.skip-link',
 		] );
 		createMetadataBlock( main, document );
-	//	WebImporter.rules.transformBackgroundImages( main, document );
+		//	WebImporter.rules.transformBackgroundImages( main, document );
 		WebImporter.rules.adjustImageUrls( main, url, params.originalURL );
 		WebImporter.rules.convertIcons( main, document );
 
