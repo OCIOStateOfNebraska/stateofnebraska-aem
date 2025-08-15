@@ -31,6 +31,20 @@
 			}
 		}
 	}
-	
+	&.bigger {
+		
+		.#{$block} {
+			&__img {
+					width: 8rem;
+				}
+
+			@media (min-width: 40em) {
+				&__img {
+					width: 15rem;
+				}
+			}
+		}
+	}
 	
 }
+
