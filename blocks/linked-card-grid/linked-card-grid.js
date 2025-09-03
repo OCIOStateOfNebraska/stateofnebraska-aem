@@ -11,9 +11,15 @@ function generateContent( div, container ) {
 	wrap.className = 'usa-button__wrap';
 	const a = div.querySelector( 'a' ) ? div.querySelector( 'a' ) : null;
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
+	const img = container.querySelector( 'picture' );	
 	let header = '';
 	div.className = 'usa-card__body';
+
 	
+
+	if ( img ){
+		img.className = 'usa-card__img';
+	}
 	// take out the heading and put into its own container
 	if ( heading ) {
 		heading.classList.add( 'usa-card__heading' );
@@ -27,7 +33,8 @@ function generateContent( div, container ) {
 			heading.append( a );
 			getIndividualIcon( wrap, 'arrow_forward' );
 		} 
-	} else {
+	}
+	else {
 		if ( wrap ) {
 			wrap.remove();
 			// eslint-disable-next-line no-console
