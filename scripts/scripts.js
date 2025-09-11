@@ -441,6 +441,18 @@ export function decorateMain( main ) {
 
 }
 
+function sactionLayoutChange( element ){
+	const sections = element.querySelectorAll( '[data-layout]' );
+	for ( const item of sections ) {
+		const values = item.dataset.layout.split( '/' );
+		const sum = parseInt( values[0] ) + parseInt( values[1] );
+		if( sum <= 100 && parseInt( values[0] ) >= 10 && parseInt( values[1] ) >= 10 ){
+			item.classList.add( 'grid' );
+			item.style.setProperty( '--grid-columns', `${values[0]-1}% ${values[1]-1}%` );
+		}
+	}
+}
+
 export function decorateInner( container ) {
 	decorateH2s( container );
 	decorateImgs( container );
@@ -450,6 +462,7 @@ export function decorateInner( container ) {
 	decorateIcons( container );
 	decorateIconList( container );
 	decorateSections( container );
+	sactionLayoutChange( container );
 	decorateBlocks( container );
 	decorateUnstyledLinks( container );
 	decorateExternalLinks( container );
