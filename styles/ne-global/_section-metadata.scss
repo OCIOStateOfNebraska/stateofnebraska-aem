@@ -3,7 +3,7 @@
 		display: grid;
 		grid-template-columns: 1fr;
 		
-		@media (width >= 64em) {
+		@include at-media('widescreen') {
 			grid-template-columns: var(--grid-columns, 1fr 1fr);
 			gap: var(--grid-gap, 0 2%);
 		}
