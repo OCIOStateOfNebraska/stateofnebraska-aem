@@ -142,13 +142,13 @@ main {
 
 				&:before {
 					display: none;
+				}	
+						
+				h2 {
+					margin-top: 1.5em;
+					color: color('ink');
 				}
-			}
-			
-			h2 {
-				margin-top: 1.5em;
-				color: color('ink');
-			}
+			}			
 		}
 	}
 }
