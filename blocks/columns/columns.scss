@@ -15,10 +15,22 @@
 		}
 
 	}
-	
+
 	@include at-media('desktop') {
 		&__grid-row {
-			row-gap: units($theme-site-margins-width)
+			row-gap: units($theme-site-margins-width);
+
+		}
+
+		&__grid-col {
+
+			&:nth-of-type(odd) {
+				flex: 1 1 var(--flex-basis-odd, auto);
+			}
+
+			&:nth-of-type(even) {
+				flex: 1 1 var(--flex-basis-even, auto);
+			}
 		}
 	}
 }
