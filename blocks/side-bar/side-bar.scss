@@ -1,0 +1,29 @@
+@use '../accordion/accordion';
+@use '../alert/alert';
+@use '../backdrop-grid/backdrop-grid';
+@use '../columns/columns';
+@use '../embed/embed';
+@use '../figure/figure';
+@use '../form/form';
+@use '../icon-button-grid/icon-button-grid';
+@use '../info-card-grid/info-card-grid';
+@use '../intro/intro';
+@use '../linked-card-grid/linked-card-grid';
+@use '../side-navigation/side-navigation';
+@use '../summary-box/summary-box';
+@use '../table/table';
+@use '../../styles/ne-global-imports' as *;
+
+
+.side-bar-wrapper{
+	border-right: 1px solid #dfe1e2;
+
+        // .usa-card-group{
+        //     .grid-row{
+        //         flex-direction: column !important;                
+        //     }
+        //     *{
+        //         width: 100% !important;
+        //     }
+        // }
+}
