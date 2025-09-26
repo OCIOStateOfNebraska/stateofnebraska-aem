@@ -1,7 +1,38 @@
 import { blocks } from './blocks-import.js'
+import {decorateButtons} from '../../scripts/aem.js'
+
+function decorateIcons( element, prefix = '' ) {
+    const icons = [...element.querySelectorAll( 'span.icon' )];
+    icons.forEach( ( span ) => {
+        decorateIcon( span, prefix );
+    } );
+}
+
+function decorateIcon( span, prefix = '', alt = '' ) {
+
+	const iconName = Array.from( span.classList )
+		.find( ( c ) => c.startsWith( 'icon-' ) )
+		.substring( 5 );
+	const img = document.createElement( 'img' );
+	img.dataset.iconName = iconName;
+	img.src = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
+	img.alt = alt;
+	img.loading = 'lazy';
+	span.append( img );
+}
 
 function decorateBlock(block){ 
     const children = block.querySelectorAll('.side-bar >div >div')
+    
+    decorateIcons(block)
+
+    decorateButtons(block);
+    const buttons = block.querySelectorAll('.button')
+
+    buttons.forEach(button =>{
+        button.classList.replace('button','usa-button')
+    })
+
     
     children.forEach(element => {        
         let className = element.classList[0]
@@ -15,6 +46,7 @@ function decorateBlock(block){
                 className += arr[i] 
             }
         }
+
         blocks[className](element);
         
         const arr = element.childNodes;
@@ -38,9 +70,10 @@ function decorateBlock(block){
 
 export async function loadSideBar(block) {
     const resp = await fetch(`/side-bar.plain.html`);
-
+    
     if (resp.ok) {
         block.innerHTML = await resp.text();    
+        console.log(block)
 
         decorateBlock(block);      
         
@@ -52,5 +85,5 @@ export async function loadSideBar(block) {
 export default async function decorate(block) {
     await loadSideBar(block);
 
-    }
+}
     

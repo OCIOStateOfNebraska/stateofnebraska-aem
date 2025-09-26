@@ -13,17 +13,9 @@
 @use '../summary-box/summary-box';
 @use '../table/table';
 @use '../../styles/ne-global-imports' as *;
+@use '../../styles/ne-global/usa-button' ;
 
 
 .side-bar-wrapper{
 	border-right: 1px solid #dfe1e2;
-
-        // .usa-card-group{
-        //     .grid-row{
-        //         flex-direction: column !important;                
-        //     }
-        //     *{
-        //         width: 100% !important;
-        //     }
-        // }
 }
