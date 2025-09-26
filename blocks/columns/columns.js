@@ -19,6 +19,7 @@ export default function decorate( block ) {
 	// Collect and flatten all authored columns
 	const cols = [];
 	[...block.children].forEach( ( row ) => {
+		const rowLength = row.children.length;
 		[...row.children].forEach( ( col ) => {
 			cols.push( col );
 		} );
