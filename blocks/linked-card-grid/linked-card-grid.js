@@ -9,7 +9,7 @@ import { getIndividualIcon } from '../../scripts/utils.js';
 function generateContent( div, container ) {
 	const wrap = div.querySelector( 'p:has(a)' ); //
 	wrap.className = 'usa-button__wrap';
-	const a = div.querySelector( 'a' ) ? div.querySelector( 'a' ) : null;
+	const a = wrap.querySelector( 'a' ) ? wrap.querySelector( 'a' ) : null;
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
 	const img = container.querySelector( 'picture' );	
 	let header = '';
