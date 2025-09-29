@@ -4,6 +4,7 @@ import {
 	loadFooter,
 	readBlockConfig,
 	toCamelCase,
+	toClassName,
 	decorateBlocks,
 	decorateBlock,
 	decorateTemplateAndTheme,
@@ -470,8 +471,8 @@ function decorateSections( main ) {
 					const sum = parseInt( layout[0] ) + parseInt( layout[1] );
 
 					if( sum == 100 && parseInt( layout[0] ) >= 10 && parseInt( layout[1] ) >= 10 ){
-						section.classList.add('section-grid')
-						section.style.setProperty( '--grid-columns', `${layout[0]-1}% ${layout[1]-1}%` )
+						section.classList.add( 'section-grid' );
+						section.style.setProperty( '--grid-columns', `${layout[0]-1}% ${layout[1]-1}%` );
 					}
 				}
 				if ( key === 'style' ) {
