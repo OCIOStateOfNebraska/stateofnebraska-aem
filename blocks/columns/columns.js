@@ -1,17 +1,34 @@
 import { domEl } from '../../scripts/dom-helpers.js';
 
-
 export default function decorate( block ) {
-	// append to one main Row just in case they author the wrong number of columns. This way we don't have any gaps 
-	const mainRow = domEl( 'div', {class: 'columns__grid-row grid-row grid-gap'} );
+	// One main row to avoid gaps if authors add uneven rows
+	const mainRow = domEl( 'div', { class: 'columns__grid-row grid-row grid-gap' } );
 
+	// Collect and flatten all authored columns
+	const cols = [];
 	[...block.children].forEach( ( row ) => {
-		[...row.children].forEach( ( col ) => {
-			col.classList.add( 'columns__grid-col', 'grid-col-12', 'desktop:grid-col-6' );
-			mainRow.append( col );
-		} );
+		[...row.children].forEach( ( col ) => cols.push( col ) );
 	} );
-	
+
+	const count = cols.length;
+
+	// Map count -> desktop width class (USWDS 12-col grid)
+	// Use 'auto' when 12 % count !== 0 (e.g., 5 columns)
+	const desktopWidthClass = ( () => {
+		if ( count <= 0 ) return 'desktop:grid-col-12';
+		const size = 12 / count;
+		const valid = Number.isInteger( size ) && size >= 1 && size <= 12;
+		return valid ? `desktop:grid-col-${size}` : 'desktop:grid-col-auto';
+	} )();
+
+	// Optional: add a modifier to the block for styling hooks like .columns--3
+	block.classList.add( `columns--${count}` );
+
+	cols.forEach( ( col ) => {
+		col.classList.add( 'columns__grid-col', 'grid-col-12', desktopWidthClass );
+		mainRow.append( col );
+	} );
+
 	block.innerText = '';
 	block.append( mainRow );
 }
