@@ -41,6 +41,7 @@
 	.blue { // overriding default card styles to create a the blue card
 		.#{$block} {
 			&__container {
+				background-color: color(primary-dark);
 				color: color('white');
 			}
 
@@ -55,10 +56,6 @@
 			.usa-icon {
 				width: units(8);
 				height: units(8);
-			}
-			
-			&__container {
-				background-color: color(primary-dark)
 			}
 		}
 	}
