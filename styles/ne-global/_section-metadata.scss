@@ -1,7 +1,7 @@
 @use '../../styles/ne-global-imports' as *;
 
 .section {
-	&.grid{
+	&.section-grid{
 		display: grid;
 		grid-template-columns: 1fr;
 		

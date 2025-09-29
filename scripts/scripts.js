@@ -2,7 +2,8 @@ import {
 	buildBlock,
 	loadHeader,
 	loadFooter,
-	decorateSections,
+	readBlockConfig,
+	toCamelCase,
 	decorateBlocks,
 	decorateBlock,
 	decorateTemplateAndTheme,
@@ -441,16 +442,51 @@ export function decorateMain( main ) {
 
 }
 
-function sactionLayoutChange( element ){
-	const sections = element.querySelectorAll( '[data-layout]' );
-	for ( const item of sections ) {
-		const values = item.dataset.layout.split( '/' );
-		const sum = parseInt( values[0] ) + parseInt( values[1] );
-		if( sum <= 100 && parseInt( values[0] ) >= 10 && parseInt( values[1] ) >= 10 ){
-			item.classList.add( 'grid' );
-			item.style.setProperty( '--grid-columns', `${values[0]-1}% ${values[1]-1}%` );
+function decorateSections( main ) {
+	main.querySelectorAll( ':scope > div' ).forEach( ( section ) => {
+		const wrappers = [];
+		let defaultContent = false;
+		[...section.children].forEach( ( e ) => {
+			if ( e.tagName === 'DIV' || !defaultContent ) {
+				const wrapper = document.createElement( 'div' );
+				wrappers.push( wrapper );
+				defaultContent = e.tagName !== 'DIV';
+				if ( defaultContent ) wrapper.classList.add( 'default-content-wrapper' );
+			}
+			wrappers[wrappers.length - 1].append( e );
+		} );
+		wrappers.forEach( ( wrapper ) => section.append( wrapper ) );
+		section.classList.add( 'section' );
+		section.dataset.sectionStatus = 'initialized';
+		section.style.display = 'none';
+
+		// Process section metadata
+		const sectionMeta = section.querySelector( 'div.section-metadata' );
+		if ( sectionMeta ) {
+			const meta = readBlockConfig( sectionMeta );
+			Object.keys( meta ).forEach( ( key ) => {
+				if( key == 'layout' ){
+					const layout = meta[key].split( '/' );
+					const sum = parseInt( layout[0] ) + parseInt( layout[1] );
+
+					if( sum == 100 && parseInt( layout[0] ) >= 10 && parseInt( layout[1] ) >= 10 ){
+						section.classList.add('section-grid')
+						section.style.setProperty( '--grid-columns', `${layout[0]-1}% ${layout[1]-1}%` )
+					}
+				}
+				if ( key === 'style' ) {
+					const styles = meta.style
+						.split( ',' )
+						.filter( ( style ) => style )
+						.map( ( style ) => toClassName( style.trim() ) );
+					styles.forEach( ( style ) => section.classList.add( style ) );
+				} else {
+					section.dataset[toCamelCase( key )] = meta[key];
+				}
+			} );
+			sectionMeta.parentNode.remove();
 		}
-	}
+	} );
 }
 
 export function decorateInner( container ) {
@@ -462,7 +498,6 @@ export function decorateInner( container ) {
 	decorateIcons( container );
 	decorateIconList( container );
 	decorateSections( container );
-	sactionLayoutChange( container );
 	decorateBlocks( container );
 	decorateUnstyledLinks( container );
 	decorateExternalLinks( container );
