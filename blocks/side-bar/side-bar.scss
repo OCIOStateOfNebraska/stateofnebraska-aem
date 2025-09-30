@@ -42,7 +42,6 @@
 
 	.usa-list{
 		&:has(a){
-			justify-content: center;
 			color: $theme-color-primary-lighter;
 
 			.usa-icon-list__item{
