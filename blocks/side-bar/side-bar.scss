@@ -18,4 +18,59 @@
 
 .side-bar-wrapper{
 	border-right: 1px solid #dfe1e2;
+
+	.backdrop-card-group{ 
+		grid-template-columns: 1fr;
+			
+		@media (min-width: 40em) {
+			grid-template-columns: 1fr;
+
+			.backdrop-grid {
+				.backdrop-card{
+					&:first-child{
+						grid-area: 1;
+					}
+				}
+			}
+		}
+
+	}
+
+	.usa-collection__item{
+		flex-direction: column;
+	}
+
+	.usa-list{
+		&:has(a){
+			justify-content: center;
+			color: $theme-color-primary-lighter;
+
+			.usa-icon-list__item{
+				align-items: center;
+				justify-content: center;
+				min-width: 3rem;
+				min-height: 3rem;
+				margin-right: .5rem;
+				margin-bottom: .5rem;
+				padding: 0 .7rem;
+				border-radius: .6rem;
+				background-color: $theme-color-primary;
+			
+				svg{
+					width: 2rem;
+					height: 2rem;
+					margin-top: .3rem;
+					fill: $theme-color-primary-lighter;
+				}
+
+				a{
+					display: flex;
+					align-items: center;
+					color: $theme-color-primary-lighter;
+					text-decoration: none;
+				}
+			}
+		}
+	}
 }
+
