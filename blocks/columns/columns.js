@@ -17,21 +17,24 @@ export default function decorate( block ) {
 	}
 
 	// Collect and flatten all authored columns
-	const cols = [];
+	let count= 0;
 	[...block.children].forEach( ( row ) => {
-		const rowLength = row.children.length;
+		count = [...row.children].length;	
+		const cols = [];
 		[...row.children].forEach( ( col ) => {
 			cols.push( col );
 		} );
 		
-		const count = cols.length;
+		
+		// count= 4;
 		
 		// Map count -> desktop width class (USWDS 12-col grid)
 		// Use 'auto' when 12 % count !== 0 (e.g., 5 columns)
 		const desktopWidthClass = ( () => {
 			if ( count <= 0 ) return 'desktop:grid-col-12';
-			const size = 12 / count;
-			const valid = Number.isInteger( size ) && size >= 1 && size <= 12;
+			let size = 12 / count;
+			const valid = (Number.isInteger( size ) || Number.isInteger( Math.floor(size) )) && size >= 1 && size <= 12;
+			if(!Number.isInteger( size )) size = Math.floor(size);
 			return valid ? `desktop:grid-col-${size}` : 'desktop:grid-col-auto';
 		} )();
 		
@@ -44,10 +47,14 @@ export default function decorate( block ) {
 				'grid-col-12',
 				desktopWidthClass
 			);
-			mainRow.append( col );
+			
 		} );
+
+		row.classList.add('columns__grid-row','grid-row', 'grid-gap');
+		mainRow.append(row)
+
 		calculateColSize( colSize, cols );
-	} );
+	}) ;
 	
 	block.innerText = '';
 	block.append( mainRow );
@@ -59,9 +66,11 @@ function calculateColSize ( colSize, cols ){
 	colSize.forEach( value =>{
 		sum += parseInt( value );
 	} );
+	console.log(sum)
 	if ( sum == 100 && colSize.length == cols.length ){
 		for( let i = 0; i < colSize.length; i++ ){
 			cols[i].style.setProperty( '--flex-basis', colSize[i] + '%' );
+			cols[i].style.width = colSize[i] + '%' ;
 		}
 	}
 }
