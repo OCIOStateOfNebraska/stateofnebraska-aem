@@ -70,7 +70,6 @@ function calculateColSize ( colSize, cols ){
 	if ( sum == 100 && colSize.length == cols.length ){
 		for( let i = 0; i < colSize.length; i++ ){
 			cols[i].style.setProperty( '--flex-basis', colSize[i] + '%' );
-			cols[i].style.width = colSize[i] + '%' ;
 		}
 	}
 }
