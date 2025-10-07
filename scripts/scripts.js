@@ -466,22 +466,29 @@ function decorateSections( main ) {
 		if ( sectionMeta ) {
 			const meta = readBlockConfig( sectionMeta );
 			Object.keys( meta ).forEach( ( key ) => {
-				if( key == 'layout' ){
-					const layout = meta[key].split( '/' );
-					const sum = parseInt( layout[0] ) + parseInt( layout[1] );
-
-					if( sum == 100 && parseInt( layout[0] ) >= 10 && parseInt( layout[1] ) >= 10 ){
-						section.classList.add( 'section-grid' );
-						section.style.setProperty( '--grid-columns', `${layout[0]-1}% ${layout[1]-1}%` );
-					}
-				}
 				if ( key === 'style' ) {
 					const styles = meta.style
-						.split( ',' )
-						.filter( ( style ) => style )
-						.map( ( style ) => toClassName( style.trim() ) );
+					.split( ',' )
+					.filter( ( style ) => style )
+					.map( ( style ) => toClassName( style.trim() ) );
 					styles.forEach( ( style ) => section.classList.add( style ) );
-				} else {
+				} else if( key == 'layout' ){
+						const [col1, col2] = meta[key].split( '/' ).map( Number );
+						const isValidLayout = col1 > 0 && col2 > 0 && col1 + col2 === 12;
+
+						if( isValidLayout ){
+							section.classList.add( 'grid-row', 'grid-gap' );
+
+							const divs = Array.from( section.children ).filter (
+    						el => !el.querySelector( '.section-metadata' )
+  							);
+
+							divs.forEach( ( div, i ) => {
+    						const colSize = i % 2 === 0 ? col1 : col2;
+    						div.classList.add( `desktop:grid-col-${colSize}` );		
+  							} );
+						}
+					} else {
 					section.dataset[toCamelCase( key )] = meta[key];
 				}
 			} );
