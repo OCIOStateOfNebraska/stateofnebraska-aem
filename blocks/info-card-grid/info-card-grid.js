@@ -92,18 +92,18 @@ export default function decorate( block ) {
 	};
 	let grid = gridMap[count] || 'grid-col-12 tablet:grid-col-6 desktop:grid-col-4 widescreen:grid-col-3';
 	
-	const parent = block.parentElement
+	const parent = block.parentElement;
 	const layout = parent?.parentElement?.dataset?.layout;
 	
-	if(layout){
+	if( layout ){
 		
-		const colClass = [...parent.classList].find(c => c.startsWith('desktop:grid-col-'));
+		const colClass = [...parent.classList].find( c => c.startsWith( 'desktop:grid-col-' ) );
 		
-		if (colClass) {
-			const value = parseInt(colClass.replace('desktop:grid-col-', ''), 10);
-    		grid = value > 6
-			? 'grid-col-12 tablet:grid-col-6 desktop:grid-col-6'
-			: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-12';
+		if ( colClass ) {
+			const value = parseInt( colClass.replace( 'desktop:grid-col-', '' ), 10 );
+			grid = value > 6
+				? 'grid-col-12 tablet:grid-col-6 desktop:grid-col-6'
+				: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-12';
 		}
 	}
 	

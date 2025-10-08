@@ -45,19 +45,19 @@ export default function decorate( block ) {
 	let grid = 'grid-col-12 tablet:grid-col-6 desktop:grid-col-4';
 	const ul = domEl( 'ul', { class: 'icon-button-card-group grid-row grid-gap-4' } );
 
-	const parent = block.parentElement
+	const parent = block.parentElement;
 	const layout = parent?.parentElement?.dataset?.layout;
 
-	if(layout){
+	if( layout ){
 
 		parent.style.marginBottom = '7.5rem';
-		const colClass = [...parent.classList].find(c => c.startsWith('desktop:grid-col-'));
+		const colClass = [...parent.classList].find( c => c.startsWith( 'desktop:grid-col-' ) );
 
-		if (colClass) {
-    		const value = parseInt(colClass.replace('desktop:grid-col-', ''), 10);
-    		grid = value > 6
-      		? 'grid-col-12 tablet:grid-col-6 desktop:grid-col-6'
-      		: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-12';
+		if ( colClass ) {
+			const value = parseInt( colClass.replace( 'desktop:grid-col-', '' ), 10 );
+			grid = value > 6
+				? 'grid-col-12 tablet:grid-col-6 desktop:grid-col-6'
+				: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-12';
 		}
 	}
 

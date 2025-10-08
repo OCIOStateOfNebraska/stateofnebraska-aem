@@ -83,35 +83,25 @@ function generateWholeCard( container ) {
 export default function decorate( block ) {
 	const ul = domEl( 'ul', { class: 'backdrop-card-group usa-list--unstyled' } );
 
-const parent = block.parentElement;
-const layout = parent?.parentElement?.dataset?.layout;
+	const parent = block.parentElement;
+	const layout = parent?.parentElement?.dataset?.layout;
 
-if (layout) {
-	const values = layout.split('/');
-  const colClass = [...parent.classList].find(c => c.startsWith('desktop:grid-col-'));
+	if ( layout ) {
+		const values = layout.split( '/' );
+		const colClass = [...parent.classList].find( c => c.startsWith( 'desktop:grid-col-' ) );
   
-  if (colClass) {
-    const value = parseInt(colClass.replace('desktop:grid-col-', ''), 10);
-    const newGrid =
-      value > 6
-        ? `grid-col-12 tablet:grid-col-12 desktop:grid-col-${Math.max(Number(values[0]), Number(values[1]))}`
-        : 'grid-col-12 tablet:grid-col-12 desktop:grid-col-12';
+		if ( colClass ) {
+			const value = parseInt( colClass.replace( 'desktop:grid-col-', '' ), 10 );
+			const newGrid =
+				value > 6
+					? `grid-col-12 tablet:grid-col-12 desktop:grid-col-${Math.max( Number( values[0] ), Number( values[1] ) )}`
+					: 'grid-col-12 tablet:grid-col-12 desktop:grid-col-12';
 
-    // Remove the old desktop grid class and add the new set
-    parent.classList.remove(colClass);
-    newGrid.split(' ').forEach(c => parent.classList.add(c));
-  }
-}
+			parent.classList.remove( colClass );
+			newGrid.split( ' ' ).forEach( c => parent.classList.add( c ) );
+		}
+	}
 	
-		
-		// if (colClass) {
-		// 	const value = parseInt(colClass.replace('desktop:grid-col-', ''), 10);
-    	// 	grid = value > 6
-      	// 	? 'grid-col-12 tablet:grid-col-6 desktop:grid-col-6'
-      	// 	: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-12';
-		// }
-
-
 	[...block.children].forEach( ( row ) => {
 		const li = domEl( 'li', { class: 'backdrop-card' } );
 		const cardContainer = domEl( 'div', { class: 'backdrop-card__container' } );
