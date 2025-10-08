@@ -93,7 +93,7 @@ export default function decorate( block ) {
 		if ( colClass ) {
 			const value = parseInt( colClass.replace( 'desktop:grid-col-', '' ), 10 );
 			const newGrid =
-				value > 6
+				value > 5
 					? `grid-col-12 tablet:grid-col-12 desktop:grid-col-${Math.max( Number( values[0] ), Number( values[1] ) )}`
 					: 'grid-col-12 tablet:grid-col-12 desktop:grid-col-12';
 

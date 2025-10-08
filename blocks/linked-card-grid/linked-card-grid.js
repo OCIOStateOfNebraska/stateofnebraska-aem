@@ -69,7 +69,7 @@ export default function decorate( block ) {
 
 		if ( colClass ) {
 			const value = parseInt( colClass.replace( 'desktop:grid-col-', '' ), 10 );
-			grid = value > 6
+			grid = value > 5
 				? 'grid-col-12 tablet:grid-col-6 desktop:grid-col-6'
 				: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-12';
 		}
