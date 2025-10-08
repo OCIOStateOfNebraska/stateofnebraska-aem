@@ -468,27 +468,28 @@ function decorateSections( main ) {
 			Object.keys( meta ).forEach( ( key ) => {
 				if ( key === 'style' ) {
 					const styles = meta.style
-					.split( ',' )
-					.filter( ( style ) => style )
-					.map( ( style ) => toClassName( style.trim() ) );
+						.split( ',' )
+						.filter( ( style ) => style )
+						.map( ( style ) => toClassName( style.trim() ) );
 					styles.forEach( ( style ) => section.classList.add( style ) );
 				} else if( key == 'layout' ){
-						const [col1, col2] = meta[key].split( '/' ).map( Number );
-						const isValidLayout = col1 > 0 && col2 > 0 && col1 + col2 === 12;
+					const [col1, col2] = meta[key].split( '/' ).map( Number );
+					const isValidLayout = col1 > 0 && col2 > 0 && col1 + col2 === 12;
 
-						if( isValidLayout ){
-							section.classList.add( 'grid-row', 'grid-gap' );
+					if( isValidLayout ){
+						section.classList.add( 'grid-row', 'grid-gap' );
 
-							const divs = Array.from( section.children ).filter (
-    						el => !el.querySelector( '.section-metadata' )
-  							);
+						const divs = Array.from( section.children ).filter (
+							el => !el.querySelector( '.section-metadata' )
+						);
 
-							divs.forEach( ( div, i ) => {
-    						const colSize = i % 2 === 0 ? col1 : col2;
-    						div.classList.add( `desktop:grid-col-${colSize}` );		
-  							} );
-						}
-					} else {
+						divs.forEach( async ( div, i ) => {
+							const colSize = i % 2 === 0 ? col1 : col2;
+							div.classList.add( `desktop:grid-col-${colSize}` );		
+						} );
+						
+					}
+				} else {
 					section.dataset[toCamelCase( key )] = meta[key];
 				}
 			} );
