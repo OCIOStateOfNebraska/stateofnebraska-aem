@@ -477,6 +477,7 @@ function decorateSections( main ) {
 					const isValidLayout = col1 > 0 && col2 > 0 && col1 + col2 === 12;
 
 					if( isValidLayout ){
+						section.dataset.layout = col1 + '/' + col2;
 						section.classList.add( 'grid-row', 'grid-gap' );
 
 						const divs = Array.from( section.children ).filter (
