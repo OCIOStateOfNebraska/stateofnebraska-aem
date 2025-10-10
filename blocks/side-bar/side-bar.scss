@@ -22,7 +22,7 @@
 	.backdrop-card-group{ 
 		grid-template-columns: 1fr;
 			
-		@media (min-width: 40em) {
+		@include at-media('desktop') {
 			grid-template-columns: 1fr;
 
 			.backdrop-grid {

@@ -111,13 +111,13 @@ function renderTags( result, titleTag, searchTerms, collectionBody ) {
  * @param {string} externalURL - whether or not the rendered results should go to a different url
  * @returns {HTMLElement} - The rendered search result list item
  */
-export default function renderResult( result, searchTerms, titleTag, filter, dynamicCollection, sort, externalURL , showDescription) {
+export default function renderResult( result, searchTerms, titleTag, filter, dynamicCollection, sort, externalURL , showDescription ) {
 	const resultItem = li( { class: 'usa-collection__item' } );
 	const collectionBody = div( { class: 'usa-collection__body' } );
 	
 	if ( dynamicCollection ) {
 		renderTitle( result, titleTag, searchTerms, collectionBody, externalURL );
-		if(showDescription) renderDescription( result, titleTag, searchTerms, collectionBody, externalURL );
+		if( showDescription ) renderDescription( result, titleTag, searchTerms, collectionBody, externalURL );
 		renderDate( result, titleTag, searchTerms, collectionBody, filter, sort );
 	} else {
 		renderTitle( result, titleTag, searchTerms, collectionBody, externalURL );

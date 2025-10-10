@@ -147,7 +147,7 @@ class SearchBlock {
 			this.showPagination = settingVal;
 		}
 
-		if ( key === SEARCH_SETTINGS_DESCRIPTION) {
+		if ( key === SEARCH_SETTINGS_DESCRIPTION ) {
 			this.showDescription = settingVal;
 		}
 
@@ -159,7 +159,7 @@ class SearchBlock {
 			this.filter = setting;
 		}
 
-		if ( key === SEARCH_SETTINGS_COUNT && settingVal && setting <= this.limit) {
+		if ( key === SEARCH_SETTINGS_COUNT && settingVal && setting <= this.limit ) {
 			this.count = setting;
 		}
 	}

@@ -1,8 +1,7 @@
 import {
 	div,
-	i
 } from '../../scripts/dom-helpers.js';
-import { getMetadata, buildBlock, decorateBlock, loadBlock, decorateBlocks } from '../../scripts/aem.js';
+import { getMetadata, buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 
 /**
  * Decorates the document to align with USWDS Documentation Page Template
@@ -25,7 +24,7 @@ export default async function decorate( doc ) {
 
 	// Only add grid if sidenav is present
 	let usaGridRowDiv;
-	if( showSideNav || showSideBar) {
+	if( showSideNav || showSideBar ) {
 		usaGridRowDiv = div( { class: 'grid-row grid-gap' } );
 		usaContainerDiv.append( usaGridRowDiv );
 		usaGridRowDiv.append( usaContentDiv );
@@ -62,7 +61,7 @@ export default async function decorate( doc ) {
 		usaGridRowDiv.prepend( usaGridSideNavDiv );
 		usaGridRowDiv.after( usaGridSideNavDivMobile );
 
-	} else if(showSideBar){
+	} else if( showSideBar ){
 		const usaGridSideNavDiv = div( { class: 'side-navigation-container side-navigation-container--tablet grid-col-12 tablet:grid-col-3' } );
 		const usaGridSideNavDivMobile = div( { class: 'side-navigation-container side-navigation-container--mobile' } );
 
@@ -73,11 +72,11 @@ export default async function decorate( doc ) {
 
 		
 		await loadBlock( sideBar );
-		const children = sideBar.querySelectorAll('div>div');
+		const children = sideBar.querySelectorAll( 'div>div' );
 		
-		children.forEach(item =>{
-			decorateBlock(item);
-		})
+		children.forEach( item =>{
+			decorateBlock( item );
+		} );
 
 		const mobileSideNav = sideBar.cloneNode( true );
 		usaGridSideNavDivMobile.append( mobileSideNav );
