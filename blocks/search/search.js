@@ -22,6 +22,8 @@ const QUERY_PARAM = 'q';
 const SEARCH_SETTINGS_BOX = 'show-search-box';
 const SEARCH_SETTINGS_PAGINATION = 'show-pagination';
 const SEARCH_SETTINGS_SORTKEY = 'sort-key';
+const SEARCH_SETTINGS_COUNT = 'result-count';
+const SEARCH_SETTINGS_DESCRIPTION = 'show-description';
 const SEARCH_SETTINGS_FILTERTAG = 'filter-by';
 
 // FUSE.js relevance scoring options https://www.fusejs.io/concepts/scoring-theory.html#fuzziness-score
@@ -68,8 +70,12 @@ class SearchBlock {
 		this.source = this.block.querySelector( 'a[href]' )?.href || '/query-index.json'; // Use optional chaining
 		/** @member {number} */
 		this.limit = 10;
+		/** @member {number} */
+		this.count = 3;
 		/** @member {boolean} */
 		this.showPagination = true;
+		/** @member {boolean} */
+		this.showDescription = false;
 		/** @member {boolean} */
 		this.showSearchBox = true;
 		/** @member {boolean} */
@@ -141,12 +147,20 @@ class SearchBlock {
 			this.showPagination = settingVal;
 		}
 
+		if ( key === SEARCH_SETTINGS_DESCRIPTION) {
+			this.showDescription = settingVal;
+		}
+
 		if ( key === SEARCH_SETTINGS_SORTKEY && settingVal ) {
 			this.sort = setting;
 		}
 
 		if ( key === SEARCH_SETTINGS_FILTERTAG && settingVal ) {
 			this.filter = setting;
+		}
+
+		if ( key === SEARCH_SETTINGS_COUNT && settingVal && setting <= this.limit) {
+			this.count = setting;
 		}
 	}
 
@@ -359,12 +373,12 @@ class SearchBlock {
 					}
 				} );
 			} else if ( this.blockClassDynamicCollection ) {
-				data = filteredData.slice( 0, 3 ); // only first 3 results
+				data = filteredData.slice( 0, this.count ); // only first 3 results
 			}
 
 			searchResults.classList.remove( NO_RESULTS_CLASS );
 			data.forEach( result => {
-				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection, this.sort, this.externalUrl ) );
+				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection, this.sort, this.externalUrl, this.showDescription ) );
 			} );
 		} else {
 			searchResults.classList.add( NO_RESULTS_CLASS );
