@@ -90,8 +90,25 @@ export default function decorate( block ) {
 		2: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-6 widescreen:grid-col-6',
 		3: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-4 widescreen:grid-col-4',
 	};
+	let grid = gridMap[count] || 'grid-col-12 tablet:grid-col-6 desktop:grid-col-4 widescreen:grid-col-3';
+	
+	const parent = block.parentElement;
+	const layout = parent?.parentElement?.dataset?.layout;
+	
+	if( layout ){
+		
+		const colClass = [...parent.classList].find( c => c.startsWith( 'desktop:grid-col-' ) );
+		
+		if ( colClass ) {
+			const value = parseInt( colClass.replace( 'desktop:grid-col-', '' ), 10 );
+			grid = value > 5
+				? 'grid-col-12 tablet:grid-col-6 desktop:grid-col-6'
+				: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-12';
+		}
+	}
+	
+	
 	// if the number of cards is in the map use that, else default to 4 col
-	const grid = gridMap[count] || 'grid-col-12 tablet:grid-col-6 desktop:grid-col-4 widescreen:grid-col-3';
 	const type = block.classList.contains( 'blue' ) ? 'blue' : 'default';
 	const ul = domEl( 'ul', { class: 'usa-card-group grid-row' } );
 
