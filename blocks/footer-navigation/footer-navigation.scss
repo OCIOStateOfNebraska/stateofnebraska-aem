@@ -43,7 +43,7 @@
 			@include u-margin-bottom(-1.5); // suck up last row of lis 
 
 			@include at-media('tablet') {
-				width: 50%;
+				width: 100%;
 			}
 			
 			li {
