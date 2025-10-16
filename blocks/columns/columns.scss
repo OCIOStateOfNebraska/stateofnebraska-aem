@@ -4,6 +4,7 @@
 	margin-bottom: units($component-spacing-sm);
 
 	&__grid-row {
+		min-width: 100%;
 		row-gap: units($theme-site-margins-mobile-width);
 
 		:first-child {
@@ -15,10 +16,11 @@
 		}
 
 	}
-	
+
+
 	@include at-media('desktop') {
 		&__grid-row {
-			row-gap: units($theme-site-margins-width)
+			row-gap: units($theme-site-margins-width);
 		}
 	}
 }

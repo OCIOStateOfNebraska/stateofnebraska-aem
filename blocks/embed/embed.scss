@@ -7,7 +7,7 @@
 	gap: 2rem;
 	padding-bottom: 2rem;
 
-	@include at-media('widescreen') {
+	@include at-media('desktop') {
 		flex-wrap: nowrap;
 	}
 
@@ -18,7 +18,7 @@
 		padding-right: var(--container-width, 0);
 		padding-bottom: var(--container-height, 56.25%);
 
-		@include at-media('widescreen') {
+		@include at-media('desktop') {
 			width: var(--desktop-container-width, 100%);
 			padding-right: var(--desktop-container-width, 100%);
 			padding-bottom: var(--desktop-container-height, 56.25%);
