@@ -121,7 +121,7 @@
 		}		
 	}
 
-	@mixin collection-theme($heading-color, $body-color, $svg-fill, $container-bg, $gradient) {
+	@mixin collection-theme($heading-color, $body-color, $svg-fill, $container-bg:white, $gradient: linear-gradient(to top, rgba(255, 255, 255, 0.7) 60%, transparent),$body-color-img : $body-color) {
 		.#{$block} {
 
 			&__heading{
@@ -145,7 +145,7 @@
 				&:has(img) {
 					background: $gradient;
 					.#{$block}__body{
-						color: $body-color;
+						color: $body-color-img;
 					}
 					.#{$block}__heading{
 						color: $heading-color;
@@ -168,7 +168,7 @@
 		}
 	}
 
-	.blue {
+	.blue-filled {
 		@include collection-theme(color('secondary'),
 		color('primary-lightest'),
 		color('secondary'),
@@ -176,27 +176,52 @@
 		linear-gradient(to top, #38728fcc 80%, #c3ceda80));
 	}
 	
-	.red {
+	.red-filled {
 		@include collection-theme(color('secondary'),
 		color('primary-lightest'),
 		color('secondary'),
-		color('emergency'),
+		$ne-color-dark-red,
 		linear-gradient(to top, #bd1f5399 60%, #dda1a633));
 	}
 	
-	.yellow {
+	.yellow-filled {
 		@include collection-theme(color('primary'),
 		color('primary-darkest'),
 		color('primary'),
-		color('secondary'),
+		$ne-color-yellow,
 		linear-gradient(to top, #ffc34dcc 60%, #fff2d680));
 	}
 	
-	.green {
-		@include collection-theme(color('primary'),
+	.green-filled {
+		@include collection-theme($ne-color-dark-blue,
 		color('primary-darkest'),
-		color('primary'),
-		color('accent-warm'),
+		$ne-color-dark-blue,
+		$ne-color-green,
 		linear-gradient(to top, #b9bd32cc 60%, #b9bd3280));
 	}
+
+	.red{
+		@include collection-theme($ne-color-dark-red,
+		black,
+		$ne-color-dark-red);
+	}
+
+	.yellow{
+		@include collection-theme($ne-color-yellow,
+		black,
+		$ne-color-yellow,
+		white,
+		linear-gradient(to top, #0009 25%, #0000001a),
+		white);
+	}
+
+	.green{
+		@include collection-theme($ne-color-green,
+		black,
+		$ne-color-green,
+		white,
+		linear-gradient(to top, #0009 25%, #0000001a),
+		white);
+	}
+
 }
