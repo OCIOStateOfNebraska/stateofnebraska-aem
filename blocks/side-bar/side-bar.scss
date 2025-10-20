@@ -15,16 +15,30 @@
 @use '../../styles/ne-global-imports' as *;
 @use '../../styles/ne-global/usa-button' ;
 
+.side-navigation-container--mobile{
+	&:has(.side-bar){
+		display: block;
+
+		@include at-media('desktop') {
+			display: none;
+		}
+	}
+}
 
 .side-bar-wrapper{
+	display: none;
 	border-right: 1px solid #dfe1e2;
+
+	@include at-media('desktop') {
+		display: block;
+	}
 
 	.backdrop-card-group{ 
 		grid-template-columns: 1fr;
 			
 		@include at-media('desktop') {
 			grid-template-columns: 1fr;
-
+			
 			.backdrop-grid {
 				.backdrop-card{
 					&:first-child{
@@ -33,16 +47,16 @@
 				}
 			}
 		}
-
 	}
 
+	
 	.usa-collection__item{
 		flex-direction: column;
 	}
 
 	.usa-list{
 		&:has(a){
-			color: $theme-color-primary-lighter;
+			color: color('primary-lighter');
 
 			.usa-icon-list__item{
 				align-items: center;
@@ -53,20 +67,28 @@
 				margin-bottom: .5rem;
 				padding: 0 .7rem;
 				border-radius: .6rem;
-				background-color: $theme-color-primary;
+				background-color: color('primary');
 			
 				svg{
 					width: 2rem;
 					height: 2rem;
 					margin-top: .3rem;
-					fill: $theme-color-primary-lighter;
+					fill: color('primary-lighter');
 				}
 
 				a{
 					display: flex;
 					align-items: center;
-					color: $theme-color-primary-lighter;
+					color: color('primary-lighter');
 					text-decoration: none;
+				}
+
+				&:hover{
+					background-color: color('primary-lighter');
+
+					svg{
+						fill: color('primary');
+					}
 				}
 			}
 		}
