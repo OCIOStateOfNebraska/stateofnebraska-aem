@@ -4,10 +4,42 @@
 $block: 'usa-in-page-nav';
 
 .usa-in-page-nav-container {
+	flex-direction: column;
+
+	.usa-in-page-nav {
+		display: block;
+		max-width: unset;
+
+		&__list {
+			display: flex;
+			border: none;
+			border-bottom: 1px solid rgba(27, 27, 27, .25);
+
+			&,
+				a:not(.usa-button) {
+					&.usa-current {
+						&:after {
+							top:95%;
+							width: 100%;
+							background-color: color('secondary');
+							min-height: .25rem;
+						}
+					}
+				}
+		}
+		&__item{
+			min-width: fit-content;
+		}
+
+
+	}
+
 	.main-content {
+
 		// remove bottom margin from last component in the last section, as well as last section (not collapsing with flex layout)
 		// stylelint-disable-next-line scss/selector-nest-combinators
-		> .section:last-child {
+		>.section:last-child {
+
 			&,
 			> :last-child {
 				margin-bottom: 0;
@@ -17,34 +49,44 @@ $block: 'usa-in-page-nav';
 }
 
 @include at-media('tablet') {
-	.in-page-navigation {
-		align-self: stretch; // so that the inner .usa-in-page-navigation can be sticky within this space
-		order: 2;
-	}
+	.usa-in-page-nav-container {
+		flex-direction: row;
 
-	.#{$block} {
-		max-width: units('card');
-
-		&__heading {
-			@include typeset('heading', '2xs', $theme-heading-line-height);
-			@include u-text('semibold');
+		.in-page-navigation {
+			align-self: stretch; // so that the inner .usa-in-page-navigation can be sticky within this space
+			order: 2;
 		}
 
-		&__list {
-			// stylelint-disable-next-line scss/selector-nest-combinators
-			&,
-			a:not(.usa-button) {
-				&.usa-current {
-					&:after {
-						left: units(1px) * -1; // on top of the __list border
-						background: color('secondary');
+		.#{$block} {
+			max-width: units('card');
+
+			&__heading {
+				@include typeset('heading', '2xs', $theme-heading-line-height);
+				@include u-text('semibold');
+			}
+
+			&__list {
+				display: block;
+				border: none;
+				border-left: 1px solid rgba(27, 27, 27, .25);
+
+				// stylelint-disable-next-line scss/selector-nest-combinators
+				&,
+				a:not(.usa-button) {
+					&.usa-current {
+						&:after {
+							left: units(1px) * -1; // on top of the __list border
+							top:0;
+							width: .25rem;
+							background: color('secondary');
+						}
 					}
 				}
 			}
-		}
 
-		&__item {
-			font-size: size('body', '3xs');
+			&__item {
+				font-size: size('body', '3xs');
+			}
 		}
 	}
 }
