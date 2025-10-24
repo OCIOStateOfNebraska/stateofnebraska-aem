@@ -66,18 +66,34 @@ export default async function decorate( doc ) {
 		const usaGridSideNavDivMobile = div( { class: 'side-navigation-container side-navigation-container--mobile' } );
 
 		const sideBar = buildBlock( 'side-bar', '' );
-
-		usaGridSideNavDiv.append( sideBar );
+		
+		usaGridSideNavDiv.append( sideBar );		
 		decorateBlock( sideBar );
-
+		
 		await loadBlock( sideBar );
+		
+		const children = sideBar.querySelectorAll( 'div>div' );
+		
+		children.forEach( item =>{
+			decorateBlock( item );
+		} );
+		
+		const mobileSideBar = buildBlock( 'side-bar', '' );
+		usaGridSideNavDivMobile.append( mobileSideBar );
+		decorateBlock( mobileSideBar );
+		await loadBlock( mobileSideBar );
+		
+		const children1 = mobileSideBar.querySelectorAll( 'div>div' );
+		
+		children1.forEach( item =>{
+			decorateBlock( item );
+		} );
 
-		usaGridRowDiv.firstChild.className = 'grid-col-12 tablet:grid-col-12 desktop:grid-col-9 usa-prose main-content';
-
-		const mobileSideNav = sideBar.cloneNode( true );
-		usaGridSideNavDivMobile.append( mobileSideNav );
 		usaGridRowDiv.prepend( usaGridSideNavDiv );
-		usaGridRowDiv.after( usaGridSideNavDivMobile );
+		usaGridSideNavDivMobile.appendChild( mobileSideBar );
+		usaGridRowDiv.before( usaGridSideNavDivMobile );			
+
+		usaGridRowDiv.lastChild.className = 'grid-col-12 tablet:grid-col-12 desktop:grid-col-9 usa-prose main-content';
 
 	} else if( showInPageNav ) {
 		const inPageNav = buildBlock( 'in-page-navigation', '' );

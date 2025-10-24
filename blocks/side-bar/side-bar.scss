@@ -27,28 +27,33 @@
 
 .side-bar-wrapper{
 	display: none;
-	border-right: 1px solid #dfe1e2;
 
 	@include at-media('desktop') {
 		display: block;
 	}
 
-	.backdrop-card-group{ 
-		grid-template-columns: 1fr;
-			
-		@include at-media('desktop') {
-			grid-template-columns: 1fr;
-			
-			.backdrop-grid {
-				.backdrop-card{
-					&:first-child{
-						grid-area: 1;
-					}
+	.side-bar{
+
+		>div{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: 100%;
+			border-bottom: 1px solid #dfe1e2;
+
+			&[class*='wrapper']{
+				*{
+					margin-bottom: 1rem;
 				}
 			}
-		}
-	}
 
+			&:last-of-type{
+				border-bottom: none;
+			}
+		}
+
+
+	}
 	
 	.usa-collection__item{
 		flex-direction: column;
@@ -93,5 +98,40 @@
 			}
 		}
 	}
+
+	
+	@include at-media('tablet') {
+	
+		.backdrop-grid {		
+			.backdrop-card-group{ 
+				grid-template-columns: 1fr;
+
+				.backdrop-card{			
+					&:first-child{
+						grid-area: 1;
+					}	
+				}
+			}
+		
+		}
+	}
 }
 
+.grid-row{
+	&.grid-gap {
+		> .side-navigation-container {
+			&:has(.side-bar){
+				order: 2;
+				padding-right:0 ;
+
+				.side-bar{
+					@include at-media('tablet') {
+						padding-left: 2rem;
+						border-left: 1px solid #dfe1e2;
+					}
+				}
+			}
+		}
+
+	}
+}

@@ -112,6 +112,21 @@ function decorateBlock( block ) {
 
 		blocks[className]( element );
 
+		if( className == 'accordion' ){
+			element.addEventListener( 'click',( e ) =>{
+				if( e.target.matches( '.usa-accordion__button' ) ){
+					const accordionButtons= element.querySelectorAll( '.usa-accordion__button' );
+
+					for ( let index = 0; index < accordionButtons.length; index++ ) {
+						setTimeout( () => {
+							const ariaApanded = accordionButtons[index].getAttribute( 'aria-expanded' );
+							ariaApanded == 'true'? accordionButtons[index].parentNode.nextSibling.removeAttribute( 'hidden' ):accordionButtons[index].parentNode.nextSibling.setAttribute( 'hidden', 'true' );	
+						}, 100 );
+					}
+				}
+			} );
+		}
+
 		const arr = element.childNodes;
 		arr.forEach( ( child ) => {
 			if (
@@ -125,7 +140,7 @@ function decorateBlock( block ) {
 
 					let newString = string
 						.replace( /desktop:grid-col-\d+/g, 'desktop:grid-col-12' )
-						.replace( /tablet:grid-col-\d+/g, 'tablet:grid-col-12' )
+						.replace( /tablet:grid-col-\d+/g, 'tablet:grid-col-6' )
 						.replace( /widescreen:grid-col-\d+/g, 'widescreen:grid-col-12' );
 
 					card.classList.value = newString;
