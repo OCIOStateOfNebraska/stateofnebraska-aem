@@ -43,7 +43,7 @@ export default function decorate( block )
 			`${mobileFixedHeightClass}px`
 		);
 	}
-		if ( tabletFixedHeightClass ) {
+	if ( tabletFixedHeightClass ) {
 		container.style.setProperty(
 			'--tablet-container-height',
 			`${tabletFixedHeightClass}px`

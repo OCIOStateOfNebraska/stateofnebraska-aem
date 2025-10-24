@@ -70,13 +70,9 @@ export default async function decorate( doc ) {
 		usaGridSideNavDiv.append( sideBar );
 		decorateBlock( sideBar );
 
-		
 		await loadBlock( sideBar );
-		const children = sideBar.querySelectorAll( 'div>div' );
-		
-		children.forEach( item =>{
-			decorateBlock( item );
-		} );
+
+		usaGridRowDiv.firstChild.className = 'grid-col-12 tablet:grid-col-12 desktop:grid-col-9 usa-prose main-content';
 
 		const mobileSideNav = sideBar.cloneNode( true );
 		usaGridSideNavDivMobile.append( mobileSideNav );
