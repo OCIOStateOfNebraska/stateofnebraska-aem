@@ -5,6 +5,7 @@
 	flex-wrap: wrap;
 	justify-content: center;
 	gap: 2rem;
+	padding-bottom: 2rem;
 
 	@include at-media('desktop') {
 		flex-wrap: nowrap;
@@ -16,6 +17,12 @@
 		height: 0;
 		padding-right: var(--container-width, 0);
 		padding-bottom: var(--container-height, 56.25%);
+
+		@include at-media('tablet') {
+			width: var(--tablet-container-width, 100%);
+			padding-right: var(--tablet-container-width, 100%);
+			padding-bottom: var(--tablet-container-height, 56.25%);
+		}
 
 		@include at-media('desktop') {
 			width: var(--desktop-container-width, 100%);
