@@ -3,6 +3,7 @@
 .carousel {
 	&.block {
 		position: relative;
+		max-height: 45rem;
 
 		.carousel-arrow {
 			&__container {
@@ -47,7 +48,7 @@
 	}
 
 	&__indicator {
-		position: relative;
+		position: absolute;
 		top: 2rem;
 		right: 2%;
 		display: flex;
@@ -78,9 +79,12 @@
 		border-radius: .5rem;
 		background: linear-gradient(0deg, white 80%, transparent 81%);
 
-
 		@include at-media('tablet') {
 			height: 35rem;
+		}
+
+		@include at-media('desktop') {
+			height: 45rem;
 		}
 	}
 
@@ -140,6 +144,26 @@
 		&.usa-current {
 			width: 30px;
 			background-color: color('secondary');
+		}
+	}
+}
+
+main {
+	&:has(.side-navigation-container),
+	&:has(.in-page-navigation) {
+
+		.section {
+			&:has(.carousel-wrapper) {		
+				
+				.carousel-card__container{
+					@include at-media('tablet') {
+						height: 25rem;
+					}
+					@include at-media('desktop') {
+						height: 35rem;
+					}
+				}
+			}
 		}
 	}
 }

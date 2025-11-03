@@ -11,40 +11,14 @@ function generateMedia( div, container ) {
 
 
 function generateContent( div, container ) {
-	const button = div?.querySelector( '.usa-button__wrap' );
-	const buttonLink = button?.querySelector( 'a' );
-	const buttonText = buttonLink?.title;
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
-	div.className = 'carousel-card__body';
-	let meta = '';
-	const pTags = div.querySelectorAll( 'p:not(.usa-button__wrap' );
-	
-	if ( pTags.length > 1 ) {
-		meta = domEl( 'span', { class: 'usa-tag' }, div.querySelector( 'p' ).textContent );
-		div.querySelector( 'p' ).remove(); // remove meta p tag after we grab it
-	}
-	
-	// take out the fake button and put into its own container
-	if ( button ) {
-		const fakeButton = domEl( 'p', { class: 'usa-button usa-button--secondary', title: buttonText }, buttonText );
-		const buttonWrap = domEl( 'div', { class: 'carousel-card__footer' } );
-		buttonWrap.append( fakeButton );
-		button.remove();
-		container.append( buttonWrap );
-		getIndividualIcon( fakeButton, 'arrow_forward' );
-	}
-
-	// take out the heading and put into its own container
 	if ( heading ) {
-		const link = buttonLink?.getAttribute( 'href' );
 		heading.classList.add( 'carousel-card__heading' );
-		if( link ){
-			const cardLink = domEl( 'a', { class: 'carousel-card__link', href: link, 'aria-labelledby': heading.id} );
-			heading.append( cardLink );
-		}
-		const headerWrap = domEl( 'div', { class: 'carousel-card__header',}, meta, heading );
+		const headerWrap = domEl( 'div', { class: 'carousel-card__header',},  heading );
 		container.prepend( headerWrap );
 	}
+
+	div.remove();
 }
 
 
@@ -59,8 +33,7 @@ function generateWholeCard( container ) {
 	
 	const picture = container.querySelector( '.carousel-card__media' );
 	const heading = container.querySelector( '.carousel-card__header' );
-	const desc = container.querySelector( '.carousel-card__body' );
-	const content = domEl( 'div', { class: 'carousel-card__content' }, heading, desc );
+	const content = domEl( 'div', { class: 'carousel-card__content' }, heading );
 	container.append( picture );
 	container.append( content );
 }
@@ -159,7 +132,7 @@ export default function decorate( block ) {
 		
 	} );
 
-	ul.querySelectorAll( 'picture > img' ).forEach( ( img ) => img.closest( 'picture' ).replaceWith( createOptimizedPicture( img.src, img.alt, false, [{ width: '800' }] ) ) );
+	ul.querySelectorAll( 'picture > img' ).forEach( ( img ) => img.closest( 'picture' ).replaceWith( createOptimizedPicture( img.src, img.alt, false) ) );
 
 	block.textContent = '';
 	block.append( indicators );
