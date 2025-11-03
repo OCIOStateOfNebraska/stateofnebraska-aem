@@ -1,7 +1,7 @@
 @use '../../styles/ne-global-imports' as *;
 
 .carousel {
-	.block {
+	&.block {
 		position: relative;
 
 		.carousel-arrow {
@@ -74,7 +74,8 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		height: clamp(20rem, 45vw, 40rem);
+		height: clamp(30rem, 45vw, 40rem);
+		border-radius: .5rem;
 		background: linear-gradient(0deg, white 80%, transparent 81%);
 
 
@@ -84,8 +85,6 @@
 	}
 
 	&__media {
-		max-height: 10rem;
-		border-radius: .5rem .5rem 0 0;
 		text-decoration: none;
 		overflow: hidden;
 		aspect-ratio: unset;
@@ -105,10 +104,15 @@
 
 		img {
 			width: 100%;
-			height: 100%;
+			aspect-ratio: 4/3;
 			object-fit: cover;
 			object-position: center;
 			border-radius: inherit;
+
+			@include at-media('tablet') {
+				aspect-ratio: 16/9;
+			}
+
 		}
 	}
 
