@@ -12,6 +12,11 @@ function generateMedia( div, container ) {
 function generateContent( div, container ) {
 	const heading = div.querySelector( 'h2, h3, h4, h5, h6' );
 	if ( heading ) {
+		const a = heading.querySelector( 'a' );
+		if( a.textContent.length > 70 ){
+			const text = a.textContent.substring( 0,a.textContent.indexOf( ' ', 65 )  ) + '...' ;
+			a.textContent = text;
+		}
 		heading.classList.add( 'carousel-card__heading' );
 		const headerWrap = domEl( 'div', { class: 'carousel-card__header' }, heading );
 		container.prepend( headerWrap );
@@ -31,9 +36,11 @@ function generateWholeCard( container ) {
 
 	const picture = container.querySelector( '.carousel-card__media' );
 	const heading = container.querySelector( '.carousel-card__header' );
-	const content = domEl( 'div', { class: 'carousel-card__content' }, heading );
 	container.append( picture );
-	container.append( content );
+	if( heading !== null ){
+		const content = domEl( 'div', { class: 'carousel-card__content' }, heading );
+		container.append( content );
+	}	
 }
 
 function showSlide( indicator, slider, block ) {
