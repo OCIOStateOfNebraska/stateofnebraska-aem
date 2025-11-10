@@ -49,13 +49,25 @@ function showSlide( indicator, slider, block ) {
 	const indicators = Array.from( indicator );
 	const slides = Array.from( slider.children );
 	let currentIndex = 0;
-	let slideShow = setInterval( slideShowFunc, 5000 );
+	let slideShow = null;
 	let isPaused = false;
+
+	function startAutoPlay(){
+		stopAutoPlay();
+		slideShow = setInterval( slideShowFunc, 5000 );
+	}
+
+	function stopAutoPlay(){
+		if( slideShow ){
+			clearInterval( slideShow );
+			slideShow = null;
+		}
+	}
+
 	// -----------------------------
 	// Main slide switch function
 	// -----------------------------
 	function changeSlide( index, key = null ) {
-		clearInterval( slideShow );
 		if ( index < 0 ) index = slides.length - 1;
 		if ( index >= slides.length ) index = 0;
 		currentIndex = index;
@@ -79,59 +91,68 @@ function showSlide( indicator, slider, block ) {
 			behavior: 'smooth',
 		} );
 
-		const pauseButton = block.querySelector( '.carousel-toggle' );
-
-		if ( !isPaused && pauseButton.title == 'Pause' ) {
-			slideShow = setInterval( slideShowFunc, 5000 );
-		}
+		if( !isPaused && !slideShow ) startAutoPlay();
 
 		//if changed via keyboard, focus inside slide
 		if ( key === 'key' ) {
 			const focusable = slides[index].querySelector( 'a' );
-			if ( focusable ) {
-				setTimeout( (  ) => focusable.focus(  ), 0 );
-			}
+			if ( focusable ) setTimeout( (  ) => focusable.focus(  ), 0 );
 		}
 	}
+
 	// -----------------------------
-	// Auto-advance logic
+	// Autoplay loop
 	// -----------------------------
 	function slideShowFunc(  ) {
 		changeSlide( currentIndex + 1 );
 	}
+
 	// -----------------------------
-	// Focus handling (  pause/resume  )
+	// pause/resume Button
+	// -----------------------------
+	const pauseButton = block.querySelector( '.carousel-toggle' );
+
+	pauseButton.addEventListener( 'click', () => {
+		pauseButton.innerHTML = '';
+		if( isPaused ){
+			isPaused = false;
+			slideShow = setInterval( slideShowFunc, 5000 );
+			pauseButton.setAttribute( 'arial-label', 'Pause carousel' );
+			pauseButton.setAttribute( 'arial-pressed', 'false' );
+			pauseButton.title = 'Pause';
+			getIndividualIcon( pauseButton, 'pause' );
+		}
+		else{
+			isPaused = true;
+			clearInterval( slideShow );
+			pauseButton.setAttribute( 'arial-label', 'Play carousel' );
+			pauseButton.setAttribute( 'arial-pressed', 'true' );
+			pauseButton.title = 'Play';
+			getIndividualIcon( pauseButton, 'play' );
+		}
+	} );
+	
+	// -----------------------------
+	// Focus handling pause/resume
 	// -----------------------------
 	block.addEventListener( 'focusin', ( e ) => {
-		if ( slider.contains( e.target ) ) {
-			clearInterval( slideShow );
-			isPaused = true;
-		}
+		if ( slider.contains( e.target ) ) stopAutoPlay();
 	} );
 	block.addEventListener( 'focusout', (  ) => {
 		// use timeout to wait until new focus target is set
 		setTimeout( (  ) => {
-			const pauseButton = block.querySelector( '.carousel-toggle' );
-			if ( !slider.contains( document.activeElement ) && pauseButton.title == 'Pause' ) {
-				if ( !isPaused ) return; // already running
-				slideShow = setInterval( slideShowFunc, 5000 );
-				isPaused = false;
-			}
+			if ( !slider.contains( document.activeElement )  && !isPaused ) startAutoPlay();
 		}, 50 );
 	} );
+
 	// -----------------------------
 	// Mouse hover pause/resume
 	// -----------------------------
-	slider.addEventListener( 'mouseenter', (  ) => {
-		clearInterval( slideShow );
-		isPaused = true;
-	} );
+	slider.addEventListener( 'mouseenter', (  ) => stopAutoPlay );
 	slider.addEventListener( 'mouseleave', (  ) => {
-		const pauseButton = block.querySelector( '.carousel-toggle' );
-		if ( !isPaused && pauseButton.title == 'Play' ) return;
-		slideShow = setInterval( slideShowFunc, 5000 );
-		isPaused = false;
+		if ( !isPaused )  startAutoPlay();
 	} );
+
 	// -----------------------------
 	// Clicks and key navigation
 	// -----------------------------
@@ -144,38 +165,20 @@ function showSlide( indicator, slider, block ) {
 	arrowRight.addEventListener( 'click', (  ) =>
 		changeSlide( currentIndex + 1, 'key' ),
 	);
+
 	block.addEventListener( 'keydown', ( e ) => {
 		if ( e.key === 'ArrowLeft' ) {
-			e.preventDefault(  );
+			e.preventDefault( );
 			changeSlide( currentIndex - 1, 'key' );
 		}
 		if ( e.key === 'ArrowRight' ) {
-			e.preventDefault(  );
+			e.preventDefault( );
 			changeSlide( currentIndex + 1, 'key' );
 		}
 	} );
 
-	const pauseButton = block.querySelector( '.carousel-toggle' );
-	pauseButton.addEventListener( 'click', () => {
-		pauseButton.innerHTML = '';
-		if( isPaused ){
-			slideShow = setInterval( slideShowFunc, 5000 );
-			pauseButton.setAttribute( 'arial-label', 'Pause carousel' );
-			pauseButton.setAttribute( 'arial-pressed', 'false' );
-			pauseButton.title = 'Pause';
-			getIndividualIcon( pauseButton, 'pause' );
-		}
-		else{
-			clearInterval( slideShow );
-			pauseButton.setAttribute( 'arial-label', 'Play carousel' );
-			pauseButton.setAttribute( 'arial-pressed', 'true' );
-			pauseButton.title = 'Play';
-			getIndividualIcon( pauseButton, 'play' );
-		}
-		isPaused = !isPaused;
-	} );
-
 	changeSlide( 0 );
+	startAutoPlay();
 
 	// Carousel Swipe logic
 	let startX = 0;
