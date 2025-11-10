@@ -44,9 +44,9 @@ function generateWholeCard( container ) {
 }
 
 function showSlide( indicator, slider, block ) {
-	const arrowLeft = block.querySelector( '[title="arrow back"]' );
-	const arrowRight = block.querySelector( '[title="arrow right"]' );
-	const indicators = Array.from( indicator ).reverse(  );
+	const arrowLeft = block.querySelector( '[title="Previous slide"]' );
+	const arrowRight = block.querySelector( '[title="Next slide"]' );
+	const indicators = Array.from( indicator );
 	const slides = Array.from( slider.children );
 	let currentIndex = 0;
 	let slideShow = setInterval( slideShowFunc, 5000 );
@@ -60,17 +60,28 @@ function showSlide( indicator, slider, block ) {
 		if ( index >= slides.length ) index = 0;
 		currentIndex = index;
 
-		indicators.forEach( ( dot ) => dot.classList.remove( 'usa-current' ) );
-		slides.forEach( ( slide ) => slide.classList.remove( 'usa-current' ) );
+		indicators.forEach( ( dot ) => {
+			dot.classList.remove( 'usa-current' ); 
+			dot.setAttribute( 'aria-selected', 'false' );
+		} );
+		slides.forEach( ( slide ) =>{
+			slide.classList.remove( 'usa-current' );
+			slide.setAttribute( 'aria-selected', 'false' );
+		} );
+		
 		indicators[index].classList.add( 'usa-current' );
+		indicators[index].setAttribute( 'aria-selected', 'true' );
 		slides[index].classList.add( 'usa-current' );
+		slides[index].setAttribute( 'aria-selected', 'true' );
 
 		slider.scrollTo( {
 			left: slides[index].offsetLeft,
 			behavior: 'smooth',
 		} );
 
-		if ( !isPaused ) {
+		const pauseButton = block.querySelector( '.carousel-toggle' );
+
+		if ( !isPaused && pauseButton.title == 'Pause' ) {
 			slideShow = setInterval( slideShowFunc, 5000 );
 		}
 
@@ -100,7 +111,8 @@ function showSlide( indicator, slider, block ) {
 	block.addEventListener( 'focusout', (  ) => {
 		// use timeout to wait until new focus target is set
 		setTimeout( (  ) => {
-			if ( !slider.contains( document.activeElement ) ) {
+			const pauseButton = block.querySelector( '.carousel-toggle' );
+			if ( !slider.contains( document.activeElement ) && pauseButton.title == 'Pause' ) {
 				if ( !isPaused ) return; // already running
 				slideShow = setInterval( slideShowFunc, 5000 );
 				isPaused = false;
@@ -115,7 +127,8 @@ function showSlide( indicator, slider, block ) {
 		isPaused = true;
 	} );
 	slider.addEventListener( 'mouseleave', (  ) => {
-		if ( !isPaused ) return;
+		const pauseButton = block.querySelector( '.carousel-toggle' );
+		if ( !isPaused && pauseButton.title == 'Play' ) return;
 		slideShow = setInterval( slideShowFunc, 5000 );
 		isPaused = false;
 	} );
@@ -140,6 +153,26 @@ function showSlide( indicator, slider, block ) {
 			e.preventDefault(  );
 			changeSlide( currentIndex + 1, 'key' );
 		}
+	} );
+
+	const pauseButton = block.querySelector( '.carousel-toggle' );
+	pauseButton.addEventListener( 'click', () => {
+		pauseButton.innerHTML = '';
+		if( isPaused ){
+			slideShow = setInterval( slideShowFunc, 5000 );
+			pauseButton.setAttribute( 'arial-label', 'Pause carousel' );
+			pauseButton.setAttribute( 'arial-pressed', 'false' );
+			pauseButton.title = 'Pause';
+			getIndividualIcon( pauseButton, 'pause' );
+		}
+		else{
+			clearInterval( slideShow );
+			pauseButton.setAttribute( 'arial-label', 'Play carousel' );
+			pauseButton.setAttribute( 'arial-pressed', 'true' );
+			pauseButton.title = 'Play';
+			getIndividualIcon( pauseButton, 'play' );
+		}
+		isPaused = !isPaused;
 	} );
 
 	changeSlide( 0 );
@@ -176,34 +209,63 @@ export default function decorate( block ) {
 	const ul = domEl( 'ul', { class: 'carousel-group usa-list--unstyled' } );
 	const indicators = domEl( 'ul', {
 		class: 'carousel-group__indicator usa-list--unstyled',
+		role:'tablist'
 	} );
-	const arrowContainer = domEl( 'p', { class: 'carousel-arrow__container' } );
+	indicators.setAttribute( 'aria-label', 'Slide navigation' );
+
+	const arrowContainer = domEl( 'p', { class: 'carousel-controls__container' } );
 	const arrowLeft = domEl( 'p', {
-		class: 'usa-button usa-button--outline carousel-arrow__item',
-		title: 'arrow back',
+		class: 'usa-button usa-button--outline carousel-controls__item',
+		title: 'Previous slide'
 	} );
+	arrowLeft.setAttribute( 'aria-label', 'Previous slide' );
+
+	const pauseBtn = domEl( 'button', {
+		class: 'usa-button usa-button--outline carousel-controls__item carousel-toggle',
+		title: 'Pause',
+	} );
+
+	pauseBtn.setAttribute( 'arial-label', 'Pause carousel' );
+	pauseBtn.setAttribute( 'arial-pressed', 'false' );
+	
 	const arrowRight = domEl( 'p', {
-		class: 'usa-button usa-button--outline carousel-arrow__item',
-		title: 'arrow right',
+		class: 'usa-button usa-button--outline carousel-controls__item',
+		title: 'Next slide'
 	} );
+	arrowRight.setAttribute( 'aria-label', 'Next slide' );
 
-	getIndividualIcon( arrowLeft, 'arrow_back' );
-	getIndividualIcon( arrowRight, 'arrow_forward' );
+	getIndividualIcon( arrowLeft, 'navigate_before' );
+	getIndividualIcon( pauseBtn, 'pause' );
+	getIndividualIcon( arrowRight, 'navigate_next' );
 
+	arrowContainer.append( pauseBtn );
 	arrowContainer.append( arrowRight );
 	arrowContainer.prepend( arrowLeft );
 
 	[...block.children].forEach( ( row ) => {
-		const indicator = domEl( 'li', { class: 'carousel-card__indicator' } );
+		const indicator = domEl( 'li', {
+			class: 'carousel-card__indicator',
+			role: 'tab',
+		} );
+		indicator.setAttribute( 'aria-controls', `carousel-slide-${indicators.children.length + 1}` );
+		indicator.setAttribute( 'aria-label', `Slide indicator ${indicators.children.length + 1}` );
+		
+		
+		const li = domEl( 'li', { 
+			class: 'carousel-card',
+			role: 'group',
+			id: `carousel-slide-${indicators.children.length + 1}`
+		} );
+		li.setAttribute( 'aria-roledescription', 'slide' );
+		li.setAttribute( 'aria-label', `Slide ${indicators.children.length + 1}` );
 
-		const li = domEl( 'li', { class: 'carousel-card' } );
 		const cardContainer = domEl( 'div', { class: 'carousel-card__container' } );
-
+		
 		while ( row.firstElementChild ) {
 			cardContainer.append( row.firstElementChild );
 			li.append( cardContainer );
 		}
-
+		
 		generateWholeCard( cardContainer );
 		indicators.append( indicator );
 		ul.append( li );
@@ -216,6 +278,10 @@ export default function decorate( block ) {
 				.closest( 'picture' )
 				.replaceWith( createOptimizedPicture( img.src, img.alt, false ) ),
 		);
+
+	block.setAttribute( 'role', 'region' );
+	block.setAttribute( 'aria-roledescription', 'carousel' );
+	block.setAttribute( 'aria-label', 'Carousel' );
 
 	block.textContent = '';
 	block.append( indicators );

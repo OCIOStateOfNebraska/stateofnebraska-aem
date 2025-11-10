@@ -5,9 +5,10 @@
 		position: relative;
 		max-height: 45rem;
 
-		.carousel-arrow {
-			&__container {
-				display: none;
+		.carousel-controls {
+			&__container {		
+				display: flex;
+				justify-content: space-evenly;		
 				min-width: 100%;
 				padding: 0 2rem;
 
@@ -21,20 +22,21 @@
 			}
 
 			&__item {
-				width: 70px;
-				height: 70px;
+				width: 50px;
+				height: 50px;
 				margin: 0;
 				padding: 0;
-				border: 2px solid white;
-				color: #fff;
-				box-shadow: 0 0 6px 2px #454545;
+				border-radius: 0;
+				background-color: #0000006e;
+				box-shadow: 0 0 2px 1px #ffffff29;
 				z-index: 2;
 
 				svg {
-					flex-basis: 50%;
+					flex-basis: 75%;
 					height: auto;
 					fill: white;
 				}
+
 			}
 		}
 	}
@@ -56,7 +58,6 @@
 		right: 2%;
 		display: flex;
 		gap: 5px;
-		flex-direction: row-reverse;
 		z-index: 3;
 	}
 }
@@ -213,7 +214,7 @@ main {
 			}
 		}
 
-		.carousel-arrow {
+		.carousel-controls {
 			&__item {
 				border: 0;
 				background-color: #033546b5;
