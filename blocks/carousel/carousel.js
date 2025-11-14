@@ -5,8 +5,10 @@ import { getIndividualIcon } from '../../scripts/utils.js';
 function generateMedia( div, container ) {
 	div.className = 'carousel-card__media';
 	const img = container.querySelector( 'picture' );
-	const imgWrapper = domEl( 'div', { class: 'carousel-card__img' }, img );
-	div.append( imgWrapper );
+	if( img !== null ){
+		const imgWrapper = domEl( 'div', { class: 'carousel-card__img' }, img );
+		div.append( imgWrapper );
+	}
 }
 
 function generateContent( div, container ) {
@@ -14,33 +16,37 @@ function generateContent( div, container ) {
 	if ( heading ) {
 		const a = heading.querySelector( 'a' );
 		if( a.textContent.length > 70 ){
-			const text = a.textContent.substring( 0,a.textContent.indexOf( ' ', 65 )  ) + '...' ;
+			const text = a.textContent.substring( 0, a.textContent.indexOf( ' ', 60 )  ) + '...' ;
 			a.textContent = text;
 		}
 		heading.classList.add( 'carousel-card__heading' );
 		const headerWrap = domEl( 'div', { class: 'carousel-card__header' }, heading );
 		container.prepend( headerWrap );
 	}
-
+	else{
+		container.classList.add( 'images-only' );
+	}
 	div.remove(  );
 }
 
 function generateWholeCard( container ) {
 	[...container.children].forEach( ( div ) => {
 		if ( div.querySelector( 'picture' ) ) {
-			generateMedia( div, container );
+			generateMedia( div, container );			
 		} else {
 			generateContent( div, container );
 		}
 	} );
-
+	
 	const picture = container.querySelector( '.carousel-card__media' );
 	const heading = container.querySelector( '.carousel-card__header' );
-	container.append( picture );
-	if( heading !== null ){
+	if( heading !== null && picture !== null ){		
 		const content = domEl( 'div', { class: 'carousel-card__content' }, heading );
 		container.append( content );
 	}	
+	if( picture !== null ){
+		container.prepend( picture );
+	}
 }
 
 function showSlide( indicator, slider, block ) {
@@ -245,7 +251,10 @@ export default function decorate( block ) {
 	arrowContainer.append( arrowRight );
 	arrowContainer.prepend( arrowLeft );
 
-	[...block.children].forEach( ( row ) => {
+	// checks if row contains image
+	const validRows = [...block.children].filter( row =>row = row.querySelector( 'picture' ) );
+
+	validRows.forEach( ( row ) => {	
 		const indicator = domEl( 'li', {
 			class: 'carousel-card__indicator',
 			role: 'tab',
@@ -263,12 +272,12 @@ export default function decorate( block ) {
 		li.setAttribute( 'aria-label', `Slide ${indicators.children.length + 1}` );
 
 		const cardContainer = domEl( 'div', { class: 'carousel-card__container' } );
-		
+
 		while ( row.firstElementChild ) {
 			cardContainer.append( row.firstElementChild );
 			li.append( cardContainer );
 		}
-		
+	
 		generateWholeCard( cardContainer );
 		indicators.append( indicator );
 		ul.append( li );
