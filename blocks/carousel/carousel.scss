@@ -153,6 +153,10 @@
 						transition: opacity .5s;
 						opacity: 0;
 					}
+
+					&:focus{
+						opacity: 1;
+					}
 				}
 			}
 		}

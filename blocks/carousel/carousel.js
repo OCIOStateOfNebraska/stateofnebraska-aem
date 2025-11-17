@@ -73,34 +73,48 @@ function showSlide( indicator, slider, block ) {
 	// -----------------------------
 	// Main slide switch function
 	// -----------------------------
-	function changeSlide( index, key = null ) {
+	function changeSlide( index, options = {} ) {
+		const { focusInside = false } = options;		
+
+		stopAutoPlay?.();
+
 		if ( index < 0 ) index = slides.length - 1;
 		if ( index >= slides.length ) index = 0;
 		currentIndex = index;
 
-		indicators.forEach( ( dot ) => {
+		indicators.forEach( ( dot, i ) => {
 			dot.classList.remove( 'usa-current' ); 
-			dot.setAttribute( 'aria-selected', 'false' );
+			dot.setAttribute( 'tabindex', i == index ? '0' : '-1' );
+			dot.setAttribute( 'aria-selected', i == index ? 'true' : 'false' );
 		} );
-		slides.forEach( ( slide ) =>{
+		slides.forEach( ( slide ,i ) =>{
 			slide.classList.remove( 'usa-current' );
 			slide.setAttribute( 'aria-selected', 'false' );
+			const link = slide.querySelector( 'a' );
+			if( !link ) return;
+
+			if( i === index ){
+				link.removeAttribute( 'tabindex' );
+			}
+			else{
+				link.setAttribute( 'tabindex', '-1' );
+			}
 		} );
 		
 		indicators[index].classList.add( 'usa-current' );
-		indicators[index].setAttribute( 'aria-selected', 'true' );
 		slides[index].classList.add( 'usa-current' );
 		slides[index].setAttribute( 'aria-selected', 'true' );
+
 
 		slider.scrollTo( {
 			left: slides[index].offsetLeft,
 			behavior: 'smooth',
 		} );
 
-		if( !isPaused && !slideShow ) startAutoPlay();
+		if( !isPaused && !slideShow ) startAutoPlay?.();
 
 		//if changed via keyboard, focus inside slide
-		if ( key === 'key' ) {
+		if ( focusInside ) {
 			const focusable = slides[index].querySelector( 'a' );
 			if ( focusable ) setTimeout( (  ) => focusable.focus(  ), 0 );
 		}
@@ -123,16 +137,16 @@ function showSlide( indicator, slider, block ) {
 		if( isPaused ){
 			isPaused = false;
 			slideShow = setInterval( slideShowFunc, 5000 );
-			pauseButton.setAttribute( 'arial-label', 'Pause carousel' );
-			pauseButton.setAttribute( 'arial-pressed', 'false' );
+			pauseButton.setAttribute( 'aria-label', 'Pause carousel' );
+			pauseButton.setAttribute( 'aria-pressed', 'false' );
 			pauseButton.title = 'Pause';
 			getIndividualIcon( pauseButton, 'pause' );
 		}
 		else{
 			isPaused = true;
 			clearInterval( slideShow );
-			pauseButton.setAttribute( 'arial-label', 'Play carousel' );
-			pauseButton.setAttribute( 'arial-pressed', 'true' );
+			pauseButton.setAttribute( 'aria-label', 'Play carousel' );
+			pauseButton.setAttribute( 'aria-pressed', 'true' );
 			pauseButton.title = 'Play';
 			getIndividualIcon( pauseButton, 'play' );
 		}
@@ -142,19 +156,30 @@ function showSlide( indicator, slider, block ) {
 	// Focus handling pause/resume
 	// -----------------------------
 	block.addEventListener( 'focusin', ( e ) => {
-		if ( slider.contains( e.target ) ) stopAutoPlay();
+		setTimeout( (  ) => {
+			const target = e.target;
+
+			if ( target.matches( '.carousel-toggle' ) ||
+			target.matches( '.carousel-card__indicator' ) ||
+			target.matches( '.carousel-controls__item' ) ||
+			target.matches( '.carousel-card a' ) )
+			{
+				stopAutoPlay();
+			}
+		}, 50 );
 	} );
 	block.addEventListener( 'focusout', (  ) => {
 		// use timeout to wait until new focus target is set
 		setTimeout( (  ) => {
-			if ( !slider.contains( document.activeElement )  && !isPaused ) startAutoPlay();
+			const active = document.activeElement;
+			if ( !block.contains( active )  && !isPaused ) startAutoPlay();
 		}, 50 );
 	} );
 
 	// -----------------------------
 	// Mouse hover pause/resume
 	// -----------------------------
-	slider.addEventListener( 'mouseenter', (  ) => stopAutoPlay );
+	slider.addEventListener( 'mouseenter', (  ) => stopAutoPlay() );
 	slider.addEventListener( 'mouseleave', (  ) => {
 		if ( !isPaused )  startAutoPlay();
 	} );
@@ -162,24 +187,37 @@ function showSlide( indicator, slider, block ) {
 	// -----------------------------
 	// Clicks and key navigation
 	// -----------------------------
-	indicators.forEach( ( dot, i ) => {
-		dot.addEventListener( 'click', (  ) => changeSlide( i, 'key' ) );
-	} );
-	arrowLeft.addEventListener( 'click', (  ) =>
-		changeSlide( currentIndex - 1, 'key' ),
-	);
-	arrowRight.addEventListener( 'click', (  ) =>
-		changeSlide( currentIndex + 1, 'key' ),
-	);
-
-	block.addEventListener( 'keydown', ( e ) => {
-		if ( e.key === 'ArrowLeft' ) {
-			e.preventDefault( );
-			changeSlide( currentIndex - 1, 'key' );
+	function handleArrowKeysOnTabs( e ) {
+		if( e.key === 'ArrowLeft' ){
+			e.preventDefault();
+			changeSlide( currentIndex - 1 );
+			indicators[currentIndex].focus();
 		}
-		if ( e.key === 'ArrowRight' ) {
-			e.preventDefault( );
-			changeSlide( currentIndex + 1, 'key' );
+		if( e.key === 'ArrowRight' ){
+			e.preventDefault();
+			changeSlide( currentIndex + 1 );
+			indicators[currentIndex].focus();
+		}
+	}
+
+	indicators.forEach( ( dot, i ) => {
+		dot.addEventListener( 'click', (  ) => changeSlide( i ) );
+		dot.addEventListener( 'keydown', handleArrowKeysOnTabs );
+	} );
+
+	arrowLeft.addEventListener( 'keydown', ( e ) =>{
+		if( e.key === 'Enter' || e.key === ' ' ){
+			changeSlide( currentIndex - 1 );
+			indicators[currentIndex].focus();
+		}
+	} );
+	arrowLeft.addEventListener( 'click', changeSlide( currentIndex - 1 ) );
+
+	arrowRight.addEventListener( 'click', changeSlide( currentIndex + 1 ) );
+	arrowRight.addEventListener( 'keydown',  ( e ) =>{
+		if( e.key === 'Enter' || e.key === ' ' ){
+			changeSlide( currentIndex + 1 );
+			indicators[currentIndex].focus();
 		}
 	} );
 
@@ -223,7 +261,7 @@ export default function decorate( block ) {
 	indicators.setAttribute( 'aria-label', 'Slide navigation' );
 
 	const arrowContainer = domEl( 'p', { class: 'carousel-controls__container' } );
-	const arrowLeft = domEl( 'p', {
+	const arrowLeft = domEl( 'button', {
 		class: 'usa-button usa-button--outline carousel-controls__item',
 		title: 'Previous slide'
 	} );
@@ -234,10 +272,10 @@ export default function decorate( block ) {
 		title: 'Pause',
 	} );
 
-	pauseBtn.setAttribute( 'arial-label', 'Pause carousel' );
-	pauseBtn.setAttribute( 'arial-pressed', 'false' );
+	pauseBtn.setAttribute( 'aria-label', 'Pause carousel' );
+	pauseBtn.setAttribute( 'aria-pressed', 'false' );
 	
-	const arrowRight = domEl( 'p', {
+	const arrowRight = domEl( 'button', {
 		class: 'usa-button usa-button--outline carousel-controls__item',
 		title: 'Next slide'
 	} );
@@ -258,9 +296,10 @@ export default function decorate( block ) {
 		const indicator = domEl( 'li', {
 			class: 'carousel-card__indicator',
 			role: 'tab',
+			tabindex: '0'
 		} );
 		indicator.setAttribute( 'aria-controls', `carousel-slide-${indicators.children.length + 1}` );
-		indicator.setAttribute( 'aria-label', `Slide indicator ${indicators.children.length + 1}` );
+		indicator.setAttribute( 'aria-label', `Slide indicator ${indicators.children.length + 1} of ${validRows.length}` );
 		
 		
 		const li = domEl( 'li', { 
@@ -269,7 +308,7 @@ export default function decorate( block ) {
 			id: `carousel-slide-${indicators.children.length + 1}`
 		} );
 		li.setAttribute( 'aria-roledescription', 'slide' );
-		li.setAttribute( 'aria-label', `Slide ${indicators.children.length + 1}` );
+		li.setAttribute( 'aria-label', `Slide ${indicators.children.length + 1} of ${validRows.length}` );
 
 		const cardContainer = domEl( 'div', { class: 'carousel-card__container' } );
 
@@ -297,7 +336,7 @@ export default function decorate( block ) {
 
 	block.textContent = '';
 	block.append( indicators );
-	block.append( ul );
 	block.append( arrowContainer );
+	block.append( ul );
 	showSlide( indicators.children, ul, block );
 }
