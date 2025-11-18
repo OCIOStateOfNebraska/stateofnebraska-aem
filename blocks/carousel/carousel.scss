@@ -3,6 +3,8 @@
 .carousel {
 	&.block {
 		position: relative;
+		display: flex;
+		flex-direction: column;
 		max-height: 45rem;
 		margin-bottom: 2.5rem;
 
@@ -102,15 +104,15 @@
 			}
 
 			&__indicator {
-				width: 15px;
-				height: 15px;
+				width: 18px;
+				height: 18px;
 				border: 1px solid #37373780;
 				border-radius: 10px;
 				background: #ffffffb3;
 
 
 				&.usa-current {
-					width: 30px;
+					width: 35px;
 					background-color: color('secondary');
 				}
 			}
@@ -120,6 +122,7 @@
 			&__container {
 				display: flex;
 				justify-content: space-evenly;
+				order: 2;
 				min-width: 100%;
 				padding: 0 2rem;
 
@@ -154,7 +157,7 @@
 						opacity: 0;
 					}
 
-					&:focus{
+					&:focus {
 						opacity: 1;
 					}
 				}
@@ -176,12 +179,12 @@
 				top: 2rem;
 				right: 2%;
 				display: flex;
-				gap: 5px;
+				gap: 8px;
 				z-index: 3;
 			}
 
-			&:has(.images-only){
-				.carousel-card__content{
+			&:has(.images-only) {
+				.carousel-card__content {
 					display: none;
 				}
 			}
@@ -223,36 +226,74 @@ main {
 	}
 }
 
-
-.blue {
+@mixin collection-theme($controls-bg, $svg-fill, $content-bg, $link, $link-visited,$content-border: none , $text-shadow:0 0 4px #000 ) {
 	&.carousel {
+
+		.carousel-controls {
+			&__item {
+				background-color: $controls-bg;
+				box-shadow: unset;
+
+				svg {
+					fill: $svg-fill;
+				}
+			}
+		}
 
 		.carousel-card {
 			&__content {
-				border-top: 2px solid #ffc44d;
-				background: linear-gradient(to top, #003040, #006080);
+				border-top: $content-border;
+				background: $content-bg;
 
 				a {
-					color: #fec943;
+					color: $link;
+					text-shadow: $text-shadow;
 
 					&:visited {
-						color: #fed97c;
+						color: $link-visited;
 					}
 				}
 			}
 		}
 
-		.carousel-controls {
-			&__item {
-				border: 0;
-				background-color: #033546b5;
-				box-shadow: unset;
-
-				svg {
-					flex-basis: 75%;
-					fill: color('secondary');
-				}
-			}
-		}
 	}
+}
+
+
+.blue {
+	@include collection-theme(#033546b5,
+	color('secondary'),
+	linear-gradient(to top, #003040, #006080),
+	#fec943,
+	#fed97c,
+	2px solid #ffc44d);
+}
+
+.red {
+	@include collection-theme(#5e0f2bad,
+	color('secondary'),
+	linear-gradient(to top, #5e0f2a, #bd1f53),
+	#fec943,
+	#fed97c,
+	2px solid #ffc44d);
+}
+
+.yellow {
+	@include collection-theme(#fec943ad,
+	#003040,
+	linear-gradient(to top, #a07301, #fec943),
+	#004d66,
+	#003040,	
+	2px solid #003040,	
+	none);
+}
+
+.green {
+	@include collection-theme(#a4aa2db3,
+	#003040,		
+	linear-gradient(to top, #5b5f19, #b6bd32),
+	#004d66,
+	#003040,	
+	2px solid #003040,	
+	none);
 }

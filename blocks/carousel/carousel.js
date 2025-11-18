@@ -76,7 +76,7 @@ function showSlide( indicator, slider, block ) {
 	function changeSlide( index, options = {} ) {
 		const { focusInside = false } = options;		
 
-		stopAutoPlay?.();
+		stopAutoPlay();
 
 		if ( index < 0 ) index = slides.length - 1;
 		if ( index >= slides.length ) index = 0;
@@ -111,7 +111,7 @@ function showSlide( indicator, slider, block ) {
 			behavior: 'smooth',
 		} );
 
-		if( !isPaused && !slideShow ) startAutoPlay?.();
+		if( !isPaused && !slideShow ) startAutoPlay();
 
 		//if changed via keyboard, focus inside slide
 		if ( focusInside ) {
@@ -211,9 +211,9 @@ function showSlide( indicator, slider, block ) {
 			indicators[currentIndex].focus();
 		}
 	} );
-	arrowLeft.addEventListener( 'click', changeSlide( currentIndex - 1 ) );
+	arrowLeft.addEventListener( 'click', () => changeSlide( currentIndex - 1 ) );
 
-	arrowRight.addEventListener( 'click', changeSlide( currentIndex + 1 ) );
+	arrowRight.addEventListener( 'click', () => changeSlide( currentIndex + 1 ) );
 	arrowRight.addEventListener( 'keydown',  ( e ) =>{
 		if( e.key === 'Enter' || e.key === ' ' ){
 			changeSlide( currentIndex + 1 );
