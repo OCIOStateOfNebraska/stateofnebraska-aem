@@ -97,7 +97,7 @@ function createSecondaryMenu( innerMenu, searchResultsUrl, showDropdowns ) {
 
 	const closeImage = domEl( 'img', { role: 'img', alt: 'Close', src: '../../icons/usa-icons/close.svg' } );
 	const closeButton = domEl( 'button', { class: 'usa-nav__close', type: 'button' } );
-	closeButton.setAttribute( 'aria-label', 'Close navigation menu' );
+	closeButton.setAttribute( 'aria-label', 'Close primary navigation' );
 	closeButton.setAttribute( 'aria-controls', 'mobile-nav' );
 	closeButton.append( closeImage );
 	innerMenu.prepend( closeButton );
@@ -153,7 +153,7 @@ async function loadAndDecorateNav() {
 	// Toggle aria-expanded tag on menu btn
 	function toggleAriaExpanded (){
 		let expanded = nav.classList.contains( 'is-visible' );
-		menu.setAttribute( 'aria-expanded', !expanded);
+		menu.setAttribute( 'aria-expanded', !expanded );
 	}
 
 	const img = domEl( 'div', { class: 'usa-logo__text' }, link );
@@ -166,7 +166,7 @@ async function loadAndDecorateNav() {
 	navBar.append( menuButton );
 	let menu = navBar.querySelector( '.usa-menu-btn' );
 	menu.innerHTML = 'Menu';
-	menu.setAttribute( 'aria-label', 'Open navigation menu' );
+	menu.setAttribute( 'aria-label', 'Open primary navigation' );
 	menu.setAttribute( 'aria-controls', 'mobile-nav' );
 	menu.setAttribute( 'aria-expanded', 'false' );
 
