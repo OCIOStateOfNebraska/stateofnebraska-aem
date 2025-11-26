@@ -1,0 +1,299 @@
+@use '../../styles/ne-global-imports' as *;
+
+.carousel {
+	&.block {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		max-height: 45rem;
+		margin-bottom: 2.5rem;
+
+		.carousel-card {
+			position: relative;
+			display: flex;
+			flex: 0 0 100%;
+			flex-direction: column;
+			scroll-snap-align: start;
+			align-items: flex-start;
+			justify-content: center;
+			width: 100%;
+			min-width: 100%;
+			margin: 0;
+
+			&__container {
+				position: relative;
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+				border-radius: .5rem;
+
+				@include at-media('tablet') {
+					height: 35rem;
+				}
+
+				@include at-media('desktop') {
+					height: 45rem;
+				}
+			}
+
+			&__media {
+				text-decoration: none;
+				overflow: hidden;
+				aspect-ratio: unset;
+				inset: 0;
+				z-index: 0;
+
+				@include at-media('tablet') {
+					height: 100%;
+					max-height: 100%;
+				}
+
+				picture {
+					display: block;
+					width: 100%;
+					height: 100%;
+					margin: 0;
+				}
+
+				img {
+					width: 100%;
+					aspect-ratio: 4/3;
+					object-fit: cover;
+					object-position: center;
+					border-radius: inherit;
+
+					@include at-media('tablet') {
+						aspect-ratio: 16/9;
+						height: 100%;
+					}
+				}
+			}
+
+			&__img {
+				@include at-media('tablet') {
+					height: 100%;
+				}
+			}
+
+			&__content {
+				width: 100%;
+				height: 50%;
+				max-height: 50%;
+				padding: 2rem;
+				border-top: 4px solid color('secondary');
+				background: white;
+
+
+				@include at-media('tablet') {
+					position: absolute;
+					bottom: 0;
+					height: auto;
+					max-height: 30%;
+					border-top: transparent;
+					background: linear-gradient(to top, #000, #00000057);
+
+					a {
+						color: white;
+						text-shadow: 0 0 4px black;
+
+						&:visited {
+							color: white;
+						}
+					}
+				}
+			}
+
+			&__indicator {
+				width: 18px;
+				height: 18px;
+				border: 1px solid #37373780;
+				border-radius: 10px;
+				background: #ffffffb3;
+
+
+				&.usa-current {
+					width: 35px;
+					background-color: color('secondary');
+				}
+			}
+		}
+
+		.carousel-controls {
+			&__container {
+				display: flex;
+				justify-content: space-evenly;
+				order: 2;
+				min-width: 100%;
+				padding: 0 2rem;
+
+				@include at-media('tablet') {
+					position: absolute;
+					top: 45%;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+				}
+			}
+
+			&__item {
+				width: 50px;
+				height: 50px;
+				margin: 0;
+				padding: 0;
+				border-radius: 0;
+				background-color: #0000006e;
+				box-shadow: 0 0 2px 1px #ffffff29;
+				z-index: 2;
+
+				svg {
+					flex-basis: 75%;
+					height: auto;
+					fill: white;
+				}
+
+				&.carousel-toggle {
+					@include at-media('desktop') {
+						transition: opacity .5s;
+						opacity: 0;
+					}
+
+					&:focus {
+						opacity: 1;
+					}
+				}
+			}
+		}
+
+		.carousel-group {
+			display: flex;
+			scroll-behavior: smooth;
+			scroll-snap-type: x mandatory;
+			overflow: scroll clip;
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+
+			&__indicator {
+				position: absolute;
+				top: 2rem;
+				right: 2%;
+				display: flex;
+				gap: 8px;
+				z-index: 3;
+			}
+
+			&:has(.images-only) {
+				.carousel-card__content {
+					display: none;
+				}
+			}
+		}
+
+		&:hover {
+			.carousel-controls {
+				&__item {
+					&.carousel-toggle {
+						@include at-media('desktop') {
+							opacity: 1;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+main {
+
+	&:has(.side-navigation-container),
+	&:has(.in-page-navigation) {
+
+		.section {
+			&:has(.carousel-wrapper) {
+
+				.carousel-card__container {
+					@include at-media('tablet') {
+						height: 30rem;
+					}
+
+					@include at-media('desktop') {
+						height: 35rem;
+					}
+				}
+			}
+		}
+	}
+}
+
+@mixin collection-theme($controls-bg, $svg-fill, $content-bg, $link, $link-visited,$content-border: none , $text-shadow:0 0 4px #000 ) {
+	&.carousel {
+
+		.carousel-controls {
+			&__item {
+				background-color: $controls-bg;
+				box-shadow: unset;
+
+				svg {
+					fill: $svg-fill;
+				}
+			}
+		}
+
+		.carousel-card {
+			&__content {
+				border-top: $content-border;
+				background: $content-bg;
+
+				a {
+					color: $link;
+					text-shadow: $text-shadow;
+
+					&:visited {
+						color: $link-visited;
+					}
+				}
+			}
+		}
+
+	}
+}
+
+
+.blue {
+	@include collection-theme(#033546b5,
+	color('secondary'),
+	linear-gradient(to top, #003040, #006080),
+	#fec943,
+	#fed97c,
+	2px solid #ffc44d);
+}
+
+.red {
+	@include collection-theme(#5e0f2bad,
+	color('secondary'),
+	linear-gradient(to top, #5e0f2a, #bd1f53),
+	#fec943,
+	#fed97c,
+	2px solid #ffc44d);
+}
+
+.yellow {
+	@include collection-theme(#fec943ad,
+	#003040,
+	linear-gradient(to top, #a07301, #fec943),
+	#004d66,
+	#003040,	
+	2px solid #003040,	
+	none);
+}
+
+.green {
+	@include collection-theme(#a4aa2db3,
+	#003040,		
+	linear-gradient(to top, #5b5f19, #b6bd32),
+	#004d66,
+	#003040,	
+	2px solid #003040,	
+	none);
+}

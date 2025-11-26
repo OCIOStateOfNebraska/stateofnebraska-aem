@@ -1,10 +1,13 @@
+@use '../../styles/ne-global-imports' as *;
+
 .embed {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
 	gap: 2rem;
+	padding-bottom: 2rem;
 
-	@media (width >= 64em) {
+	@include at-media('desktop') {
 		flex-wrap: nowrap;
 	}
 
@@ -15,7 +18,13 @@
 		padding-right: var(--container-width, 0);
 		padding-bottom: var(--container-height, 56.25%);
 
-		@media (width >= 64em) {
+		@include at-media('tablet') {
+			width: var(--tablet-container-width, 100%);
+			padding-right: var(--tablet-container-width, 100%);
+			padding-bottom: var(--tablet-container-height, 56.25%);
+		}
+
+		@include at-media('desktop') {
 			width: var(--desktop-container-width, 100%);
 			padding-right: var(--desktop-container-width, 100%);
 			padding-bottom: var(--desktop-container-height, 56.25%);

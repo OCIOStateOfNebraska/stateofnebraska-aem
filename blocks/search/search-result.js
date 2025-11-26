@@ -106,16 +106,18 @@ function renderTags( result, titleTag, searchTerms, collectionBody ) {
  * @param {string} titleTag - HTML tag to use for the result title
  * @param {Object} searchBlock - The SearchBlock instance, needed for context and methods like highlightTextElements and filter
  * @param {Boolean} filter - whether or not the search has been filtered
+ * @param {Boolean} showDescription
  * @param {string} sort - the item to sort by
  * @param {string} externalURL - whether or not the rendered results should go to a different url
  * @returns {HTMLElement} - The rendered search result list item
  */
-export default function renderResult( result, searchTerms, titleTag, filter, dynamicCollection, sort, externalURL ) {
+export default function renderResult( result, searchTerms, titleTag, filter, dynamicCollection, sort, externalURL , showDescription ) {
 	const resultItem = li( { class: 'usa-collection__item' } );
 	const collectionBody = div( { class: 'usa-collection__body' } );
-
+	
 	if ( dynamicCollection ) {
 		renderTitle( result, titleTag, searchTerms, collectionBody, externalURL );
+		if( showDescription ) renderDescription( result, titleTag, searchTerms, collectionBody, externalURL );
 		renderDate( result, titleTag, searchTerms, collectionBody, filter, sort );
 	} else {
 		renderTitle( result, titleTag, searchTerms, collectionBody, externalURL );

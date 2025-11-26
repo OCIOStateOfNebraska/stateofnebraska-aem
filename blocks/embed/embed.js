@@ -21,6 +21,8 @@ export default function decorate( block )
 	const fixedHeightClass = getClassValue( 'height' );
 	const mobileFixedWidthClass = getClassValue( 'mobilewidth' );
 	const mobileFixedHeightClass = getClassValue( 'mobileheight' );
+	const tabletFixedWidthClass = getClassValue( 'tabletwidth' );
+	const tabletFixedHeightClass = getClassValue( 'tabletheight' );
 
 	const urlWidthMatch = link.match( /[?&]width=(\d+)/i );
 	const urlHeightMatch = link.match( /[?&]height=(\d+)/i );
@@ -32,12 +34,19 @@ export default function decorate( block )
 
 	if ( urlH ) {
 		container.style.setProperty( '--container-height', `${urlH}px` );
+		container.style.setProperty( '--tablet-container-height', `${urlH}px` );
 		container.style.setProperty( '--desktop-container-height', `${urlH}px` );
 	}
 	if ( mobileFixedHeightClass ) {
 		container.style.setProperty(
 			'--container-height',
 			`${mobileFixedHeightClass}px`
+		);
+	}
+	if ( tabletFixedHeightClass ) {
+		container.style.setProperty(
+			'--tablet-container-height',
+			`${tabletFixedHeightClass}px`
 		);
 	}
 	if ( fixedHeightClass ) {
@@ -50,6 +59,7 @@ export default function decorate( block )
 	if ( urlW ) {
 		container.style.setProperty( '--container-width', `${urlW}px` );
 		container.style.setProperty( '--desktop-container-width', `${urlW}px` );
+		container.style.setProperty( '--tablet-container-width', `${urlW}px` );
 	}
 	if ( fixedWidthClass ) {
 		container.style.setProperty(
@@ -64,6 +74,13 @@ export default function decorate( block )
 		);
 	}
 
+	if ( tabletFixedWidthClass ) {
+		container.style.setProperty(
+			'--tablet-container-width',
+			`${tabletFixedWidthClass}px`
+		);
+	}
+	
 	container.innerHTML = `
 		<iframe
 			src='${link}'
