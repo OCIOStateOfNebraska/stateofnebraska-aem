@@ -1,4 +1,3 @@
-
 @use '../../styles/ne-global-imports' as *;
 @use 'sass:meta';
 
@@ -63,6 +62,93 @@
 			background-image: none;
 			color: color(primary);
 			text-decoration: underline;
+		}
+	}
+}
+
+.tabs {
+	$block: 'usa-accordion';
+
+	.#{$block} {
+
+		&__button {
+			height: 100%;
+			padding: 1rem;
+			border-radius: 0;
+			background: color(primary);
+			color: white;
+
+			&[ aria-expanded= 'true'] {
+				background-color: #fff;
+				color: color(primary);
+				box-shadow: 0 -4px 16px -6px rgb(133 133 133 / 45%);
+
+			}
+
+			&:hover {
+				background-color: #fff;
+				color: color(primary);
+			}
+		}
+
+		&__content {
+			background-color: #fff;
+			box-shadow: inset 0 10px 2px -7px #80808045 ;
+		}
+	}
+
+
+	&.tabs-grid {
+
+		.#{$block} {
+			@include at-media('tablet') {
+				display: grid;
+				grid-auto-rows: auto;
+				gap: 0 5px;
+				flex-direction: column;
+				transition: background 0.3s;
+				border-radius: 0;
+
+				&__heading {
+					grid-row: 1;
+
+					.#{$block}__button {
+						justify-content: center;
+						border: 0;
+						border-radius: 6px 6px 0 0;
+						text-align: center;
+
+						&[ aria-expanded='true'] {
+							background-color: white;
+							color: black;
+						}
+
+						&:before {
+							display: none;
+						}
+
+						&:hover,
+						&:focus,
+						&:focus-visible {
+							background-color: #4b4c4e;
+							color: #fff;
+						}
+					}
+				}
+
+				&__content {
+					grid-row: 2;
+					grid-column-start: 1;
+					width: 100%;
+					border-radius: 0 0 6px 6px;
+					background-color: white;
+					box-shadow: 0 8px 8px -6px rgb(133 133 133 / 45%);
+
+					p {
+						max-width: 100%;
+					}
+				}
+			}
 		}
 	}
 }

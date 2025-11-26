@@ -6,6 +6,8 @@ export default function decorate( block ) {
 	let accordions = block.children;
 	let usaAccordion = domEl( 'div', { class: 'usa-accordion' } );
 
+
+
 	Array.from( accordions ).forEach( ( accordion ) => {
 		let heading = accordion.querySelector( 'h2, h3, h4, h5, h6' );
 		let content = accordion.querySelector( 'div:last-child' );
@@ -25,6 +27,30 @@ export default function decorate( block ) {
 
 		// Create new content div
 		let contentEl = domEl( 'div', { class: 'usa-accordion__content usa-prose', id: accordionId, 'hidden': 'true' } );
+
+		if ( block.classList.contains( 'tabs' ) && accordions.length <= 5 ) {
+			contentEl.style.gridColumnEnd = accordions.length + 1;
+			usaAccordion.style.gridTemplateColumns = `repeat( ${accordions.length}, 1fr )`;
+			block.classList.add( 'tabs-grid' );
+
+			block.addEventListener( 'click', ( e ) => {
+				if ( e.target.type == 'button' ) {
+					if ( e.target.getAttribute( 'aria-expanded' ) == 'true' ) {
+						e.target.setAttribute( 'aria-expanded', 'true' );
+						const drawers = block.querySelectorAll( '.usa-accordion__content' );
+
+						drawers.forEach( drawer => {
+							if ( drawer.hidden == true ) {
+								e.stopPropagation(  );
+							}
+						} );
+
+					}
+
+				}
+			} );
+		}
+
 		contentEl.appendChild( content );
 
 		// Append new elements
@@ -32,7 +58,15 @@ export default function decorate( block ) {
 		usaAccordion.appendChild( contentEl );
 	} );
 
+	if ( block.classList.contains( 'tabs' ) ) {
+		const button = usaAccordion.querySelector( 'button' );
+		button.setAttribute( 'aria-expanded', 'true' );
+	}
+
 	block.textContent = '';
 	block.appendChild( usaAccordion );
-	accordion.on();
+
+	accordion.on(  );
+
+
 }
