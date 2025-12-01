@@ -84,6 +84,11 @@
 				box-shadow: 0 -4px 16px -6px rgb(133 133 133 / 45%);
 
 			}
+			
+			&[ aria-expanded= 'false'] {
+				background-color: color(primary);
+				color: white;
+			}
 
 			&:hover {
 				background-color: #fff;
