@@ -97,6 +97,8 @@ function createSecondaryMenu( innerMenu, searchResultsUrl, showDropdowns ) {
 
 	const closeImage = domEl( 'img', { role: 'img', alt: 'Close', src: '../../icons/usa-icons/close.svg' } );
 	const closeButton = domEl( 'button', { class: 'usa-nav__close', type: 'button' } );
+	closeButton.setAttribute( 'aria-label', 'Close primary navigation' );
+	closeButton.setAttribute( 'aria-controls', 'mobile-nav' );
 	closeButton.append( closeImage );
 	innerMenu.prepend( closeButton );
 }
@@ -134,7 +136,7 @@ async function loadAndDecorateNav() {
 	const searchResultsUrl = searchLink ? searchLink.href : '/search-results';
 
 	createSecondaryMenu( innerNav, searchResultsUrl, showDropdowns );
-	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation' } );
+	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation', id: 'mobile-nav' } );
 	nav.append( innerNav );
 	const container = domEl( 'div', {} );
 	const navClass = `usa-header usa-header--extended${!showDropdowns ? ' usa-header--small' : '' }`;
@@ -148,6 +150,12 @@ async function loadAndDecorateNav() {
 		link.append( picture );
 	}
 
+	// Toggle aria-expanded tag on menu btn
+	function toggleAriaExpanded (){
+		let expanded = nav.classList.contains( 'is-visible' );
+		menu.setAttribute( 'aria-expanded', !expanded );
+	}
+
 	const img = domEl( 'div', { class: 'usa-logo__text' }, link );
 
 	const logo = domEl( 'div', { class: 'usa-logo' } );
@@ -158,6 +166,14 @@ async function loadAndDecorateNav() {
 	navBar.append( menuButton );
 	let menu = navBar.querySelector( '.usa-menu-btn' );
 	menu.innerHTML = 'Menu';
+	menu.setAttribute( 'aria-label', 'Open primary navigation' );
+	menu.setAttribute( 'aria-controls', 'mobile-nav' );
+	menu.setAttribute( 'aria-expanded', 'false' );
+
+	const closeButton = nav.querySelector( 'button' );
+	menu.addEventListener( 'click', () => toggleAriaExpanded() );
+	closeButton.addEventListener( 'click', () => toggleAriaExpanded() );
+
 	container.prepend( navBar );
 	navWrapper.append( container );
 	return navWrapper;

@@ -1,0 +1,137 @@
+@use '../accordion/accordion';
+@use '../alert/alert';
+@use '../backdrop-grid/backdrop-grid';
+@use '../columns/columns';
+@use '../embed/embed';
+@use '../figure/figure';
+@use '../form/form';
+@use '../icon-button-grid/icon-button-grid';
+@use '../info-card-grid/info-card-grid';
+@use '../intro/intro';
+@use '../linked-card-grid/linked-card-grid';
+@use '../side-navigation/side-navigation';
+@use '../summary-box/summary-box';
+@use '../table/table';
+@use '../../styles/ne-global-imports' as *;
+@use '../../styles/ne-global/usa-button' ;
+
+.side-navigation-container--mobile{
+	&:has(.side-bar){
+		display: block;
+
+		@include at-media('desktop') {
+			display: none;
+		}
+	}
+}
+
+.side-bar-wrapper{
+	display: none;
+
+	@include at-media('desktop') {
+		display: block;
+	}
+
+	.side-bar{
+
+		>div{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: 100%;
+			border-bottom: 1px solid #dfe1e2;
+
+			&[class*='wrapper']{
+				*{
+					margin-bottom: 1rem;
+				}
+			}
+
+			&:last-of-type{
+				border-bottom: none;
+			}
+		}
+
+
+	}
+	
+	.usa-collection__item{
+		flex-direction: column;
+	}
+
+	.usa-list{
+		&:has(a){
+			color: color('primary-lighter');
+
+			.usa-icon-list__item{
+				align-items: center;
+				justify-content: center;
+				min-width: 3rem;
+				min-height: 3rem;
+				margin-right: .5rem;
+				margin-bottom: .5rem;
+				padding: 0 .7rem;
+				border-radius: .6rem;
+				background-color: color('primary');
+			
+				svg{
+					width: 2rem;
+					height: 2rem;
+					margin-top: .3rem;
+					fill: color('primary-lighter');
+				}
+
+				a{
+					display: flex;
+					align-items: center;
+					color: color('primary-lighter');
+					text-decoration: none;
+				}
+
+				&:hover{
+					background-color: color('primary-lighter');
+
+					svg{
+						fill: color('primary');
+					}
+				}
+			}
+		}
+	}
+
+	
+	@include at-media('tablet') {
+	
+		.backdrop-grid {		
+			.backdrop-card-group{ 
+				grid-template-columns: 1fr;
+
+				.backdrop-card{			
+					&:first-child{
+						grid-area: 1;
+					}	
+				}
+			}
+		
+		}
+	}
+}
+
+.grid-row{
+	&.grid-gap {
+		> .side-navigation-container {
+			&:has(.side-bar){
+				order: 2;
+				padding-right:0 ;
+
+				.side-bar{
+					@include at-media('tablet') {
+						padding-left: 2rem;
+						border-left: 1px solid #dfe1e2;
+					}
+				}
+			}
+		}
+
+	}
+}
