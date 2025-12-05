@@ -12,9 +12,41 @@ export default async function decorate( block ) {
 		'data-main-content-selector': '.main-content',
 	} );
 
+	// stick nav to top on mobile and scroll to current item
+	function mobileNavCurrent(  ) {
+		const px = parseFloat( getComputedStyle( document.documentElement ).fontSize );
+		if ( window.innerWidth > px * 40 ) return;
+		const nav = document.querySelector( '.usa-in-page-nav__list' );
+		const navTop = document.querySelector( '.usa-in-page-nav' ).getBoundingClientRect(  ).top + window.scrollY;
+		if ( window.scrollY > navTop ) {
+			nav.style.position = 'fixed';
+			nav.style.top = 0;
+			nav.style.left = 0;
+			setTimeout( (  ) => {
+				const currentLink = nav.querySelector( '.usa-current' );
+				if ( currentLink ) {
+					nav.scrollTo( {
+						left: currentLink.parentElement.offsetLeft,
+						behavior: 'smooth',
+					} );
+					nav.style.backgroundColor = 'white';
+				}
+
+			}, 200 );
+		}
+		else {
+			nav.style.position = 'static';
+			nav.style.backgroundColor = 'transparent';
+
+		}
+	}
+
+	document.addEventListener( 'scroll', mobileNavCurrent );
+	sidenav.addEventListener( 'click', mobileNavCurrent );
+
 	block.textContent = '';
 	block.appendChild( sidenav );
 
 	block.parentNode.classList.add( 'usa-in-page-nav-container' );
-	inPageNavigation.on();
+	inPageNavigation.on(  );
 }
