@@ -12,11 +12,13 @@ $block: 'usa-in-page-nav';
 
 		&__list {
 			display: flex;
+			height: 3rem;
 			border: 0;
 			border-bottom: 1px solid #1b1b1b40;
 			overflow-x: auto;
 			scrollbar-width: none; // hide scrollbar in Firefox
 			-ms-overflow-style: none; // hide scrollbar in IE 10+
+			font-size: 1rem;
 			z-index: 10;
 
 			&::-webkit-scrollbar {
@@ -78,8 +80,10 @@ $block: 'usa-in-page-nav';
 
 			&__list {
 				display: block;
+				height: inherit;
 				border: 0;
 				border-left: 1px solid #1b1b1b40;
+				font-size: inherit;
 
 				// stylelint-disable-next-line scss/selector-nest-combinators
 				&,

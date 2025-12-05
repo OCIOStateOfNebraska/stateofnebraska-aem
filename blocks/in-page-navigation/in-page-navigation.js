@@ -27,7 +27,6 @@ export default async function decorate( block ) {
 				if ( currentLink ) {
 					nav.scrollTo( {
 						left: currentLink.parentElement.offsetLeft,
-						behavior: 'smooth',
 					} );
 					nav.style.backgroundColor = 'white';
 				}
