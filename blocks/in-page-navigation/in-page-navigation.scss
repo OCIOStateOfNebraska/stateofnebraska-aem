@@ -16,8 +16,12 @@ $block: 'usa-in-page-nav';
 			border: 0;
 			border-bottom: 1px solid #1b1b1b40;
 			overflow-x: auto;
+			overflow-y: hidden;
+			-webkit-overflow-scrolling: touch; // smooth scrolling on iOS
+			touch-action: pan-x;
 			scrollbar-width: none; // hide scrollbar in Firefox
 			-ms-overflow-style: none; // hide scrollbar in IE 10+
+			scroll-snap-type: x mandatory;
 			font-size: 1rem;
 			z-index: 10;
 
