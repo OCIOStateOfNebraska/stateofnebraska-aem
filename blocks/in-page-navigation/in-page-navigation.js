@@ -13,16 +13,15 @@ export default async function decorate( block ) {
 	} );
 
 	// stick nav to top on mobile and scroll to current item
-	function mobileNavCurrent(  ) {
-		const px = parseFloat( getComputedStyle( document.documentElement ).fontSize );
-		if ( window.innerWidth > px * 40 ) return;
+	function mobileNavCurrent() {
+		const px = parseFloat( getComputedStyle( document.documentElement ).fontSize ) ;
 		const nav = document.querySelector( '.usa-in-page-nav__list' );
-		const navTop = document.querySelector( '.usa-in-page-nav' ).getBoundingClientRect(  ).top + window.scrollY;
-		if ( window.scrollY > navTop ) {
+		const navTop = document.querySelector( '.usa-in-page-nav' ).getBoundingClientRect().top + window.scrollY;
+		if ( window.scrollY > navTop && window.innerWidth < px * 40 && window.matchMedia( '(orientation: portrait)' ).matches ) {
 			nav.style.position = 'fixed';
 			nav.style.top = 0;
 			nav.style.left = 0;
-			setTimeout( (  ) => {
+			setTimeout( () => {
 				const currentLink = nav.querySelector( '.usa-current' );
 				if ( currentLink ) {
 					nav.scrollTo( {
@@ -47,5 +46,5 @@ export default async function decorate( block ) {
 	block.appendChild( sidenav );
 
 	block.parentNode.classList.add( 'usa-in-page-nav-container' );
-	inPageNavigation.on(  );
+	inPageNavigation.on();
 }
