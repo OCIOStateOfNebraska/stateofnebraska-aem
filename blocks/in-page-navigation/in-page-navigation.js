@@ -23,6 +23,8 @@ export default async function decorate( block ) {
 			nav.style.top = '0';
 			nav.style.left = '0';
 			nav.style.right = '0';
+			nav.querySelector( '.usa-in-page-nav__heading' ).style.display= 'none';
+
 			
 			nav.style.zIndex= 10;
 			nav.style.isolation= 'isolate';
@@ -40,7 +42,7 @@ export default async function decorate( block ) {
 		else {
 			nav.style.position = 'static';
 			nav.style.backgroundColor = 'transparent';
-
+			nav.querySelector( '.usa-in-page-nav__heading' ).style.display= 'block';
 		}
 	}
 

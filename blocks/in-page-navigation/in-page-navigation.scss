@@ -10,10 +10,6 @@ $block: 'usa-in-page-nav';
 		display: block;
 		max-width: unset;
 
-		&__heading{
-			display: none;
-		}
-
 		&__list {
 			display: flex;
 			height: 3rem;
@@ -56,6 +52,7 @@ $block: 'usa-in-page-nav';
 	}
 
 	.main-content {
+
 		// remove bottom margin from last component in the last section, as well as last section (not collapsing with flex layout)
 		// stylelint-disable-next-line scss/selector-nest-combinators
 		>.section:last-child {
@@ -81,8 +78,6 @@ $block: 'usa-in-page-nav';
 			max-width: units('card');
 
 			&__heading {
-				display: block;
-				
 				@include typeset('heading', '2xs', $theme-heading-line-height);
 				@include u-text('semibold');
 			}
@@ -116,7 +111,9 @@ $block: 'usa-in-page-nav';
 }
 
 @include at-media('desktop') {
-	.#{$block} {
-		max-width: units('card-lg');
+	.usa-in-page-nav-container {
+		.#{$block} {
+			max-width: units('card-lg');
+		}
 	}
 }
