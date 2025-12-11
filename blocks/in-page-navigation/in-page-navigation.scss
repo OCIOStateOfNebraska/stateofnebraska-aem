@@ -53,6 +53,12 @@ $block: 'usa-in-page-nav';
 
 	.main-content {
 
+		.usa-link--external {
+			&:after {
+				position: relative;
+			}
+		}
+
 		// remove bottom margin from last component in the last section, as well as last section (not collapsing with flex layout)
 		// stylelint-disable-next-line scss/selector-nest-combinators
 		>.section:last-child {
@@ -111,7 +117,9 @@ $block: 'usa-in-page-nav';
 }
 
 @include at-media('desktop') {
-	.#{$block} {
-		max-width: units('card-lg');
+	.usa-in-page-nav-container {
+		.#{$block} {
+			max-width: units('card-lg');
+		}
 	}
 }
