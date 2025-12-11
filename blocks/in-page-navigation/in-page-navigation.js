@@ -15,22 +15,27 @@ export default async function decorate( block ) {
 	// stick nav to top on mobile and scroll to current item
 	function mobileNavCurrent() {
 		const px = parseFloat( getComputedStyle( document.documentElement ).fontSize ) ;
-		const nav = document.querySelector( '.usa-in-page-nav__list' );
-		const navTop = document.querySelector( '.usa-in-page-nav' ).getBoundingClientRect().top + window.scrollY;
+		const nav = document.querySelector( '.usa-in-page-nav' );
+		const navList = nav.querySelector( '.usa-in-page-nav__list' );
+		const navTop = document.querySelector( '.in-page-navigation.block' ).getBoundingClientRect().top + window.scrollY;
 		if ( window.scrollY > navTop && window.innerWidth < px * 40 && window.matchMedia( '(orientation: portrait)' ).matches ) {
 			nav.style.position = 'fixed';
-			nav.style.top = 0;
-			nav.style.left = 0;
+			nav.style.top = '0';
+			nav.style.left = '0';
+			nav.style.right = '0';
+			
+			nav.style.zIndex= 10;
+			nav.style.isolation= 'isolate';
 			setTimeout( () => {
-				const currentLink = nav.querySelector( '.usa-current' );
+				const currentLink = navList.querySelector( '.usa-current' );
 				if ( currentLink ) {
-					nav.scrollTo( {
+					navList.scrollTo( {
 						left: currentLink.parentElement.offsetLeft,
 					} );
 					nav.style.backgroundColor = 'white';
 				}
 
-			}, 200 );
+			}, 100 );
 		}
 		else {
 			nav.style.position = 'static';
