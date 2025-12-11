@@ -55,7 +55,7 @@ $block: 'usa-in-page-nav';
 
 		.usa-link--external {
 			&:after {
-				position: relative;
+				position: unset;
 			}
 		}
 
