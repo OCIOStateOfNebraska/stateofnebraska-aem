@@ -1,4 +1,4 @@
-version: 1
+version: 2
 indices:
   site:
     exclude:
@@ -74,3 +74,11 @@ indices:
         select: head > meta[name="publication-date"]
         value: |
           attribute(el, 'content')
+    pdfs:
+    include:
+      - '**.pdf'
+    target: /pdfs-index.json
+    properties:
+      title:
+        select: title
+        value: textContent(el)
