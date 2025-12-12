@@ -75,10 +75,10 @@ indices:
         value: |
           attribute(el, 'content')
     pdfs:
-    include:
-      - '**.pdf'
-    target: /pdfs-index.json
-    properties:
-      title:
-        select: title
-        value: textContent(el)
+      include:
+        - '**.pdf'
+      target: /pdfs-index.json
+      properties:
+        title:
+          select: title
+          value: textContent(el)
