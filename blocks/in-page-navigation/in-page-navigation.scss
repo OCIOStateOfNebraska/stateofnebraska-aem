@@ -6,7 +6,7 @@ $block: 'usa-in-page-nav';
 .usa-in-page-nav-container {
 	flex-direction: column;
 
-	.usa-in-page-nav {
+	.#{$block} {
 		display: block;
 		max-width: unset;
 
@@ -46,6 +46,7 @@ $block: 'usa-in-page-nav';
 
 		&__item {
 			min-width: fit-content;
+			padding: .2rem;
 		}
 
 
