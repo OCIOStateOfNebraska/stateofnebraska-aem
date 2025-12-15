@@ -92,6 +92,10 @@ function convertCarouselToInfoCards( main, document ) {
 			];
 			carouselItems.forEach( ( slide ) => {
 				let row = [];
+				//account for multiple items in each slide...
+				// if (slide.firstElementChild.classList.contains('col-md-6')) {
+
+				// }
 				const slideImg = slide.querySelector( 'img' );
 				row.push( slideImg );
 				const h2 = document.createElement( 'h2' );
