@@ -2,7 +2,9 @@ import {
 	buildBlock,
 	loadHeader,
 	loadFooter,
-	decorateSections,
+	readBlockConfig,
+	toCamelCase,
+	toClassName,
 	decorateBlocks,
 	decorateBlock,
 	decorateTemplateAndTheme,
@@ -329,7 +331,7 @@ function decorateGoogleMaps( element ) {
 		const url = new URL( link.href );
 
 		// Check if the link is an embed URL
-		if ( url.href.startsWith( 'https://www.google.com/maps/embed' ) ) {
+		if ( url.href.startsWith( 'https://www.google.com/maps/embed' ) || url.href.startsWith( 'https://www.google.com/maps/d/embed' ) ) {
 			createIframe( url.href, parent, titleText, link );
 		}
 		//If it isn't an embed URL, then it must be a google maps URL
@@ -439,6 +441,62 @@ export function decorateMain( main ) {
 	main.id = 'main-content';
 	decorateInner( main );
 
+}
+
+function decorateSections( main ) {
+	main.querySelectorAll( ':scope > div' ).forEach( ( section ) => {
+		const wrappers = [];
+		let defaultContent = false;
+		[...section.children].forEach( ( e ) => {
+			if ( e.tagName === 'DIV' || !defaultContent ) {
+				const wrapper = document.createElement( 'div' );
+				wrappers.push( wrapper );
+				defaultContent = e.tagName !== 'DIV';
+				if ( defaultContent ) wrapper.classList.add( 'default-content-wrapper' );
+			}
+			wrappers[wrappers.length - 1].append( e );
+		} );
+		wrappers.forEach( ( wrapper ) => section.append( wrapper ) );
+		section.classList.add( 'section' );
+		section.dataset.sectionStatus = 'initialized';
+		section.style.display = 'none';
+
+		// Process section metadata
+		const sectionMeta = section.querySelector( 'div.section-metadata' );
+		if ( sectionMeta ) {
+			const meta = readBlockConfig( sectionMeta );
+			Object.keys( meta ).forEach( ( key ) => {
+				if ( key === 'style' ) {
+					const styles = meta.style
+						.split( ',' )
+						.filter( ( style ) => style )
+						.map( ( style ) => toClassName( style.trim() ) );
+					styles.forEach( ( style ) => section.classList.add( style ) );
+				} else if( key == 'layout' ){
+					const [col1, col2] = meta[key].split( '/' ).map( Number );
+					const isValidLayout = col1 > 0 && col2 > 0 && col1 + col2 === 12;
+
+					if( isValidLayout ){
+						section.dataset.layout = col1 + '/' + col2;
+						section.classList.add( 'grid-row', 'grid-gap' );
+
+						const divs = Array.from( section.children ).filter (
+							el => !el.querySelector( '.section-metadata' )
+						);
+
+						divs.forEach( async ( div, i ) => {
+							const colSize = i % 2 === 0 ? col1 : col2;
+							div.classList.add( `desktop:grid-col-${colSize}` );		
+						} );
+						
+					}
+				} else {
+					section.dataset[toCamelCase( key )] = meta[key];
+				}
+			} );
+			sectionMeta.parentNode.remove();
+		}
+	} );
 }
 
 export function decorateInner( container ) {

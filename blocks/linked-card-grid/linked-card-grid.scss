@@ -35,10 +35,29 @@
 			color: color('primary');
 		}
 
+		&__img {
+			position:absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			border-radius: 0 0 calc(0.5rem - 0rem) calc(0.5rem - 0rem);;
+			z-index: -1;
+		}
+
 		&__body {
 			display: flex;
 			flex-direction: column;
 			gap: units(4);
+
+			&:has(img){
+				color: color(primary-lightest);
+
+				.usa-button__wrap {
+					svg {
+						fill: color(secondary); 
+					}						
+				}
+			}
 		}
 
 		&__container {
@@ -67,6 +86,16 @@
 				}
 			}
 
+			&:has(img) {
+				background: linear-gradient(to top, #0009 25%, #0000001a);
+
+				.#{$block} {
+					&__heading {
+						color: color(secondary);
+					}					
+				}
+			}
+
 			a {
 				@include u-radius('md');
 				position: absolute;
@@ -76,7 +105,7 @@
 				border-top-right-radius: 0;
 				text-decoration: none;  
 				z-index: 1;             
-				inset: 0; // shorthand for top: 0; right: 0; bottom: 0; left: 0;
+				inset: 0;
 			}
 		}
 
@@ -89,6 +118,110 @@
 				height: $icon-size;
 				fill: color(primary);
 			}
+		}		
+	}
+
+	@mixin collection-theme($heading-color, $body-color, $svg-fill, $container-bg:white, $gradient: linear-gradient(to top, rgba(255, 255, 255, 0.7) 60%, transparent),$body-color-img : $body-color) {
+		.#{$block} {
+
+			&__heading{
+				color: $heading-color;
+			}
+
+			&__body {
+				color: $body-color;
+			}
+			
+			.usa-button__wrap {
+				svg {
+					fill: $svg-fill;
+				}
+			}
+
+			&__container {
+				border-top: 2px solid $heading-color ;
+				background: $container-bg;
+
+				&:has(img) {
+					background: $gradient;
+					.#{$block}__body{
+						color: $body-color-img;
+					}
+					.#{$block}__heading{
+						color: $heading-color;
+					}
+
+					.usa-button__wrap {
+						svg {
+							fill: $svg-fill;
+						}
+					}
+				}
+
+				&:has(a) {
+					&:hover {
+						box-shadow:	0	0	0	3px	$heading-color,
+							0 8px 16px 0 rgb(0 0 0 / 10%);
+					}
+				}
+			}
 		}
 	}
+
+	.blue-filled {
+		@include collection-theme(color('secondary'),
+		color('primary-lightest'),
+		color('secondary'),
+		color('primary'),
+		linear-gradient(to top, #38728fcc 80%, #c3ceda80));
+	}
+	
+	.red-filled {
+		@include collection-theme(color('secondary'),
+		color('primary-lightest'),
+		color('secondary'),
+		$ne-color-dark-red,
+		linear-gradient(to top, #bd1f5399 60%, #dda1a633));
+	}
+	
+	.yellow-filled {
+		@include collection-theme(color('primary'),
+		color('primary-darkest'),
+		color('primary'),
+		$ne-color-yellow,
+		linear-gradient(to top, #ffc34dcc 60%, #fff2d680));
+	}
+	
+	.green-filled {
+		@include collection-theme($ne-color-dark-blue,
+		color('primary-darkest'),
+		$ne-color-dark-blue,
+		$ne-color-green,
+		linear-gradient(to top, #b9bd32cc 60%, #b9bd3280));
+	}
+
+	.red{
+		@include collection-theme($ne-color-dark-red,
+		black,
+		$ne-color-dark-red);
+	}
+
+	.yellow{
+		@include collection-theme($ne-color-yellow,
+		black,
+		$ne-color-yellow,
+		white,
+		linear-gradient(to top, #0009 25%, #0000001a),
+		white);
+	}
+
+	.green{
+		@include collection-theme($ne-color-green,
+		black,
+		$ne-color-green,
+		white,
+		linear-gradient(to top, #0009 25%, #0000001a),
+		white);
+	}
+
 }
