@@ -494,19 +494,19 @@ function decorateSections( main ) {
 				else if( key === 'background' ){
 					const sectionBackground = document.createElement( 'div' );
 	
-					if(meta[key].startsWith( 'http' )){						
-						sectionBackground.style.backgroundImage = `url(${meta[key]})`.replace('750', '1920');
-						sectionBackground.classList.add('section-background__image');
+					if( meta[key].startsWith( 'http' ) ){						
+						sectionBackground.style.backgroundImage = `url(${meta[key]})`.replace( '750', '1920' );
+						sectionBackground.classList.add( 'section-background__image' );
 					}
 					else{
-						switch (meta[key]) {							
-							case 'blue': sectionBackground.classList.add('section-background__blue');										
+						switch ( meta[key] ) {							
+							case 'blue': sectionBackground.classList.add( 'section-background__blue' );										
 								break;
-							case 'red': sectionBackground.classList.add('section-background__red');
+							case 'red': sectionBackground.classList.add( 'section-background__red' );
 								break;
-							case 'green': sectionBackground.classList.add('section-background__green');
+							case 'green': sectionBackground.classList.add( 'section-background__green' );
 								break;
-							case 'yellow': sectionBackground.classList.add('section-background__yellow');
+							case 'yellow': sectionBackground.classList.add( 'section-background__yellow' );
 								break;					
 							default:
 								break;
@@ -515,7 +515,7 @@ function decorateSections( main ) {
 					sectionBackground.classList.add( 'section-background' );
 					section.prepend( sectionBackground );
 				}
-				 else {
+				else {
 					section.dataset[toCamelCase( key )] = meta[key];
 				}
 			} );
