@@ -490,7 +490,32 @@ function decorateSections( main ) {
 						} );
 						
 					}
-				} else {
+				}
+				else if( key === 'background' ){
+					const sectionBackground = document.createElement( 'div' );
+	
+					if(meta[key].startsWith( 'http' )){						
+						sectionBackground.style.backgroundImage = `url(${meta[key]})`.replace('750', '1920');
+						sectionBackground.classList.add('section-background__image');
+					}
+					else{
+						switch (meta[key]) {							
+							case 'blue': sectionBackground.classList.add('section-background__blue');										
+								break;
+							case 'red': sectionBackground.classList.add('section-background__red');
+								break;
+							case 'green': sectionBackground.classList.add('section-background__green');
+								break;
+							case 'yellow': sectionBackground.classList.add('section-background__yellow');
+								break;					
+							default:
+								break;
+						}
+					}
+					sectionBackground.classList.add( 'section-background' );
+					section.prepend( sectionBackground );
+				}
+				 else {
 					section.dataset[toCamelCase( key )] = meta[key];
 				}
 			} );

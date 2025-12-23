@@ -1,0 +1,134 @@
+@use '../../styles/ne-global-imports' as *;
+@use '~uswds/usa-collection/src/styles/usa-collection';
+
+
+.section {
+    &:has(.section-background) {
+        position: relative;
+        margin-top: 0;
+        padding-top: units(6);
+        padding-bottom: units(6);
+
+    }
+
+    &:has(.section-background__image) {
+        color: color('white');
+
+        svg {
+            fill: color('secondary');
+        }
+        a {
+            color: color('secondary');
+
+            &:hover,
+            &:focus {
+                color: color('secondary-light');
+            }
+        }
+
+        .section-background {
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+            }
+        }
+
+    }
+
+
+    &:has(.section-background__blue) {
+        color: color('white');
+
+        svg {
+            fill: color('secondary');
+        }
+
+        a {
+            color: color('secondary');
+
+            &:hover,
+            &:focus {
+                color: color('secondary-light');
+            }
+        }
+    }
+
+    &:has(.section-background__red) {
+        color: color('white');
+
+        svg {
+            fill: color('secondary');
+        }
+
+        a {
+            color: color('secondary');
+
+            &:hover,
+            &:focus {
+                color: color('secondary-light');
+            }
+        }
+    }
+
+    &:has(.section-background__yellow) {
+        .h2--underline:after {
+            background-color: color('primary');
+        }
+    }
+
+    &:has(.section-background__green) {
+
+        svg {
+            fill: color('primary-darker');
+        }
+
+        a {
+            color: color('primary-darker');
+
+            &:hover,
+            &:focus {
+                color: color('accent-cool-darkest');
+            }
+        }
+
+        .h2--underline:after {
+            background-color: color('primary-darkest');
+        }
+    }
+
+    .section-background {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -100vw;
+        width: 200vw;
+        height: 100%;
+        z-index: -1;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        &__blue {
+            background-color: color('primary-dark');
+        }
+
+        &__red {
+            background-color: color('emergency-dark');
+        }
+
+        &__green {
+            background-color: color('accent-warm-dark');
+        }
+
+        &__yellow {
+            background-color: $ne-color-yellow-background;
+        }
+    }
+
+}
