@@ -9,6 +9,33 @@
         padding-top: units(6);
         padding-bottom: units(6);
 
+        &:has(.icon-button-grid-wrapper) {
+            background: transparent;
+
+
+            &:has(.section-background__red) {
+                .icon-button-card {
+                    &__container {
+                        background: $ne-color-dark-red;
+                    }
+                }
+            }
+            &:has(.section-background__green) {
+                .icon-button-card {
+                    &__container {
+                        background: #C5CC3F;
+                    }
+                    &__body {
+                        svg {
+                            fill: color('primary-darker');
+                        }
+                    }
+                    &__heading {
+                        color: color('primary-darker');
+                    }
+                }
+            }
+        }
     }
 
     &:has(.section-background__image) {
@@ -92,6 +119,10 @@
                 }
             }
         }
+
+        caption {
+            color: color('white');
+        }
     }
 
     &:has(.section-background__red) {
@@ -125,6 +156,10 @@
                 background-color: transparent;
                 color: color('white');
             }
+        }
+
+        caption {
+            color: color('white');
         }
     }
 
