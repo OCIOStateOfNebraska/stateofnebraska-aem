@@ -17,6 +17,7 @@
         svg {
             fill: color('secondary');
         }
+
         a {
             color: color('secondary');
 
@@ -56,6 +57,41 @@
                 color: color('secondary-light');
             }
         }
+
+        .usa-accordion {
+
+            &__button {
+                color: color('white');
+
+                &:hover,
+                &:focus {
+                    color: color('white');
+                }
+            }
+
+            &__content {
+                background-color: transparent;
+                color: color('white');
+            }
+        }
+
+        .info-card-grid {
+            &.blue {
+                .usa-card {
+                    &__container {
+                        background-color: color('primary-darker');
+                        box-shadow: 0 0 4px 2px #00000066;
+                    }
+
+                    &__footer {
+                        a {
+                            color: black;
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
     &:has(.section-background__red) {
@@ -73,11 +109,48 @@
                 color: color('secondary-light');
             }
         }
+
+        .usa-accordion {
+
+            &__button {
+                color: color('white');
+
+                &:hover,
+                &:focus {
+                    color: color('white');
+                }
+            }
+
+            &__content {
+                background-color: transparent;
+                color: color('white');
+            }
+        }
     }
 
     &:has(.section-background__yellow) {
         .h2--underline:after {
             background-color: color('primary');
+        }
+
+        .usa-accordion {
+            &__button {
+                border-top-color: color('primary-darker');
+
+                &:before {
+                    background-color: color('primary');
+                }
+            }
+
+            &__content {
+                background-color: transparent;
+            }
+        }
+
+        .manual-collection {
+            .usa-collection__item {
+                border-color: color('primary-darker');
+            }
         }
     }
 
@@ -98,6 +171,23 @@
 
         .h2--underline:after {
             background-color: color('primary-darkest');
+        }
+
+        .usa-accordion {
+            &__button {
+                border-top-color: color('primary-darker');
+                color: color('primary-darker');
+            }
+
+            &__content {
+                background-color: transparent;
+            }
+        }
+
+        .manual-collection {
+            .usa-collection__item {
+                border-color: color('primary-darker');
+            }
         }
     }
 
