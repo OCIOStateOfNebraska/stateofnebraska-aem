@@ -6,30 +6,67 @@
     &:has(.section-background) {
         position: relative;
         margin-top: 0;
-        padding-top: units(6);
-        padding-bottom: units(6);
+        padding-top: units(9);
+        padding-bottom: units(9);
 
         &:has(.icon-button-grid-wrapper) {
             background: transparent;
-
+            $card : 'icon-button-card';
 
             &:has(.section-background__red) {
                 .icon-button-card {
                     &__container {
                         background: $ne-color-dark-red;
                     }
+
+                    &:hover {
+                        .#{$card}__container {
+                            background-color: color('emergency');
+                        }
+
+                        .#{$card}__body {
+                            svg {
+                                fill: color('secondary-light');
+                            }
+                        }
+
+                        .#{$card}__heading {
+                            color: color('secondary-light');
+                        }
+                    }
+
                 }
             }
+
             &:has(.section-background__green) {
                 .icon-button-card {
+                    
+                    &:hover {
+                        .#{$card}__container {
+                            background-color: color('accent-warm-light');
+                        }
+
+                        .#{$card}__body {
+                            svg {
+                                fill: color('primary');
+                            }
+                        }
+
+                        .#{$card}__heading {
+                            color: color('primary');
+                        }
+                    }
+
                     &__container {
                         background: #C5CC3F;
                     }
+
                     &__body {
                         svg {
                             fill: color('primary-darker');
                         }
                     }
+
                     &__heading {
                         color: color('primary-darker');
                     }
@@ -237,7 +274,9 @@
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        background-attachment: fixed;
+        @include at-media('tablet'){
+            background-attachment: fixed;
+        }
 
         &__blue {
             background-color: color('primary-dark');
@@ -255,5 +294,4 @@
             background-color: $ne-color-yellow-background;
         }
     }
-
 }
