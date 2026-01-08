@@ -19,7 +19,7 @@ export default async function decorate( block ) {
 		const navList = nav.querySelector( '.usa-in-page-nav__list' );
 		const navTop = block.getBoundingClientRect().top + window.scrollY;
 		if ( window.scrollY > navTop && window.innerWidth < mobileBreakpoint && window.matchMedia( '(orientation: portrait)' ).matches ) {
-			nav.classList.add( 'scrolled' );
+			nav.classList.add( 'usa-in-page-nav--scrolled' );
 			const currentLink = navList.querySelector( '.usa-current' );
 			if ( currentLink ) {
 				navList.scrollTo( {
@@ -28,7 +28,7 @@ export default async function decorate( block ) {
 			}
 		}
 		else {
-			nav.classList.remove( 'scrolled' );
+			nav.classList.remove( 'usa-in-page-nav--scrolled' );
 		}
 	}
 

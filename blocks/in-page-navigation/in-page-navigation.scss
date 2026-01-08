@@ -49,7 +49,7 @@ $block: 'usa-in-page-nav';
 			font-size: size('body', '3xs');
 		}	
 
-		&.scrolled{
+		&--scrolled{
 			position : fixed;
 			top: 0;
 			right: 0;
