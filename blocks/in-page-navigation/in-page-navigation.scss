@@ -12,9 +12,9 @@ $block: 'usa-in-page-nav';
 
 		&__list {
 			display: flex;
-			height: 3rem;
+			min-height: units(6);
 			border: 0;
-			border-bottom: 1px solid #1b1b1b40;
+			border-bottom: 1px solid color('base-light');
 			overflow-x: auto;
 			overflow-y: hidden;
 			-webkit-overflow-scrolling: touch; // smooth scrolling on iOS
@@ -22,7 +22,6 @@ $block: 'usa-in-page-nav';
 			scrollbar-width: none; // hide scrollbar in Firefox
 			-ms-overflow-style: none; // hide scrollbar in IE 10+
 			scroll-snap-type: x mandatory;
-			font-size: 1rem;
 			z-index: 10;
 
 			&::-webkit-scrollbar {
@@ -36,22 +35,36 @@ $block: 'usa-in-page-nav';
 						&:after {
 							top: 90%;
 							width: 100%;
-							min-height: .25rem;
+							min-height: units(0.5);
 							background-color: color('secondary');
 						}
 					}
 				}
 			}
 		}
-
+		
 		&__item {
 			min-width: fit-content;
-			padding: .2rem;
+			padding: units(0.5);
+			font-size: size('body', '3xs');
+		}	
+
+		&.scrolled{
+			position : fixed;
+			top: 0;
+			right: 0;
+			left: 0;
+			background-color: color('white');
+			z-index: 10;
+			isolation: isolate;
+
+			.#{$block}__heading{
+				display: none;
+			}
 		}
-
-
 	}
 
+	
 	.main-content {
 
 		// remove bottom margin from last component in the last section, as well as last section (not collapsing with flex layout)
@@ -87,7 +100,7 @@ $block: 'usa-in-page-nav';
 				display: block;
 				height: inherit;
 				border: 0;
-				border-left: 1px solid #1b1b1b40;
+				border-left: 1px solid color('base-light');
 				font-size: inherit;
 
 				// stylelint-disable-next-line scss/selector-nest-combinators
@@ -97,7 +110,7 @@ $block: 'usa-in-page-nav';
 						&:after {
 							top: 0;
 							left: units(1px) * -1; // on top of the __list border
-							width: .25rem;
+							width: units(0.5);
 							background: color('secondary');
 						}
 					}
