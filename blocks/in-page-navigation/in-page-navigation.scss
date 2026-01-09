@@ -4,10 +4,73 @@
 $block: 'usa-in-page-nav';
 
 .usa-in-page-nav-container {
+	flex-direction: column;
+
+	.#{$block} {
+		display: block;
+		max-width: unset;
+
+		&__list {
+			display: flex;
+			min-height: units(6);
+			border: 0;
+			border-bottom: 1px solid color('base-light');
+			overflow-x: auto;
+			overflow-y: hidden;
+			-webkit-overflow-scrolling: touch; // smooth scrolling on iOS
+			touch-action: pan-x;
+			scrollbar-width: none; // hide scrollbar in Firefox
+			-ms-overflow-style: none; // hide scrollbar in IE 10+
+			scroll-snap-type: x mandatory;
+			z-index: 10;
+
+			&::-webkit-scrollbar {
+				display: none; // hide scrollbar in WebKit browsers
+			}
+
+			&,
+			a {
+				&:not(.usa-button) {
+					& .usa-current {
+						&:after {
+							top: 90%;
+							width: 100%;
+							min-height: units(0.5);
+							background-color: color('secondary');
+						}
+					}
+				}
+			}
+		}
+		
+		&__item {
+			min-width: fit-content;
+			padding: units(0.5);
+			font-size: size('body', '3xs');
+		}	
+
+		&--scrolled{
+			position : fixed;
+			top: 0;
+			right: 0;
+			left: 0;
+			background-color: color('white');
+			z-index: 10;
+			isolation: isolate;
+
+			.#{$block}__heading{
+				display: none;
+			}
+		}
+	}
+
+	
 	.main-content {
+
 		// remove bottom margin from last component in the last section, as well as last section (not collapsing with flex layout)
 		// stylelint-disable-next-line scss/selector-nest-combinators
-		> .section:last-child {
+		>.section:last-child {
+
 			&,
 			> :last-child {
 				margin-bottom: 0;
@@ -17,40 +80,54 @@ $block: 'usa-in-page-nav';
 }
 
 @include at-media('tablet') {
-	.in-page-navigation {
-		align-self: stretch; // so that the inner .usa-in-page-navigation can be sticky within this space
-		order: 2;
-	}
+	.usa-in-page-nav-container {
+		flex-direction: row;
 
-	.#{$block} {
-		max-width: units('card');
-
-		&__heading {
-			@include typeset('heading', '2xs', $theme-heading-line-height);
-			@include u-text('semibold');
+		.in-page-navigation {
+			align-self: stretch; // so that the inner .usa-in-page-navigation can be sticky within this space
+			order: 2;
 		}
 
-		&__list {
-			// stylelint-disable-next-line scss/selector-nest-combinators
-			&,
-			a:not(.usa-button) {
-				&.usa-current {
-					&:after {
-						left: units(1px) * -1; // on top of the __list border
-						background: color('secondary');
+		.#{$block} {
+			max-width: units('card');
+
+			&__heading {
+				@include typeset('heading', '2xs', $theme-heading-line-height);
+				@include u-text('semibold');
+			}
+
+			&__list {
+				display: block;
+				height: inherit;
+				border: 0;
+				border-left: 1px solid color('base-light');
+				font-size: inherit;
+
+				// stylelint-disable-next-line scss/selector-nest-combinators
+				&,
+				a:not(.usa-button) {
+					&.usa-current {
+						&:after {
+							top: 0;
+							left: units(1px) * -1; // on top of the __list border
+							width: units(0.5);
+							background: color('secondary');
+						}
 					}
 				}
 			}
-		}
 
-		&__item {
-			font-size: size('body', '3xs');
+			&__item {
+				font-size: size('body', '3xs');
+			}
 		}
 	}
 }
 
 @include at-media('desktop') {
-	.#{$block} {
-		max-width: units('card-lg');
+	.usa-in-page-nav-container {
+		.#{$block} {
+			max-width: units('card-lg');
+		}
 	}
 }
