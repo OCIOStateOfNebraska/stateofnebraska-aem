@@ -12,6 +12,20 @@
 		justify-content: space-between;
 		height: fit-content;
 		border-bottom: 0;
+		display: flex;
+		align-items: center;
+	}
+
+	.usa-navbar .usa-nav__secondary {
+		margin-left: auto;
+		margin-top: 0;
+		margin-bottom: 0;
+
+		position: static;
+		top: auto;
+		right: auto;
+		bottom: auto;
+		left: auto;
 	}
 	
 	.grid-col {
@@ -22,30 +36,40 @@
 	.usa-logo {
 		@include u-margin-y(3);
 		position: relative;
-		flex: 0 0 auto;
-		width: px-to-rem(180px);
-		height: px-to-rem(50px);
-		
-		@include at-media('tablet') {
-			width: px-to-rem(320px);
-		}
-
-		&__text,
-		a,
-		picture,
-		img {
-			position: absolute;
-			inset: 0;
-			width: 100%;
-			height: 100%;
-		}
+		display: flex;
+		align-items: center;
+		margin: 0;
+		min-width: 0;
 
 		picture,
 		img {
-			margin: 0;
-			object-fit: scale-down;
-			object-position: left;
+			height: 50px;
+			width: auto;
+			max-width: 160px;
+			object-fit: contain;
 		}
+	}
+
+	.logo-text-wrap {
+		display: flex;
+		align-items: center;
+	}
+
+	.pipe {
+		width: 0;
+		border-left: 1px solid color('white');
+		min-height: 2.5rem;
+		align-self: stretch;
+		margin: 2px;
+	}
+
+	.logo-text {
+		display: flex;
+		align-items: center;
+		color: color('white');
+		font-size: 1rem;
+		font-family: 'Montserrat', 'montserrat-normal-400-fallback', Roboto, Helvetica, Arial, sans-serif;
+		margin-left: 4px;
 	}
 
 	.usa-menu-btn {
@@ -249,12 +273,17 @@
 				}
 			}
 		}
-		
-		&.usa-header--small {
-			.usa-nav__secondary {
-				bottom: units(4); // in official USWDS this was labeled as "magic number" -- I just needed it halved in order to align correctly
-				margin-bottom: 0;
-			}
+	}
+	@media (max-width: 64em) {
+		.usa-navbar {
+			@include u-padding-left(2);
+		}
+  		.usa-logo picture,
+  		.usa-logo img {
+    		height: 40px;
+			width: auto;
+    		max-width: 100px;
+			object-fit: contain;
 		}
 	}
 }
