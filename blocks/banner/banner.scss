@@ -7,4 +7,11 @@ $uswds-block: 'usa-banner';
 	&__header-text {
 		@include u-padding-y(1.5);
 	}
+
+	&--ne {
+		.#{$uswds-block}__header-flag {
+			width: 1.2rem;
+			height: auto;
+		}
+	}
 }

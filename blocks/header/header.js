@@ -101,6 +101,7 @@ function createSecondaryMenu( innerMenu, searchResultsUrl, showDropdowns ) {
 	closeButton.setAttribute( 'aria-controls', 'mobile-nav' );
 	closeButton.append( closeImage );
 	innerMenu.prepend( closeButton );
+	return secondaryNav;
 }
 
 async function loadAndDecorateNav() {
@@ -135,7 +136,7 @@ async function loadAndDecorateNav() {
 	const searchLink = navFragment.querySelector( 'div.section:last-child a' );
 	const searchResultsUrl = searchLink ? searchLink.href : '/search-results';
 
-	createSecondaryMenu( innerNav, searchResultsUrl, showDropdowns );
+	const secondaryNav = createSecondaryMenu( innerNav, searchResultsUrl, showDropdowns );
 	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation', id: 'mobile-nav' } );
 	nav.append( innerNav );
 	const container = domEl( 'div', {} );
@@ -160,6 +161,18 @@ async function loadAndDecorateNav() {
 
 	const logo = domEl( 'div', { class: 'usa-logo' } );
 	logo.append( img );
+	const logoText = [...navFragment.querySelectorAll( '.default-content-wrapper p' )]
+		.filter( ( p ) => !p.classList.contains( 'usa-button__wrap' ) )
+		.map( ( p ) => p.textContent.trim() )
+		.join( ' ' );
+
+	if ( logoText ) {
+		const logoTextWrap = domEl( 'div', { class: 'logo-text-wrap' } );
+		const pipe = domEl( 'span', { class: 'pipe', 'aria-hidden': 'true' } );
+		const logoTextDiv = domEl( 'div', { class: 'logo-text' }, logoText );
+		logoTextWrap.append( pipe, logoTextDiv );
+		logo.append( logoTextWrap );
+	}
 	const navBar = domEl( 'div', { class: 'usa-navbar' } );
 	navBar.append( logo );
 	const menuButton = domEl( 'button', { class: 'usa-menu-btn', type: 'button' } );
@@ -169,6 +182,17 @@ async function loadAndDecorateNav() {
 	menu.setAttribute( 'aria-label', 'Open primary navigation' );
 	menu.setAttribute( 'aria-controls', 'mobile-nav' );
 	menu.setAttribute( 'aria-expanded', 'false' );
+
+	const desktopMQ = window.matchMedia( '(min-width: 64em)' );
+	function placeSearch(){
+		if ( desktopMQ.matches ) {
+			navBar.insertBefore( secondaryNav, menuButton );
+		} else {
+			innerNav.append( secondaryNav );
+		}
+	}
+	placeSearch();
+	desktopMQ.addEventListener( 'change', placeSearch );
 
 	const closeButton = nav.querySelector( 'button' );
 	menu.addEventListener( 'click', () => toggleAriaExpanded() );
