@@ -9,24 +9,20 @@
 	background-color: color('primary-dark');
 
 	.usa-navbar {
+		display: flex;
+		align-items: center;
 		justify-content: space-between;
 		height: fit-content;
 		border-bottom: 0;
-		display: flex;
-		align-items: center;
+
+		.usa-nav__secondary {
+			position: static;
+			margin-top: 0;
+			margin-bottom: 0;
+			margin-left: auto;
+		}
 	}
 
-	.usa-navbar .usa-nav__secondary {
-		margin-left: auto;
-		margin-top: 0;
-		margin-bottom: 0;
-
-		position: static;
-		top: auto;
-		right: auto;
-		bottom: auto;
-		left: auto;
-	}
 	
 	.grid-col {
 		flex: 1 1 auto;
@@ -38,14 +34,14 @@
 		position: relative;
 		display: flex;
 		align-items: center;
-		margin: 0;
 		min-width: 0;
+		margin: 0;
 
 		picture,
 		img {
-			height: 50px;
 			width: auto;
 			max-width: 160px;
+			height: 50px;
 			object-fit: contain;
 		}
 	}
@@ -56,20 +52,21 @@
 	}
 
 	.pipe {
-		width: 0;
-		border-left: 1px solid color('white');
-		min-height: 2.5rem;
 		align-self: stretch;
+		width: 0;
+		min-height: 2.5rem;
 		margin: 2px;
+		border-left: 1px solid color('white');
 	}
 
 	.logo-text {
 		display: flex;
 		align-items: center;
-		color: color('white');
-		font-size: 1rem;
-		font-family: 'Montserrat', 'montserrat-normal-400-fallback', Roboto, Helvetica, Arial, sans-serif;
 		margin-left: 4px;
+		color: color('white');
+
+		@include u-font-size('sm');
+		font-family: Montserrat, 'montserrat-normal-400-fallback', Roboto, Helvetica, Arial, sans-serif;
 	}
 
 	.usa-menu-btn {
@@ -274,16 +271,20 @@
 			}
 		}
 	}
-	@media (max-width: 64em) {
+
+	@include at-media-max('tablet') {
 		.usa-navbar {
 			@include u-padding-left(2);
 		}
-  		.usa-logo picture,
-  		.usa-logo img {
-    		height: 40px;
-			width: auto;
-    		max-width: 100px;
-			object-fit: contain;
+
+		.usa-logo {
+			picture,
+			img {
+				width: auto;
+				max-width: 100px;
+				height: 40px;
+				object-fit: contain;
+			}
 		}
 	}
 }
