@@ -3,295 +3,295 @@
 
 
 .section {
-    &:has(.section-background) {
-        position: relative;
-        margin-top: 0;
-        padding-top: units(9);
-        padding-bottom: units(9);
+	&:has(.section-background) {
+		position: relative;
+		margin-top: 0;
+		padding-top: units(9);
+		padding-bottom: units(9);
 
-        &:has(.icon-button-grid-wrapper) {
-            background: transparent;
-            $card : 'icon-button-card';
+		&:has(.icon-button-grid-wrapper) {
+			background: transparent;
+			$card : 'icon-button-card';
 
-            &:has(.section-background__red) {
-                .icon-button-card {
-                    &__container {
-                        background: $ne-color-dark-red;
-                    }
+			&:has(.section-background--red) {
+				.icon-button-card {
+					&__container {
+						background: $ne-color-dark-red;
+					}
 
-                    &:hover {
-                        .#{$card}__container {
-                            background-color: color('emergency');
-                        }
+					&:hover {
+						.#{$card}__container {
+							background-color: color('emergency');
+						}
 
-                        .#{$card}__body {
-                            svg {
-                                fill: color('secondary-light');
-                            }
-                        }
+						.#{$card}__body {
+							svg {
+								fill: color('secondary-light');
+							}
+						}
 
-                        .#{$card}__heading {
-                            color: color('secondary-light');
-                        }
-                    }
+						.#{$card}__heading {
+							color: color('secondary-light');
+						}
+					}
+				}
+			}
 
-                }
-            }
+			&:has(.section-background--green) {
+				.icon-button-card {
 
-            &:has(.section-background__green) {
-                .icon-button-card {
-                    
-                    &:hover {
-                        .#{$card}__container {
-                            background-color: color('accent-warm-light');
-                        }
+					&:hover {
+						.#{$card}__container {
+							background-color: color('accent-warm-light');
+						}
 
-                        .#{$card}__body {
-                            svg {
-                                fill: color('primary');
-                            }
-                        }
+						.#{$card}__body {
+							svg {
+								fill: color('primary');
+							}
+						}
 
-                        .#{$card}__heading {
-                            color: color('primary');
-                        }
-                    }
+						.#{$card}__heading {
+							color: color('primary');
+						}
+					}
 
-                    &__container {
-                        background: #C5CC3F;
-                    }
+					&__container {
+						background: #C5CC3F;
+					}
 
-                    &__body {
-                        svg {
-                            fill: color('primary-darker');
-                        }
-                    }
+					&__body {
+						svg {
+							fill: color('primary-darker');
+						}
+					}
 
-                    &__heading {
-                        color: color('primary-darker');
-                    }
-                }
-            }
-        }
-    }
+					&__heading {
+						color: color('primary-darker');
+					}
+				}
+			}
+		}
+	}
 
-    &:has(.section-background__image) {
-        color: color('white');
+	&:has(.section-background--image) {
+		color: color('white');
 
-        svg {
-            fill: color('secondary');
-        }
+		svg {
+			fill: color('secondary');
+		}
 
-        a {
-            color: color('secondary');
+		a {
+			color: color('secondary');
 
-            &:hover,
-            &:focus {
-                color: color('secondary-light');
-            }
-        }
+			&:hover,
+			&:focus {
+				color: color('secondary-light');
+			}
+		}
 
-        .section-background {
-            &:before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.6);
-            }
-        }
+		.section-background {
+			&:before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.6);
+			}
+		}
 
-    }
+	}
 
 
-    &:has(.section-background__blue) {
-        color: color('white');
+	&:has(.section-background--blue) {
+		color: color('white');
 
-        svg {
-            fill: color('secondary');
-        }
+		svg {
+			fill: color('secondary');
+		}
 
-        a {
-            color: color('secondary');
+		a {
+			color: color('secondary');
 
-            &:hover,
-            &:focus {
-                color: color('secondary-light');
-            }
-        }
+			&:hover,
+			&:focus {
+				color: color('secondary-light');
+			}
+		}
 
-        .usa-accordion {
+		.usa-accordion {
 
-            &__button {
-                color: color('white');
+			&__button {
+				color: color('white');
 
-                &:hover,
-                &:focus {
-                    color: color('white');
-                }
-            }
+				&:hover,
+				&:focus {
+					color: color('white');
+				}
+			}
 
-            &__content {
-                background-color: transparent;
-                color: color('white');
-            }
-        }
+			&__content {
+				background-color: transparent;
+				color: color('white');
+			}
+		}
 
-        .info-card-grid {
-            &.blue {
-                .usa-card {
-                    &__container {
-                        background-color: color('primary-darker');
-                        box-shadow: 0 0 4px 2px #00000066;
-                    }
+		.info-card-grid {
+			&.blue {
+				.usa-card {
+					&__container {
+						background-color: color('primary-darker');
+						box-shadow: 0 0 4px 2px #00000066;
+					}
 
-                    &__footer {
-                        a {
-                            color: black;
-                        }
+					&__footer {
+						a {
+							color: black;
+						}
 
-                    }
-                }
-            }
-        }
+					}
+				}
+			}
+		}
 
-        caption {
-            color: color('white');
-        }
-    }
+		caption {
+			color: color('white');
+		}
+	}
 
-    &:has(.section-background__red) {
-        color: color('white');
+	&:has(.section-background--red) {
+		color: color('white');
 
-        svg {
-            fill: color('secondary');
-        }
+		svg {
+			fill: color('secondary');
+		}
 
-        a {
-            color: color('secondary');
+		a {
+			color: color('secondary');
 
-            &:hover,
-            &:focus {
-                color: color('secondary-light');
-            }
-        }
+			&:hover,
+			&:focus {
+				color: color('secondary-light');
+			}
+		}
 
-        .usa-accordion {
+		.usa-accordion {
 
-            &__button {
-                color: color('white');
+			&__button {
+				color: color('white');
 
-                &:hover,
-                &:focus {
-                    color: color('white');
-                }
-            }
+				&:hover,
+				&:focus {
+					color: color('white');
+				}
+			}
 
-            &__content {
-                background-color: transparent;
-                color: color('white');
-            }
-        }
+			&__content {
+				background-color: transparent;
+				color: color('white');
+			}
+		}
 
-        caption {
-            color: color('white');
-        }
-    }
+		caption {
+			color: color('white');
+		}
+	}
 
-    &:has(.section-background__yellow) {
-        .h2--underline:after {
-            background-color: color('primary');
-        }
+	&:has(.section-background--yellow) {
+		.h2--underline:after {
+			background-color: color('primary');
+		}
 
-        .usa-accordion {
-            &__button {
-                border-top-color: color('primary-darker');
+		.usa-accordion {
+			&__button {
+				border-top-color: color('primary-darker');
 
-                &:before {
-                    background-color: color('primary');
-                }
-            }
+				&:before {
+					background-color: color('primary');
+				}
+			}
 
-            &__content {
-                background-color: transparent;
-            }
-        }
+			&__content {
+				background-color: transparent;
+			}
+		}
 
-        .manual-collection {
-            .usa-collection__item {
-                border-color: color('primary-darker');
-            }
-        }
-    }
+		.manual-collection {
+			.usa-collection__item {
+				border-color: color('primary-darker');
+			}
+		}
+	}
 
-    &:has(.section-background__green) {
+	&:has(.section-background--green) {
 
-        svg {
-            fill: color('primary-darker');
-        }
+		svg {
+			fill: color('primary-darker');
+		}
 
-        a {
-            color: color('primary-darker');
+		a {
+			color: color('primary-darker');
 
-            &:hover,
-            &:focus {
-                color: color('accent-cool-darkest');
-            }
-        }
+			&:hover,
+			&:focus {
+				color: color('accent-cool-darkest');
+			}
+		}
 
-        .h2--underline:after {
-            background-color: color('primary-darkest');
-        }
+		.h2--underline:after {
+			background-color: color('primary-darkest');
+		}
 
-        .usa-accordion {
-            &__button {
-                border-top-color: color('primary-darker');
-                color: color('primary-darker');
-            }
+		.usa-accordion {
+			&__button {
+				border-top-color: color('primary-darker');
+				color: color('primary-darker');
+			}
 
-            &__content {
-                background-color: transparent;
-            }
-        }
+			&__content {
+				background-color: transparent;
+			}
+		}
 
-        .manual-collection {
-            .usa-collection__item {
-                border-color: color('primary-darker');
-            }
-        }
-    }
+		.manual-collection {
+			.usa-collection__item {
+				border-color: color('primary-darker');
+			}
+		}
+	}
 
-    .section-background {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: -100vw;
-        width: 200vw;
-        height: 100%;
-        z-index: -1;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        @include at-media('tablet'){
-            background-attachment: fixed;
-        }
+	.section-background {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: -100vw;
+		width: 200vw;
+		height: 100%;
+		z-index: -1;
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
 
-        &__blue {
-            background-color: color('primary-dark');
-        }
+		@include at-media('tablet') {
+			background-attachment: fixed;
+		}
 
-        &__red {
-            background-color: color('emergency-dark');
-        }
+		&--blue {
+			background-color: color('primary-dark');
+		}
 
-        &__green {
-            background-color: color('accent-warm-dark');
-        }
+		&--red {
+			background-color: color('emergency-dark');
+		}
 
-        &__yellow {
-            background-color: $ne-color-yellow-background;
-        }
-    }
+		&--green {
+			background-color: color('accent-warm-dark');
+		}
+
+		&--yellow {
+			background-color: $ne-color-yellow-background;
+		}
+	}
 }

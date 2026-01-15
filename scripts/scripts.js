@@ -490,28 +490,25 @@ function decorateSections( main ) {
 					}
 				}
 				else if ( key === 'background' ) {
-					const sectionBackground = document.createElement( 'div' );
+					const sectionBackground = domEl( 'div', { class: 'section-background' } );
 
 					if ( meta[key].startsWith( 'http' ) ) {
 						sectionBackground.style.backgroundImage = `url(${meta[key]})`.replace( '750', '1920' );
-						sectionBackground.classList.add( 'section-background__image' );
+						sectionBackground.classList.add( 'section-background--image' );
 					}
 					else {
 						switch ( meta[key] ) {
-							case 'blue': sectionBackground.classList.add( 'section-background__blue' );
+							case 'blue': sectionBackground.classList.add( 'section-background--blue' );
 								break;
-							case 'red': sectionBackground.classList.add( 'section-background__red' );
+							case 'red': sectionBackground.classList.add( 'section-background--red' );
 								break;
-							case 'green': sectionBackground.classList.add( 'section-background__green' );
+							case 'green': sectionBackground.classList.add( 'section-background--green' );
 								break;
-							case 'yellow': sectionBackground.classList.add( 'section-background__yellow' );
-								break;
-							default:
+							case 'yellow': sectionBackground.classList.add( 'section-background--yellow' );
 								break;
 						}
-					}
-					sectionBackground.classList.add( 'section-background' );
-					section.prepend( sectionBackground );
+					}				
+					section.append( sectionBackground );
 				}
 				else {
 					section.dataset[toCamelCase( key )] = meta[key];
