@@ -6,7 +6,9 @@ import Events from '../../scripts/Events.class.js';
 import { Fuse } from '../../scripts/deps/bundle-uswds.js';
 import renderResult from './search-result.js';
 import createPagination from './search-pagination.js';
-
+import backdropDecorate from '../backdrop-grid/backdrop-grid.js';
+import { loadCSS } from '../../scripts/aem.js';
+ 
 /**
  * @file search.js
  * @description This module implements a search block that allows users to search for content within the site.
@@ -63,6 +65,8 @@ class SearchBlock {
 		this.block = block;
 		/** @member {string} */
 		this.blockClassDynamicCollection = block.classList.contains( 'dynamic-collection' );
+		/** @member {string} */
+		this.blockBackdropGridCollection = block.classList.contains( 'backdrop-grid' );
 		/** @member {object} */
 		this.placeholders = null;
 		/** @member {string} */
@@ -372,8 +376,13 @@ class SearchBlock {
 						this.form.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 					}
 				} );
-			} else if ( this.blockClassDynamicCollection ) {
+			} else if ( this.blockClassDynamicCollection || this.blockBackdropGridCollection ) {
 				data = filteredData.slice( 0, this.count ); // only first 3 results
+			}
+
+			if ( this.blockBackdropGridCollection ) {
+				await loadCSS( `${window.hlx.codeBasePath}/blocks/backdrop-grid/backdrop-grid.css` );
+				backdropDecorate( this.block, data );
 			}
 
 			searchResults.classList.remove( NO_RESULTS_CLASS );
