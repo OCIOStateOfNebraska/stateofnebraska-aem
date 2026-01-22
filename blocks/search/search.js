@@ -383,6 +383,7 @@ class SearchBlock {
 			if ( this.blockBackdropGridCollection ) {
 				await loadCSS( `${window.hlx.codeBasePath}/blocks/backdrop-grid/backdrop-grid.css` );
 				backdropDecorate( this.block, data );
+				return;
 			}
 
 			searchResults.classList.remove( NO_RESULTS_CLASS );
