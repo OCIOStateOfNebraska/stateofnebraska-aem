@@ -118,6 +118,43 @@ function checkIfRowExists( el, rowNum ) {
 }
 
 /**
+ * This is helper used by getIndividualIcons() to reduce duplicate network requests for the same icon URL.
+ * Caches the Promise and removes the failed requests so it can retry.
+ * @async
+ * @function fetchSvgText
+ * @param {string} url
+ */
+
+const svgCache = {};
+function fetchSvgText( url ) {
+	if ( !svgCache[url] ) {
+		svgCache[url] = fetch( url ).then( ( resp ) => {
+			if ( !resp.ok ) throw new Error( `Failed to fetch SVG (${resp.status})` );
+			return resp.text();
+		} ).catch( ( error ) => {
+			delete svgCache[url];
+			throw error;
+		} );
+	}
+	return svgCache[url];
+}
+
+/**
+ * This is a helper for getIndividualIcons() so we can try priamary and secondary path.
+ * @async
+ * @function fetchSvg
+ * @param {string} primaryUrl - primary url is the usa-icons directory, most icons will live here
+ * @param {string} secondarydUrl - secondary is the icons at the icon root
+ */
+async function fetchSvg( primaryUrl, secondaryUrl ) {
+	try {
+		return await fetchSvgText( primaryUrl );
+	} catch ( error ) {
+		return await fetchSvgText( secondaryUrl );
+	}
+}
+
+/**
  * Asynchronously loads a USWDS SVG icon into a given element.
  * @async
  * @function getIndividualIcon
@@ -125,23 +162,15 @@ function checkIfRowExists( el, rowNum ) {
  * @param {string} iconName    - The icon name (e.g., 'arrow_back').
  * @param {string} [prefix=''] - Optional prefix to prepend to the icon path.
  */
-const svgCache = {};
 
 // Return a promise for fetching (or getting from cache)
 async function getIndividualIcon( el, iconName, prepend = false, prefix = '' ) {
-	let link;
-	link = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
 
-	// Cache based on the link, since that's what's fetched
-	if ( !svgCache[link] ) {
-		// Store the promise, not just the resolved text
-		svgCache[link] = fetch( link ).then( resp => {
-			if ( !resp.ok ) throw new Error( 'Failed to fetch SVG' );
-			return resp.text();
-		} );
-	}
+	const primaryPath = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
+	const secondaryPath = `${window.hlx.codeBasePath}${prefix}/icons/${iconName}.svg`;
+
 	try {
-		const svgContent = await svgCache[link];
+		const svgContent = await fetchSvg( primaryPath, secondaryPath );
 		const originalText = el.innerHTML;
 		if ( prepend ) {
 			el.innerHTML = svgContent + originalText; // prepend the SVG
