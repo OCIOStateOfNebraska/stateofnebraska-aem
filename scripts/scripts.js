@@ -490,23 +490,27 @@ function decorateSections( main ) {
 					}
 				}
 				else if ( key === 'background' ) {
+					const value = String( meta[key] ?? '' ).trim();
 					const sectionBackground = domEl( 'div', { class: 'section-background' } );
+					sectionBackground.setAttribute( 'aria-hidden', 'true' );
 
-					if ( meta[key].startsWith( 'http' ) ) {
-						sectionBackground.style.backgroundImage = `url(${meta[key]})`.replace( '750', '1920' );
-						sectionBackground.classList.add( 'section-background--image' );
+					const colorClass = {
+						blue: 'blue',
+						red: 'red',
+						green: 'green',
+						yellow: 'yellow',
+					};
+
+					const isUrl = /^(https?:)?\/\//i.test( value ) || value.startsWith( '/' ) || value.startsWith( 'data:' );
+
+					if ( isUrl ) {
+						const bgUrl = value.replace( '750', '1920' );
+						sectionBackground.style.backgroundImage = `url("${bgUrl}")`;
+						sectionBackground.classList.add( 'image' );
 					}
 					else {
-						switch ( meta[key] ) {
-							case 'blue': sectionBackground.classList.add( 'section-background--blue' );
-								break;
-							case 'red': sectionBackground.classList.add( 'section-background--red' );
-								break;
-							case 'green': sectionBackground.classList.add( 'section-background--green' );
-								break;
-							case 'yellow': sectionBackground.classList.add( 'section-background--yellow' );
-								break;
-						}
+						const cls = colorClass[meta[key]];
+						if ( cls ) sectionBackground.classList.add( cls );
 					}				
 					section.append( sectionBackground );
 				}
