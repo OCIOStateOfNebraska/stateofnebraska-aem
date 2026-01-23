@@ -489,7 +489,7 @@ function decorateSections( main ) {
 
 					}
 				}
-				else if ( key === 'background' ) {
+				else if ( key === 'background' && getMetadata( 'layout' ) == '' ) {						
 					const value = String( meta[key] ?? '' ).trim();
 					const sectionBackground = domEl( 'div', { class: 'section-background' } );
 					sectionBackground.setAttribute( 'aria-hidden', 'true' );

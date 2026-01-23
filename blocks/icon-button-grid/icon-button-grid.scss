@@ -118,7 +118,7 @@
 			height: 100%;
 			background-color: color('primary-dark');
 			content: '';
-			z-index: -1;
+			z-index: -100;
 		}
 
 		h2 {
@@ -135,7 +135,7 @@ main {
 				margin-top: 0;
 				padding: 0;
 				background-color: transparent;
-				
+
 				&:before {
 					display: none;
 				}
