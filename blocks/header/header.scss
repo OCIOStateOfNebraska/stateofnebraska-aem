@@ -9,10 +9,20 @@
 	background-color: color('primary-dark');
 
 	.usa-navbar {
+		display: flex;
+		align-items: center;
 		justify-content: space-between;
 		height: fit-content;
 		border-bottom: 0;
+
+		.usa-nav__secondary {
+			position: static;
+			margin-top: 0;
+			margin-bottom: 0;
+			margin-left: auto;
+		}
 	}
+
 	
 	.grid-col {
 		flex: 1 1 auto;
@@ -22,30 +32,41 @@
 	.usa-logo {
 		@include u-margin-y(3);
 		position: relative;
-		flex: 0 0 auto;
-		width: px-to-rem(180px);
-		height: px-to-rem(50px);
-		
-		@include at-media('tablet') {
-			width: px-to-rem(320px);
-		}
-
-		&__text,
-		a,
-		picture,
-		img {
-			position: absolute;
-			inset: 0;
-			width: 100%;
-			height: 100%;
-		}
+		display: flex;
+		align-items: center;
+		min-width: 0;
+		margin: 0;
 
 		picture,
 		img {
-			margin: 0;
-			object-fit: scale-down;
-			object-position: left;
+			width: auto;
+			max-width: 160px;
+			height: 50px;
+			object-fit: contain;
 		}
+	}
+
+	.logo-text-wrap {
+		display: flex;
+		align-items: center;
+	}
+
+	.pipe {
+		align-self: stretch;
+		width: 0;
+		min-height: 2.5rem;
+		margin: 2px;
+		border-left: 1px solid color('white');
+	}
+
+	.logo-text {
+		display: flex;
+		align-items: center;
+		margin-left: 4px;
+		color: color('white');
+
+		@include u-font-size('sm');
+		font-family: Montserrat, 'montserrat-normal-400-fallback', Roboto, Helvetica, Arial, sans-serif;
 	}
 
 	.usa-menu-btn {
@@ -249,11 +270,20 @@
 				}
 			}
 		}
-		
-		&.usa-header--small {
-			.usa-nav__secondary {
-				bottom: units(4); // in official USWDS this was labeled as "magic number" -- I just needed it halved in order to align correctly
-				margin-bottom: 0;
+	}
+
+	@include at-media-max('tablet') {
+		.usa-navbar {
+			@include u-padding-left(2);
+		}
+
+		.usa-logo {
+			picture,
+			img {
+				width: auto;
+				max-width: 100px;
+				height: 40px;
+				object-fit: contain;
 			}
 		}
 	}
