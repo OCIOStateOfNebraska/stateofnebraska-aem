@@ -144,7 +144,7 @@ function fetchSvgText( url ) {
  * @async
  * @function fetchSvg
  * @param {string} primaryUrl - primary url is the usa-icons directory, most icons will live here
- * @param {string} secondarydUrl - secondary is the icons at the icon root
+ * @param {string} secondarydUrl - secondary is for icons in the custom directory.
  */
 async function fetchSvg( primaryUrl, secondaryUrl ) {
 	try {
@@ -167,7 +167,7 @@ async function fetchSvg( primaryUrl, secondaryUrl ) {
 async function getIndividualIcon( el, iconName, prepend = false, prefix = '' ) {
 
 	const primaryPath = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
-	const secondaryPath = `${window.hlx.codeBasePath}${prefix}/icons/${iconName}.svg`;
+	const secondaryPath = `${window.hlx.codeBasePath}${prefix}/icons/custom/${iconName}.svg`;
 
 	try {
 		const svgContent = await fetchSvg( primaryPath, secondaryPath );
