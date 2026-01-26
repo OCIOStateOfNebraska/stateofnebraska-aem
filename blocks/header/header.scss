@@ -35,11 +35,12 @@
 		display: flex;
 		align-items: center;
 		min-width: 0;
-		margin: 0;
 		max-width: px-to-rem(350px);
+		margin: 0;
 
 		picture {
 			@include u-margin-y(1);
+
 			img {
 				width: auto;
 				max-width: px-to-rem(195px);
@@ -65,9 +66,9 @@
 	.logo-text {
 		display: flex;
 		align-items: center;
+		width: px-to-rem(250px);
 		margin-left: 4px;
 		color: color('white');
-		width: px-to-rem(250px);
 
 		@include u-font-size('ui', 'sm');
 		font-family: Montserrat, 'montserrat-normal-400-fallback', Roboto, Helvetica, Arial, sans-serif;
@@ -289,6 +290,7 @@
 					object-fit: contain;
 				}
 			}
+
 			.logo-text{
 				@include u-font-size('ui', '3xs');
 				max-width: px-to-rem(95px);
