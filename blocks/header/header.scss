@@ -35,14 +35,18 @@
 		display: flex;
 		align-items: center;
 		min-width: 0;
+		max-width: px-to-rem(350px);
 		margin: 0;
 
-		picture,
-		img {
-			width: auto;
-			max-width: 160px;
-			height: 50px;
-			object-fit: contain;
+		picture {
+			@include u-margin-y(1);
+
+			img {
+				width: auto;
+				max-width: px-to-rem(195px);
+				height: clamp(px-to-rem(52px), 4vw, px-to-rem(96px));
+				object-fit: contain;
+			}
 		}
 	}
 
@@ -62,10 +66,11 @@
 	.logo-text {
 		display: flex;
 		align-items: center;
+		width: px-to-rem(250px);
 		margin-left: 4px;
 		color: color('white');
 
-		@include u-font-size('sm');
+		@include u-font-size('ui', 'sm');
 		font-family: Montserrat, 'montserrat-normal-400-fallback', Roboto, Helvetica, Arial, sans-serif;
 	}
 
@@ -278,12 +283,17 @@
 		}
 
 		.usa-logo {
-			picture,
-			img {
-				width: auto;
-				max-width: 100px;
-				height: 40px;
-				object-fit: contain;
+			picture {
+				img {
+					width: auto;
+					max-width: px-to-rem(95px);
+					object-fit: contain;
+				}
+			}
+
+			.logo-text{
+				@include u-font-size('ui', '3xs');
+				max-width: px-to-rem(95px);
 			}
 		}
 	}
