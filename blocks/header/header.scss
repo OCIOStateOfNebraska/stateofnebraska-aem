@@ -169,10 +169,7 @@
 
 		&--extended {
 			.usa-logo {
-				&:has(.logo-text > :nth-child(2)) {
-					/* Has 2 tag lines */
-					max-width: 50%;
-				}
+				max-width: 50%;
 			}
 		}
 
