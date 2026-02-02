@@ -60,13 +60,21 @@
 	}
 
 	.logo-text {
-		display: flex;
-		align-items: center;
 		margin-left: 4px;
 		color: color('white');
 
-		@include u-font-size('sm');
-		font-family: Montserrat, 'montserrat-normal-400-fallback', Roboto, Helvetica, Arial, sans-serif;
+		@include u-font-family('body');
+		font-size: size('body', 'sm');
+
+		p {
+			margin-top: 0;
+			padding-top: units(.5);
+			padding-bottom: units(.5);
+		}
+
+		strong {
+			font-size: size('body', 'lg');
+		}
 	}
 
 	.usa-menu-btn {
@@ -156,6 +164,12 @@
 			&[type='submit'] {
 				border-top-right-radius: radius(sm);
 				border-bottom-right-radius: radius(sm);
+			}
+		}
+
+		&--extended {
+			.usa-logo {
+				max-width: 50%;
 			}
 		}
 
