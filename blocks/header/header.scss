@@ -63,7 +63,7 @@
 		margin-left: 4px;
 		color: color('white');
 
-		font-family: Montserrat, 'montserrat-normal-400-fallback', Roboto, Helvetica, Arial, sans-serif;
+		@include u-font-family('body');
 		font-size: size('body', 'sm');
 
 		p {
