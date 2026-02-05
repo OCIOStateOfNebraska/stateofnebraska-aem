@@ -364,15 +364,15 @@ export default {
 					.replace( /[^a-z0-9/]/gm, '-' );
 			} )( url );
 
-			// find pdf links
-			const pdfResults = processPdfLinks( main, url, newHost );
-			results.push( ...pdfResults );
-
 			// main page import - "element" is provided, i.e. a docx will be created
 			results.push( {
 				element: main,
 				path: path
 			} );
+
+			// find pdf links
+			const pdfResults = processPdfLinks( main, url, newHost );
+			results.push( ...pdfResults );
 		}
 
 		return results;
