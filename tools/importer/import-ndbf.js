@@ -118,7 +118,7 @@ function transformAccordions( main ) {
 			const content = document.createElement( 'div' );
 
 			const accordionPanel = fieldItem.querySelector( '.accordion-panel .field--name-field-accordion-body' );
-			Array.from( accordionPanel.children ).forEach( ( child ) => {
+			accordionPanel && Array.from( accordionPanel.children ).forEach( ( child ) => {
 				content.appendChild( child );
 			} );
 
