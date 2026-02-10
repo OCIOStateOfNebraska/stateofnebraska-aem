@@ -2,177 +2,312 @@
 @use '~uswds/usa-collection/src/styles/usa-collection';
 
 @mixin section-link-theme($link, $linkHover, $svgFill: null) {
-  @if $svgFill != null {
-    svg { fill: $svgFill; }
-  }
 
-  a {
-    color: $link;
+	.columns.block,
+	.default-content-wrapper,
+	.manual-collection {
+		@if $svgFill !=null {
+			svg {
+				fill: $svgFill;
+			}
+		}
 
-    &:hover,
-    &:focus {
-      color: $linkHover;
-    }
-  }
+		a {
+			color: $link;
+
+			&:hover,
+			&:focus {
+				color: $linkHover;
+			}
+		}
+	}
 }
 
 @mixin accordion-on-dark {
-  .usa-accordion {
-    &__button {
-      color: color('white');
+	.usa-accordion {
+		&__button {
+			color: color('white');
 
-      &:hover,
-      &:focus {
-        color: color('white');
-      }
-    }
+			&:hover,
+			&:focus {
+				color: color('white');
+			}
+		}
 
-    &__content {
-      background-color: transparent;
-      color: color('white');
-    }
-  }
+		&__content {
+			background-color: transparent;
+			color: color('white');
+		}
+	}
 }
 
 @mixin accordion-transparent {
-  .usa-accordion {
-    &__content {
-      background-color: transparent;
-    }
-  }
+	.usa-accordion {
+		&__content {
+			background-color: transparent;
+		}
+	}
 }
 
 @mixin manual-collection-border($borderColor) {
-  .manual-collection {
-    .usa-collection__item {
-      border-color: $borderColor;
-    }
-  }
+	.manual-collection {
+		.usa-collection__item {
+			border-color: $borderColor;
+		}
+	}
 }
 
 .section {
-  &:has(.section-background) {
-    position: relative;
-    margin-top: 0;
-    padding-top: units(9);
-    padding-bottom: units(9);
-  }
+	&:has(.section-background) {
+		position: relative;
+		margin-top: 0;
+		padding-top: units(9);
+		padding-bottom: units(9);
+	}
 
-  // -----------------------------
-  // Image background theme
-  // -----------------------------
-  &:has(.image) {
-    color: color('white');
-    @include section-link-theme(color('secondary'), color('secondary-light'), color('secondary'));
+	// -----------------------------
+	// Image background theme
+	// -----------------------------
+	&:has(.section-background--image) {
+		color: color('white');
+		@include section-link-theme(color('secondary'), color('secondary-light'), color('secondary'));
 
-    .section-background::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-    }
-  }
+		.section-background::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: rgba(0, 0, 0, 0.6);
+		}
+	}
 
-  // -----------------------------
-  // Blue / Red 
-  // -----------------------------
-  &:has(.blue),
-  &:has(.red) {
-    color: color('white');
-    @include section-link-theme(color('secondary'), color('secondary-light'), color('secondary'));
-    @include accordion-on-dark;
-
-    caption { color: color('white'); }
-  }
-
-  // Blue-only extras
-  &:has(.blue) {
-    .info-card-grid.blue {
-      .usa-card {
-        &__container {
-          background-color: color('primary-darker');
-          box-shadow: 0 0 4px 2px #00000066;
-        }
-
-        &__footer a {
-          color: color('black');
-        }
-      }
-    }
-  }
-
-  // -----------------------------
-  // Yellow theme
-  // -----------------------------
-  &:has(.yellow) {
-    .h2--underline::after {
-      background-color: color('primary');
-    }
-
-    .usa-accordion {
-      &__button {
-        border-top-color: color('primary-darker');
-
-        &::before {
-          background-color: color('primary');
-        }
-      }
-
-      &__content {
-        background-color: transparent;
-      }
-    }
-
-    @include manual-collection-border(color('primary-darker'));
-  }
-
-  // -----------------------------
-  // Green theme
-  // -----------------------------
-  &:has(.green) {
-    @include section-link-theme(color('primary-darker'), color('accent-cool-darkest'), color('primary-darker'));
-
-    .h2--underline::after {
-      background-color: color('primary-darkest');
-    }
-
-    .usa-accordion {
-      &__button {
-        border-top-color: color('primary-darker');
-        color: color('primary-darker');
-      }
-      &__content { background-color: transparent; }
-    }
-
-    @include manual-collection-border(color('primary-darker'));
-  }
+	// -----------------------------
+	// Blue / Red 
+	// -----------------------------
+	&:has(.section-background--blue),
+	&:has(.section-background--red) {
+		color: color('white');
+		@include section-link-theme(color('secondary'), color('secondary-light'), color('secondary'));
 
 
-  &:has(.section-background):has(.icon-button-grid-wrapper) {
-	margin: 0;
-    background: transparent;
-  }
+		.accordion {
+			&:not(.tabs) {
+				@include accordion-on-dark;
+			}
+		}
+
+		caption {
+			color: color('white');
+		}
+
+		.columns.block,
+		.default-content-wrapper {
+			a.usa-button {
+				background-color: color('primary-lighter');
+				color: color('primary-darker');
+
+				&--secondary {
+					color: color('black');
+					background-color: color('secondary');
+				}
+
+				&--outline {
+					color: color('white');
+					box-shadow: inset 0 0 0 2px color('white');
+					background-color: color('transparent');
+				}
+			}
+		}
+	}
+
+	// Blue-only extras
+	&:has(.section-background--blue) {
+
+		.info-card-grid.blue {
+			.usa-card {
+				&__container {
+					background-color: color('primary-darker');
+					box-shadow: 0 0 4px 2px #00000066;
+				}
+
+				&__footer a {
+					color: color('black');
+				}
+			}
+		}
+	}
+
+	// -----------------------------
+	// Yellow theme
+	// -----------------------------
+	&:has(.section-background--yellow) {
+		.h2--underline::after {
+			background-color: color('primary');
+		}
+
+		.usa-accordion {
+			&__button {
+				border-top-color: color('primary-darker');
+
+				&::before {
+					background-color: color('white');
+				}
+			}
+
+			&__content {
+				background-color: transparent;
+			}
+		}
+
+
+		.columns.block,
+		.default-content-wrapper {
+			a.usa-button {
+				background-color: color('primary-dark');
+
+				&--secondary {
+					color: color('white');
+					background-color: color('emergency-dark');
+				}
+
+				&--outline {
+					color: color('primary-dark');
+					box-shadow: inset 0 0 0 2px color('primary-dark');
+					background-color: color('transparent');
+				}
+			}
+		}
+
+		@include manual-collection-border(color('primary-darker'));
+	}
+
+	// -----------------------------
+	// Gray theme
+	// -----------------------------
+	&:has(.section-background--gray) {
+		@include section-link-theme(color('primary-darker'), color('accent-cool-darkest'), color('primary-darker'));
+
+		.h2--underline::after {
+			background-color: color('primary-darkest');
+		}
+
+		.usa-accordion {
+			&__button {
+				border-top-color: color('primary-darker');
+				color: color('primary-darker');
+			}
+
+			&__content {
+				background-color: transparent;
+			}
+		}
+
+		.columns.block,
+		.default-content-wrapper {
+			a.usa-button {
+				background-color: color('primary-darkest');
+				color: color('white');
+
+				&--secondary {
+					background-color: color('emergency-dark');
+				}
+
+				&--outline {
+					color: color('primary-darkest');
+					box-shadow: inset 0 0 0 2px color('primary-darkest');
+					background-color: color('transparent');
+				}
+			}
+		}
+
+	}
+
+
+	// -----------------------------
+	// Dark-gray theme
+	// -----------------------------
+	&:has(.section-background--dark-gray) {
+		color: color('white');
+		@include section-link-theme(color('secondary'), color('secondary-light'), color('secondary'));
+
+		.accordion {
+			&:not(.tabs) {
+				@include accordion-on-dark;
+			}
+		}
+
+		.tabs {
+			.usa-accordion__button {
+				.usa-accordion__button:hover {
+					background-color: #8ca0b4;
+					color: color('black');
+				}
+			}
+		}
+
+
+
+		.columns.block,
+		.default-content-wrapper {
+			a.usa-button {
+				background-color: color('primary');
+				color: color('white');
+
+				&--secondary {
+					background-color: color('secondary');
+					color: color('black');
+				}
+
+				&--outline {
+					color: color('secondary');
+					box-shadow: inset 0 0 0 2px color('secondary');
+					background-color: color('transparent');
+				}
+			}
+		}
+
+		caption {
+			color: color('white');
+		}
+
+	}
+
+	&:has(.section-background):has(.icon-button-grid-wrapper) {
+		margin: 0;
+		background: transparent;
+	}
 }
 
 
 .section-background {
-  position: absolute;
-  inset-block: 0;
-  left: -100vw;
-  width: 200vw;
-  height: 100%;
-  z-index: -100;
+	position: absolute;
+	inset-block: 0;
+	left: 50%;
+	width: 100vw;
+	transform: translateX(-50%);
+	height: 100%;
+	z-index: -100;
 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
 
-  @include at-media('tablet') {
-    background-attachment: fixed;
-  }
+	&--blue {
+		background-color: color('primary-dark');
+	}
 
-  &.blue   { background-color: color('primary-dark'); }
-  &.red    { background-color: color('emergency-dark'); }
-  &.green  { background-color: color('accent-warm-dark'); }
-  &.yellow { background-color: $ne-color-yellow-background; }
+	&--red {
+		background-color: color('emergency-dark');
+	}
+
+	&--yellow {
+		background-color: $ne-color-yellow-background;
+	}
+
+	&--gray {
+		background-color: $ne-color-gray-background;
+	}
+
+	&--dark-gray {
+		background-color: $ne-color-dark-gray-background;
+	}
 }

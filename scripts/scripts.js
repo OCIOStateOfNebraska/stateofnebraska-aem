@@ -497,8 +497,9 @@ function decorateSections( main ) {
 					const colorClass = {
 						blue: 'blue',
 						red: 'red',
-						green: 'green',
 						yellow: 'yellow',
+						gray: 'gray',
+						'dark-gray': 'dark-gray',
 					};
 
 					const isUrl = /^(https?:)?\/\//i.test( value ) || value.startsWith( '/' ) || value.startsWith( 'data:' );
@@ -510,7 +511,7 @@ function decorateSections( main ) {
 					}
 					else {
 						const cls = colorClass[meta[key]];
-						if ( cls ) sectionBackground.classList.add( cls );
+						if ( cls ) sectionBackground.classList.add( 'section-background--' + cls );
 					}				
 					section.append( sectionBackground );
 				}
