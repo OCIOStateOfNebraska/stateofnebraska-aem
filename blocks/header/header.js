@@ -161,15 +161,13 @@ async function loadAndDecorateNav() {
 
 	const logo = domEl( 'div', { class: 'usa-logo' } );
 	logo.append( img );
-	const logoText = [...navFragment.querySelectorAll( '.default-content-wrapper p' )]
-		.filter( ( p ) => !p.classList.contains( 'usa-button__wrap' ) )
-		.map( ( p ) => p.textContent.trim() )
-		.join( ' ' );
+	const logoTagLines = [...navFragment.querySelectorAll( '.default-content-wrapper p' )]
+		.filter( ( p ) => !p.classList.contains( 'usa-button__wrap' ) && p.textContent.trim().length > 0 );
 
-	if ( logoText ) {
+	if ( logoTagLines.length > 0 ) {
 		const logoTextWrap = domEl( 'div', { class: 'logo-text-wrap' } );
 		const pipe = domEl( 'span', { class: 'pipe', 'aria-hidden': 'true' } );
-		const logoTextDiv = domEl( 'div', { class: 'logo-text' }, logoText );
+		const logoTextDiv = domEl( 'div', { class: 'logo-text' }, logoTagLines[0], logoTagLines[1] ? logoTagLines[1] : '' ); // Get up to 2 tag lines
 		logoTextWrap.append( pipe, logoTextDiv );
 		logo.append( logoTextWrap );
 	}
