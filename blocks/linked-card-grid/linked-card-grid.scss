@@ -7,10 +7,11 @@
 	$icon-size: px-to-rem(48px);
 
 	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
-	
+
 	margin-bottom: units($component-spacing-lg);
 
 	.#{$block} {
+
 		&,
 		&:last-child {
 			margin: 0;
@@ -25,7 +26,7 @@
 		p {
 			font-size: size('body', 'sm');
 		}
-		
+
 		&-group {
 			margin-bottom: 0;
 			row-gap: units($theme-card-gap); // .usa-card__container handles the column gap via margins
@@ -36,11 +37,12 @@
 		}
 
 		&__img {
-			position:absolute;
+			position: absolute;
 			inset: 0;
 			width: 100%;
 			height: 100%;
-			border-radius: 0 0 calc(0.5rem - 0rem) calc(0.5rem - 0rem);;
+			border-radius: 0 0 calc(0.5rem - 0rem) calc(0.5rem - 0rem);
+			;
 			z-index: -1;
 		}
 
@@ -49,13 +51,13 @@
 			flex-direction: column;
 			gap: units(4);
 
-			&:has(img){
+			&:has(img) {
 				color: color(primary-lightest);
 
 				.usa-button__wrap {
 					svg {
-						fill: color(secondary); 
-					}						
+						fill: color(secondary);
+					}
 				}
 			}
 		}
@@ -69,16 +71,17 @@
 			&:has(a) {
 				cursor: pointer;
 
-				&:hover { // focus state handled by uswds
+				&:hover {
+					// focus state handled by uswds
 					transition: box-shadow $transition-slow, border $transition-slow;
 					border-top: 2px solid transparent;
 					box-shadow: 0 0 0 3px color(secondary), 0 8px 16px 0 rgb(0 0 0 / 10%); // maps to shadow(3), mixin doesn't work with a custom one
-				
+
 					.usa-button__wrap {
-						transform: translateX(units(0.5)); 
+						transform: translateX(units(0.5));
 						transition: transform $transition;
 					}
-					
+
 					.#{$block}__heading {
 						text-decoration: underline;
 						text-decoration-thickness: 2px;
@@ -92,7 +95,7 @@
 				.#{$block} {
 					&__heading {
 						color: color(secondary);
-					}					
+					}
 				}
 			}
 
@@ -103,8 +106,8 @@
 				height: 100%;
 				border-top-left-radius: 0;
 				border-top-right-radius: 0;
-				text-decoration: none;  
-				z-index: 1;             
+				text-decoration: none;
+				z-index: 1;
 				inset: 0;
 			}
 		}
@@ -118,20 +121,20 @@
 				height: $icon-size;
 				fill: color(primary);
 			}
-		}		
+		}
 	}
 
-	@mixin collection-theme($heading-color, $body-color, $svg-fill, $container-bg:white, $gradient: linear-gradient(to top, rgba(255, 255, 255, 0.7) 60%, transparent),$body-color-img : $body-color) {
+	@mixin collection-theme($heading-color, $body-color, $svg-fill, $container-bg: white, $gradient: linear-gradient(to top, rgba(255, 255, 255, 0.7) 60%, transparent), $body-color-img : $body-color) {
 		.#{$block} {
 
-			&__heading{
+			&__heading {
 				color: $heading-color;
 			}
 
 			&__body {
 				color: $body-color;
 			}
-			
+
 			.usa-button__wrap {
 				svg {
 					fill: $svg-fill;
@@ -144,10 +147,12 @@
 
 				&:has(img) {
 					background: $gradient;
-					.#{$block}__body{
+
+					.#{$block}__body {
 						color: $body-color-img;
 					}
-					.#{$block}__heading{
+
+					.#{$block}__heading {
 						color: $heading-color;
 					}
 
@@ -160,7 +165,7 @@
 
 				&:has(a) {
 					&:hover {
-						box-shadow:	0	0	0	3px	$heading-color,
+						box-shadow: 0 0 0 3px $heading-color,
 							0 8px 16px 0 rgb(0 0 0 / 10%);
 					}
 				}
@@ -168,43 +173,46 @@
 		}
 	}
 
-	.blue-filled {
-		@include collection-theme(color('secondary'),
-		color('primary-lightest'),
-		color('secondary'),
-		color('primary'),
-		linear-gradient(to top, #38728fcc 80%, #c3ceda80));
+	.colored-filled {
+		&.blue {
+			@include collection-theme(color('secondary'),
+			color('primary-lightest'),
+			color('secondary'),
+			color('primary'),
+			linear-gradient(to top, #38728fcc 80%, #c3ceda80));
+		}
+
+		&.red {
+			@include collection-theme(color('secondary'),
+			color('primary-lightest'),
+			color('secondary'),
+			$ne-color-dark-red,
+			linear-gradient(to top, #bd1f5399 60%, #dda1a633));
+		}
+
+		&.green {
+			@include collection-theme($ne-color-dark-blue,
+			color('primary-darkest'),
+			$ne-color-dark-blue,
+			$ne-color-green,
+			linear-gradient(to top, #b9bd32cc 60%, #b9bd3280));
+		}
 	}
 	
-	.red-filled {
-		@include collection-theme(color('secondary'),
-		color('primary-lightest'),
-		color('secondary'),
-		$ne-color-dark-red,
-		linear-gradient(to top, #bd1f5399 60%, #dda1a633));
-	}
-	
-	.green-filled {
-		@include collection-theme($ne-color-dark-blue,
-		color('primary-darkest'),
-		$ne-color-dark-blue,
-		$ne-color-green,
-		linear-gradient(to top, #b9bd32cc 60%, #b9bd3280));
-	}
+	.colored{
+		&.red {
+			@include collection-theme($ne-color-dark-red,
+			color('black'),
+			$ne-color-dark-red);
+		}
 
-	.red{
-		@include collection-theme($ne-color-dark-red,
-		black,
-		$ne-color-dark-red);
+		&.green {
+			@include collection-theme($ne-color-green,
+			color('black'),
+			$ne-color-green,
+			color('white'),
+			linear-gradient(to top, #0009 25%, #0000001a),
+			color('white'));
+		}
 	}
-
-	.green{
-		@include collection-theme($ne-color-green,
-		black,
-		$ne-color-green,
-		white,
-		linear-gradient(to top, #0009 25%, #0000001a),
-		white);
-	}
-
 }
