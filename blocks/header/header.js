@@ -137,7 +137,7 @@ async function loadAndDecorateNav() {
 	const searchResultsUrl = searchLink ? searchLink.href : '/search-results';
 
 	const secondaryNav = createSecondaryMenu( innerNav, searchResultsUrl, showDropdowns );
-	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation', id: 'mobile-nav' } );
+	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation', 'aria-hidden': 'true', id: 'mobile-nav' } );
 	nav.append( innerNav );
 	const container = domEl( 'div', {} );
 	const navClass = `usa-header usa-header--extended${!showDropdowns ? ' usa-header--small' : '' }`;
@@ -155,6 +155,12 @@ async function loadAndDecorateNav() {
 	function toggleAriaExpanded (){
 		let expanded = nav.classList.contains( 'is-visible' );
 		menu.setAttribute( 'aria-expanded', !expanded );
+		nav.setAttribute( 'aria-hidden', expanded ); 
+		if( !expanded ){
+			requestAnimationFrame( () => {
+				nav.querySelector( 'a' )?.focus();
+			} );
+		} 
 	}
 
 	const img = domEl( 'div', { class: 'usa-logo__text' }, link );
