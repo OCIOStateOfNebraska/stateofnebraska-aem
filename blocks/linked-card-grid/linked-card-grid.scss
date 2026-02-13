@@ -184,14 +184,6 @@
 		linear-gradient(to top, #bd1f5399 60%, #dda1a633));
 	}
 	
-	.yellow-filled {
-		@include collection-theme(color('primary'),
-		color('primary-darkest'),
-		color('primary'),
-		$ne-color-yellow,
-		linear-gradient(to top, #ffc34dcc 60%, #fff2d680));
-	}
-	
 	.green-filled {
 		@include collection-theme($ne-color-dark-blue,
 		color('primary-darkest'),
@@ -204,15 +196,6 @@
 		@include collection-theme($ne-color-dark-red,
 		black,
 		$ne-color-dark-red);
-	}
-
-	.yellow{
-		@include collection-theme($ne-color-yellow,
-		black,
-		$ne-color-yellow,
-		white,
-		linear-gradient(to top, #0009 25%, #0000001a),
-		white);
 	}
 
 	.green{
