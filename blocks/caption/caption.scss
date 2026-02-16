@@ -1,0 +1,39 @@
+@use '../../styles/ne-global-imports' as *;
+
+.caption {
+	&__btn-wrap {
+		margin: units(3) 0;
+		text-align: center;
+		overflow: visible; // don't cut off the focus ring
+	}
+
+	&__icon {
+		&--collapse {
+			display: none; // default collapsed
+		}
+	}
+
+	&__btn {
+		&[aria-expanded='true'] {
+			.caption__icon {
+				&--collapse {
+					display: inline;
+				}
+
+				&--expand {
+					display: none;
+				}
+			}
+		}
+	}
+
+	&__content {
+		@include u-radius('md');
+		width: 100%;
+		max-width: measure($theme-text-measure);
+		margin: units(3) auto 0;
+		padding: units(3);
+		background: color(primary-lighter);
+		font-size: size('body', 'md');
+	}
+}
