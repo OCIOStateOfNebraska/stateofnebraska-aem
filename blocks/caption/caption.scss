@@ -1,6 +1,13 @@
 @use '../../styles/ne-global-imports' as *;
 
 .caption {
+	width: 100%;
+	max-width: measure($theme-text-measure);
+	margin: units(3) auto units($component-spacing-lg);
+	font-size: size('body', 'md');
+
+	&:empty { display: none; }
+
 	&__btn-wrap {
 		margin: units(3) 0;
 		text-align: center;
@@ -30,10 +37,18 @@
 	&__content {
 		@include u-radius('md');
 		width: 100%;
-		max-width: measure($theme-text-measure);
-		margin: units(3) auto 0;
-		padding: units(3);
+		max-height: 0; // closed by default
+		transition: max-height $transition-slow;
 		background: color(primary-lighter);
-		font-size: size('body', 'md');
+		overflow: hidden; // to help with the transition
+
+		&--closing,
+		&[hidden] {
+			max-height: 0 !important; // stylelint-disable-line declaration-no-important
+		}
+
+		> div {
+			padding: units(3);
+		}
 	}
 }

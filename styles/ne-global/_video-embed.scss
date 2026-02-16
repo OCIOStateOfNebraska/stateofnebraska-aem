@@ -5,12 +5,12 @@
 	width: 100%;
 	margin-bottom: units($component-spacing-sm);
 	font-size: 0; // no extra space inside
-	overflow: hidden;
-
+	
 	> div {
 		&:first-child {
 			width: 100%;
 			aspect-ratio: 16 / 9;
+			overflow: hidden;
 		}
 	}
 
