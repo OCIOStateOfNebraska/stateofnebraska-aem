@@ -156,11 +156,6 @@ async function loadAndDecorateNav() {
 		let expanded = nav.classList.contains( 'is-visible' );
 		menu.setAttribute( 'aria-expanded', !expanded );
 		nav.setAttribute( 'aria-hidden', expanded ); 
-		if( !expanded ){
-			requestAnimationFrame( () => {
-				nav.querySelector( 'a' )?.focus();
-			} );
-		} 
 	}
 
 	const img = domEl( 'div', { class: 'usa-logo__text' }, link );
