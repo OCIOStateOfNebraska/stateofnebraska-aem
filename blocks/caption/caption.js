@@ -93,8 +93,8 @@ function createButton( id, btnText ) {
 }
 
 function btnClick( e ) {
-	const btn = e.target;
-	const content = document.getElementById( e.target.getAttribute( 'aria-controls' ) );
+	const btn = e.currentTarget;
+	const content = document.getElementById( e.currentTarget.getAttribute( 'aria-controls' ) );
 
 	if( btn.getAttribute( 'aria-expanded' ) == 'true' ) {
 		btn.setAttribute( 'aria-expanded', false );
