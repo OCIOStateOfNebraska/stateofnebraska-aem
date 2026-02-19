@@ -89,7 +89,7 @@ export default function decorate( block ) {
 		if ( row.children.length == 2){
 			[...row.children].forEach( ( col ) =>{
 				const img = col.querySelector('picture')
-				if(col.nextElementSibling) {
+				if(col.nextElementSibling && img) {
 					col.nextElementSibling.append(img)
 					col.remove();
 				}		
