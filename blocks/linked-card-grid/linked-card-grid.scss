@@ -124,7 +124,7 @@
 		}
 	}
 
-	@mixin collection-theme($heading-color, $body-color, $svg-fill, $container-bg: white, $gradient: linear-gradient(to top, rgba(255, 255, 255, 0.7) 60%, transparent), $body-color-img : $body-color) {
+	@mixin collection-theme($heading-color, $body-color, $svg-fill, $container-bg: white, $gradient:  rgba(255, 255, 255, 0.6), $body-color-img : $body-color) {
 		.#{$block} {
 
 			&__heading {
@@ -200,6 +200,12 @@
 	}
 	
 	.colored{
+		&.blue {
+			@include collection-theme(color('primary-darker'),
+			color('black'),
+			color('primary-darker'));
+		}
+
 		&.red {
 			@include collection-theme($ne-color-dark-red,
 			color('black'),
