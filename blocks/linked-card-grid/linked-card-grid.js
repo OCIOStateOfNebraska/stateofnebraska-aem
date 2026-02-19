@@ -77,8 +77,8 @@ export default function decorate( block ) {
 		if ( colClass ) {
 			const value = parseInt( colClass.replace( 'desktop:grid-col-', '' ), 10 );
 			grid = value > 5
-			? 'grid-col-12 tablet:grid-col-6 desktop:grid-col-6'
-			: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-12';
+				? 'grid-col-12 tablet:grid-col-6 desktop:grid-col-6'
+				: 'grid-col-12 tablet:grid-col-6 desktop:grid-col-12';
 		}
 	}
 	
@@ -86,14 +86,14 @@ export default function decorate( block ) {
 	
 	
 	[...block.children].forEach( ( row ) => {
-		if ( row.children.length == 2){
+		if ( row.children.length == 2 ){
 			[...row.children].forEach( ( col ) =>{
-				const img = col.querySelector('picture')
-				if(col.nextElementSibling && img) {
-					col.nextElementSibling.append(img)
+				const img = col.querySelector( 'picture' );
+				if( col.nextElementSibling && img ) {
+					col.nextElementSibling.append( img );
 					col.remove();
 				}		
-			})
+			} );
 		}
 		const li = domEl( 'li', { class: `usa-card ${grid}` } );
 		const cardContainer = domEl( 'div', { class: 'usa-card__container' } );
