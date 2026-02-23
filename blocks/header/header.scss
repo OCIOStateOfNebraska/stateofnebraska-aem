@@ -35,14 +35,18 @@
 		display: flex;
 		align-items: center;
 		min-width: 0;
+		max-width: px-to-rem(350px);
 		margin: 0;
 
-		picture,
-		img {
-			width: auto;
-			max-width: 160px;
-			height: 50px;
-			object-fit: contain;
+		picture {
+			@include u-margin-y(1);
+
+			img {
+				width: auto;
+				max-width: px-to-rem(195px);
+				height: clamp(px-to-rem(52px), 4vw, px-to-rem(96px));
+				object-fit: contain;
+			}
 		}
 	}
 
@@ -60,13 +64,21 @@
 	}
 
 	.logo-text {
-		display: flex;
-		align-items: center;
 		margin-left: 4px;
 		color: color('white');
 
-		@include u-font-size('sm');
-		font-family: Montserrat, 'montserrat-normal-400-fallback', Roboto, Helvetica, Arial, sans-serif;
+		@include u-font-family('body');
+		font-size: size('body', 'sm');
+
+		p {
+			margin-top: 0;
+			padding-top: units(.5);
+			padding-bottom: units(.5);
+		}
+
+		strong {
+			font-size: size('body', 'lg');
+		}
 	}
 
 	.usa-menu-btn {
@@ -156,6 +168,12 @@
 			&[type='submit'] {
 				border-top-right-radius: radius(sm);
 				border-bottom-right-radius: radius(sm);
+			}
+		}
+
+		&--extended {
+			.usa-logo {
+				max-width: 50%;
 			}
 		}
 
@@ -278,12 +296,17 @@
 		}
 
 		.usa-logo {
-			picture,
-			img {
-				width: auto;
-				max-width: 100px;
-				height: 40px;
-				object-fit: contain;
+			picture {
+				img {
+					width: auto;
+					max-width: px-to-rem(95px);
+					object-fit: contain;
+				}
+			}
+
+			.logo-text{
+				@include u-font-size('ui', '3xs');
+				max-width: px-to-rem(95px);
 			}
 		}
 	}
