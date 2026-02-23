@@ -217,7 +217,7 @@
 			color('black'),
 			$ne-color-green,
 			color('white'),
-			linear-gradient(to top, #0009 25%, #0000001a),
+			rgba(0, 0, 0 ,0.45),
 			color('white'));
 		}
 	}
