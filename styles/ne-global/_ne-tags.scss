@@ -15,6 +15,10 @@
 	src: local('Arial');
 }
 
+html {
+	scroll-behavior: smooth;
+}
+
 body {
 	display: none;
 	overflow-x: hidden;
