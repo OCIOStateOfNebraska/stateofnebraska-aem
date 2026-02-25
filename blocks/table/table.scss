@@ -2,6 +2,7 @@
 @use '~uswds/usa-table/src/styles/usa-table';
 @use 'sass:math';
 $block: 'usa-table';
+$table-icon: px-to-rem(28px);
 
 .table {
 	margin: units($component-spacing-sm) 0;
@@ -10,7 +11,33 @@ $block: 'usa-table';
 .#{$block} {
 	@include u-margin(0);
 	width: 100%;
-	
+
+	th {
+		&[data-sortable] {
+			button {
+				@include add-background-svg('usa-icons/sort_arrow');
+				position: absolute;
+				width: $table-icon;
+				height: $table-icon;
+				border: 0;
+				background-color: color('transparent');
+			}
+
+			&[aria-sort='ascending']{
+				button {
+					@include add-background-svg('usa-icons/arrow_upward');
+				}
+			}
+			
+			&[aria-sort='descending']{
+				button {
+					@include add-background-svg('usa-icons/arrow_downward');
+				}
+			}
+		}
+
+	}
+
 	caption {
 		@include u-margin-top(3);
 		@include u-margin-bottom(0);

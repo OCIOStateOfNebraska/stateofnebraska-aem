@@ -228,4 +228,41 @@ function isSameDomainOrSubdomain( url ) {
 	}
 }
 
-export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon, isSameDomainOrSubdomain  };
+function getMonthNumber(monthName) {
+  // Create a date string that the Date constructor can reliably parse.
+  // Adding "1, 2023" ensures a valid date string.
+  const dateString = `${monthName} 1, 2023`;
+  const dateObject = new Date(dateString);
+
+  // Check if the date is valid
+  if (isNaN(dateObject.getMonth())) {
+    return false;
+  }
+
+  // getMonth() returns a 0-based index (0 for January) plus 1
+  return dateObject.getMonth() + 1 ;
+}
+
+function getNumberByPosition( position ) {
+	const positionMap = {
+    	"first": 1,
+    	"second": 2,
+    	"third": 3,
+    	"fourth": 4,
+    	"fifth": 5,
+    	"sixth": 6,
+    	"seventh": 7,
+    	"eighth": 8,
+    	"ninth": 9,
+    	"tenth": 10
+	}
+
+	const positionNum = positionMap[position.toLowerCase()];
+
+	if(isNaN(positionNum))
+		 return false 
+		
+	return positionNum;
+}
+
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon, isSameDomainOrSubdomain, getMonthNumber,  getNumberByPosition };
