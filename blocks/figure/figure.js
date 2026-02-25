@@ -11,9 +11,15 @@ export default function decorate( block ) {
 	const imgWidth = picture.querySelector( 'img' ).width;
 	const containerWidth = 1400; // max container width 
 	const wrapperMaxWidth = ( left || right ) ? ( containerWidth / 2 ) : containerWidth;
-	
+
 	const pictureWrap = picture.closest( 'p' ) ? picture.closest( 'p' ) : null;
-	let caption = pictureWrap ? pictureWrap.nextElementSibling: null;
+	let caption = pictureWrap ? pictureWrap.nextElementSibling : null;
+
+	if( pictureWrap && !caption ) {
+		// Adjusting for cases where there is a nested p with content
+		const captionContent = pictureWrap.textContent.trim();
+		if( captionContent ) { caption = domEl( 'p', {}, pictureWrap.textContent.trim() ); }
+	}
 
 	if ( caption && caption.tagName.toUpperCase() !== 'P' ) {
 		caption = null;
