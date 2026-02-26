@@ -151,11 +151,11 @@ async function loadAndDecorateNav() {
 		link.append( picture );
 	}
 
-	// Toggle aria-expanded tag on menu btn
+	// Toggle aria-expanded tag on menu btn and aria-hidden on nav
 	function toggleAriaExpanded (){
-		let expanded = nav.classList.contains( 'is-visible' );
-		menu.setAttribute( 'aria-expanded', !expanded );
-		nav.setAttribute( 'aria-hidden', expanded ); 
+		let hidden = nav.classList.contains( 'is-visible' );
+		menu.setAttribute( 'aria-expanded', !hidden );
+		nav.setAttribute( 'aria-hidden', hidden ); 
 	}
 
 	const img = domEl( 'div', { class: 'usa-logo__text' }, link );
@@ -199,6 +199,7 @@ async function loadAndDecorateNav() {
 
 	container.prepend( navBar );
 	navWrapper.append( container );
+	container.setAttribute( 'aria-hidden', 'false' ); 
 	return navWrapper;
 }
 
@@ -237,6 +238,7 @@ async function loadAndDecorateAlert() {
  * @param {Element} block The header block element
  */
 export default async function decorate( block ) {
+	document.querySelector( 'header' ).setAttribute( 'aria-hidden', 'false' ); 
 	const placeholders = await fetchPlaceholders();
 
 	const skipNav = await decorateSkipnav( placeholders );
