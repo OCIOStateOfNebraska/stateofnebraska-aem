@@ -158,7 +158,7 @@ async function loadAndDecorateNav() {
 		nav.setAttribute( 'aria-hidden', hidden ); 
 	}
 
-	const img = domEl( 'div', { class: 'usa-logo__text' }, link );
+	const img = domEl( 'div', { class: 'usa-logo__img' }, link );
 
 	const logo = domEl( 'div', { class: 'usa-logo' } );
 	logo.append( img );
@@ -166,9 +166,9 @@ async function loadAndDecorateNav() {
 		.filter( ( p ) => !p.classList.contains( 'usa-button__wrap' ) && p.textContent.trim().length > 0 );
 
 	if ( logoTagLines.length > 0 ) {
-		const logoTextWrap = domEl( 'div', { class: 'logo-text-wrap' } );
-		const pipe = domEl( 'span', { class: 'pipe', 'aria-hidden': 'true' } );
-		const logoTextDiv = domEl( 'div', { class: 'logo-text' }, logoTagLines[0], logoTagLines[1] ? logoTagLines[1] : '' ); // Get up to 2 tag lines
+		const logoTextWrap = domEl( 'div', { class: 'usa-logo__text-wrap' } );
+		const pipe = domEl( 'span', { class: 'usa-logo__pipe', 'aria-hidden': 'true' } );
+		const logoTextDiv = domEl( 'div', { class: 'usa-logo__text' }, logoTagLines[0], logoTagLines[1] ? logoTagLines[1] : '' ); // Get up to 2 tag lines
 		logoTextWrap.append( pipe, logoTextDiv );
 		logo.append( logoTextWrap );
 	}
