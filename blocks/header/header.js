@@ -151,7 +151,7 @@ async function loadAndDecorateNav() {
 		link.append( picture );
 	}
 
-	// Toggle aria-expanded tag on menu btn and aria-hidden on nav
+	// Toggle aria-expanded tag on menu btn
 	function toggleAriaExpanded (){
 		let expanded = nav.classList.contains( 'is-visible' );
 		menu.setAttribute( 'aria-expanded', !expanded );
@@ -198,7 +198,6 @@ async function loadAndDecorateNav() {
 
 	container.prepend( navBar );
 	navWrapper.append( container );
-	container.setAttribute( 'aria-hidden', 'false' ); 
 	return navWrapper;
 }
 
