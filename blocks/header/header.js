@@ -139,7 +139,7 @@ async function loadAndDecorateNav() {
 	const secondaryNav = createSecondaryMenu( innerNav, searchResultsUrl, showDropdowns );
 	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation', id: 'mobile-nav' } );
 	nav.append( innerNav );
-	const container = domEl( 'div', {} );
+	const container = domEl( 'div', { class: 'usa-nav-container' } );
 	const navClass = `usa-header usa-header--extended${!showDropdowns ? ' usa-header--small' : '' }`;
 	const navWrapper = domEl( 'div', { class: navClass } );
 	container.append( nav );
@@ -236,6 +236,7 @@ async function loadAndDecorateAlert() {
  * @param {Element} block The header block element
  */
 export default async function decorate( block ) {
+	document.querySelector( 'header' ).setAttribute( 'aria-hidden', 'false' ); 
 	const placeholders = await fetchPlaceholders();
 
 	const skipNav = await decorateSkipnav( placeholders );
