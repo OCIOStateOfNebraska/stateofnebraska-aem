@@ -137,9 +137,9 @@ async function loadAndDecorateNav() {
 	const searchResultsUrl = searchLink ? searchLink.href : '/search-results';
 
 	const secondaryNav = createSecondaryMenu( innerNav, searchResultsUrl, showDropdowns );
-	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation', 'aria-hidden': 'true', id: 'mobile-nav' } );
+	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation', id: 'mobile-nav' } );
 	nav.append( innerNav );
-	const container = domEl( 'div', {} );
+	const container = domEl( 'div', { class: 'usa-nav-container' } );
 	const navClass = `usa-header usa-header--extended${!showDropdowns ? ' usa-header--small' : '' }`;
 	const navWrapper = domEl( 'div', { class: navClass } );
 	container.append( nav );
@@ -153,9 +153,8 @@ async function loadAndDecorateNav() {
 
 	// Toggle aria-expanded tag on menu btn and aria-hidden on nav
 	function toggleAriaExpanded (){
-		let hidden = nav.classList.contains( 'is-visible' );
-		menu.setAttribute( 'aria-expanded', !hidden );
-		nav.setAttribute( 'aria-hidden', hidden ); 
+		let expanded = nav.classList.contains( 'is-visible' );
+		menu.setAttribute( 'aria-expanded', !expanded );
 	}
 
 	const img = domEl( 'div', { class: 'usa-logo__img' }, link );
