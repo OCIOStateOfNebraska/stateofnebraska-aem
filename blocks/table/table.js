@@ -60,6 +60,7 @@ function createSort( block ) {
 		const button = domEl( 'button', { 
 			class: 'table__header__button',
 			title: `Click to sort by ${th.textContent.trim()} in ascending order.`,
+			tabindex: '0'
 		} );
 		th.append( button );
 	} );
