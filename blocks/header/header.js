@@ -139,7 +139,7 @@ async function loadAndDecorateNav() {
 	const secondaryNav = createSecondaryMenu( innerNav, searchResultsUrl, showDropdowns );
 	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation', id: 'mobile-nav' } );
 	nav.append( innerNav );
-	const container = domEl( 'div', {} );
+	const container = domEl( 'div', { class: 'usa-nav-container' } );
 	const navClass = `usa-header usa-header--extended${!showDropdowns ? ' usa-header--small' : '' }`;
 	const navWrapper = domEl( 'div', { class: navClass } );
 	container.append( nav );
@@ -157,7 +157,7 @@ async function loadAndDecorateNav() {
 		menu.setAttribute( 'aria-expanded', !expanded );
 	}
 
-	const img = domEl( 'div', { class: 'usa-logo__text' }, link );
+	const img = domEl( 'div', { class: 'usa-logo__img' }, link );
 
 	const logo = domEl( 'div', { class: 'usa-logo' } );
 	logo.append( img );
@@ -165,9 +165,9 @@ async function loadAndDecorateNav() {
 		.filter( ( p ) => !p.classList.contains( 'usa-button__wrap' ) && p.textContent.trim().length > 0 );
 
 	if ( logoTagLines.length > 0 ) {
-		const logoTextWrap = domEl( 'div', { class: 'logo-text-wrap' } );
-		const pipe = domEl( 'span', { class: 'pipe', 'aria-hidden': 'true' } );
-		const logoTextDiv = domEl( 'div', { class: 'logo-text' }, logoTagLines[0], logoTagLines[1] ? logoTagLines[1] : '' ); // Get up to 2 tag lines
+		const logoTextWrap = domEl( 'div', { class: 'usa-logo__text-wrap' } );
+		const pipe = domEl( 'span', { class: 'usa-logo__pipe', 'aria-hidden': 'true' } );
+		const logoTextDiv = domEl( 'div', { class: 'usa-logo__text' }, logoTagLines[0], logoTagLines[1] ? logoTagLines[1] : '' ); // Get up to 2 tag lines
 		logoTextWrap.append( pipe, logoTextDiv );
 		logo.append( logoTextWrap );
 	}
@@ -236,6 +236,7 @@ async function loadAndDecorateAlert() {
  * @param {Element} block The header block element
  */
 export default async function decorate( block ) {
+	document.querySelector( 'header' ).setAttribute( 'aria-hidden', 'false' ); 
 	const placeholders = await fetchPlaceholders();
 
 	const skipNav = await decorateSkipnav( placeholders );

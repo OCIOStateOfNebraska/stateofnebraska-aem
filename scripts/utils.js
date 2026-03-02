@@ -24,6 +24,7 @@ function debounce( func, wait ) {
  */
 function normalizeId( str ) {
 	str = `${str}`; // just in case it wasn't a string already
+	str = str.trim();
 	str = str.toLowerCase();
 	str = str.replace( /-/g, ' ' );
 	str = str.match( /[\w\s]/g ).join( '' );
