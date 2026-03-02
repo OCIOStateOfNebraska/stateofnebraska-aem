@@ -70,8 +70,8 @@ function createSort( block ) {
 		if( /^(-|)\d+(\.\d+)?%$/.test( text ) ) {
 			td.setAttribute( 'data-sort-value', Number( text.replace( '%', '' ) ) /100 );
 		}
-		else if( /^(-|)\d+(\.|,|)(\d+)?$/.test( text ) ){
-			td.setAttribute( 'data-sort-value', Number( text.replace( ',', '' ) ) );
+		else if( /^(-|)\d+((\.|,|)(\d+)?)+$/.test( text ) ){
+			td.setAttribute( 'data-sort-value', Number( text.replaceAll( ',', '' ) ) );
 		}
 		else if( getNumberByPosition( text ) ){
 			td.setAttribute( 'data-sort-value', getNumberByPosition( text ) );
