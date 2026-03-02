@@ -228,39 +228,43 @@ function isSameDomainOrSubdomain( url ) {
 	}
 }
 
-function getMonthNumber(monthName) {
-  // Create a date string that the Date constructor can reliably parse.
-  // Adding "1, 2023" ensures a valid date string.
-  const dateString = `${monthName} 1, 2023`;
-  const dateObject = new Date(dateString);
+function getMonthNumber( monthName ) {
+	// Create a date string that the Date constructor can reliably parse.
+	// Adding "1, 2023" ensures a valid date string.
+	const dateString = `${monthName} 1, 2023`;
+	const dateObject = new Date( dateString );
 
-  // Check if the date is valid
-  if (isNaN(dateObject.getMonth())) {
-    return false;
-  }
+	// Check if the date is valid
+	if ( isNaN( dateObject.getMonth() ) ) {
+		return false;
+	}
 
-  // getMonth() returns a 0-based index (0 for January) plus 1
-  return dateObject.getMonth() + 1 ;
+	// getMonth() returns a 0-based index (0 for January) plus 1
+	return dateObject.getMonth() + 1 ;
 }
 
 function getNumberByPosition( position ) {
 	const positionMap = {
-    	"first": 1,
-    	"second": 2,
-    	"third": 3,
-    	"fourth": 4,
-    	"fifth": 5,
-    	"sixth": 6,
-    	"seventh": 7,
-    	"eighth": 8,
-    	"ninth": 9,
-    	"tenth": 10
+		'first': 1,
+		'second': 2,
+		'third': 3,
+		'fourth': 4,
+		'fifth': 5,
+		'sixth': 6,
+		'seventh': 7,
+		'eighth': 8,
+		'ninth': 9,
+		'tenth': 10
+	};
+
+	if( /^\d+(th|st|nd|rd)$/.test( position.toLowerCase() ) ){
+		return Number( position.slice( 0, position.length-2 ) );
 	}
 
 	const positionNum = positionMap[position.toLowerCase()];
 
-	if(isNaN(positionNum))
-		 return false 
+	if( isNaN( positionNum ) )
+		return false;
 		
 	return positionNum;
 }

@@ -17,25 +17,45 @@ $table-icon: px-to-rem(28px);
 			button {
 				@include add-background-svg('usa-icons/sort_arrow');
 				position: absolute;
+				top: 30%;
+				right: 0;
 				width: $table-icon;
 				height: $table-icon;
 				border: 0;
 				background-color: color('transparent');
 			}
 
-			&[aria-sort='ascending']{
+			&[aria-sort='ascending'] {
+				background-color: color('primary-light');
+
 				button {
 					@include add-background-svg('usa-icons/arrow_upward');
+
+					&:focus {
+						outline-color: color('secondary');
+					}
 				}
 			}
-			
-			&[aria-sort='descending']{
+
+			&[aria-sort='descending'] {
+				background-color: color('primary-light');
+
 				button {
 					@include add-background-svg('usa-icons/arrow_downward');
+
+					&:focus {
+						outline-color: color('secondary');
+					}
 				}
 			}
 		}
 
+	}
+
+	td {
+		&[data-sort-active] {
+			background-color: color('primary-lighter');
+		}
 	}
 
 	caption {
