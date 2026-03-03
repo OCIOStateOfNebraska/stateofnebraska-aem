@@ -15,21 +15,29 @@ $table-icon: px-to-rem(28px);
 	th {
 		&[data-sortable] {
 			button {
-				@include add-background-svg('usa-icons/sort_arrow');
-				position: absolute;
-				top: 30%;
-				right: 0;
-				width: $table-icon;
-				height: $table-icon;
 				border: 0;
 				background-color: color('transparent');
+
+				&:after {
+					@include add-background-svg('usa-icons/sort_arrow');
+					position: absolute;
+					top: 30%;
+					right: 0;					
+					width: $table-icon;
+					height: $table-icon;
+					content: '';
+				}
 			}
+
 
 			&[aria-sort='ascending'] {
 				background-color: color('primary-light');
 
 				button {
-					@include add-background-svg('usa-icons/arrow_upward');
+
+					&:after {
+						@include add-background-svg('usa-icons/arrow_upward');
+					}
 
 					&:focus {
 						outline-color: color('secondary');
@@ -41,7 +49,10 @@ $table-icon: px-to-rem(28px);
 				background-color: color('primary-light');
 
 				button {
-					@include add-background-svg('usa-icons/arrow_downward');
+
+					&:after {
+						@include add-background-svg('usa-icons/arrow_downward');
+					}
 
 					&:focus {
 						outline-color: color('secondary');

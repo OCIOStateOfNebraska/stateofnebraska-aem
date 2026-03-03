@@ -59,9 +59,11 @@ function createSort( block ) {
 
 		const button = domEl( 'button', { 
 			class: 'table__header__button',
-			title: `Click to sort by ${th.textContent.trim()} in ascending order.`,
+			title: 'Click to sort column in ascending order.',
 			tabindex: '0'
 		} );
+		button.textContent = th.textContent;
+		th.textContent = '';
 		th.append( button );
 	} );
 
@@ -129,7 +131,7 @@ function createSort( block ) {
 			if( cur === null ) cur = 'descending';
 			const next = cur === 'ascending' ? 'descending' : 'ascending';
 			th.querySelector( 'button' ).title = `Click to sort by ${th.textContent.trim()} in ${cur} order.`;
-			th.ariaLabel = `${th.textContent.trim()}, sortable column, currently sorted ${next}.`;
+			th.ariaLabel = `${th.textContent.trim()}, sortable column, currently sorted.`;
 			th.setAttribute( 'aria-sort', next );
 			ascending = next === 'ascending';
 		} );
