@@ -215,10 +215,10 @@ export default function decorate( block ) {
 	ul.append( tempList );
 
 	// Optimize all images in the grid (lazy loading is set automatically)
-	ul.querySelectorAll( 'picture > img' ).forEach( ( img ) => {
+	ul.querySelectorAll( 'img' ).forEach( ( img ) => {
 		// Use existing alt text (should be person's name) or fallback to 'Contact photo'
 		const alt = img.alt || 'Contact photo';
-		img.closest( 'picture' ).replaceWith(
+		img.replaceWith(
 			createOptimizedPicture( img.src, alt, false, [{ width: '605' }] )
 		);
 	} );
