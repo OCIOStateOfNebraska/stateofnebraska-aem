@@ -1,0 +1,164 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+
+.contact-card-grid {
+	$block: 'usa-card';
+	$card-padding: units(3); // 24px (used for card body and media padding)
+	$body-gap: units(1); // 8px
+
+	// Load USWDS card base styles
+	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
+
+	// Shared link styles (used for name links and email links)
+	@mixin link-styles {
+		transition: color $transition, text-decoration $transition;
+		color: color('primary'); // #00607f
+		text-decoration: underline;
+
+		&:hover,
+		&:focus {
+			color: color('primary-dark');
+			text-decoration: none;
+		}
+
+		&:focus {
+			outline: 2px solid color('primary');
+			outline-offset: 2px;
+		}
+	}
+
+	margin-bottom: units($component-spacing-lg);
+
+	// Grid container - override USWDS defaults for consistent spacing
+	.usa-card-group {
+		margin-right: units(-1); // -8px to offset card margins
+		margin-left: units(-1); // -8px to offset card margins
+	}
+
+	// Individual contact card - override USWDS defaults
+	.#{$block} {
+		margin-bottom: units(2); // 16px - matches horizontal gap between cards
+		list-style: none;
+
+		&__container {
+			// Override USWDS defaults for custom spacing and styling
+			height: 100%;
+			margin-right: units(1); // 8px (creates 16px gap between cards)
+			margin-left: units(1); // 8px
+			border-radius: radius('md');
+			overflow: hidden;
+		}
+
+		// Override USWDS media section for custom padding
+		&__media {
+			padding: $card-padding $card-padding 0; // 24px top and horizontal, per Figma design
+		}
+
+		// Override USWDS image wrapper for custom aspect ratio and styling
+		&__img {
+			position: relative; // Contain absolutely positioned picture
+			aspect-ratio: 1/1; // Square images for contact photos
+			border-radius: radius('md');
+			overflow: hidden; // Clip picture to border-radius
+
+			picture {
+				position: absolute;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				display: block;
+				width: 100%;
+				height: 100%;
+				margin: 0; // Override USWDS global content styles
+			}
+
+			img {
+				display: block;
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: top; // Anchor to top to avoid cutting off heads
+			}
+		}
+
+		// Override USWDS body section for custom spacing
+		&__body {
+			flex: 1; // Grow to fill remaining space for equal card heights
+			gap: $body-gap;
+			padding: $card-padding;
+		}
+
+		// Override USWDS heading for custom typography
+		&__heading {
+			color: color('ink'); // #1b1b1b
+			font-family: family('heading'); // Montserrat
+			font-size: 22px; // Exact spec value from Figma
+			font-weight: fw('bold');
+			line-height: 1.15; // Exact spec value from Figma
+
+			// Link styles when name is linked (e.g., to YouTube)
+			a {
+				@include link-styles;
+				text-decoration: none; // No underline on name links
+
+				&:hover,
+				&:focus {
+					text-decoration: underline; // Show underline on hover/focus
+				}
+			}
+		}
+	}
+
+	// Custom placeholder styling when no image provided
+	.#{$block}__img.contact-card-placeholder-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: linear-gradient(to bottom right, #5a8f9b 0%, #a0c4cc 100%); // Gradient: darker teal upper left to lighter teal lower right
+	}
+
+	.contact-card-placeholder {
+		width: 101%; // Icon size relative to container to match Figma (81% * 1.25)
+		height: 101%;
+		color: #3d6b77; // Darker teal for icon to match Figma
+	}
+
+	// Manager card (order 1) - centered on its own row (custom feature)
+	.contact-card--manager {
+		// Force card to take full width to be alone on row
+		flex: 0 0 100%;
+		max-width: 100%;
+
+		.usa-card__container {
+			// On tablet, match width of regular cards and center
+			@media (width >= 40em) {
+				width: calc(50% - 1rem); // Match tablet:grid-col-6
+				margin-right: auto;
+				margin-left: auto;
+			}
+
+			// On desktop, match width of regular cards
+			@media (width >= 64em) {
+				width: calc(33.333% - 1rem); // Match desktop:grid-col-4
+			}
+		}
+	}
+
+	// Custom title text styling (not a standard USWDS element)
+	.contact-card-title {
+		margin: 0;
+		color: color('ink');
+		font-family: family('body'); // Roboto
+		font-size: 16px; // Exact spec value from Figma
+		line-height: 1.62; // Exact spec value from Figma
+	}
+
+	// Custom email link styling (not a standard USWDS element)
+	.contact-card-email {
+		@include link-styles;
+		font-family: family('body');
+		font-size: 16px; // Exact spec value from Figma
+		line-height: 1.62; // Exact spec value from Figma
+	}
+}

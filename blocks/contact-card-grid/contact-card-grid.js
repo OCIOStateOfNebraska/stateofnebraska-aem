@@ -1,0 +1,223 @@
+import { createOptimizedPicture } from '../../scripts/aem.js';
+import { domEl } from '../../scripts/dom-helpers.js';
+
+/**
+ * Creates a placeholder SVG when no image is provided.
+ * @returns {SVGElement} A placeholder user icon SVG.
+ */
+function createPlaceholderImage() {
+	const svg = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
+	svg.setAttribute( 'class', 'contact-card-placeholder' );
+	svg.setAttribute( 'viewBox', '0 0 24 24' );
+	svg.setAttribute( 'fill', 'currentColor' );
+	svg.setAttribute( 'aria-hidden', 'true' );
+
+	const path = document.createElementNS( 'http://www.w3.org/2000/svg', 'path' );
+	path.setAttribute( 'd', 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z' );
+
+	svg.appendChild( path );
+	return svg;
+}
+
+/**
+ * Generates the media content in the contact card.
+ * @param {HTMLElement} imageCell - The cell element containing the image.
+ * @param {HTMLElement} container - The card wrapper the content should be in.
+ * @param {string} personName - The person's name to use for alt text.
+ */
+function generateMedia( imageCell, container, personName ) {
+	const mediaWrapper = domEl( 'div', { class: 'usa-card__media' } );
+	const imgWrapper = domEl( 'div', { class: 'usa-card__img' } );
+	const img = imageCell?.querySelector( 'img' );
+
+	if ( img ) {
+		// Set alt text to person's name if available
+		if ( personName ) {
+			img.alt = personName;
+		}
+		imgWrapper.append( img );
+	} else {
+		// Create placeholder if no image provided
+		const placeholder = createPlaceholderImage();
+		imgWrapper.append( placeholder );
+		imgWrapper.classList.add( 'contact-card-placeholder-wrapper' );
+	}
+
+	mediaWrapper.append( imgWrapper );
+	container.append( mediaWrapper );
+}
+
+/**
+ * Generates the non-media content in the contact card (name, title, email).
+ * @param {HTMLElement} nameDiv - The div element containing the name.
+ * @param {HTMLElement} titleDiv - The div element containing the title.
+ * @param {HTMLElement} emailDiv - The div element containing the email.
+ * @param {HTMLElement} container - The card wrapper the content should be in.
+ */
+function generateContent( nameDiv, titleDiv, emailDiv, container ) {
+	const bodyWrapper = domEl( 'div', { class: 'usa-card__body' } );
+
+	// Name (optional field)
+	const nameText = nameDiv?.textContent?.trim();
+	if ( nameText ) {
+		const heading = domEl( 'p', {
+			class: 'usa-card__heading',
+			tabindex: '0'
+		} );
+
+		// Add visually hidden label for screen readers
+		const screenReaderLabel = domEl( 'span', { class: 'usa-sr-only' } );
+		screenReaderLabel.textContent = 'Name: ';
+		heading.append( screenReaderLabel );
+
+		// Check if name contains a link
+		const nameLink = nameDiv?.querySelector( 'a' );
+		if ( nameLink && nameLink.href ) {
+			// Create link that opens in new tab
+			const link = domEl( 'a', {
+				href: nameLink.href,
+				target: '_blank',
+				rel: 'noopener noreferrer'
+			} );
+			link.textContent = nameText;
+			heading.append( link );
+		} else {
+			// No link, just add text
+			const textSpan = domEl( 'span' );
+			textSpan.textContent = nameText;
+			heading.append( textSpan );
+		}
+
+		bodyWrapper.append( heading );
+	}
+
+	// Title (optional field)
+	const titleText = titleDiv?.textContent?.trim();
+	if ( titleText ) {
+		const title = domEl( 'p', {
+			class: 'contact-card-title',
+			tabindex: '0'
+		} );
+
+		// Add visually hidden label for screen readers
+		const screenReaderLabel = domEl( 'span', { class: 'usa-sr-only' } );
+		screenReaderLabel.textContent = 'Title: ';
+		title.append( screenReaderLabel );
+
+		const textSpan = domEl( 'span' );
+		textSpan.textContent = titleText;
+		title.append( textSpan );
+
+		bodyWrapper.append( title );
+	}
+
+	// Email (optional field)
+	const emailText = emailDiv?.textContent?.trim();
+	if ( emailText ) {
+		const emailLink = domEl( 'a', {
+			class: 'contact-card-email',
+			href: `mailto:${emailText}`
+		} );
+		emailLink.textContent = emailText;
+		bodyWrapper.append( emailLink );
+	}
+
+	container.append( bodyWrapper );
+}
+
+/**
+ * Generates the complete contact card.
+ * @param {HTMLElement} container - The card wrapper (child of the li).
+ * @param {Array} cells - Array of cell elements from the table row.
+ * @param {string} personName - The person's name for alt text and ARIA labels.
+ */
+function generateWholeCard( container, cells, personName ) {
+	// Expected structure: [Image, Name, Title, Email, Order]
+	const imageDiv = cells[0];
+	const nameDiv = cells[1];
+	const titleDiv = cells[2];
+	const emailDiv = cells[3];
+	// cells[4] is the order column (not displayed, just used for sorting)
+
+	// Generate media section
+	if ( imageDiv ) {
+		generateMedia( imageDiv, container, personName );
+	}
+
+	// Generate content section
+	generateContent( nameDiv, titleDiv, emailDiv, container );
+}
+
+/**
+ * Decorates the contact card grid block.
+ * @param {HTMLElement} block - The card grid generated by AEM.
+ */
+export default function decorate( block ) {
+	// All cards use the same responsive grid pattern
+	// Mobile: 12 cols (1 card per row), Tablet: 6 cols (2 per row), Desktop: 4 cols (3 per row)
+	const grid = 'grid-col-12 tablet:grid-col-6 desktop:grid-col-4';
+
+	const ul = domEl( 'ul', { class: 'usa-card-group grid-row' } );
+
+	// Sort rows by order column (5th column, index 4)
+	const rows = [...block.children];
+	const sortedRows = rows.map( ( row, originalIndex ) => {
+		const cells = [...row.children];
+		const orderCell = cells[4]; // 5th column (0-indexed)
+		const orderValue = orderCell?.textContent?.trim();
+		const order = orderValue ? parseInt( orderValue, 10 ) : null;
+
+		return {
+			row,
+			order,
+			originalIndex, // Preserve original order for blank entries
+		};
+	} )
+		.sort( ( a, b ) => {
+		// If both have order numbers, sort by order, then by original index for ties
+			if ( a.order !== null && b.order !== null ) {
+				return a.order - b.order || a.originalIndex - b.originalIndex;
+			}
+			// If only a has order, a comes first
+			if ( a.order !== null ) return -1;
+			// If only b has order, b comes first
+			if ( b.order !== null ) return 1;
+			// Both are blank, maintain original order
+			return a.originalIndex - b.originalIndex;
+		} );
+
+	// Process each table row as a contact card
+	sortedRows.forEach( ( { row, order }, index ) => {
+		// Only the first card with order 1 gets special class for centering
+		const managerClass = ( index === 0 && order === 1 ) ? ' contact-card--manager' : '';
+		const li = domEl( 'li', { class: `usa-card contact-card ${grid}${managerClass}` } );
+		const cardContainer = domEl( 'div', { class: 'usa-card__container' } );
+
+		// Get all cells from the row
+		const cells = [...row.children];
+
+		// Extract person's name for ARIA label and alt text
+		const nameDiv = cells[1];
+		const personName = nameDiv?.textContent?.trim() || '';
+
+
+		// Generate the card structure
+		generateWholeCard( cardContainer, cells, personName );
+
+		li.append( cardContainer );
+		ul.append( li );
+	} );
+
+	// Optimize all images in the grid (lazy loading is set automatically)
+	ul.querySelectorAll( 'picture > img' ).forEach( ( img ) => {
+		// Use existing alt text (should be person's name) or fallback to 'Contact photo'
+		const alt = img.alt || 'Contact photo';
+		img.closest( 'picture' ).replaceWith(
+			createOptimizedPicture( img.src, alt, false, [{ width: '605' }] )
+		);
+	} );
+
+	// Replace block content with the generated grid
+	block.textContent = '';
+	block.append( ul );
+}
