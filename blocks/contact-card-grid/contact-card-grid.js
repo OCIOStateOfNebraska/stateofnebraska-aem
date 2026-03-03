@@ -214,18 +214,16 @@ export default function decorate( block ) {
 	// Append all cards at once (single reflow)
 	ul.append( tempList );
 
-	// Optimize all images in the grid
-	// First image loads eagerly for better LCP, rest load lazily
-	ul.querySelectorAll( 'picture > img' ).forEach( ( img, index ) => {
+	// Optimize all images in the grid (lazy loading is set automatically)
+	ul.querySelectorAll( 'picture > img' ).forEach( ( img ) => {
 		// Use existing alt text (should be person's name) or fallback to 'Contact photo'
-		const picture = img.parentElement;  // Direct parent lookup (faster than closest)
 		const alt = img.alt || 'Contact photo';
-		const eager = index === 0;  // First image loads eagerly for LCP
-		picture.replaceWith(
-			createOptimizedPicture( img.src, alt, eager, [{ width: '605' }] )
+		img.closest( 'picture' ).replaceWith(
+			createOptimizedPicture( img.src, alt, false, [{ width: '605' }] )
 		);
 	} );
 
-	// Replace block content with the generated grid (single atomic operation)
-	block.replaceChildren( ul );
+	// Replace block content with the generated grid
+	block.textContent = '';
+	block.append( ul );
 }
