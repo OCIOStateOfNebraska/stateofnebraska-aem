@@ -186,6 +186,9 @@ export default function decorate( block ) {
 			return a.originalIndex - b.originalIndex;
 		} );
 
+	// Build cards in a DocumentFragment to minimize reflows
+	const tempList = document.createDocumentFragment();
+
 	// Process each table row as a contact card
 	sortedRows.forEach( ( { row, order }, index ) => {
 		// Only the first card with order 1 gets special class for centering
@@ -205,8 +208,11 @@ export default function decorate( block ) {
 		generateWholeCard( cardContainer, cells, personName );
 
 		li.append( cardContainer );
-		ul.append( li );
+		tempList.append( li );
 	} );
+
+	// Append all cards at once (single reflow)
+	ul.append( tempList );
 
 	// Optimize all images in the grid (lazy loading is set automatically)
 	ul.querySelectorAll( 'picture > img' ).forEach( ( img ) => {
