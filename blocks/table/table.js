@@ -70,18 +70,23 @@ function createSort( block ) {
 	// Precompute sort value
 	function setSortValue( td ) {
 		const text = td.textContent.trim();
+		// Percentage
 		if( /^(-|)\d+(\.\d+)?%$/.test( text ) ) {
 			td.setAttribute( 'data-sort-value', Number( text.replace( '%', '' ) ) /100 );
 		}
+		// Numbers
 		else if( /^(-|)\d+((\.|,|)(\d+)?)+$/.test( text ) ){
 			td.setAttribute( 'data-sort-value', Number( text.replaceAll( ',', '' ) ) );
 		}
+		// Position to number
 		else if( getNumberByPosition( text ) ){
 			td.setAttribute( 'data-sort-value', getNumberByPosition( text ) );
 		}
-		else if( new Date( text ) != 'Invalid Date' ){
+		// Date
+		else if( !Number.isNaN( Date.parse( text ) ) ){
 			td.setAttribute( 'data-sort-value', new Date( text ).getTime() );
 		}
+		// Month to number
 		else if( getMonthNumber( text ) ){
 			td.setAttribute( 'data-sort-value', getMonthNumber( text ) );
 		}
@@ -121,7 +126,7 @@ function createSort( block ) {
 	}
 
 	function toggleAriaSort( parentTh ) {
-		let ascending = true;
+		let isAscending = false;
 		ths.forEach( ( th ) => {
 			if ( th !== parentTh ) {
 				th.removeAttribute( 'aria-sort' );
@@ -133,10 +138,10 @@ function createSort( block ) {
 			th.querySelector( 'button' ).title = `Click to sort by ${th.textContent.trim()} in ${cur} order.`;
 			th.ariaLabel = `${th.textContent.trim()}, sortable column, currently sorted.`;
 			th.setAttribute( 'aria-sort', next );
-			ascending = next === 'ascending';
+			isAscending = next === 'ascending';
 		} );
 
-		return ascending;
+		return isAscending;
 	}
 
 	function handleSort( e ) {
@@ -145,7 +150,7 @@ function createSort( block ) {
 
 		const colIndex = parentTh.cellIndex;
 		const rows = getRows();
-		const ascending = toggleAriaSort( parentTh );
+		const isAscending = toggleAriaSort( parentTh );
 		setActiveColumn( colIndex, rows ) ;
 		
 		rows.forEach( row =>{
@@ -157,7 +162,7 @@ function createSort( block ) {
 			value: row.children[colIndex]?.getAttribute( 'data-sort-value' ) ?? '',
 		} ) );
 
-		const dir = ascending ? 'asc' : 'desc';
+		const dir = isAscending ? 'asc' : 'desc';
 		sortable.sort( ( a, b ) => compareValues( a.value, b.value, dir ) );
 
 		const frag = document.createDocumentFragment();
