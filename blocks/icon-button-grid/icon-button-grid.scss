@@ -131,24 +131,21 @@ main {
 	&:has(.side-navigation-container),
 	&:has(.in-page-navigation) {
 		.section {
-			&:has(.icon-button-grid-wrapper) {
+			&.icon-button-grid-container {
+				margin-top: 0; // normal spacing
+				margin-bottom: 0; // normal spacing
 				padding: 0;
 				background-color: transparent;
 
-				// stylelint-disable-next-line scss/selector-nest-combinators
-				+ .section.icon-button-grid-container {
-					margin-top: 0; // normal spacing
-				}
-
 				&:before {
 					display: none;
-				}	
-						
+				}
+
 				h2 {
 					margin-top: 1.5em;
 					color: color('ink');
 				}
-			}			
+			}
 		}
 	}
 }
