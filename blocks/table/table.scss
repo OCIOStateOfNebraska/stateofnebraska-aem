@@ -28,10 +28,11 @@ $table-icon: px-to-rem(28px);
 				&:after {
 					@include add-background-svg('usa-icons/sort_arrow');
 					position: absolute;
-					top: 30%;
+					top: 50%;
 					right: 0;					
 					width: $table-icon;
 					height: $table-icon;
+					margin-top: -1 * math.div($table-icon, 2);
 					content: '';
 				}
 
