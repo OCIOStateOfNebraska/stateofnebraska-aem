@@ -244,30 +244,4 @@ function getMonthNumber( monthName ) {
 	return dateObject.getMonth() + 1 ;
 }
 
-function getNumberByPosition( position ) {
-	const positionMap = {
-		'first': 1,
-		'second': 2,
-		'third': 3,
-		'fourth': 4,
-		'fifth': 5,
-		'sixth': 6,
-		'seventh': 7,
-		'eighth': 8,
-		'ninth': 9,
-		'tenth': 10
-	};
-
-	if( /^\d+(th|st|nd|rd)$/.test( position.toLowerCase() ) ){
-		return Number( position.slice( 0, position.length-2 ) );
-	}
-
-	const positionNum = positionMap[position.toLowerCase()];
-
-	if( isNaN( positionNum ) )
-		return false;
-		
-	return positionNum;
-}
-
-export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon, isSameDomainOrSubdomain, getMonthNumber,  getNumberByPosition };
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon, isSameDomainOrSubdomain, getMonthNumber };

@@ -10,12 +10,19 @@ $table-icon: px-to-rem(28px);
 
 .#{$block} {
 	@include u-margin(0);
-	width: 100%;
+	@include u-width('full');
 
 	th {
 		&[data-sortable] {
+			@include u-padding(0);
+
 			button {
-				border: 0;
+				@include u-height('full');
+				@include u-width('full');
+				@include u-padding-y(1);
+				@include u-padding-left(2);
+				@include u-padding-right(5);
+				@include u-border(0);
 				background-color: color('transparent');
 
 				&:after {
@@ -26,6 +33,10 @@ $table-icon: px-to-rem(28px);
 					width: $table-icon;
 					height: $table-icon;
 					content: '';
+				}
+
+				&:hover{
+					cursor: pointer;
 				}
 			}
 

@@ -1,5 +1,5 @@
 import { domEl } from '../../scripts/dom-helpers.js';
-import { getMonthNumber, getNumberByPosition } from '../../scripts/utils.js';
+import { getMonthNumber } from '../../scripts/utils.js';
 
 /**
 * Add creates and adds scope to the table headers
@@ -59,7 +59,7 @@ function createSort( block ) {
 
 		const button = domEl( 'button', { 
 			class: 'table__header__button',
-			title: 'Click to sort column in ascending order.',
+			title: 'Sort by column in ascending order.',
 			tabindex: '0'
 		} );
 		button.textContent = th.textContent;
@@ -79,8 +79,8 @@ function createSort( block ) {
 			td.setAttribute( 'data-sort-value', Number( text.replaceAll( ',', '' ) ) );
 		}
 		// Position to number
-		else if( getNumberByPosition( text ) ){
-			td.setAttribute( 'data-sort-value', getNumberByPosition( text ) );
+		else if( /^\d+(th|st|nd|rd)$/.test( text.toLowerCase() ) ){
+			td.setAttribute( 'data-sort-value', Number( text.slice( 0, text.length-2 ) ) );
 		}
 		// Date
 		else if( !Number.isNaN( Date.parse( text ) ) ){
@@ -135,7 +135,7 @@ function createSort( block ) {
 			let cur = th.getAttribute( 'aria-sort' );
 			if( cur === null ) cur = 'descending';
 			const next = cur === 'ascending' ? 'descending' : 'ascending';
-			th.querySelector( 'button' ).title = `Click to sort by ${th.textContent.trim()} in ${cur} order.`;
+			th.querySelector( 'button' ).title = `Sort by ${th.textContent.trim()} in ${cur} order.`;
 			th.ariaLabel = `${th.textContent.trim()}, sortable column, currently sorted.`;
 			th.setAttribute( 'aria-sort', next );
 			isAscending = next === 'ascending';
