@@ -132,20 +132,18 @@ main {
 	&:has(.in-page-navigation) {
 		.section {
 			&.icon-button-grid-container {
-				&:has(.icon-button-grid-wrapper) {
-					margin-top: 0; // normal spacing
-					margin-bottom: 0; // normal spacing
-					padding: 0;
-					background-color: transparent;
+				margin-top: 0; // normal spacing
+				margin-bottom: 0; // normal spacing
+				padding: 0;
+				background-color: transparent;
 
-					&:before {
-						display: none;
-					}
+				&:before {
+					display: none;
+				}
 
-					h2 {
-						margin-top: 1.5em;
-						color: color('ink');
-					}
+				h2 {
+					margin-top: 1.5em;
+					color: color('ink');
 				}
 			}
 		}
