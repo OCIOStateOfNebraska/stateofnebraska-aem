@@ -66,6 +66,27 @@ export default function decorate( block ) {
 	block.textContent = '';
 	block.appendChild( usaAccordion );
 
+	// Fixing tables inside of accordion
+	const tables = usaAccordion.querySelectorAll( 'table' );
+
+	tables.forEach( table => {
+		const row = table.querySelector( 'tbody > tr' );
+		if ( !row ) return;
+		
+		const thead = document.createElement( 'thead' );
+		const headerRow = document.createElement( 'tr' );
+
+		[...row.children].forEach( child => {
+			const th = domEl( 'th', { scope : 'col' } );
+			th.innerHTML = child.innerHTML;
+			headerRow.append( th );
+		} );
+		
+		thead.append( headerRow );
+		table.prepend( thead );
+		row.remove();
+	} );
+
 	accordion.on(  );
 
 
