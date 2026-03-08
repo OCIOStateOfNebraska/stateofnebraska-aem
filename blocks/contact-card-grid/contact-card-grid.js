@@ -61,11 +61,6 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 			tabindex: '0'
 		} );
 
-		// Add visually hidden label for screen readers
-		const screenReaderLabel = domEl( 'span', { class: 'usa-sr-only' } );
-		screenReaderLabel.textContent = 'Name: ';
-		heading.append( screenReaderLabel );
-
 		// Check if name contains a link
 		const nameLink = nameDiv?.querySelector( 'a' );
 		if ( nameLink && nameLink.href ) {
@@ -79,9 +74,7 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 			heading.append( link );
 		} else {
 			// No link, just add text
-			const textSpan = domEl( 'span' );
-			textSpan.textContent = nameText;
-			heading.append( textSpan );
+			heading.textContent = nameText;
 		}
 
 		bodyWrapper.append( heading );
@@ -94,15 +87,7 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 			class: 'contact-card-title',
 			tabindex: '0'
 		} );
-
-		// Add visually hidden label for screen readers
-		const screenReaderLabel = domEl( 'span', { class: 'usa-sr-only' } );
-		screenReaderLabel.textContent = 'Title: ';
-		title.append( screenReaderLabel );
-
-		const textSpan = domEl( 'span' );
-		textSpan.textContent = titleText;
-		title.append( textSpan );
+		title.textContent = titleText;
 
 		bodyWrapper.append( title );
 	}
