@@ -24,18 +24,13 @@ function createPlaceholderImage() {
  * Generates the media content in the contact card.
  * @param {HTMLElement} imageCell - The cell element containing the image.
  * @param {HTMLElement} container - The card wrapper the content should be in.
- * @param {string} personName - The person's name to use for alt text.
  */
-function generateMedia( imageCell, container, personName ) {
+function generateMedia( imageCell, container ) {
 	const mediaWrapper = domEl( 'div', { class: 'usa-card__media' } );
 	const imgWrapper = domEl( 'div', { class: 'usa-card__img' } );
 	const img = imageCell?.querySelector( 'img' );
 
 	if ( img ) {
-		// Set alt text to person's name if available
-		if ( personName ) {
-			img.alt = personName;
-		}
 		imgWrapper.append( img );
 	} else {
 		// Create placeholder if no image provided
@@ -130,9 +125,8 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
  * Generates the complete contact card.
  * @param {HTMLElement} container - The card wrapper (child of the li).
  * @param {Array} cells - Array of cell elements from the table row.
- * @param {string} personName - The person's name for alt text and ARIA labels.
  */
-function generateWholeCard( container, cells, personName ) {
+function generateWholeCard( container, cells ) {
 	// Expected structure: [Image, Name, Title, Email, Order]
 	const imageDiv = cells[0];
 	const nameDiv = cells[1];
@@ -142,7 +136,7 @@ function generateWholeCard( container, cells, personName ) {
 
 	// Generate media section
 	if ( imageDiv ) {
-		generateMedia( imageDiv, container, personName );
+		generateMedia( imageDiv, container );
 	}
 
 	// Generate content section
@@ -200,13 +194,8 @@ export default function decorate( block ) {
 		// Get all cells from the row
 		const cells = [...row.children];
 
-		// Extract person's name for ARIA label and alt text
-		const nameDiv = cells[1];
-		const personName = nameDiv?.textContent?.trim() || '';
-
-
 		// Generate the card structure
-		generateWholeCard( cardContainer, cells, personName );
+		generateWholeCard( cardContainer, cells );
 
 		li.append( cardContainer );
 		tempList.append( li );
@@ -217,7 +206,7 @@ export default function decorate( block ) {
 
 	// Optimize all images in the grid (lazy loading is set automatically)
 	ul.querySelectorAll( 'img' ).forEach( ( img ) => {
-		// Use existing alt text (should be person's name) or fallback to 'Contact photo'
+		// Use existing alt text or fallback to 'Contact photo'
 		const alt = img.alt || 'Contact photo';
 		img.replaceWith(
 			createOptimizedPicture( img.src, alt, false, [{ width: '605' }] )
