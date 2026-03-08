@@ -10,7 +10,8 @@ function createPlaceholderImage() {
 	svg.setAttribute( 'class', 'contact-card-placeholder' );
 	svg.setAttribute( 'viewBox', '0 0 24 24' );
 	svg.setAttribute( 'fill', 'currentColor' );
-	svg.setAttribute( 'aria-hidden', 'true' );
+	svg.setAttribute( 'role', 'img' );
+	svg.setAttribute( 'aria-label', 'Image not provided' );
 
 	const path = document.createElementNS( 'http://www.w3.org/2000/svg', 'path' );
 	path.setAttribute( 'd', 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z' );
