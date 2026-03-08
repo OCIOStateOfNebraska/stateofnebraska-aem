@@ -132,14 +132,14 @@
 
 		.usa-card__container {
 			// On tablet, match width of regular cards and center
-			@media (width >= 40em) {
+			@include at-media('tablet') {
 				width: calc(50% - 1rem); // Match tablet:grid-col-6
 				margin-right: auto;
 				margin-left: auto;
 			}
 
 			// On desktop, match width of regular cards
-			@media (width >= 64em) {
+			@include at-media('desktop') {
 				width: calc(33.333% - 1rem); // Match desktop:grid-col-4
 			}
 		}
