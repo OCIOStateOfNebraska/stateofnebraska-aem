@@ -126,12 +126,11 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
  * @param {Array} cells - Array of cell elements from the table row.
  */
 function generateWholeCard( container, cells ) {
-	// Expected structure: [Image, Name, Title, Email, Order]
+	// Expected structure: [Image, Name, Title, Email]
 	const imageDiv = cells[0];
 	const nameDiv = cells[1];
 	const titleDiv = cells[2];
 	const emailDiv = cells[3];
-	// cells[4] is the order column (not displayed, just used for sorting)
 
 	// Generate media section
 	if ( imageDiv ) {
@@ -153,40 +152,13 @@ export default function decorate( block ) {
 
 	const ul = domEl( 'ul', { class: 'usa-card-group grid-row' } );
 
-	// Sort rows by order column (5th column, index 4)
-	const rows = [...block.children];
-	const sortedRows = rows.map( ( row, originalIndex ) => {
-		const cells = [...row.children];
-		const orderCell = cells[4]; // 5th column (0-indexed)
-		const orderValue = orderCell?.textContent?.trim();
-		const order = orderValue ? parseInt( orderValue, 10 ) : null;
-
-		return {
-			row,
-			order,
-			originalIndex, // Preserve original order for blank entries
-		};
-	} )
-		.sort( ( a, b ) => {
-		// If both have order numbers, sort by order, then by original index for ties
-			if ( a.order !== null && b.order !== null ) {
-				return a.order - b.order || a.originalIndex - b.originalIndex;
-			}
-			// If only a has order, a comes first
-			if ( a.order !== null ) return -1;
-			// If only b has order, b comes first
-			if ( b.order !== null ) return 1;
-			// Both are blank, maintain original order
-			return a.originalIndex - b.originalIndex;
-		} );
-
 	// Build cards in a DocumentFragment to minimize reflows
 	const tempList = document.createDocumentFragment();
 
 	// Process each table row as a contact card
-	sortedRows.forEach( ( { row, order }, index ) => {
-		// Only the first card with order 1 gets special class for centering
-		const managerClass = ( index === 0 && order === 1 ) ? ' contact-card--manager' : '';
+	[...block.children].forEach( ( row, index ) => {
+		// First card gets special class for centering on its own row
+		const managerClass = index === 0 ? ' contact-card--manager' : '';
 		const li = domEl( 'li', { class: `usa-card contact-card ${grid}${managerClass}` } );
 		const cardContainer = domEl( 'div', { class: 'usa-card__container' } );
 
