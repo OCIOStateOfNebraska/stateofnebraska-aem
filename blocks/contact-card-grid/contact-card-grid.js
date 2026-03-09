@@ -7,7 +7,7 @@ import { domEl } from '../../scripts/dom-helpers.js';
  */
 function createPlaceholderImage() {
 	const svg = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
-	svg.setAttribute( 'class', 'contact-card-placeholder' );
+	svg.setAttribute( 'class', 'contact-card__placeholder' );
 	svg.setAttribute( 'viewBox', '0 0 24 24' );
 	svg.setAttribute( 'fill', 'currentColor' );
 	svg.setAttribute( 'role', 'img' );
@@ -36,7 +36,7 @@ function generateMedia( imageCell, container ) {
 		// Create placeholder if no image provided
 		const placeholder = createPlaceholderImage();
 		imgWrapper.append( placeholder );
-		imgWrapper.classList.add( 'contact-card-placeholder-wrapper' );
+		imgWrapper.classList.add( 'contact-card__placeholder-wrapper' );
 	}
 
 	mediaWrapper.append( imgWrapper );
