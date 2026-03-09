@@ -68,8 +68,7 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 	const nameText = nameDiv?.textContent?.trim();
 	if ( nameText ) {
 		const heading = domEl( 'p', {
-			class: 'usa-card__heading',
-			tabindex: '0'
+			class: 'usa-card__heading'
 		} );
 
 		// Check if name contains a link
@@ -95,8 +94,7 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 	const titleText = titleDiv?.textContent?.trim();
 	if ( titleText ) {
 		const title = domEl( 'p', {
-			class: 'contact-card__title',
-			tabindex: '0'
+			class: 'contact-card__title'
 		} );
 		title.textContent = titleText;
 
