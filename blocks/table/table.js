@@ -40,6 +40,27 @@ function checkType( block ) {
 	return type;
 }
 
+function createSearch( table ) {
+
+	const container = table.closest( 'div' );
+	const tbody = table.querySelector( 'tbody' );
+	const label =  table.querySelector( 'caption' )? `search ${table.querySelector( 'caption' ).textContent.trim() }`: 'search table';
+	const searchInput = domEl( 'input' , { type: 'search', class: 'usa-input usa-text-input', name: 'q', 'aria-label': label} );
+	const trs = Array.from( tbody.querySelectorAll( 'tr' )  );
+	searchInput.addEventListener( 'input', ( )=>{
+		trs.forEach( tr => {					
+			tr.classList.remove( 'hidden' );
+			tr.removeAttribute( 'aria-hidden' );
+			if( !tr.textContent.toLowerCase().includes( searchInput.value.toLowerCase() ) ){
+				tr.classList.add( 'hidden' );
+				tr.setAttribute( 'aria-hidden', true );
+			}
+		} );
+	} );
+
+	container.prepend( searchInput );
+}
+
 /**
  * Filtering by the header
  */
@@ -226,7 +247,8 @@ export default function decorate( block ) {
 			} );
 		} );
 	}
-
+	
+	createSearch( table );
 
 	
 	block.textContent = '';

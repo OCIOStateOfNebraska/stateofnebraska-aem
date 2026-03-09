@@ -12,6 +12,12 @@ $table-icon: px-to-rem(28px);
 	@include u-margin(0);
 	@include u-width('full');
 
+	tr{
+		&.hidden{
+			display: none;
+		}
+	}
+
 	th {
 		&[data-sortable] {
 			@include u-padding(0);
