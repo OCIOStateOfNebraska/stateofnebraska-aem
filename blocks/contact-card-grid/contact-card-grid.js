@@ -93,13 +93,27 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 	}
 
 	// Email (optional field)
-	const emailText = emailDiv?.textContent?.trim();
-	if ( emailText ) {
+	let emailAddress = null;
+
+	// First check if there's an existing anchor tag with mailto href
+	const existingEmailLink = emailDiv?.querySelector( 'a[href^="mailto:"]' );
+	if ( existingEmailLink ) {
+		// Extract email from href attribute
+		emailAddress = existingEmailLink.href.replace( /^mailto:/i, '' );
+	} else {
+		// Fall back to using text content
+		const emailText = emailDiv?.textContent?.trim();
+		if ( emailText ) {
+			emailAddress = emailText;
+		}
+	}
+
+	if ( emailAddress ) {
 		const emailLink = domEl( 'a', {
 			class: 'contact-card-email',
-			href: `mailto:${emailText}`
+			href: `mailto:${emailAddress}`
 		} );
-		emailLink.textContent = emailText;
+		emailLink.textContent = emailAddress;
 		bodyWrapper.append( emailLink );
 	}
 
