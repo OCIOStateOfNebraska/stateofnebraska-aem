@@ -7,9 +7,9 @@
 	$body-gap: units(1); // 8px
 
 	// Placeholder colors
-	$placeholder-gradient-start: #5a8f9b;
-	$placeholder-gradient-end: #a0c4cc;
-	$placeholder-icon-color: #3d6b77;
+	$placeholder-bluegray: #5a8f9b;
+	$placeholder-bluegray-light: #a0c4cc;
+	$placeholder-bluegray-dark: #3d6b77;
 
 	// Load USWDS card base styles
 	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
@@ -101,13 +101,13 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: linear-gradient(to bottom right, $placeholder-gradient-start 0%, $placeholder-gradient-end 100%);
+		background: linear-gradient(to bottom right, $placeholder-bluegray 0%, $placeholder-bluegray-light 100%);
 	}
 
 	.contact-card__placeholder {
 		width: 101%; // Icon size relative to container to match Figma (81% * 1.25)
 		height: 101%;
-		color: $placeholder-icon-color;
+		color: $placeholder-bluegray-dark;
 	}
 
 	// Manager card (first card) - centered on its own row (custom feature)
