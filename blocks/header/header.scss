@@ -183,6 +183,12 @@
 		.usa-nav {
 			// needs to be nested for styles to take
 			border-color: color('primary-light');
+
+			&-container{
+				@include u-margin(0);
+				@include u-padding(0);
+				max-width: none;
+			}
 			
 			&__search-header {
 				display: none;
