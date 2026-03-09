@@ -2,6 +2,17 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 import { domEl } from '../../scripts/dom-helpers.js';
 
 /**
+ * Validates an email address using a basic regex pattern.
+ * @param {string} email - The email address to validate.
+ * @returns {boolean} True if the email is valid, false otherwise.
+ */
+function isValidEmail( email ) {
+	// Basic email validation: requires @ symbol, domain, and TLD
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	return emailRegex.test( email );
+}
+
+/**
  * Creates a placeholder SVG when no image is provided.
  * @returns {SVGElement} A placeholder user icon SVG.
  */
@@ -109,12 +120,23 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 	}
 
 	if ( emailAddress ) {
-		const emailLink = domEl( 'a', {
-			class: 'contact-card-email',
-			href: `mailto:${emailAddress}`
-		} );
-		emailLink.textContent = emailAddress;
-		bodyWrapper.append( emailLink );
+		// Validate email address
+		if ( isValidEmail( emailAddress ) ) {
+			// Valid email: create mailto link
+			const emailLink = domEl( 'a', {
+				class: 'contact-card-email',
+				href: `mailto:${emailAddress}`
+			} );
+			emailLink.textContent = emailAddress;
+			bodyWrapper.append( emailLink );
+		} else {
+			// Invalid email: display as plain text
+			const emailText = domEl( 'p', {
+				class: 'contact-card-email contact-card-email--invalid'
+			} );
+			emailText.textContent = emailAddress;
+			bodyWrapper.append( emailText );
+		}
 	}
 
 	container.append( bodyWrapper );
