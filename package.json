@@ -1,8 +1,8 @@
 {
-  "name": "@adobe/aem-boilerplate",
+  "name": "nebraska-sower-design-system",
   "private": true,
   "version": "1.3.0",
-  "description": "Starter project for Adobe Helix",
+  "description": "The State of Nebraska's Sower Design system, designed leveraging USWDS and within AEM Edge Delivery.",
   "scripts": {
     "lint:js": "eslint . --ext .json,.js,.mjs",
     "lint:css": "stylelint blocks/**/*.scss styles/*.scss",
@@ -15,6 +15,10 @@
     "sass": "node sass-compile.js",
     "dev": "npm run bundle && node sass-compile.js watch & aem up",
     "bundle": "microbundle ./scripts/bundle-uswds.js -o ./scripts/deps/bundle-uswds.js -f modern --no-sourcemap --target web; mv ./scripts/deps/bundle-uswds.modern.mjs ./scripts/deps/bundle-uswds.js"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
   },
   "repository": {
     "type": "git",
