@@ -132,7 +132,7 @@
 	}
 
 	// Custom title text styling (not a standard USWDS element)
-	.contact-card-title {
+	.contact-card__title {
 		margin: 0;
 		color: color('ink');
 		font-family: family('body'); // Roboto
@@ -141,7 +141,7 @@
 	}
 
 	// Custom email link styling (not a standard USWDS element)
-	.contact-card-email {
+	.contact-card__email {
 		font-family: family('body');
 		font-size: size('body', 'sm');
 		line-height: lh('body', 5);

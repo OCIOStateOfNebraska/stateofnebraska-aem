@@ -95,7 +95,7 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 	const titleText = titleDiv?.textContent?.trim();
 	if ( titleText ) {
 		const title = domEl( 'p', {
-			class: 'contact-card-title',
+			class: 'contact-card__title',
 			tabindex: '0'
 		} );
 		title.textContent = titleText;
@@ -124,7 +124,7 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 		if ( isValidEmail( emailAddress ) ) {
 			// Valid email: create mailto link
 			const emailLink = domEl( 'a', {
-				class: 'contact-card-email',
+				class: 'contact-card__email',
 				href: `mailto:${emailAddress}`
 			} );
 			emailLink.textContent = emailAddress;
@@ -132,7 +132,7 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 		} else {
 			// Invalid email: display as plain text
 			const emailText = domEl( 'p', {
-				class: 'contact-card-email contact-card-email--invalid'
+				class: 'contact-card__email contact-card__email--invalid'
 			} );
 			emailText.textContent = emailAddress;
 			bodyWrapper.append( emailText );
