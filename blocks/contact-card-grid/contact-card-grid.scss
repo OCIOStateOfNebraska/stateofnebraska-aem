@@ -9,24 +9,6 @@
 	// Load USWDS card base styles
 	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
 
-	// Shared link styles (used for name links and email links)
-	@mixin link-styles {
-		transition: color $transition, text-decoration $transition;
-		color: color('primary'); // #00607f
-		text-decoration: underline;
-
-		&:hover,
-		&:focus {
-			color: color('primary-dark');
-			text-decoration: none;
-		}
-
-		&:focus {
-			outline: 2px solid color('primary');
-			outline-offset: 2px;
-		}
-	}
-
 	margin-bottom: units($component-spacing-lg);
 
 	// Grid container - override USWDS defaults for consistent spacing
@@ -95,12 +77,11 @@
 			font-family: family('heading'); // Montserrat
 			font-size: size('heading', 'lg');
 			font-weight: fw('bold');
-			line-height: lh('2');
+			line-height: lh('heading', 2);
 
 			// Link styles when name is linked (e.g., to YouTube)
 			a {
-				@include link-styles;
-				text-decoration: none; // No underline on name links
+				text-decoration: none; // No underline on name links by default
 
 				&:hover,
 				&:focus {
@@ -150,15 +131,14 @@
 		margin: 0;
 		color: color('ink');
 		font-family: family('body'); // Roboto
-		font-size: size('body', 'md');
-		line-height: lh('5');
+		font-size: size('body', 'sm');
+		line-height: lh('body', 5);
 	}
 
 	// Custom email link styling (not a standard USWDS element)
 	.contact-card-email {
-		@include link-styles;
 		font-family: family('body');
-		font-size: size('body', 'md');
-		line-height: lh('5');
+		font-size: size('body', 'sm');
+		line-height: lh('body', 5);
 	}
 }
