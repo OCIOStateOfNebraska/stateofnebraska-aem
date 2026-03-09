@@ -233,6 +233,9 @@ function decorateYouTube( element ) {
 		// stop if it's a button
 		if( parent?.classList.contains( 'usa-button__wrap' ) ) return;
 
+		// stop if it's inside a contact-card-grid (links should remain as links, not embeds)
+		if( link.closest( '.contact-card-grid' ) ) return;
+
 		// stop if there's text ahead of the link
 		if( link.previousSibling?.textContent.trim().length ) return;
 
