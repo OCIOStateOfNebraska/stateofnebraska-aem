@@ -93,9 +93,9 @@
 		&__heading {
 			color: color('ink'); // #1b1b1b
 			font-family: family('heading'); // Montserrat
-			font-size: 22px; // Exact spec value from Figma
+			font-size: size('heading', 'lg');
 			font-weight: fw('bold');
-			line-height: 1.15; // Exact spec value from Figma
+			line-height: lh('2');
 
 			// Link styles when name is linked (e.g., to YouTube)
 			a {
@@ -150,15 +150,15 @@
 		margin: 0;
 		color: color('ink');
 		font-family: family('body'); // Roboto
-		font-size: 16px; // Exact spec value from Figma
-		line-height: 1.62; // Exact spec value from Figma
+		font-size: size('body', 'md');
+		line-height: lh('5');
 	}
 
 	// Custom email link styling (not a standard USWDS element)
 	.contact-card-email {
 		@include link-styles;
 		font-family: family('body');
-		font-size: 16px; // Exact spec value from Figma
-		line-height: 1.62; // Exact spec value from Figma
+		font-size: size('body', 'md');
+		line-height: lh('5');
 	}
 }
