@@ -1,0 +1,149 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+
+.contact-card-grid {
+	$block: 'usa-card';
+	$card-padding: units(3); // 24px (used for card body and media padding)
+	$body-gap: units(1); // 8px
+
+	// Placeholder colors
+	$placeholder-bluegray: #5a8f9b;
+	$placeholder-bluegray-light: #a0c4cc;
+	$placeholder-bluegray-dark: #3d6b77;
+
+	// Load USWDS card base styles
+	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
+
+	margin-bottom: units($component-spacing-lg);
+
+	// Grid container - override USWDS defaults for consistent spacing
+	.usa-card-group {
+		margin-right: units(-1); // -8px to offset card margins
+		margin-left: units(-1); // -8px to offset card margins
+	}
+
+	// Individual contact card - override USWDS defaults
+	.#{$block} {
+		margin-bottom: units(2); // 16px - matches horizontal gap between cards
+		list-style: none;
+
+		&__container {
+			// Override USWDS defaults for custom spacing and styling
+			height: 100%;
+			margin-right: units(1); // 8px (creates 16px gap between cards)
+			margin-left: units(1); // 8px
+			border-radius: radius('md');
+			overflow: hidden;
+		}
+
+		// Override USWDS media section for custom padding
+		&__media {
+			padding: $card-padding $card-padding 0; // 24px top and horizontal, per Figma design
+		}
+
+		// Override USWDS image wrapper for custom aspect ratio and styling
+		&__img {
+			position: relative; // Contain absolutely positioned picture
+			aspect-ratio: 1/1; // Square images for contact photos
+			border-radius: radius('md');
+			overflow: hidden; // Clip picture to border-radius
+
+			picture {
+				position: absolute;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				display: block;
+				width: 100%;
+				height: 100%;
+				margin: 0; // Override USWDS global content styles
+			}
+
+			img {
+				display: block;
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: top; // Anchor to top to avoid cutting off heads
+			}
+		}
+
+		// Override USWDS body section for custom spacing
+		&__body {
+			flex: 1; // Grow to fill remaining space for equal card heights
+			gap: $body-gap;
+			padding: $card-padding;
+		}
+
+		// Override USWDS heading for custom typography
+		&__heading {
+			color: color('ink'); // #1b1b1b
+			font-family: family('heading'); // Montserrat
+			font-size: size('heading', 'lg');
+			font-weight: fw('bold');
+			line-height: lh('heading', 2);
+
+			// Link styles when name is linked (e.g., to YouTube)
+			a {
+				text-decoration: none; // No underline on name links by default
+
+				&:hover,
+				&:focus {
+					text-decoration: underline; // Show underline on hover/focus
+				}
+			}
+		}
+	}
+
+	// Custom placeholder styling when no image provided
+	.contact-card__placeholder-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: linear-gradient(to bottom right, $placeholder-bluegray 0%, $placeholder-bluegray-light 100%);
+	}
+
+	.contact-card__placeholder {
+		width: 101%; // Icon size relative to container to match Figma (81% * 1.25)
+		height: 101%;
+		color: $placeholder-bluegray-dark;
+	}
+
+	// Manager card (first card) - centered on its own row (custom feature)
+	.contact-card--manager {
+		// Force card to take full width to be alone on row
+		flex: 0 0 100%;
+		max-width: 100%;
+
+		.usa-card__container {
+			// On tablet, match width of regular cards and center
+			@include at-media('tablet') {
+				width: calc(50% - 1rem); // Match tablet:grid-col-6
+				margin-right: auto;
+				margin-left: auto;
+			}
+
+			// On desktop, match width of regular cards
+			@include at-media('desktop') {
+				width: calc(33.333% - 1rem); // Match desktop:grid-col-4
+			}
+		}
+	}
+
+	// Custom title text styling (not a standard USWDS element)
+	.contact-card__title {
+		margin: 0;
+		color: color('ink');
+		font-family: family('body'); // Roboto
+		font-size: size('body', 'sm');
+		line-height: lh('body', 5);
+	}
+
+	// Custom email link styling (not a standard USWDS element)
+	.contact-card__email {
+		font-family: family('body');
+		font-size: size('body', 'sm');
+		line-height: lh('body', 5);
+	}
+}
