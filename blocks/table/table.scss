@@ -5,7 +5,14 @@ $block: 'usa-table';
 $table-icon: px-to-rem(28px);
 
 .table {
-	margin: units($component-spacing-sm) 0;
+	margin: units($component-spacing-sm) 0;	
+
+	.usa-text-input{
+		@include u-height(5);
+		@include u-margin-bottom(1);
+		@include u-width('card-lg');
+		border: 1px solid #1b1b1b;
+	}
 }
 
 .#{$block} {

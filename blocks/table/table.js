@@ -41,12 +41,14 @@ function checkType( block ) {
 }
 
 function createSearch( table ) {
+	table.setAttribute( 'aria-live', 'polite' );
 
 	const container = table.closest( 'div' );
 	const tbody = table.querySelector( 'tbody' );
 	const label =  table.querySelector( 'caption' )? `search ${table.querySelector( 'caption' ).textContent.trim() }`: 'search table';
-	const searchInput = domEl( 'input' , { type: 'search', class: 'usa-input usa-text-input', name: 'q', 'aria-label': label} );
+	const searchInput = domEl( 'input' , { type: 'search', class: 'usa-input usa-text-input', name: 'search', 'aria-label': label, placeholder: 'Search...', autocomplete: 'off' } );
 	const trs = Array.from( tbody.querySelectorAll( 'tr' )  );
+
 	searchInput.addEventListener( 'input', ( )=>{
 		trs.forEach( tr => {					
 			tr.classList.remove( 'hidden' );
@@ -248,8 +250,7 @@ export default function decorate( block ) {
 		} );
 	}
 	
-	createSearch( table );
-
+	
 	
 	block.textContent = '';
 	if ( container ) {
@@ -257,4 +258,5 @@ export default function decorate( block ) {
 	} else {
 		block.append( table );
 	}
+	createSearch( table );
 }
