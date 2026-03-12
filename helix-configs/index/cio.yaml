@@ -1,4 +1,4 @@
-version: 3
+version: 4
 indices:
   site:
     exclude:
@@ -30,6 +30,10 @@ indices:
         select: none
         value: |
           parseTimestamp(headers['last-modified'], 'ddd, DD MMM YYYY hh:mm:ss GMT')
+      navOrder:
+        select: head > meta[name="nav-order"]
+        value: |
+          attribute(el, 'content')
   search:
     exclude:
       - tools/**
