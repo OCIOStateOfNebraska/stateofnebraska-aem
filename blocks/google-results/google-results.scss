@@ -1,0 +1,41 @@
+@use '../../styles/ne-global-imports' as *;
+
+.google-results {
+	// Reserve space for results to minimize CLS when Google injects content
+	.google-results-wrapper {
+		min-height: 30vh;
+	}
+	.gsc-control-cse {
+		background-color: inherit;
+		border: none;
+
+		.gsc-tabsArea {
+			.gsc-tabHeader {
+				background-color: inherit;
+			}
+		}
+	
+		.gsc-refinementsArea {
+			background-color: inherit;
+			.gsc-refinementHeader {
+				background-color: inherit;
+			}
+		}
+
+		.gsc-above-wrapper-area {
+			table td {
+				border: none;
+			}
+		}
+
+		.gsc-result {
+			background-color: inherit;
+			border: none;
+
+			&:hover {
+				background-color: unset;
+				border: none;
+			}
+		}
+	}
+}
