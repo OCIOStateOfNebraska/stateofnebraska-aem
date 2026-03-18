@@ -38,6 +38,13 @@
 		margin: 0;
 		margin-right: units(1);
 
+		a{
+			&:focus{
+				display: inline-block;
+				outline-offset: -.25rem;
+			}
+		}
+		
 		&__img {
 			picture {
 				@include u-margin-y(1);
@@ -90,6 +97,8 @@
 			}
 	
 		}
+
+		
 	}
 
 	.usa-menu-btn {
