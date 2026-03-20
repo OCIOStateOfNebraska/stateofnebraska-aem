@@ -11,13 +11,33 @@ $table-icon: px-to-rem(28px);
 		@include u-height(5);
 		@include u-margin-bottom(1);
 		@include u-width('card-lg');
-		border: 1px solid #1b1b1b;
+		@include u-border(1px);
 	}
 }
 
 .#{$block} {
 	@include u-margin(0);
 	@include u-width('full');
+
+	&-toolbar{
+		@include u-border(1px);
+		@include u-border-bottom(0);
+		@include u-padding(1);
+		@include u-height(7);
+		@include u-bg('base-lighter');
+		display: flex;
+		justify-content: space-between;
+
+		.usa-text-input{
+			@include u-margin(0);
+			@include u-padding(1);
+		}
+
+		.usa-table-results{
+			@include u-margin(0);
+			@include u-height('full');
+		}
+	}
 
 	tr{
 		&.hidden{

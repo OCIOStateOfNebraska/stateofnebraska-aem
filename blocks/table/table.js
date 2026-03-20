@@ -41,8 +41,8 @@ function checkType( block ) {
 }
 
 function createSearch( table ) {
-	table.setAttribute( 'aria-live', 'polite' );
-
+	const toolbar = domEl( 'div' , { class: 'usa-table-toolbar' } );
+	const searchResult = domEl( 'p' , { class: 'usa-table-results', 'aria-live': 'polite'} );
 	const container = table.closest( 'div' );
 	const tbody = table.querySelector( 'tbody' );
 	const label =  table.querySelector( 'caption' )? `search ${table.querySelector( 'caption' ).textContent.trim() }`: 'search table';
@@ -50,6 +50,7 @@ function createSearch( table ) {
 	const trs = Array.from( tbody.querySelectorAll( 'tr' )  );
 
 	searchInput.addEventListener( 'input', ( )=>{
+		let results = 0;
 		trs.forEach( tr => {					
 			tr.classList.remove( 'hidden' );
 			tr.removeAttribute( 'aria-hidden' );
@@ -57,10 +58,17 @@ function createSearch( table ) {
 				tr.classList.add( 'hidden' );
 				tr.setAttribute( 'aria-hidden', true );
 			}
-		} );
+			else{
+				results ++;
+			}
+		} );			
+		searchResult.textContent = results == 1?  results + ' Result': results + ' Results';
 	} );
 
-	container.prepend( searchInput );
+	toolbar.append( searchInput );
+	toolbar.append ( searchResult );
+	container.prepend( toolbar );
+
 }
 
 /**
