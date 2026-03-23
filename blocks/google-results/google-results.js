@@ -3,11 +3,11 @@ import { domEl } from '../../scripts/dom-helpers.js';
 
 /**
  * Loads and renders Google Programmable Search Engine results.
- * Reads `?gsc.q=` from the URL automatically
+ * Reads `?q=` from the URL automatically
  * where the header search form submits to this page.
  *
  * Block options (authored as rows):
- *   search-engine-id  — Google PSE cx value
+ *   search-engine-id  — Google PSE ID value
  *
  * @param {HTMLElement} block
  */

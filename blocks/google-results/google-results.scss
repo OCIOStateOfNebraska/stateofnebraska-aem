@@ -1,13 +1,18 @@
-@use '../../styles/ne-global-imports' as *;
+main {
+	&:has(.google-results) {
+		overflow-x: clip;
+	}
+}
 
 .google-results {
 	// Reserve space for results to minimize CLS when Google injects content
 	.google-results-wrapper {
-		min-height: 30vh;
+		min-height: 40vh;
 	}
+
 	.gsc-control-cse {
+		border: 0;
 		background-color: inherit;
-		border: none;
 
 		.gsc-tabsArea {
 			.gsc-tabHeader {
@@ -17,24 +22,35 @@
 	
 		.gsc-refinementsArea {
 			background-color: inherit;
+
 			.gsc-refinementHeader {
 				background-color: inherit;
 			}
 		}
 
 		.gsc-above-wrapper-area {
-			table td {
-				border: none;
+			table {
+				td {
+					border: 0;
+				}
 			}
 		}
 
-		.gsc-result {
-			background-color: inherit;
-			border: none;
+		.gsc-results {
+			.gsc-result {
+				border: 0;
+				background-color: inherit;
+	
+				&:hover {
+					border: 0;
+					background-color: unset;
+				}
+			}
 
-			&:hover {
-				background-color: unset;
-				border: none;
+			.gsc-cursor-box {
+				.gsc-cursor-page {
+					background-color: inherit;
+				}
 			}
 		}
 	}
