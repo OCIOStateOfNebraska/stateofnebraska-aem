@@ -492,37 +492,39 @@ function decorateSections( main ) {
 
 					}
 				}
-				else if ( key === 'background' && getMetadata( 'layout' ) == '' ) {						
-					const value = String( meta[key] ?? '' ).trim();
-					const sectionBackground = domEl( 'div', { class: 'section-background' } );
-					sectionBackground.setAttribute( 'aria-hidden', 'true' );
+				else if ( key === 'background' ) {
+					const value = String( meta[key] ?? '' ).trim().toLowerCase();
+					const backgroundOptions = [ 'light', 'dark', 'theme' ];
 
-					const colorClass = {
-						blue: 'blue',
-						red: 'red',
-						yellow: 'yellow',
-						gray: 'gray',
-						'dark-gray': 'dark-gray',
-					};
-
-					const isUrl = /^(https?:)?\/\//i.test( value ) || value.startsWith( '/' ) || value.startsWith( 'data:' );
-
-					if ( isUrl ) {
-						const bgUrl = value.replace( '750', '1920' );
-						sectionBackground.style.backgroundImage = `url("${bgUrl}")`;
-						sectionBackground.classList.add( 'image' );
-					}
-					else {
-						const cls = colorClass[meta[key]];
-						if ( cls ) sectionBackground.classList.add( 'section-background--' + cls );
+					if( backgroundOptions.includes( value ) ) {
+						section.classList.add( 'section-background', 'section-background--' + value );
 					}				
-					section.append( sectionBackground );
-				}
-				else {
+				} else if( key === 'background-image' ) {
+					const value = String( meta[key] ?? '' ).trim();
+					if( value && value.length ) {
+						let url;
+						try {
+							url = new URL( value );
+						} catch( e ) { console.warn( 'Invalid URL in background-image', value, section ); }
+
+						// Bump up from the default DA size
+						if( url.searchParams.get( 'width' ) == 750 ) {
+							url.searchParams.set( 'width', 1920 );
+						}
+						
+						const backgroundImgEle = div( {
+							style: `background-image:url("${url}")`,
+							class: 'section-background__image'
+						} );
+						section.prepend( backgroundImgEle );
+						section.classList.add( 'section-background', 'section-background--image' );
+					}
+				} else {
 					section.dataset[toCamelCase( key )] = meta[key];
 				}
 			} );
-			sectionMeta.parentNode.remove();
+
+			sectionMeta.parentElement.remove(); // itself + wrapping div
 		}
 	} );
 }
