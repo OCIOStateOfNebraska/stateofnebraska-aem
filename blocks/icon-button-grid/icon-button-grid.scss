@@ -131,8 +131,9 @@ main {
 	&:has(.side-navigation-container),
 	&:has(.in-page-navigation) {
 		.section {
-			&:has(.icon-button-grid-wrapper) {
-				margin-top: 0;
+			&.icon-button-grid-container {
+				margin-top: 0; // normal spacing
+				margin-bottom: 0; // normal spacing
 				padding: 0;
 				background-color: transparent;
 

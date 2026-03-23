@@ -1,4 +1,5 @@
 import { domEl } from '../../scripts/dom-helpers.js';
+import { getMonthNumber } from '../../scripts/utils.js';
 
 /**
 * Add creates and adds scope to the table headers
@@ -10,6 +11,8 @@ function createTableHeaders( row, cell, scope ) {
 	const th = domEl( 'th', { 'scope': scope }, cell.innerText );
 
 	if ( scope === 'row' ) {
+		const sortValue = cell.dataset.sortValue;
+		if( sortValue ) th.setAttribute( 'data-sort-value', sortValue );
 		row.prepend( th );
 	} else {
 		row.append( th );
@@ -35,6 +38,141 @@ function checkType( block ) {
 	}
 	
 	return type;
+}
+
+/**
+ * Filtering by the header
+ */
+
+function createSort( block ) {
+	const thead = block.querySelector( 'thead' );
+	const ths = thead.querySelectorAll( 'th' );
+	const tbody = block.querySelector( 'tbody' );
+
+	const getRows = () => Array.from( tbody.querySelectorAll( 'tr' ) );
+
+	// Build sortable header 
+	ths.forEach( th =>{
+		th.setAttribute( 'data-sortable', '' );
+		th.setAttribute( 'role', 'columnheader' );
+		th.setAttribute( 'aria-label', `${th.textContent.trim()}, sortable column, currently unsorted.` );
+
+		const button = domEl( 'button', { 
+			class: 'table__header__button',
+			title: 'Sort by column in ascending order.',
+			tabindex: '0'
+		} );
+		button.textContent = th.textContent;
+		th.textContent = '';
+		th.append( button );
+	} );
+
+	// Precompute sort value
+	function setSortValue( td ) {
+		const text = td.textContent.trim();
+		// Percentage
+		if( /^(-|)\d+(\.\d+)?%$/.test( text ) ) {
+			td.setAttribute( 'data-sort-value', Number( text.replace( '%', '' ) ) /100 );
+		}
+		// Numbers
+		else if( /^(-|)\d+((\.|,|)(\d+)?)+$/.test( text ) ){
+			td.setAttribute( 'data-sort-value', Number( text.replaceAll( ',', '' ) ) );
+		}
+		// Position to number
+		else if( /^\d+(th|st|nd|rd)$/.test( text.toLowerCase() ) ){
+			td.setAttribute( 'data-sort-value', Number( text.slice( 0, text.length-2 ) ) );
+		}
+		// Date
+		else if( !Number.isNaN( Date.parse( text ) ) ){
+			td.setAttribute( 'data-sort-value', new Date( text ).getTime() );
+		}
+		// Month to number
+		else if( getMonthNumber( text ) ){
+			td.setAttribute( 'data-sort-value', getMonthNumber( text ) );
+		}
+		else{
+			td.setAttribute( 'data-sort-value', text );
+		}
+	}
+
+	block.querySelectorAll( 'tbody td, tbody th' ).forEach( setSortValue );
+
+	let activeColIndex = null;
+
+	function compareValues( aVal, bVal, direction ){
+		const aNum = Number( aVal );
+		const bNum = Number( bVal );
+		const bothNumeric = !Number.isNaN( aNum ) && !Number.isNaN( bNum );
+
+		if ( bothNumeric ) {
+			return direction === 'asc' ? aNum - bNum : bNum - aNum;
+		}
+
+		const aStr = String( aVal );
+		const bStr = String( bVal );
+		return direction === 'asc' ? aStr.localeCompare( bStr ): bStr.localeCompare( aStr ); 
+	}
+
+	function setActiveColumn( colIndex, rows ){		
+		if ( activeColIndex !== null ) {
+			for ( const row of rows ) {
+				row.children[activeColIndex]?.removeAttribute( 'data-sort-active' );
+			}
+		}
+		for ( const row of rows ) {
+			row.children[colIndex]?.setAttribute( 'data-sort-active', 'true' );
+		}
+		activeColIndex = colIndex;
+	}
+
+	function toggleAriaSort( parentTh ) {
+		let isAscending = false;
+		ths.forEach( ( th ) => {
+			if ( th !== parentTh ) {
+				th.removeAttribute( 'aria-sort' );
+				return;
+			}
+			let cur = th.getAttribute( 'aria-sort' );
+			if( cur === null ) cur = 'descending';
+			const next = cur === 'ascending' ? 'descending' : 'ascending';
+			th.querySelector( 'button' ).title = `Sort by ${th.textContent.trim()} in ${cur} order.`;
+			th.ariaLabel = `${th.textContent.trim()}, sortable column, currently sorted.`;
+			th.setAttribute( 'aria-sort', next );
+			isAscending = next === 'ascending';
+		} );
+
+		return isAscending;
+	}
+
+	function handleSort( e ) {
+		const parentTh = e.currentTarget.closest( 'th' );
+		if ( !parentTh ) return;
+
+		const colIndex = parentTh.cellIndex;
+		const rows = getRows();
+		const isAscending = toggleAriaSort( parentTh );
+		setActiveColumn( colIndex, rows ) ;
+		
+		rows.forEach( row =>{
+			row.children[parent.colIndex]?.setAttribute( 'data-sort-active', 'true' );
+		} );
+
+		const sortable = rows.map( ( row ) => ( {
+			row,
+			value: row.children[colIndex]?.getAttribute( 'data-sort-value' ) ?? '',
+		} ) );
+
+		const dir = isAscending ? 'asc' : 'desc';
+		sortable.sort( ( a, b ) => compareValues( a.value, b.value, dir ) );
+
+		const frag = document.createDocumentFragment();
+		for ( const item of sortable ) frag.append( item.row );
+		tbody.append( frag ); 
+	}
+
+	thead.querySelectorAll( 'button.table__header__button' )
+		.forEach( ( btn ) => btn.addEventListener( 'click', handleSort ) );
+
 }
 
 /**
@@ -66,6 +204,8 @@ export default function decorate( block ) {
 	}
 	// grab the new Rows in the body after we generate the thead 
 	newRows = tbody.querySelectorAll( 'tr' ); 
+
+	if( block.classList.contains( 'sortable' ) ) createSort( block );
 	
 	// handle scrollable table 
 	if ( type === 'scrollable' || type === 'col-header' ) {
@@ -87,6 +227,8 @@ export default function decorate( block ) {
 		} );
 	}
 
+
+	
 	block.textContent = '';
 	if ( container ) {
 		block.append( container );

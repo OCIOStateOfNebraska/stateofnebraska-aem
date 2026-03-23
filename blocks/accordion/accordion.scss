@@ -1,8 +1,9 @@
 @use '../../styles/ne-global-imports' as *;
 @use 'sass:meta';
 
+$block: 'usa-accordion';
+
 .accordion-wrapper {
-	$block: 'usa-accordion';
 	$accordion-padding-left: units(2.5); // found in ~uswds/usa-accordion/src/styles/usa-accordion. No variable was set
 	$accordion-circle: px-to-rem(28px);
 	$accordion-button-gap: units(1);
@@ -33,6 +34,7 @@
 		&:before {
 			@include add-background-svg('usa-icons/remove');
 			display: inline-block;
+			flex-shrink: 0;
 			width: $accordion-circle;
 			height: $accordion-circle;
 			border-radius: 50%;
@@ -60,99 +62,100 @@
 		&:focus-visible {
 			background-color: transparent;
 			background-image: none;
-			color: color(primary);
+			color: color('primary');
 			text-decoration: underline;
 		}
 	}
 }
 
 .tabs {
-	$block: 'usa-accordion';
-
 	.#{$block} {
 
 		&__button {
-			height: 100%;
-			padding: 1rem;
-			border-radius: 0;
-			background: color(primary);
-			color: white;
+			@include u-padding(2);
+			@include u-radius(0);
+			@include u-height('full');
 
-			&[ aria-expanded= 'true'] {
-				background-color: #fff;
-				color: color(primary);
+			background: color('primary');
+			color: color('white');
+
+			&[aria-expanded='true'] {
+				background-color: color('white');
+				color: color('primary');
 				box-shadow: 0 -4px 16px -6px rgb(133 133 133 / 45%);
 
 			}
-			
-			&[ aria-expanded= 'false'] {
-				background-color: color(primary);
-				color: white;
+
+			&[aria-expanded='false'] {
+				background-color: color('primary');
+				color: color('white');
 			}
 
 			&:hover {
-				background-color: #fff;
-				color: color(primary);
+				background-color: color('white');
+				color: color('primary');
 			}
 		}
 
 		&__content {
-			background-color: #fff;
-			box-shadow: inset 0 10px 2px -7px #80808045 ;
+			background-color: color('white');
+			box-shadow: inset 0 10px 2px -7px #80808045;
 		}
 	}
+}
 
+.tabs-grid {
 
-	&.tabs-grid {
+	.#{$block} {
+		@include at-media('tablet') {
+			@include u-radius(0);
+			display: grid;
+			grid-auto-rows: auto;
+			gap: 0 5px;
+			flex-direction: column;
 
-		.#{$block} {
-			@include at-media('tablet') {
-				display: grid;
-				grid-auto-rows: auto;
-				gap: 0 5px;
-				flex-direction: column;
-				transition: background 0.3s;
-				border-radius: 0;
+			&__heading {
+				grid-row: 1;
 
-				&__heading {
-					grid-row: 1;
+				.#{$block}__button {
+					@include u-border(0);
+					justify-content: center;
+					border-radius: 6px 6px 0 0;
+					text-align: center;
 
-					.#{$block}__button {
-						justify-content: center;
-						border: 0;
-						border-radius: 6px 6px 0 0;
-						text-align: center;
+					&[aria-expanded='true'] {
+						background-color: color('white');
+						color: color('black');
+					}
 
-						&[ aria-expanded='true'] {
-							background-color: white;
-							color: black;
-						}
-
-						&:before {
-							display: none;
-						}
+					&[aria-expanded='false'] {
 
 						&:hover,
 						&:focus,
 						&:focus-visible {
-							background-color: #4b4c4e;
-							color: #fff;
+							background-color: color('primary-darker');
+							color: color('white');
 						}
 					}
-				}
 
-				&__content {
-					grid-row: 2;
-					grid-column-start: 1;
-					width: 100%;
-					border-radius: 0 0 6px 6px;
-					background-color: white;
-					box-shadow: 0 8px 8px -6px rgb(133 133 133 / 45%);
-
-					p {
-						max-width: 100%;
+					&:before {
+						display: none;
 					}
 				}
+			}
+
+			&__content {
+				@include u-width('full');
+				grid-row: 2;
+				grid-column-start: 1;
+				border-radius: 0 0 6px 6px;
+				background-color: color('white');
+				box-shadow: 0 8px 8px -6px rgb(133 133 133 / 45%);
+
+				p {
+					@include u-maxw('full');
+				}
+
 			}
 		}
 	}
