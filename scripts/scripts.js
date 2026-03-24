@@ -489,7 +489,6 @@ function decorateSections( main ) {
 							const colSize = i % 2 === 0 ? col1 : col2;
 							div.classList.add( `desktop:grid-col-${colSize}` );
 						} );
-
 					}
 				}
 				else if ( key === 'background' ) {
@@ -498,7 +497,10 @@ function decorateSections( main ) {
 
 					if( backgroundOptions.includes( value ) ) {
 						section.classList.add( 'section-background', 'section-background--' + value );
-					}				
+					} else {
+						// Invalid option was selected, behave as default section
+						section.classList.remove( 'section-background' );
+					}
 				} else if( key === 'background-image' ) {
 					const value = String( meta[key] ?? '' ).trim();
 					if( value && value.length ) {
@@ -507,17 +509,20 @@ function decorateSections( main ) {
 							url = new URL( value );
 						} catch( e ) { console.warn( 'Invalid URL in background-image', value, section ); }
 
-						// Bump up from the default DA size
-						if( url.searchParams.get( 'width' ) == 750 ) {
-							url.searchParams.set( 'width', 1920 );
+						if( url ) {
+							// Bump up from the default DA size
+							if( url.searchParams.get( 'width' ) == 750 ) {
+								url.searchParams.set( 'width', 1920 );
+							}
+
+							section.prepend( div( {
+								class: 'section-background__image'
+							}, div( {
+								class: 'section-background__image-inner',
+								style: `background-image:url("${url}")`,
+							}) ) );
+							section.classList.add( 'section-background', 'section-background--image' );
 						}
-						
-						const backgroundImgEle = div( {
-							style: `background-image:url("${url}")`,
-							class: 'section-background__image'
-						} );
-						section.prepend( backgroundImgEle );
-						section.classList.add( 'section-background', 'section-background--image' );
 					}
 				} else {
 					section.dataset[toCamelCase( key )] = meta[key];

@@ -58,57 +58,92 @@
 }
 
 .section-background {
+	position: relative;
+	padding-top: units($component-spacing-lg);
+	padding-bottom: units($component-spacing-lg);
+	z-index: 1; // base
+	
 	// --light is default
+
+	// extending the background out into the gutter
+	&--dark:before, // color extension
+	&--theme:before, // color extension
+	&__image, // image container
+	&__image-inner, // image
+	&__image:after { // image overlay
+		position: absolute;
+		display: block;
+		content: '';
+	}
+
+	&--dark:before, // color extension
+	&--theme:before, // color extension
+	&__image { // image container
+		width: 100dvw;
+		inset: 0 auto 0 50%;
+		transform: translateX(-50%);
+	}
 
 	&--dark,
 	&--theme {
 		@include u-text('white');
+
+		&:before {
+			z-index: -2; // behind the image
+		}
 	}
 
 	&--dark {
-		background: color('primary-darkest');
+		&,
+		&:before {
+			background: color('primary-darkest');
+		}
 	}
 
 	&--theme {
-		background: var(--theme-hero-bg);
-	}
-
-	&__image,
-	&--image:before {
-		position: absolute;
-		inset: 0;
-		display: block;
+		&,
+		&:before {
+			background: var(--theme-hero-bg);
+		}
 	}
 
 	&__image {
-		background-size: cover;
-		background-position: center;
-		background-repeat: no-repeat;
-		filter: blur(6px) grayscale(100%);
-		z-index: -2;
-	}
+		overflow: hidden; // clip off the blurred edges of the image
+		z-index: -1;
 
-	&--image {
-		position: relative;
-		overflow: hidden; // clip off the blur of the image outside the lines
-		z-index: 1; // base
-
-		&:before { // overlay
-			z-index: -1;
-			background: linear-gradient(to right, color('primary-lightest'), rgba(color('primary-lightest'), .5));
-			content: '';
+		&-inner,
+		&:after {
+			inset: 0;
 		}
 
-		&.section-background--dark {
-			&:before {
+		&-inner {
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			filter: blur(6px) grayscale(100%);
+			content: url(attr(data-image));
+			z-index: -2;
+		}
+		
+		&:after { // overlay
+			background: linear-gradient(to right, color('primary-lightest'), rgba(color('primary-lightest'), .5));
+			z-index: -1;
+		}
+
+		.section-background--dark & {
+			&:after {
 				background: linear-gradient(to right, color('primary-darkest'), rgba(color('primary-darkest'), .5));
 			}
 		}
 
-		&.section-background--theme {
-			&:before {
+		.section-background--theme & {
+			&:after {
 				background: linear-gradient(to right, var(--theme-hero-bg), rgb(from var(--theme-hero-bg) r g b / 0.5));
 			}
 		}
+	}
+
+	& + .section-background {
+		margin-top: 0;
 	}
 }
