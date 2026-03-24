@@ -86,11 +86,23 @@
 
 	&--dark,
 	&--theme {
-		@include u-text('white');
 
 		&:before {
 			z-index: -2; // behind the image
 		}
+
+		&,
+		a:not(.usa-button) {
+			@include u-text('white');
+		}
+
+		a:not(.usa-button) {
+			&:hover,
+			&:active {
+				@include u-text('primary-lighter')
+			}
+		}
+
 	}
 
 	&--dark {
@@ -117,11 +129,12 @@
 		}
 
 		&-inner {
+			$blur: 6px;
+			inset: -2 * $blur; // hang off the edges a bit to not pull in color from the background on the edges
 			background-size: cover;
 			background-position: center;
 			background-repeat: no-repeat;
-			filter: blur(6px) grayscale(100%);
-			content: url(attr(data-image));
+			filter: blur($blur) grayscale(100%);
 			z-index: -2;
 		}
 		
@@ -145,5 +158,11 @@
 
 	& + .section-background {
 		margin-top: 0;
+	}
+
+	.default-content-wrapper {
+		&:last-child {
+			margin-bottom: 0;
+		}
 	}
 }

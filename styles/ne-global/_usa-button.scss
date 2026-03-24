@@ -59,4 +59,14 @@ $block: 'usa-button';
 			height: 1.2em;
 		}
 	}
+
+	.section-background--dark &,
+	.section-background--theme & {
+		$button-stroke: inset 0 0 0 units($theme-button-stroke-width);
+
+		&--outline {
+			@include u-text('white');
+			box-shadow: $button-stroke color('white');
+		}
+	}
 }
