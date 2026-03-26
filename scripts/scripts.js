@@ -445,6 +445,9 @@ export function decorateMain( main ) {
 }
 
 function decorateSections( main ) {
+	const templateData = getMetadata( 'layout' ).trim().toLowerCase();
+	const isFullWidthTemplate = ( templateData != 'side-nav' ) && ( templateData != 'in-page-nav' );
+
 	main.querySelectorAll( ':scope > div' ).forEach( ( section ) => {
 		const wrappers = [];
 		let defaultContent = false;
@@ -466,6 +469,7 @@ function decorateSections( main ) {
 		const sectionMeta = section.querySelector( 'div.section-metadata' );
 		if ( sectionMeta ) {
 			const meta = readBlockConfig( sectionMeta );
+
 			Object.keys( meta ).forEach( ( key ) => {
 				if ( key === 'style' ) {
 					const styles = meta.style
@@ -497,13 +501,19 @@ function decorateSections( main ) {
 
 					if( backgroundOptions.includes( value ) ) {
 						section.classList.add( 'section-background', 'section-background--' + value );
+
+						if( isFullWidthTemplate ) {
+							// Apply full-width background treatment
+							section.classList.add( 'section-background--full' );
+						}
 					} else {
 						// Invalid option was selected, behave as default section
 						section.classList.remove( 'section-background' );
 					}
 				} else if( key === 'background-image' ) {
 					const value = String( meta[key] ?? '' ).trim();
-					if( value && value.length ) {
+
+					if( isFullWidthTemplate && value && value.length ) {
 						let url;
 						try {
 							url = new URL( value );

@@ -6,6 +6,8 @@
 	--theme-hero-secondary: #{color('secondary')};
 	--theme-footer: #{color('secondary')};
 	--theme-icons: #{color('accent-warm-dark')};
+	--theme-section-bg: #{color('primary-darker')};
+	--theme-section-bg-light: transparent;
 }
 
 .theme--red {
@@ -14,6 +16,8 @@
 	--theme-hero-secondary: #{$ne-color-red};
 	--theme-footer: #{$ne-color-red};
 	--theme-icons: #{color('secondary')};
+	--theme-section-bg: #{$ne-color-darkest-red};
+	--theme-section-bg-light: #{$ne-color-light-red};
 }
 
 .theme--green {
@@ -22,5 +26,6 @@
 	--theme-hero-secondary: #{color('accent-warm')};
 	--theme-footer: #{color('accent-warm')};
 	--theme-icons: #{$ne-color-red};
-	
+	--theme-section-bg: #{color('accent-warm-darker')};
+	--theme-section-bg-light: #{color('accent-warm-lighter')};;
 }

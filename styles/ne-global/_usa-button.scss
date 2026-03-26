@@ -1,8 +1,8 @@
 @use '../../styles/ne-global-imports' as *;
 
-$block: 'usa-button';
+.usa-button {
+	$block: 'usa-button';
 
-.#{$block} {
 	transition: background-color $transition, text-decoration-color $transition;
 	font-size: font-size('ui', 'sm');
 
@@ -60,8 +60,8 @@ $block: 'usa-button';
 		}
 	}
 
-	.section-background--dark &,
-	.section-background--theme & {
+	.section-background--full.section-background--dark &,
+	.section-background--full.section-background--theme & {
 		$button-stroke: inset 0 0 0 units($theme-button-stroke-width);
 
 		&--outline {

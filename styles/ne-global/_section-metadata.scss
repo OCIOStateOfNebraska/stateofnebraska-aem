@@ -1,168 +1,148 @@
 @use '../../styles/ne-global-imports' as *;
-@use '~uswds/usa-collection/src/styles/usa-collection';
 
-@mixin section-link-theme($link, $linkHover, $svgFill: null) {
-
-	.columns.block,
-	.default-content-wrapper,
-	.manual-collection {
-		@if $svgFill !=null {
-			svg {
-				fill: $svgFill;
-			}
-		}
-
-		a {
-			color: $link;
-
-			&:hover,
-			&:focus {
-				color: $linkHover;
-			}
-		}
-	}
-}
-
-@mixin accordion-on-dark {
-	.usa-accordion {
-		&__button {
-			color: color('white');
-
-			&:hover,
-			&:focus {
-				color: color('white');
-			}
-		}
-
-		&__content {
-			background-color: transparent;
-			color: color('white');
-		}
-	}
-}
-
-@mixin accordion-transparent {
-	.usa-accordion {
-		&__content {
-			background-color: transparent;
-		}
-	}
-}
-
-@mixin manual-collection-border($borderColor) {
-	.manual-collection {
-		.usa-collection__item {
-			border-color: $borderColor;
-		}
-	}
-}
 
 .section-background {
-	position: relative;
-	padding-top: units($component-spacing-lg);
-	padding-bottom: units($component-spacing-lg);
-	z-index: 1; // base
-	
-	// --light is default
+	$block: 'section-background';
 
-	// extending the background out into the gutter
-	&--dark:before, // color extension
-	&--theme:before, // color extension
-	&__image, // image container
-	&__image-inner, // image
-	&__image:after { // image overlay
-		position: absolute;
-		display: block;
-		content: '';
-	}
+	&--full {
+		position: relative;
+		padding-top: units($component-spacing-lg);
+		padding-bottom: units($component-spacing-lg);
+		z-index: 1; // base
 
-	&--dark:before, // color extension
-	&--theme:before, // color extension
-	&__image { // image container
-		width: 100dvw;
-		inset: 0 auto 0 50%;
-		transform: translateX(-50%);
-	}
+		// --light is default
 
-	&--dark,
-	&--theme {
-
-		&:before {
-			z-index: -2; // behind the image
+		// extending the background out into the gutter
+		&.#{$block}--dark:before, // color extension
+		&.#{$block}--theme:before, // color extension
+		.#{$block}__image, // image container
+		.#{$block}__image-inner, // image
+		.#{$block}__image:after { // image overlay
+			position: absolute;
+			display: block;
+			content: '';
 		}
 
-		&,
-		a:not(.usa-button) {
-			@include u-text('white');
+		&.#{$block}--dark:before, // color extension
+		&.#{$block}--theme:before, // color extension
+		.#{$block}__image { // image container
+			width: 100dvw;
+			inset: 0 auto 0 50%;
+			transform: translateX(-50%);
+			pointer-events: none;
 		}
 
-		a:not(.usa-button) {
-			&:hover,
-			&:active {
-				@include u-text('primary-lighter')
+		&.#{$block}--dark,
+		&.#{$block}--theme {
+			&:before {
+				z-index: -2; // behind the image
+			}
+
+			&,
+			a:not(.usa-button) {
+				@include u-text('white');
+			}
+
+			a:not(.usa-button) {
+				&:hover,
+				&:active {
+					@include u-text('primary-lighter')
+				}
 			}
 		}
 
-	}
-
-	&--dark {
-		&,
-		&:before {
-			background: color('primary-darkest');
-		}
-	}
-
-	&--theme {
-		&,
-		&:before {
-			background: var(--theme-hero-bg);
-		}
-	}
-
-	&__image {
-		overflow: hidden; // clip off the blurred edges of the image
-		z-index: -1;
-
-		&-inner,
-		&:after {
-			inset: 0;
-		}
-
-		&-inner {
-			$blur: 6px;
-			inset: -2 * $blur; // hang off the edges a bit to not pull in color from the background on the edges
-			background-size: cover;
-			background-position: center;
-			background-repeat: no-repeat;
-			filter: blur($blur) grayscale(100%);
-			z-index: -2;
-		}
-		
-		&:after { // overlay
-			background: linear-gradient(to right, color('primary-lightest'), rgba(color('primary-lightest'), .5));
-			z-index: -1;
-		}
-
-		.section-background--dark & {
-			&:after {
-				background: linear-gradient(to right, color('primary-darkest'), rgba(color('primary-darkest'), .5));
+		&.#{$block}--dark {
+			&,
+			&:before {
+				background: color('primary-darkest');
 			}
 		}
 
-		.section-background--theme & {
-			&:after {
-				background: linear-gradient(to right, var(--theme-hero-bg), rgb(from var(--theme-hero-bg) r g b / 0.5));
+		&.#{$block}--theme {
+			&,
+			&:before {
+				background: var(--theme-section-bg);
 			}
 		}
-	}
 
-	& + .section-background {
-		margin-top: 0;
-	}
+		.#{$block}__image {
+			display: none;
+		}
 
-	.default-content-wrapper {
-		&:last-child {
-			margin-bottom: 0;
+		& + & {
+			margin-top: 0;
+		}
+
+		@include at-media('tablet') {
+			$overlay-fade: .75;
+
+			.#{$block}__image {
+				display: block;
+				overflow: hidden; // clip off the blurred edges of the image
+				z-index: -1;
+
+				&-inner,
+				&:after {
+					inset: 0;
+				}
+
+				&-inner {
+					$blur: 8px;
+					inset: -2 * $blur; // hang off the edges a bit to not pull in color from the background on the edges
+					background-size: cover;
+					background-position: center;
+					background-repeat: no-repeat;
+					filter: blur($blur) grayscale(100%);
+					z-index: -2;
+				}
+
+				&:after { // overlay
+					background: linear-gradient(to right, color('primary-lightest'), rgba(color('primary-lightest'), $overlay-fade));
+					z-index: -1;
+				}
+			}
+
+			&.#{$block}--dark {
+				.#{$block}__image {
+					&:after {
+						background: linear-gradient(to right, color('primary-darker'), rgba(color('primary-darker'), $overlay-fade));
+					}
+				}
+			}
+
+			&.#{$block}--theme {
+				.#{$block}__image {
+					&:after {
+						background: linear-gradient(to right, var(--theme-section-bg), rgb(from var(--theme-hero-bg) r g b / $overlay-fade));
+					}
+				}
+			}
+		}
+
+		@include at-media('desktop') {
+			$overlay-fade: .5;
+
+			.#{$block}__image {
+				&:after {
+					background: linear-gradient(to right, color('primary-lightest'), rgba(color('primary-lightest'), $overlay-fade));
+				}
+			}
+
+			&.#{$block}--dark {
+				.#{$block}__image {
+					&:after {
+						background: linear-gradient(to right, color('primary-darker'), rgba(color('primary-darker'), $overlay-fade));
+					}
+				}
+			}
+
+			&.#{$block}--theme {
+				.#{$block}__image {
+					&:after {
+						background: linear-gradient(to right, var(--theme-section-bg), rgb(from var(--theme-hero-bg) r g b / $overlay-fade));
+					}
+				}
+			}
 		}
 	}
 }

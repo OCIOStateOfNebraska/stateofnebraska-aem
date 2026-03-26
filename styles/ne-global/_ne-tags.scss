@@ -88,6 +88,14 @@ h2 {
 			background-color: color('secondary');
 			content: '';
 		}
+
+		.section-background--full {
+			&.section-background--theme {
+				&:after {
+					background-color: currentColor;
+				}
+			}
+		}
 	}
 }
 
