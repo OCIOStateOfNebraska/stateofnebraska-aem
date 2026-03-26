@@ -27,6 +27,7 @@ const SEARCH_SETTINGS_SORTKEY = 'sort-key';
 const SEARCH_SETTINGS_COUNT = 'result-count';
 const SEARCH_SETTINGS_DESCRIPTION = 'show-description';
 const SEARCH_SETTINGS_FILTERTAG = 'filter-by';
+const SEARCH_SETTINGS_LIMIT = 'limit-per-page';
 
 // FUSE.js relevance scoring options https://www.fusejs.io/concepts/scoring-theory.html#fuzziness-score
 const fuseOptionsRelevance = {
@@ -75,7 +76,7 @@ class SearchBlock {
 		/** @member {number} */
 		this.limit = 10;
 		/** @member {number} */
-		this.count = 3;
+		this.count = null;
 		/** @member {boolean} */
 		this.showPagination = true;
 		/** @member {boolean} */
@@ -164,7 +165,11 @@ class SearchBlock {
 		}
 
 		if ( key === SEARCH_SETTINGS_COUNT && settingVal && setting <= this.limit ) {
-			this.count = setting;
+			this.count = Number( setting );
+		}
+
+		if ( key === SEARCH_SETTINGS_LIMIT ) {
+			this.limit = Number( setting );
 		}
 	}
 
@@ -176,6 +181,7 @@ class SearchBlock {
 		if ( this.sort !== 'relevance' ) {
 			const fuseTags = new Fuse( this.allData, fuseOptionsTags );
 			this.allData = this.flattenSearch( fuseTags.search( this.filter ? this.filter.toLowerCase().trim() : '' ) );
+			if( this.count !== null ) this.allData = this.allData.slice( 0, this.count );
 			const comparisonFunction = this.sort === 'publicationDate' ? this.sortByPublicationDate.bind( this ) : this.sortBy( this.sort );
 			this.allData.sort( comparisonFunction );
 		}
@@ -377,7 +383,8 @@ class SearchBlock {
 					}
 				} );
 			} else if ( this.blockClassDynamicCollection || this.blockBackdropGridCollection ) {
-				data = filteredData.slice( 0, this.count ); // only first 3 results
+				const count = this.count !== null? this.count: 3; // if count is null, display only first 3 results
+				data = filteredData.slice( 0, count );
 			}
 
 			if ( this.blockBackdropGridCollection ) {
