@@ -8,6 +8,8 @@
 	--theme-icons: #{color('accent-warm-dark')};
 	--theme-section-bg: #{color('primary-darker')};
 	--theme-section-bg-light: transparent;
+	--theme-icon-btn-grid: #{color('primary-vivid')};
+	--theme-icon-btn-grid-text: #{color('white')};
 }
 
 .theme--red {
@@ -18,6 +20,8 @@
 	--theme-icons: #{color('secondary')};
 	--theme-section-bg: #{$ne-color-darkest-red};
 	--theme-section-bg-light: #{$ne-color-light-red};
+	--theme-icon-btn-grid: #{$ne-color-red};
+	--theme-icon-btn-grid-text: #{color('white')};
 }
 
 .theme--green {
@@ -27,5 +31,7 @@
 	--theme-footer: #{color('accent-warm')};
 	--theme-icons: #{$ne-color-red};
 	--theme-section-bg: #{color('accent-warm-darker')};
-	--theme-section-bg-light: #{color('accent-warm-lighter')};;
+	--theme-section-bg-light: #{color('accent-warm-lighter')};
+	--theme-icon-btn-grid: #{color('accent-warm')};
+	--theme-icon-btn-grid-text: #{color('ink')};
 }

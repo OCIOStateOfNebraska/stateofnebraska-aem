@@ -2,7 +2,7 @@
 @use 'sass:math';
 
 .icon-button-grid-wrapper {
-	$block: 'icon-button-card';
+	margin-bottom: units($component-spacing-lg);
 
 	ul {
 		margin: 0;
@@ -14,81 +14,154 @@
 		margin: 0;
 	}
 
-	.#{$block} {
-		&-group {
-			row-gap: units(4); // match .grid-gap-4 column spacing
+
+	.section-background--full &:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.icon-button-card {
+	$block: 'icon-button-card';
+	$hover-transition: $transition-slow;
+
+	&-group {
+		row-gap: units(4); // match .grid-gap-4 column spacing
+	}
+
+	&__heading {
+		transition: color $hover-transition;
+		color: color('white');
+		font-family: family($theme-font-role-heading);
+		font-size: size('body', 'md');
+		font-weight: font-weight('bold');
+	}
+
+	&__body {
+		$svg-size: px-to-rem(120px);
+		height: $svg-size;
+
+		p {
+			span {
+				display: flex;
+				justify-content: center;
+			}
 		}
 
-		&__heading {
-			color: color('white');
-			font-family: family($theme-font-role-heading);
-			font-size: size('body', 'md');
-			font-weight: font-weight('bold');
-		}
-
-		&__body {
-			$svg-size: px-to-rem(120px);
+		svg {
+			width: $svg-size;
 			height: $svg-size;
+			fill: color('white');
+			transition: fill $hover-transition;
+		}
+	}
 
-			p {
-				span {
-					display: flex;
-					justify-content: center;
+	&__container {
+		@include u-padding(3);
+		@include u-radius('md');
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		transition: background-color $hover-transition;
+		background-color: color('primary-vivid');
+		box-shadow: 0 0 24px 0 rgba(color('ink'), 0.35);
+		gap: units(2);
+
+		&:has(a:focus-visible),
+		&:has(a:hover) {
+			background-color: color('primary-lightest');
+
+			.#{$block}__heading {
+				color: color('ink');
+				text-decoration: underline;
+				text-decoration-thickness: 2px
+			}
+
+			.#{$block}__body {
+				$svg-size: px-to-rem(120px);
+				height: $svg-size;
+
+				svg {
+					fill: color('ink')
 				}
 			}
-
-			svg {
-				width: $svg-size;
-				height: $svg-size;
-				fill: color('primary-lighter');
-				transition: fill $transition-slow;
-			}
 		}
 
-		&__container {
-			@include u-padding(3);
+		&:has(a) {
+			cursor: pointer;
+		}
+
+		a {
 			@include u-radius('md');
-			position: relative;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			transition: background-color $transition-slow;
-			background-color: color('primary-vivid');
-			gap: units(2);
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			text-decoration: none;
+			z-index: 1;
+			inset: 0; // shorthand for top: 0; right: 0; bottom: 0; left: 0;
+		}
+	}
+
+	.section-background--light & {
+		&__container {
+			background-color: color('white');
+			box-shadow: 0 0 24px 0 rgba(color('primary-dark'), 0.20);
 
 			&:has(a:focus-visible),
 			&:has(a:hover) {
-				background-color: color('primary-lighter');
+				background-color: color('primary');
 
 				.#{$block}__heading {
-					color: color('primary-vivid');
-					text-decoration: underline;
-					text-decoration-thickness: 2px
+					color: color('white');
 				}
 
 				.#{$block}__body {
-					$svg-size: px-to-rem(120px);
-					height: $svg-size;
-
 					svg {
-						fill: color('primary-vivid')
+						fill: color('white');
 					}
 				}
 			}
+		}
 
-			&:has(a) {
-				cursor: pointer;
+		&__heading {
+			color: color('primary');
+		}
+
+		&__body {
+			svg {
+				fill: color('primary');
 			}
+		}
+	}
 
-			a {
-				@include u-radius('md');
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				text-decoration: none;
-				z-index: 1;
-				inset: 0; // shorthand for top: 0; right: 0; bottom: 0; left: 0;
+	.section-background--theme & {
+		&__container {
+			background-color: var(--theme-icon-btn-grid);
+
+			&:has(a:focus-visible),
+			&:has(a:hover) {
+				background-color: var(--theme-section-bg-light);
+
+				.#{$block}__heading {
+					color: color('ink');
+				}
+
+				.#{$block}__body {
+					svg {
+						fill: color('ink');
+					}
+				}
+			}
+		}
+
+		&__heading {
+			color: var(--theme-icon-btn-grid-text);
+		}
+
+		&__body {
+			svg {
+				fill: var(--theme-icon-btn-grid-text);
 			}
 		}
 	}

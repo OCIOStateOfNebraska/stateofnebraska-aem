@@ -89,11 +89,9 @@ h2 {
 			content: '';
 		}
 
-		.section-background--full {
-			&.section-background--theme {
-				&:after {
-					background-color: currentColor;
-				}
+		.section-background--full.section-background--theme & {
+			&:after {
+				background-color: currentColor;
 			}
 		}
 	}

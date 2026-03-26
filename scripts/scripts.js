@@ -467,6 +467,8 @@ function decorateSections( main ) {
 
 		// Process section metadata
 		const sectionMeta = section.querySelector( 'div.section-metadata' );
+		const hasIconButtonGrid = section.querySelector( '.icon-button-grid' ) !== null;
+
 		if ( sectionMeta ) {
 			const meta = readBlockConfig( sectionMeta );
 
@@ -539,7 +541,21 @@ function decorateSections( main ) {
 				}
 			} );
 
+			// Default to dark if this component is within and background isn't specified
+			if( hasIconButtonGrid && !meta['background'] ) {
+				section.classList.add( 'section-background', 'section-background--dark' );
+				if( isFullWidthTemplate ) {
+					section.classList.add( 'section-background--full' );
+				}
+			}
+
 			sectionMeta.parentElement.remove(); // itself + wrapping div
+		} else if( hasIconButtonGrid ) {
+			// Default to dark if this component is within and background isn't specified
+			section.classList.add( 'section-background', 'section-background--dark' );
+			if( isFullWidthTemplate ) {
+				section.classList.add( 'section-background--full' );
+			}
 		}
 	} );
 }
