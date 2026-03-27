@@ -49,6 +49,10 @@ function buildHeroBlock( main, templateName ) {
 			desc = heroSection.querySelectorAll( 'p, ul, ol' );
 		}
 		heroBlock = buildBlock( 'hero-homepage', { elems: [picture, h1, ...desc] } );
+
+		if( !heroSection.textContent.trim().length ) {
+			heroSection.remove();
+		}
 	} else {
 		heroBlock = buildBlock( 'hero', { elems: [picture, h1] } );
 	}
