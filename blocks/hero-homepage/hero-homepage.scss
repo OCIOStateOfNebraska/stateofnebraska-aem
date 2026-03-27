@@ -4,7 +4,11 @@
 $block: 'usa-hero';
 
 .#{$block} {
-	margin-bottom: units($hero-spacing-sm);
+	// Apply mask images for curved bottom edge
+	$curve-mask: url('data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201728%20103%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20d%3D%22M0%200v71.5c142-17%20257.6-18%20336-16%20201.7%205.2%20280.5%2034%20480%2032%20123.8-1.3%20162.3-13.4%20288-24%20144.9-12.2%20356.2-18.3%20624%2016V0H0Z%22%2F%3E%3C%2Fsvg%3E');
+
+	mask-image: hero-base.$rect-mask, $curve-mask;
+	mask-size: 100% calc(100% - 103px + 2px), 100% 103px;
 
 	p {
 		margin-top: 0;
@@ -33,7 +37,7 @@ $block: 'usa-hero';
 
 	&__svg {
 		svg {
-			aspect-ratio: 1728 / 103;
+			aspect-ratio: #{$homepage-hero-aspect-ratio-w} / #{$homepage-hero-aspect-ratio-h};
 		}
 	}
 
@@ -46,9 +50,5 @@ $block: 'usa-hero';
 			padding-top: px-to-rem(260px);
 			padding-bottom: px-to-rem(120px);
 		}
-	}
-
-	@include at-media('desktop') {
-		margin-bottom: units($hero-spacing-lg);
 	}
 }
