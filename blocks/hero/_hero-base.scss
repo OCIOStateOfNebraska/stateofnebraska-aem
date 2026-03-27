@@ -4,15 +4,20 @@
 @use '~uswds/usa-hero/src/styles/usa-hero';
 
 $block: 'usa-hero';
+// Rectangle mask for content + curved mask for bottom
+$rect-mask: url('data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%20preserveAspectRatio%3D%22xMidYMid%20slice%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22black%22%2F%3E%3C%2Fsvg%3E');
 
 .#{$block} {
 	$bg-w-picture: color('primary-darker');
 
-	@include u-margin-bottom(15);
 	position: relative;
+	margin-bottom: units($hero-spacing-sm);
 	background: $bg-w-picture;
 	color: color('white');
-	z-index: 1;
+	z-index: 2; // on top of section backgrounds
+	// CSS mask for curved bottom edge
+	mask-position: top left, bottom center;
+	mask-repeat: no-repeat;
 
 	// stylelint-disable-next-line scss/selector-nest-combinators
 	h1,
@@ -85,6 +90,10 @@ $block: 'usa-hero';
 		background: transparent;
 	}
 
+	main:has(.main-content > .section-background--full) & {
+		margin-bottom: 0;
+	}
+
 	@include at-media('tablet') {
 		picture {
 			position: absolute;
@@ -114,6 +123,8 @@ $block: 'usa-hero';
 	}
 
 	@include at-media('desktop') {
+		margin-bottom: units($hero-spacing-lg);
+
 		picture {
 			&:after {
 				$transparent-black: rgba(0, 0, 0, 0%); // stylelint-disable-line color-function-notation

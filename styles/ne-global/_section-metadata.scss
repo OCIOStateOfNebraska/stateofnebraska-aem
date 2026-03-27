@@ -1,14 +1,29 @@
 @use '../../styles/ne-global-imports' as *;
-
+@use 'sass:math';
 
 .section-background {
 	$block: 'section-background';
-
+	
 	&--full {
+		// tuck underneath the hero hill
+		
 		position: relative;
 		padding-top: units($component-spacing-lg);
 		padding-bottom: units($component-spacing-lg);
 		z-index: 1; // base
+		
+		&:first-child {
+			$hill-overlap: math.div((100vw * $internal-hero-aspect-ratio-h), $internal-hero-aspect-ratio-w);
+			margin-top: -1 * $hill-overlap;
+			padding-top: calc(#{units($component-spacing-lg)} + #{$hill-overlap});
+			z-index: 1;
+
+			.homepage & {
+				$hill-overlap: math.div((100vw * $homepage-hero-aspect-ratio-h), $homepage-hero-aspect-ratio-w);
+				margin-top: -1 * $hill-overlap;
+				padding-top: calc(#{units($component-spacing-lg)} + #{$hill-overlap});
+			}
+		}
 
 		// --light is default
 

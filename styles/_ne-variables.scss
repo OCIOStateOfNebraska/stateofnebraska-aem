@@ -6,7 +6,11 @@ $component-spacing-sm: 3; // for "small" components that can sit right next to o
 $component-spacing-lg: 15; // for big bulky components that need more space around them
 
 $hero-spacing-sm: 10; 
-$hero-spacing-lg: 15; 
+$hero-spacing-lg: 15;
+$internal-hero-aspect-ratio-w: 1727;
+$internal-hero-aspect-ratio-h: 86;
+$homepage-hero-aspect-ratio-w: 1728;
+$homepage-hero-aspect-ratio-h: 103;
 
 
 // Custom colors
