@@ -536,7 +536,7 @@ function decorateSections( main ) {
 							}, div( {
 								class: 'section-background__image-inner',
 								style: `background-image:url("${url}")`,
-							}) ) );
+							} ) ) );
 							section.classList.add( 'section-background', 'section-background--image' );
 						}
 					}
