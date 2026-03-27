@@ -10,6 +10,7 @@
 	--theme-section-bg-light: transparent;
 	--theme-icon-btn-grid: #{color('primary-vivid')};
 	--theme-icon-btn-grid-text: #{color('white')};
+	--theme-icon-btn-grid-hover: #{color('primary-lightest')};
 }
 
 .theme--red {
@@ -22,6 +23,7 @@
 	--theme-section-bg-light: #{$ne-color-light-red};
 	--theme-icon-btn-grid: #{$ne-color-red};
 	--theme-icon-btn-grid-text: #{color('white')};
+	--theme-icon-btn-grid-hover: #{$ne-color-light-red};
 }
 
 .theme--green {
@@ -34,4 +36,5 @@
 	--theme-section-bg-light: #{color('accent-warm-lighter')};
 	--theme-icon-btn-grid: #{color('accent-warm')};
 	--theme-icon-btn-grid-text: #{color('ink')};
+	--theme-icon-btn-grid-hover: #{color('accent-warm-lighter')};
 }

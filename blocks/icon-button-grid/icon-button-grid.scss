@@ -14,7 +14,6 @@
 		margin: 0;
 	}
 
-
 	.section-background--full &:last-child {
 		margin-bottom: 0;
 	}
@@ -141,7 +140,7 @@
 
 			&:has(a:focus-visible),
 			&:has(a:hover) {
-				background-color: var(--theme-section-bg-light);
+				background-color: var(--theme-icon-btn-grid-hover);
 
 				.#{$block}__heading {
 					color: color('ink');
