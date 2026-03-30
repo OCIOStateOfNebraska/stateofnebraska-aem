@@ -101,7 +101,7 @@ function renderTags( result, titleTag, searchTerms, collectionBody ) {
 
 function renderImage( result, resultItem ) {
 	if( result.image ){
-		const img = domEl( 'img', { class: 'usa-collection__img' , src: result.image} );
+		const img = domEl( 'img', { class: 'usa-collection__img' , src: result.image, alt: result.description } );
 		resultItem.prepend( img );
 	}
 }
