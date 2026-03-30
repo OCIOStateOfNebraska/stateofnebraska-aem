@@ -26,6 +26,7 @@ const SEARCH_SETTINGS_PAGINATION = 'show-pagination';
 const SEARCH_SETTINGS_SORTKEY = 'sort-key';
 const SEARCH_SETTINGS_COUNT = 'result-count';
 const SEARCH_SETTINGS_DESCRIPTION = 'show-description';
+const SEARCH_SETTINGS_IMAGE = 'show-image';
 const SEARCH_SETTINGS_FILTERTAG = 'filter-by';
 const SEARCH_SETTINGS_LIMIT = 'limit-per-page';
 
@@ -78,7 +79,9 @@ class SearchBlock {
 		/** @member {number} */
 		this.count = null;
 		/** @member {boolean} */
-		this.showPagination = true;
+		this.showImage = false;
+		/** @member {boolean} */
+		this.showDescription = false;
 		/** @member {boolean} */
 		this.showDescription = false;
 		/** @member {boolean} */
@@ -154,6 +157,9 @@ class SearchBlock {
 
 		if ( key === SEARCH_SETTINGS_DESCRIPTION ) {
 			this.showDescription = settingVal;
+		}
+		if ( key === SEARCH_SETTINGS_IMAGE ) {
+			this.showImage = settingVal;
 		}
 
 		if ( key === SEARCH_SETTINGS_SORTKEY && settingVal ) {
@@ -395,7 +401,7 @@ class SearchBlock {
 
 			searchResults.classList.remove( NO_RESULTS_CLASS );
 			data.forEach( result => {
-				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection, this.sort, this.externalUrl, this.showDescription ) );
+				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection, this.sort, this.externalUrl, this.showDescription, this.showImage ) );
 			} );
 		} else {
 			searchResults.classList.add( NO_RESULTS_CLASS );
