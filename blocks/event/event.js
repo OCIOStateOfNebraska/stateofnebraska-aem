@@ -240,6 +240,7 @@ export default function decorate( block ) {
 	const eventEndDate = getMetadata( 'event-end-date' )?.trim();
 	const eventLocation = getMetadata( 'event-location' )?.trim();
 	const eventAddress = getMetadata( 'event-address' )?.trim();
+	const eventHostOrganization = getMetadata( 'event-host-organization' )?.trim();
 
 	const container = document.createElement( 'div' );
 	container.className = 'event__container';
@@ -298,6 +299,11 @@ export default function decorate( block ) {
 		const mapLink = eventAddress ? createMapLink( eventAddress ) : null;
 		const locationCard = createMetadataCard( 'Event Location', locationContentEl, mapLink );
 		container.appendChild( locationCard );
+	}
+
+	if ( eventHostOrganization ) {
+		const hostCard = createMetadataCard( 'Host Organization', eventHostOrganization );
+		container.appendChild( hostCard );
 	}
 
 	if ( container.children.length > 0 ) {

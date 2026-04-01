@@ -19,6 +19,7 @@ function createEventStructuredData() {
 	const eventLocation = getMetadata( 'event-location' );
 	const eventAddress = getMetadata( 'event-address' );
 	const eventDescription = getMetadata( 'event-description' ) || getMetadata( 'description' );
+	const eventHostOrganization = getMetadata( 'event-host-organization' );
 
 	const structuredData = {
 		'@context': 'https://schema.org',
@@ -67,6 +68,13 @@ function createEventStructuredData() {
 		}
 	}
 
+	if ( eventHostOrganization ) {
+		structuredData.organizer = {
+			'@type': 'Organization',
+			name: eventHostOrganization,
+		};
+	}
+
 	return structuredData;
 }
 
@@ -111,7 +119,7 @@ function ensureH1Title( container ) {
  */
 export default async function decorate( doc ) {
 	const main = doc.querySelector( 'main' );
-	const usaContentDiv = div( { class: 'usa-prose main-content' } );
+	const usaContentDiv = div( { class: 'usa-prose main-content event-template' } );
 	const usaContainerDiv = div( { class: 'grid-container' }, usaContentDiv );
 	const usaSectionDiv = div( { class: 'usa-section' }, usaContainerDiv );
 
