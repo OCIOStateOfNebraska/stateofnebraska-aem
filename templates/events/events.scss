@@ -6,6 +6,7 @@ $template: 'event-template';
 	img,
 	picture {
 		display: block;
+		width: 100%;
 		max-width: units('desktop');
 		margin: units(10) auto 0;
 	}

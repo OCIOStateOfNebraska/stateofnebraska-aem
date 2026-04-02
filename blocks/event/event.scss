@@ -25,9 +25,15 @@ $block: 'event';
 
 	&__card-header {
 		display: flex;
-		align-items: center;
-		justify-content: space-between;
+		flex-direction: column;
+		gap: units(2);
 		margin-bottom: units(2);
+
+		@include at-media('tablet') {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+		}
 	}
 
 	&__card-label {
