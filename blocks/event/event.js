@@ -248,13 +248,10 @@ export default function decorate( block ) {
 	if ( eventStartDate ) {
 		const start = parseCombinedDateTime( eventStartDate, { includeDateObject: true } );
 		const end = parseCombinedDateTime( eventEndDate, { includeDateObject: true } );
+		const eventTitle = getMetadata( 'og:title' ) || document.title;
 
 		if ( start.dateObject && end.dateObject && end.dateObject < start.dateObject ) {
-			console.warn( 'Event end date is before start date' ); // eslint-disable-line no-console
-		}
-
-		if ( start.dateObject && start.dateObject < new Date() ) {
-			console.debug( 'Event is in the past' ); // eslint-disable-line no-console
+			console.warn( `Event end date is before start date: "${eventTitle}"` ); // eslint-disable-line no-console
 		}
 
 		let displayTime = start.time || '';
