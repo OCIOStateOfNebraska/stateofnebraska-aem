@@ -1,5 +1,5 @@
 import { loadScript, readBlockConfig, fetchPlaceholders } from '../../scripts/aem.js';
-import { domEl, div, input, span } from '../../scripts/dom-helpers.js';
+import { domEl, input, span } from '../../scripts/dom-helpers.js';
 
 /**
  * Creates the search submit button with text and icon.
@@ -57,60 +57,6 @@ function createSearchForm( placeholders ) {
 }
 
 /**
- * Injects "< Previous" / "Next >" links into the Google CSE pagination.
- * Uses a MutationObserver so links are (re-)added whenever Google re-renders
- * the `.gsc-cursor` element (e.g. after a page change).
- * @param {HTMLElement} wrapper - The container to observe.
- */
-function addPaginationNav( wrapper ) {
-	const observer = new MutationObserver( () => {
-		wrapper.querySelectorAll( '.gsc-cursor' ).forEach( ( cursor ) => {
-			if ( cursor.querySelector( '.gsc-cursor-nav' ) ) return;
-
-			const pages = [ ...cursor.querySelectorAll( '.gsc-cursor-page' ) ];
-			const currentIndex = pages.findIndex( ( p ) => p.classList.contains( 'gsc-cursor-current-page' ) );
-
-			const handleNav = ( targetPage ) => ( e ) => {
-				if ( e.type === 'click' || e.key === 'Enter' || e.key === ' ' ) {
-					e.preventDefault();
-					targetPage.click();
-				}
-			};
-
-			const prevLink = div(
-				{ class: 'gsc-cursor-nav gsc-cursor-prev', role: 'link', tabindex: '0' },
-				'\u2039 Previous',
-			);
-			const nextLink = div(
-				{ class: 'gsc-cursor-nav gsc-cursor-next', role: 'link', tabindex: '0' },
-				'Next \u203A',
-			);
-
-			if ( currentIndex > 0 ) {
-				const nav = handleNav( pages[currentIndex - 1] );
-				prevLink.addEventListener( 'click', nav );
-				prevLink.addEventListener( 'keydown', nav );
-			} else {
-				prevLink.setAttribute( 'aria-disabled', 'true' );
-			}
-
-			if ( currentIndex < pages.length - 1 ) {
-				const nav = handleNav( pages[currentIndex + 1] );
-				nextLink.addEventListener( 'click', nav );
-				nextLink.addEventListener( 'keydown', nav );
-			} else {
-				nextLink.setAttribute( 'aria-disabled', 'true' );
-			}
-
-			cursor.prepend( prevLink );
-			cursor.append( nextLink );
-		} );
-	} );
-
-	observer.observe( wrapper, { childList: true, subtree: true } );
-}
-
-/**
  * Loads and renders Google Programmable Search Engine results
  * with a USWDS search bar for on-page re-searching.
  * Reads `?q=` from the URL automatically.
@@ -156,7 +102,7 @@ export default async function decorate( block ) {
 			url.searchParams.set( 'q', query );
 			window.history.replaceState( {}, '', url.toString() );
 
-			const element = google.search.cse.element.getElement( 'searchresults-only0' );
+			const element = window.google?.search?.cse?.element?.getElement( 'searchresults-only0' );
 			if ( element ) {
 				element.execute( query );
 			}
