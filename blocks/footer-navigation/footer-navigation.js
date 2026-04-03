@@ -43,6 +43,10 @@ export default async function decorate( block ) {
 	function styleBackToTop() {
 		const container = domEl( 'div', { class: 'grid-container usa-footer__return-to-top' } );
 		const a = domEl( 'a', { class: 'usa-button usa-button--outline', 'href': '#' }, 'Return to top' );
+		a.addEventListener( 'click', ( e ) => {
+			e.preventDefault();
+			window.scrollTo( { top: 0 } );
+		} );
 		container.append( a );
 		getIndividualIcon( a, 'arrow_upward' );
 		block.prepend( container );
