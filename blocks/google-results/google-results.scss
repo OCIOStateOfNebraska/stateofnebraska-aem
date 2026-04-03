@@ -1,3 +1,5 @@
+@use '../../styles/ne-global-imports' as *;
+
 main {
 	&:has(.google-results) {
 		overflow-x: clip;
@@ -5,6 +7,29 @@ main {
 }
 
 .google-results {
+	.usa-search {
+		$button-width: px-to-rem(124px);
+
+		.usa-input {
+			width: 100%;
+			max-width: calc(measure($theme-text-measure) - $button-width);
+			border: 1px solid color('ink');
+			padding: units(1);
+
+			&__wrapper {
+				width: 100%;
+			}
+		}
+
+		.usa-button {
+			&[type='submit'] {
+				width: $button-width;
+				border: 1px solid color('primary');
+				background-color: color('primary');
+			}
+		}
+	}
+
 	// Reserve space for results to minimize CLS when Google injects content
 	.google-results-wrapper {
 		min-height: 40vh;
@@ -15,16 +40,20 @@ main {
 		background-color: inherit;
 
 		.gsc-tabsArea {
+			display: none;
+
 			.gsc-tabHeader {
 				background-color: inherit;
 			}
 		}
-	
+
 		.gsc-refinementsArea {
 			background-color: inherit;
 
 			.gsc-refinementHeader {
 				background-color: inherit;
+				color: color('primary');
+				border-color: color('primary');
 			}
 		}
 
@@ -40,17 +69,75 @@ main {
 			.gsc-result {
 				border: 0;
 				background-color: inherit;
-	
+
 				&:hover {
 					border: 0;
 					background-color: unset;
 				}
+
+				.gs-title {
+					color: color('primary');
+					text-decoration: none;
+
+					b {
+						color: color('primary');
+						background-color: color('secondary-light');
+					}
+
+					&:hover,
+					&:focus {
+						text-decoration: underline;
+					}
+				}
 			}
 
 			.gsc-cursor-box {
-				.gsc-cursor-page {
-					background-color: inherit;
+				.gsc-cursor {
+					display: flex;
+					flex-wrap: wrap;
+					justify-content: center;
+					align-items: center;
+					gap: units(1.5);;
 				}
+
+				.gsc-cursor-page {
+					color: color('primary');
+					padding: units(0.5) units(1.5);
+					cursor: pointer;
+					margin: 0;
+					border-radius: units(0.5);
+					text-decoration: underline;
+
+					&.gsc-cursor-current-page {
+						background-color: color('primary');
+						color: color('white');
+					}
+				}
+
+				.gsc-cursor-nav {
+					padding: units(0.5) units(1);
+					color: color('primary');
+					font-weight: fw('bold');
+					cursor: pointer;
+
+					&:hover,
+					&:focus {
+						text-decoration: underline;
+					}
+
+					&[aria-disabled='true'] {
+						visibility: hidden;
+						pointer-events: none;
+					}
+				}
+			}
+		}
+
+		.gcsc-find-more-on-google {
+			color: color('primary');
+
+			svg {
+				fill: color('primary');
 			}
 		}
 	}
