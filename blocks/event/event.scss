@@ -1,0 +1,102 @@
+@use '../../styles/ne-global-imports' as *;
+
+$block: 'event';
+
+.#{$block} {
+	margin-bottom: units(4);
+
+	&__container {
+		display: flex;
+		flex-direction: column;
+		gap: units(1);
+	}
+
+	&__card {
+		padding: units(3);
+		border: 1px solid color('base-lighter');
+		border-radius: radius('md');
+		background-color: color('white');
+		box-shadow: 0 1px 4px 0 rgb(0 0 0 / 10%);
+
+		@include at-media('tablet') {
+			padding: units(4);
+		}
+	}
+
+	&__card-header {
+		display: flex;
+		flex-direction: column;
+		gap: units(2);
+		margin-bottom: units(2);
+
+		@include at-media('tablet') {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+		}
+	}
+
+	&__card-label {
+		margin: 0;
+		color: color('base-darkest');
+		font-family: family('heading');
+		font-size: size('body', 'lg');
+		font-weight: fw('bold');
+		line-height: lh('heading', 2);
+
+		@include at-media('tablet') {
+			font-size: size('heading', 'xl');
+		}
+	}
+
+	&__card-content {
+		color: color('base-dark');
+		font-family: family('body');
+		font-size: size('body', 'md');
+		line-height: lh('body', 5);
+
+		@include at-media('tablet') {
+			font-size: size('body', 'lg');
+		}
+	}
+
+	&__location-name {
+		margin-bottom: units(0.5);
+	}
+
+	&__address {
+		margin: 0;
+		font-style: normal;
+	}
+
+	&__action-button {
+		flex-shrink: 0;
+		margin: 0;
+		padding: units(1) units(2);
+		font-size: size('body', 'sm');
+
+		@include at-media('tablet') {
+			padding: units(1) units(2.5);
+			font-size: size('body', 'md');
+		}
+	}
+
+	&__action-link {
+		flex-shrink: 0;
+		font-size: size('body', 'md');
+		font-weight: fw('bold');
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	&__action-button,
+	&__action-link {
+		&:focus {
+			outline: units(0.5) solid color('primary');
+			outline-offset: units(0.5);
+		}
+	}
+}
