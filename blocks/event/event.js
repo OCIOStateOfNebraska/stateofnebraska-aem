@@ -3,17 +3,17 @@ import { parseCombinedDateTime, convertTo24Hour } from '../../scripts/event-util
 import { domEl } from '../../scripts/dom-helpers.js';
 
 /**
- * Formats a date string to a readable format with semantic HTML
- * @param {string} dateString The date string to format (ISO format: YYYY-MM-DD)
+ * Formats a date to a readable format with semantic HTML
+ * @param {Date} dateObject The Date object to format
+ * @param {string} dateString ISO date string for datetime attribute (YYYY-MM-DD)
  * @param {string} timeString Optional time string to include
  * @returns {HTMLElement|string} Formatted date as DOM element or string if error
  */
-function formatDate( dateString, timeString = null ) {
-	if ( !dateString ) return '';
+function formatDate( dateObject, dateString, timeString = null ) {
+	if ( !dateObject ) return '';
 
 	try {
-		const date = new Date( dateString );
-		const formattedDate = date.toLocaleDateString( 'en-US', {
+		const formattedDate = dateObject.toLocaleDateString( 'en-US', {
 			weekday: 'long',
 			month: 'long',
 			day: 'numeric',
@@ -37,6 +37,60 @@ function formatDate( dateString, timeString = null ) {
 	} catch ( error ) {
 		console.warn( `Error formatting date: ${dateString}`, error ); // eslint-disable-line no-console
 		return dateString;
+	}
+}
+
+/**
+ * Formats a date range to a readable format with semantic HTML
+ * @param {Date} startDate The start Date object
+ * @param {string} startDateString ISO date string for start (YYYY-MM-DD)
+ * @param {Date} endDate The end Date object
+ * @param {string} endDateString ISO date string for end (YYYY-MM-DD)
+ * @param {string} timeString Optional time string to include
+ * @returns {HTMLElement|string} Formatted date range as DOM element
+ */
+function formatDateRange( startDate, startDateString, endDate, endDateString, timeString = null ) {
+	if ( !startDate || !endDate ) return '';
+
+	try {
+		const container = document.createElement( 'div' );
+		const sameYear = startDate.getFullYear() === endDate.getFullYear();
+
+		// Format: "August 28 - September 7, 2026" (same year)
+		// or "December 28, 2026 - January 5, 2027" (different years)
+		const startMonth = startDate.toLocaleDateString( 'en-US', { month: 'long' } );
+		const startDay = startDate.getDate();
+		const endMonth = endDate.toLocaleDateString( 'en-US', { month: 'long' } );
+		const endDay = endDate.getDate();
+		const endYear = endDate.getFullYear();
+
+		let formattedRange;
+		let ariaLabel;
+		if ( sameYear ) {
+			formattedRange = `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${endYear}`;
+			ariaLabel = `From ${startMonth} ${startDay} to ${endMonth} ${endDay}, ${endYear}`;
+		} else {
+			const startYear = startDate.getFullYear();
+			formattedRange = `${startMonth} ${startDay}, ${startYear} - ${endMonth} ${endDay}, ${endYear}`;
+			ariaLabel = `From ${startMonth} ${startDay}, ${startYear} to ${endMonth} ${endDay}, ${endYear}`;
+		}
+
+		const timeEl = document.createElement( 'time' );
+		timeEl.setAttribute( 'datetime', startDateString );
+		timeEl.setAttribute( 'aria-label', ariaLabel );
+		timeEl.textContent = formattedRange;
+		container.appendChild( timeEl );
+
+		if ( timeString ) {
+			container.appendChild( document.createElement( 'br' ) );
+			const timeText = document.createTextNode( timeString );
+			container.appendChild( timeText );
+		}
+
+		return container;
+	} catch ( error ) {
+		console.warn( 'Error formatting date range', error ); // eslint-disable-line no-console
+		return `${startDateString} - ${endDateString}`;
 	}
 }
 
@@ -94,13 +148,16 @@ function createMetadataCard( label, content, actionElement = null ) {
 function toICalDateTime( dateString, timeString = null ) {
 	if ( !dateString ) return '';
 
-	const match = dateString.match( /^(\d{4})-(\d{2})-(\d{2})$/ );
+	const match = dateString.match( /^(\d{4})-(\d{1,2})-(\d{1,2})$/ );
 	if ( !match ) {
-		console.warn( `Invalid date format for iCal: ${dateString}. Expected YYYY-MM-DD` ); // eslint-disable-line no-console
+		console.warn( `Invalid date format for iCal: ${dateString}. Expected YYYY-MM-DD or YYYY-M-D` ); // eslint-disable-line no-console
 		return '';
 	}
 
-	const [, year, month, day] = match;
+	let [, year, month, day] = match;
+	// Zero-pad month and day to 2 digits
+	month = month.padStart( 2, '0' );
+	day = day.padStart( 2, '0' );
 
 	if ( !timeString ) {
 		return `${year}${month}${day}`;
@@ -145,6 +202,13 @@ function generateICalFile( eventData ) {
 		? description.replace( /\n/g, '\\n' ).replace( /,/g, '\\,' ).substring( 0, 500 )
 		: null;
 
+	// Generate DTSTAMP (current timestamp in UTC format: YYYYMMDDTHHMMSSz)
+	const now = new Date();
+	const dtStamp = `${now.getUTCFullYear()}${String( now.getUTCMonth() + 1 ).padStart( 2, '0' )}${String( now.getUTCDate() ).padStart( 2, '0' )}T${String( now.getUTCHours() ).padStart( 2, '0' )}${String( now.getUTCMinutes() ).padStart( 2, '0' )}${String( now.getUTCSeconds() ).padStart( 2, '0' )}Z`;
+
+	// Determine if this is an all-day event (no time component)
+	const isAllDay = !start.time;
+
 	const icsLines = [
 		'BEGIN:VCALENDAR',
 		'VERSION:2.0',
@@ -153,12 +217,12 @@ function generateICalFile( eventData ) {
 		'METHOD:PUBLISH',
 		'BEGIN:VEVENT',
 		`UID:${uid}`,
-		`DTSTAMP:${toICalDateTime( new Date().toISOString().split( 'T' )[0] )}`,
-		`DTSTART:${dtStart}`,
+		`DTSTAMP:${dtStamp}`,
+		isAllDay ? `DTSTART;VALUE=DATE:${dtStart}` : `DTSTART:${dtStart}`,
 	];
 
 	const optionalLines = [
-		dtEnd && dtEnd !== dtStart && `DTEND:${dtEnd}`,
+		dtEnd && dtEnd !== dtStart && ( isAllDay ? `DTEND;VALUE=DATE:${dtEnd}` : `DTEND:${dtEnd}` ),
 		name && `SUMMARY:${name.replace( /\n/g, '\\n' )}`,
 		locationString && `LOCATION:${locationString.replace( /\n/g, '\\n' )}`,
 		cleanDescription && `DESCRIPTION:${cleanDescription}`,
@@ -254,12 +318,35 @@ export default function decorate( block ) {
 			console.warn( `Event end date is before start date: "${eventTitle}"` ); // eslint-disable-line no-console
 		}
 
+		// Check for date parameter in URL (from calendar clicks)
+		const urlParams = new URLSearchParams( window.location.search );
+		const dateParam = urlParams.get( 'date' );
+
 		let displayTime = start.time || '';
 		if ( end.time && end.time !== start.time ) {
 			displayTime += ` - ${end.time}`;
 		}
 
-		const dateTimeContent = formatDate( start.date, displayTime );
+		let dateTimeContent;
+
+		if ( dateParam ) {
+			// Show specific date from calendar click
+			const match = dateParam.match( /^(\d{4})-(\d{2})-(\d{2})$/ );
+			if ( match ) {
+				const [, year, month, day] = match;
+				const displayDate = new Date( parseInt( year, 10 ), parseInt( month, 10 ) - 1, parseInt( day, 10 ) );
+				dateTimeContent = formatDate( displayDate, dateParam, displayTime );
+			} else {
+				// Invalid date parameter, fall back to start date
+				dateTimeContent = formatDate( start.dateObject, start.date, displayTime );
+			}
+		} else if ( end.dateObject && end.dateObject.getTime() !== start.dateObject.getTime() ) {
+			// Show date range for multi-day events when no date parameter
+			dateTimeContent = formatDateRange( start.dateObject, start.date, end.dateObject, end.date, displayTime );
+		} else {
+			// Show single date
+			dateTimeContent = formatDate( start.dateObject, start.date, displayTime );
+		}
 
 		const eventData = {
 			name: getMetadata( 'og:title' ) || document.title,
