@@ -90,7 +90,9 @@ export function parseCombinedDateTime( combinedDateTime, options = {} ) {
 
 		// Add Date object if requested
 		if ( includeDateObject && result.date ) {
-			result.dateObject = new Date( result.date );
+			// Parse as local time, not UTC (prevents timezone offset issues)
+			const [year, month, day] = result.date.split( '-' ).map( Number );
+			result.dateObject = new Date( year, month - 1, day ); // month is 0-indexed
 			result.dateISO = result.date;
 		}
 
