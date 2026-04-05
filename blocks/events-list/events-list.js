@@ -122,7 +122,16 @@ export default async function decorate( block ) {
 					startDate: start.dateObject,
 				};
 			} )
-			.filter( ( event ) => !event.startDate || event.startDate >= new Date() )
+			.filter( ( event ) => {
+				if ( !event.startDate ) return true;
+
+				// Compare only dates, not times (show events for entire day)
+				const today = new Date();
+				const todayDateOnly = new Date( today.getFullYear(), today.getMonth(), today.getDate() );
+				const eventDateOnly = new Date( event.startDate.getFullYear(), event.startDate.getMonth(), event.startDate.getDate() );
+
+				return eventDateOnly >= todayDateOnly;
+			} )
 			.sort( ( a, b ) => ( a.startDate?.getTime() || 0 ) - ( b.startDate?.getTime() || 0 ) );
 
 		if ( eventPages.length === 0 ) {
