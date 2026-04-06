@@ -624,7 +624,7 @@ function decorateBlock( block ) {
  * @param {Element} main The container element
  */
 function decorateBlocks( main ) {
-	main.querySelectorAll( 'div.section > div > div' ).forEach( decorateBlock );
+	main.querySelectorAll( 'div.section > div:not(.section-background__image) > div' ).forEach( decorateBlock );
 }
 
 /**

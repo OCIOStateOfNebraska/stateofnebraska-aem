@@ -1,10 +1,17 @@
 @use '../../styles/ne-global-imports' as *;
 @use './hero-base';
+@use 'sass:math';
 
 $block: 'usa-hero';
 
 .#{$block} {
-	margin-bottom: units($hero-spacing-sm);
+
+	// Apply mask images for curved bottom edge
+	$curve-mask: url('data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201727%2086%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20d%3D%22M0%200v54.3c332.5%2039.7%20597.7%2036.4%20783.5%2017.7%20143.5-14.4%20289.3-38.6%20519.7-41.2%20178.1-2%20324.8%209.8%20423.8%2020.6V0H0Z%22%2F%3E%3C%2Fsvg%3E');
+	$mask-height-ratio: math.div($internal-hero-aspect-ratio-h, $internal-hero-aspect-ratio-w);
+
+	mask-image: hero-base.$rect-mask, $curve-mask;
+	mask-size: 100% calc(100% - (100vw * #{$mask-height-ratio}) + 2px), 100% calc(100vw * #{$mask-height-ratio});
 
 	picture,
 	img {
@@ -19,7 +26,7 @@ $block: 'usa-hero';
 
 	&__svg {
 		svg {
-			aspect-ratio: 1727 / 86;
+			aspect-ratio: #{$internal-hero-aspect-ratio-w} / #{$internal-hero-aspect-ratio-h};
 		}
 	}
 
@@ -44,9 +51,5 @@ $block: 'usa-hero';
 				padding-top: units(4);
 			}
 		}
-	}
-
-	@include at-media('desktop') {
-		margin-bottom: units($hero-spacing-lg);
 	}
 }
