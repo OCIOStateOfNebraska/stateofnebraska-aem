@@ -112,6 +112,21 @@ export default async function decorate( block ) {
 		block.append( wrapper );
 	}
 
+	// Use event delegation to handle anchor clicks
+	document.addEventListener( 'click', ( e ) => {
+		const a = e.target.closest( 'a[href^="#"]' );
+		if ( !a ) return;
+		// manually handle an anchor click without adding to the URL, to avoid url hash conflicts with search behavior
+		e.preventDefault();
+
+		const href = a.getAttribute( 'href' );
+		const focusEle = href === '#' ? document.querySelector( '.usa-skipnav') : document.getElementById( href.substring( 1 ) );
+		if ( focusEle ) {
+			focusEle.scrollIntoView( { behavior: 'smooth' } );
+			focusEle.focus( { preventScroll: true } );
+		}
+	});
+
 	window.__gcse = {
 		searchCallbacks: {
 			web: {
