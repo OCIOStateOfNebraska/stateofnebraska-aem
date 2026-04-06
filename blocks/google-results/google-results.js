@@ -29,7 +29,7 @@ function createSearchIcon( placeholders ) {
  * @returns {HTMLElement}
  */
 function createSearchInput( placeholders ) {
-	const searchPlaceholder = ( placeholders.searchPlaceholder || 'Search' ) + '...';
+	const searchPlaceholder = ( placeholders.searchPlaceholder || 'Search' ) + '\u2026';
 	const searchLabelEl = domEl( 'label', { class: 'usa-sr-only', for: 'google-search-field' } );
 	const searchInputEl = input( {
 		type: 'search',
@@ -78,7 +78,12 @@ export default async function decorate( block ) {
 		class: 'gcse-searchresults-only',
 		'data-queryParameterName': 'q',
 	} );
-	wrapper.append( searchResults );
+	const loader = domEl( 'div', { class: 'google-results-loading', role: 'status' },
+		domEl( 'div', { class: 'google-results-spinner' } )
+	);
+	const initialQuery = new URLSearchParams( window.location.search ).get( 'q' );
+	loader.hidden = !initialQuery;
+	wrapper.append( loader, searchResults );
 
 	if ( showSearchBox ) {
 		const placeholders = await fetchPlaceholders();
@@ -87,7 +92,6 @@ export default async function decorate( block ) {
 
 		// Pre-fill input from URL parameter
 		const queryInput = searchForm.querySelector( 'input[name="q"]' );
-		const initialQuery = new URLSearchParams( window.location.search ).get( 'q' );
 		if ( initialQuery ) {
 			queryInput.value = initialQuery;
 		}
@@ -98,23 +102,33 @@ export default async function decorate( block ) {
 			const query = queryInput.value.trim();
 			if ( !query ) return;
 
-			const url = new URL( window.location.href );
-			url.searchParams.set( 'q', query );
-			window.history.replaceState( {}, '', url.toString() );
-
+			loader.hidden = false;
 			const element = window.google?.search?.cse?.element?.getElement( 'searchresults-only0' );
 			if ( element ) {
 				element.execute( query );
+				const url = new URL( window.location.href );
+				url.searchParams.set( 'q', query );
+				window.history.replaceState( {}, '', url.toString() );
 			}
 		} );
 	} else {
 		block.append( wrapper );
 	}
 
+	window.__gcse = {
+		searchCallbacks: {
+			web: {
+				starting: () => { loader.hidden = false; },
+				ready: () => { loader.hidden = true; },
+			},
+		},
+	};
+
 	loadScript(
 		`https://cse.google.com/cse.js?cx=${encodeURIComponent( searchEngineId )}`,
 		{ async: 'true' },
 	).catch( () => {
+		loader.hidden = true;
 		wrapper.append(
 			domEl( 'p', { class: 'google-search-error' }, 'Search is temporarily unavailable.' ),
 		);

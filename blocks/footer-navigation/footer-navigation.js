@@ -46,6 +46,8 @@ export default async function decorate( block ) {
 		a.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
 			window.scrollTo( { top: 0 } );
+			const skipNav = document.querySelector( '.usa-skipnav' );
+			if ( skipNav ) skipNav.focus( { preventScroll: true } );
 		} );
 		container.append( a );
 		getIndividualIcon( a, 'arrow_upward' );
