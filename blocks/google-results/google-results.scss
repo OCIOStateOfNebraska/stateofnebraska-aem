@@ -1,11 +1,5 @@
 @use '../../styles/ne-global-imports' as *;
 
-main {
-	&:has(.google-results) {
-		overflow-x: clip;
-	}
-}
-
 .google-results {
 	.usa-search {
 		$button-width: px-to-rem(124px);
