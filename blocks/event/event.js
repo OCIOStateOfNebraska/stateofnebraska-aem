@@ -3,6 +3,21 @@ import { parseCombinedDateTime, convertTo24Hour } from '../../scripts/event-util
 import { domEl } from '../../scripts/dom-helpers.js';
 
 /**
+ * Formats time string for better screen reader pronunciation
+ * Converts "9:00 am" to "9:00 a.m." and "7:00 pm" to "7:00 p.m."
+ * Also converts " - " to " to " for more natural reading
+ * @param {string} timeString Time string to format
+ * @returns {string} Formatted time string with periods and "to"
+ */
+function formatTimeForAccessibility( timeString ) {
+	if ( !timeString ) return '';
+	return timeString
+		.replace( /\s*am\b/gi, ' a.m.' )
+		.replace( /\s*pm\b/gi, ' p.m.' )
+		.replace( /\s*-\s*/g, ' to ' );
+}
+
+/**
  * Formats a date to a readable format with semantic HTML
  * @param {Date} dateObject The Date object to format
  * @param {string} dateString ISO date string for datetime attribute (YYYY-MM-DD)
@@ -28,9 +43,13 @@ function formatDate( dateObject, dateString, timeString = null ) {
 		container.appendChild( timeEl );
 
 		if ( timeString ) {
+			const comma = document.createTextNode( ', ' );
+			container.appendChild( comma );
 			container.appendChild( document.createElement( 'br' ) );
-			const timeText = document.createTextNode( timeString );
-			container.appendChild( timeText );
+			const timeSpan = document.createElement( 'span' );
+			timeSpan.textContent = timeString;
+			timeSpan.setAttribute( 'aria-label', formatTimeForAccessibility( timeString ) );
+			container.appendChild( timeSpan );
 		}
 
 		return container;
@@ -55,8 +74,10 @@ function formatDateRange( startDate, startDateString, endDate, endDateString, ti
 	try {
 		const container = document.createElement( 'div' );
 		const sameYear = startDate.getFullYear() === endDate.getFullYear();
+		const sameMonth = sameYear && startDate.getMonth() === endDate.getMonth();
 
-		// Format: "August 28 - September 7, 2026" (same year)
+		// Format: "August 28-29, 2026" (same month)
+		// or "August 28 - September 7, 2026" (same year)
 		// or "December 28, 2026 - January 5, 2027" (different years)
 		const startMonth = startDate.toLocaleDateString( 'en-US', { month: 'long' } );
 		const startDay = startDate.getDate();
@@ -66,10 +87,17 @@ function formatDateRange( startDate, startDateString, endDate, endDateString, ti
 
 		let formattedRange;
 		let ariaLabel;
-		if ( sameYear ) {
+
+		if ( sameMonth ) {
+			// Same month and year: "August 28-29, 2026"
+			formattedRange = `${startMonth} ${startDay}-${endDay}, ${endYear}`;
+			ariaLabel = `From ${startMonth} ${startDay} to ${endDay}, ${endYear}`;
+		} else if ( sameYear ) {
+			// Different months, same year: "August 28 - September 7, 2026"
 			formattedRange = `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${endYear}`;
 			ariaLabel = `From ${startMonth} ${startDay} to ${endMonth} ${endDay}, ${endYear}`;
 		} else {
+			// Different years: "December 28, 2026 - January 5, 2027"
 			const startYear = startDate.getFullYear();
 			formattedRange = `${startMonth} ${startDay}, ${startYear} - ${endMonth} ${endDay}, ${endYear}`;
 			ariaLabel = `From ${startMonth} ${startDay}, ${startYear} to ${endMonth} ${endDay}, ${endYear}`;
@@ -82,9 +110,13 @@ function formatDateRange( startDate, startDateString, endDate, endDateString, ti
 		container.appendChild( timeEl );
 
 		if ( timeString ) {
+			const comma = document.createTextNode( ', ' );
+			container.appendChild( comma );
 			container.appendChild( document.createElement( 'br' ) );
-			const timeText = document.createTextNode( timeString );
-			container.appendChild( timeText );
+			const timeSpan = document.createElement( 'span' );
+			timeSpan.textContent = timeString;
+			timeSpan.setAttribute( 'aria-label', formatTimeForAccessibility( timeString ) );
+			container.appendChild( timeSpan );
 		}
 
 		return container;
@@ -95,7 +127,7 @@ function formatDateRange( startDate, startDateString, endDate, endDateString, ti
 }
 
 /**
- * Creates a metadata card (white card with shadow)
+ * Creates an event metadata card
  * @param {string} label The field label
  * @param {string|HTMLElement} content The field content (string or DOM element)
  * @param {HTMLElement} actionElement Optional action element (button or link)
@@ -125,7 +157,6 @@ function createMetadataCard( label, content, actionElement = null ) {
 	const contentEl = document.createElement( 'div' );
 	contentEl.className = 'event__card-content';
 	contentEl.id = contentId;
-	contentEl.setAttribute( 'aria-labelledby', labelId );
 
 	if ( typeof content === 'string' ) {
 		contentEl.textContent = content;
@@ -309,58 +340,75 @@ export default function decorate( block ) {
 	const container = document.createElement( 'div' );
 	container.className = 'event__container';
 
+	// Show warning if required start date is missing
+	if ( !eventStartDate ) {
+		const warningCard = document.createElement( 'div' );
+		warningCard.style.cssText = 'background: #fff3cd; border: 2px solid #ffc107; padding: 1rem; color: #856404; border-radius: 4px; margin-bottom: 1rem;';
+		warningCard.innerHTML = '<strong>⚠️ Event Block:</strong> Missing required metadata. Add <code style="background: #fff; padding: 0.2rem 0.4rem; border-radius: 2px;">event-start-date</code> to page metadata.';
+		container.appendChild( warningCard );
+		console.warn( 'Missing required event metadata. Add event-start-date to page metadata.' ); // eslint-disable-line no-console
+	}
+
 	if ( eventStartDate ) {
 		const start = parseCombinedDateTime( eventStartDate, { includeDateObject: true } );
 		const end = parseCombinedDateTime( eventEndDate, { includeDateObject: true } );
 		const eventTitle = getMetadata( 'og:title' ) || document.title;
 
 		if ( start.dateObject && end.dateObject && end.dateObject < start.dateObject ) {
-			console.warn( `Event end date is before start date: "${eventTitle}"` ); // eslint-disable-line no-console
-		}
+			console.warn( `Event end date is before start date: "${eventTitle}". Date card will not be displayed.` ); // eslint-disable-line no-console
 
-		// Check for date parameter in URL (from calendar clicks)
-		const urlParams = new URLSearchParams( window.location.search );
-		const dateParam = urlParams.get( 'date' );
+			// Show visible warning for authors
+			const dateWarningCard = document.createElement( 'div' );
+			dateWarningCard.style.cssText = 'background: #fff3cd; border: 2px solid #ffc107; padding: 1rem; color: #856404; border-radius: 4px; margin-bottom: 1rem;';
+			dateWarningCard.innerHTML = '<strong>⚠️ Event Block:</strong> Event end date is before start date. Please correct the dates in page metadata.';
+			container.appendChild( dateWarningCard );
+		} else {
+			// Valid dates - create and display date card
 
-		let displayTime = start.time || '';
-		if ( end.time && end.time !== start.time ) {
-			displayTime += ` - ${end.time}`;
-		}
+			// Check for date parameter in URL (from calendar clicks)
+			const urlParams = new URLSearchParams( window.location.search );
+			const dateParam = urlParams.get( 'date' );
 
-		let dateTimeContent;
+			let displayTime = start.time || '';
+			if ( end.time && end.time !== start.time ) {
+				displayTime += ` - ${end.time}`;
+			}
 
-		if ( dateParam ) {
-			// Show specific date from calendar click
-			const match = dateParam.match( /^(\d{4})-(\d{2})-(\d{2})$/ );
-			if ( match ) {
-				const [, year, month, day] = match;
-				const displayDate = new Date( parseInt( year, 10 ), parseInt( month, 10 ) - 1, parseInt( day, 10 ) );
-				dateTimeContent = formatDate( displayDate, dateParam, displayTime );
+			let dateTimeContent;
+
+			if ( dateParam ) {
+				// Show specific date from calendar click
+				const match = dateParam.match( /^(\d{4})-(\d{2})-(\d{2})$/ );
+				if ( match ) {
+					const [, year, month, day] = match;
+					const displayDate = new Date( parseInt( year, 10 ), parseInt( month, 10 ) - 1, parseInt( day, 10 ) );
+					dateTimeContent = formatDate( displayDate, dateParam, displayTime );
+				} else {
+					// Invalid date parameter, fall back to start date
+					dateTimeContent = formatDate( start.dateObject, start.date, displayTime );
+				}
+			} else if ( end.dateObject && end.dateObject.getTime() !== start.dateObject.getTime() ) {
+				// Show date range for multi-day events when no date parameter
+				dateTimeContent = formatDateRange( start.dateObject, start.date, end.dateObject, end.date, displayTime );
 			} else {
-				// Invalid date parameter, fall back to start date
+				// Show single date
 				dateTimeContent = formatDate( start.dateObject, start.date, displayTime );
 			}
-		} else if ( end.dateObject && end.dateObject.getTime() !== start.dateObject.getTime() ) {
-			// Show date range for multi-day events when no date parameter
-			dateTimeContent = formatDateRange( start.dateObject, start.date, end.dateObject, end.date, displayTime );
-		} else {
-			// Show single date
-			dateTimeContent = formatDate( start.dateObject, start.date, displayTime );
+
+			const eventData = {
+				name: getMetadata( 'og:title' ) || document.title,
+				startDateTime: eventStartDate,
+				endDateTime: eventEndDate,
+				location: eventLocation,
+				address: eventAddress,
+				description: getMetadata( 'event-description' ) || getMetadata( 'description' ),
+				url: window.location.href,
+			};
+
+			const calendarButton = createCalendarButton( eventData );
+			const dateCard = createMetadataCard( 'Date & Time', dateTimeContent, calendarButton );
+			container.appendChild( dateCard );
 		}
-
-		const eventData = {
-			name: getMetadata( 'og:title' ) || document.title,
-			startDateTime: eventStartDate,
-			endDateTime: eventEndDate,
-			location: eventLocation,
-			address: eventAddress,
-			description: getMetadata( 'event-description' ) || getMetadata( 'description' ),
-			url: window.location.href,
-		};
-
-		const calendarButton = createCalendarButton( eventData );
-		const dateCard = createMetadataCard( 'Date & Time', dateTimeContent, calendarButton );
-		container.appendChild( dateCard );
 	}
 
 	if ( eventLocation || eventAddress ) {
@@ -394,7 +442,7 @@ export default function decorate( block ) {
 		block.innerHTML = '';
 		block.appendChild( container );
 	} else {
-		console.warn( 'Missing required event metadata. Add event-start-date to page metadata.' ); // eslint-disable-line no-console
+		// Shouldn't reach here since warning is now added as first card
 		block.remove();
 	}
 }

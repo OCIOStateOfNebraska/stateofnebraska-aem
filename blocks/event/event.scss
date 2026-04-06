@@ -91,12 +91,4 @@ $block: 'event';
 			text-decoration: underline;
 		}
 	}
-
-	&__action-button,
-	&__action-link {
-		&:focus {
-			outline: units(0.5) solid color('primary');
-			outline-offset: units(0.5);
-		}
-	}
 }
