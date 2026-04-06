@@ -696,7 +696,8 @@ export default async function decorate( block ) {
 		month: today.getMonth(),
 		todayYear: today.getFullYear(),
 		todayMonth: today.getMonth(),
-		selectedDate: null // Selected day cell
+		selectedDate: null,
+		grid: null
 	};
 
 	// Create calendar container
@@ -997,16 +998,9 @@ export default async function decorate( block ) {
 		const weekdayHeaders = renderWeekdayHeaders();
 		calendarContainer.appendChild( weekdayHeaders );
 
-		const grid = generateCalendarGrid( state.year, state.month );
-		const gridElement = renderCalendarGrid( grid, eventsByDate, handleDayClick, today, state.year, state.month );
+		state.grid = generateCalendarGrid( state.year, state.month );
+		const gridElement = renderCalendarGrid( state.grid, eventsByDate, handleDayClick, today, state.year, state.month );
 		calendarContainer.appendChild( gridElement );
-
-		gridElement.addEventListener( 'keydown', ( e ) => {
-			const navKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
-			if ( navKeys.includes( e.key ) ) {
-				handleKeyboardNavigation( e, grid );
-			}
-		} );
 
 		// Re-render event display if a date is selected
 		if ( state.selectedDate ) {
@@ -1106,6 +1100,16 @@ export default async function decorate( block ) {
 			nextButton.addEventListener( 'click', () => handleMonthNavigation( 'next' ) );
 		}
 	}
+
+	calendarContainer.addEventListener( 'keydown', ( e ) => {
+		const focusedDay = e.target.closest( '.calendar__day' );
+		if ( !focusedDay ) return;
+
+		const navKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
+		if ( navKeys.includes( e.key ) ) {
+			handleKeyboardNavigation( e, state.grid );
+		}
+	} );
 
 	updateCalendar();
 
