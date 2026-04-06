@@ -2,15 +2,118 @@
 @use '~uswds/usa-table/src/styles/usa-table';
 @use 'sass:math';
 $block: 'usa-table';
+$table-icon: px-to-rem(28px);
 
 .table {
-	margin: units($component-spacing-sm) 0;
+	margin: units($component-spacing-sm) 0;	
+
+	.usa-text-input{
+		@include u-height(5);
+		@include u-margin-bottom(1);
+		@include u-width('card-lg');
+		@include u-border(1px);
+	}
 }
 
 .#{$block} {
 	@include u-margin(0);
-	width: 100%;
-	
+	@include u-width('full');
+
+	&-toolbar{
+		@include u-border(1px);
+		@include u-border-bottom(0);
+		@include u-padding(1);
+		@include u-height(7);
+		@include u-bg('base-lighter');
+		display: flex;
+		justify-content: space-between;
+
+		.usa-text-input{
+			@include u-margin(0);
+			@include u-padding(1);
+		}
+
+		.usa-table-results{
+			@include u-margin(0);
+			@include u-height('full');
+		}
+	}
+
+	tr{
+		&.hidden{
+			display: none;
+		}
+	}
+
+	th {
+		&[data-sortable] {
+			@include u-padding(0);
+
+			button {
+				@include u-height('full');
+				@include u-width('full');
+				@include u-padding-y(1);
+				@include u-padding-left(2);
+				@include u-padding-right(5);
+				@include u-border(0);
+				background-color: color('transparent');
+
+				&:after {
+					@include add-background-svg('usa-icons/sort_arrow');
+					position: absolute;
+					top: 50%;
+					right: 0;					
+					width: $table-icon;
+					height: $table-icon;
+					margin-top: -1 * math.div($table-icon, 2);
+					content: '';
+				}
+
+				&:hover{
+					cursor: pointer;
+				}
+			}
+
+
+			&[aria-sort='ascending'] {
+				background-color: color('primary-light');
+
+				button {
+
+					&:after {
+						@include add-background-svg('usa-icons/arrow_upward');
+					}
+
+					&:focus {
+						outline-color: color('secondary');
+					}
+				}
+			}
+
+			&[aria-sort='descending'] {
+				background-color: color('primary-light');
+
+				button {
+
+					&:after {
+						@include add-background-svg('usa-icons/arrow_downward');
+					}
+
+					&:focus {
+						outline-color: color('secondary');
+					}
+				}
+			}
+		}
+
+	}
+
+	td {
+		&[data-sort-active] {
+			background-color: color('primary-lighter');
+		}
+	}
+
 	caption {
 		@include u-margin-top(3);
 		@include u-margin-bottom(0);

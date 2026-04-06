@@ -4,7 +4,6 @@ import { a, domEl } from '../../scripts/dom-helpers.js';
 import { header, accordion } from '../../scripts/deps/bundle-uswds.js';
 import { getIndividualIcon, isSameDomainOrSubdomain } from '../../scripts/utils.js';
 
-
 async function decorateSkipnav( placeholders ) {
 	const { skipnav } = placeholders;
 	const skipNav = a( { class: 'usa-skipnav', href: '#main-content' }, skipnav ? skipnav : 'Skip to main content' );
@@ -20,6 +19,40 @@ async function loadBanner() {
 	return loadBlock( bannerBlock );
 }
 
+// Store all dropdown references for alignment checking
+const dropdownRegistry = [];
+
+function checkDropdownAlignment( dropdown ) {
+	if ( !dropdown || dropdown.hasAttribute( 'hidden' ) || dropdown.classList.contains( 'usa-megamenu' ) ) return;
+
+	const navInner = dropdown.closest( '.usa-nav__inner' );
+	if ( !navInner ) return;
+	
+	// Naturally left aligned (via CSS)
+	dropdown.style.left = '';
+	dropdown.style.right = '';
+	const dropdownRect = dropdown.getBoundingClientRect();
+
+	const containerRect = navInner.getBoundingClientRect();
+
+	// Check if dropdown extends beyond right edge of container
+	if ( dropdownRect.right > containerRect.right ) {
+		dropdown.style.left = 'auto';
+		// Align to right edge of related button
+		const button = dropdown.previousElementSibling;
+		const buttonOffset = button.offsetParent.getBoundingClientRect().right - button.getBoundingClientRect().right;
+		dropdown.style.right = buttonOffset + 'px';
+	}
+}
+
+function checkAllDropdownAlignments() {
+	dropdownRegistry.forEach( ( { dropdown, parent } ) => {
+		if ( !dropdown.hasAttribute( 'hidden' ) ) {
+			checkDropdownAlignment( dropdown, parent );
+		}
+	} );
+}
+
 async function createSubMenu( subMenu, id ) {
 	let listItem = subMenu.querySelectorAll( 'ul > li' );
 	if ( listItem.length > 0 ) {
@@ -29,7 +62,25 @@ async function createSubMenu( subMenu, id ) {
 		subMenu.prepend( button );
 		subMenu.querySelector( 'p' ).remove();
 
+		const linkCount = listItem.length;
+		let itemsPerColumn = linkCount;
+		let isMegaMenu = false;
+
+		if ( linkCount >= 2 && linkCount <= 8 ) {
+			itemsPerColumn = linkCount; // 1 column
+		} else if ( linkCount >= 9 && linkCount <= 12 ) {
+			itemsPerColumn = Math.ceil( linkCount / 2 ); // 2 columns
+		} else if ( linkCount > 12 ) {
+			itemsPerColumn = Math.ceil( linkCount / 4 ); // 4 columns
+			isMegaMenu = true;
+		}
+
 		const subNav = domEl( 'div', { id: 'extended-mega-nav-section-' + id, class: 'usa-nav__submenu', hidden: true } );
+
+		if ( isMegaMenu ) {
+			subNav.classList.add( 'usa-megamenu' );
+		}
+
 		const grid = domEl( 'div', { class: 'grid-row grid-gap-4' } );
 		subNav.append( grid );
 		subMenu.append( subNav );
@@ -37,7 +88,7 @@ async function createSubMenu( subMenu, id ) {
 		let column = '';
 		let ul = '';
 		for ( const [index, element] of listItem.entries() ) {
-			if ( index % 4 === 0 ) {
+			if ( index % itemsPerColumn === 0 ) {
 				column = domEl( 'div', { class: 'grid-col' } );
 				ul = domEl( 'ul', { class: 'usa-nav__submenu-list'} );
 				column.append( ul );
@@ -52,6 +103,19 @@ async function createSubMenu( subMenu, id ) {
 				element.querySelector( '.usa-button__wrap' ).remove();
 			}
 		}
+
+		// Register this dropdown for alignment checking
+		dropdownRegistry.push( { dropdown: subNav, parent: subMenu } );
+
+		// Check alignment when dropdown is opened
+		button.addEventListener( 'click', () => {
+			// Finish the event stack, then check
+			setTimeout( () => {
+				if ( !subNav.hasAttribute( 'hidden' ) ) {
+					checkDropdownAlignment( subNav, subMenu );
+				}
+			}, 1 );
+		} );
 	} else {
 		subMenu.prepend( subMenu.firstElementChild.firstElementChild );
 		subMenu.lastElementChild.remove();
@@ -109,8 +173,16 @@ async function loadAndDecorateNav() {
 	const navPath = navMeta ? new URL( navMeta, window.location ).pathname : '/nav';
 	const navFragment = await loadFragment( navPath );
 	const innerNav = domEl( 'div', { class: 'usa-nav__inner' } );
-	
+
 	if ( !navFragment ) return innerNav;
+
+	// Set up single resize listener for all dropdowns
+	let resizeTimeout;
+	const debouncedCheckAlignment = () => {
+		clearTimeout( resizeTimeout );
+		resizeTimeout = setTimeout( checkAllDropdownAlignments, 150 );
+	};
+	window.addEventListener( 'resize', debouncedCheckAlignment, { passive: true } );
 
 	let navChildren = navFragment.children;
 	const showDropdowns = navChildren.length > 2;
@@ -139,7 +211,7 @@ async function loadAndDecorateNav() {
 	const secondaryNav = createSecondaryMenu( innerNav, searchResultsUrl, showDropdowns );
 	const nav = domEl( 'nav', { class: 'usa-nav', 'aria-label': 'Primary navigation', id: 'mobile-nav' } );
 	nav.append( innerNav );
-	const container = domEl( 'div', {} );
+	const container = domEl( 'div', { class: 'usa-nav-container' } );
 	const navClass = `usa-header usa-header--extended${!showDropdowns ? ' usa-header--small' : '' }`;
 	const navWrapper = domEl( 'div', { class: navClass } );
 	container.append( nav );
@@ -236,6 +308,7 @@ async function loadAndDecorateAlert() {
  * @param {Element} block The header block element
  */
 export default async function decorate( block ) {
+	document.querySelector( 'header' ).setAttribute( 'aria-hidden', 'false' ); 
 	const placeholders = await fetchPlaceholders();
 
 	const skipNav = await decorateSkipnav( placeholders );
