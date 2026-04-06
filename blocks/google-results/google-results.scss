@@ -13,8 +13,8 @@ main {
 		.usa-input {
 			width: 100%;
 			max-width: calc(measure($theme-text-measure) - $button-width);
-			border: 1px solid color('ink');
 			padding: units(1);
+			border: 1px solid color('ink');
 
 			&__wrapper {
 				width: 100%;
@@ -79,9 +79,9 @@ main {
 			background-color: inherit;
 
 			.gsc-refinementHeader {
+				border-color: color('primary');
 				background-color: inherit;
 				color: color('primary');
-				border-color: color('primary');
 			}
 		}
 
@@ -108,8 +108,8 @@ main {
 					text-decoration: none;
 
 					b {
-						color: color('primary');
 						background-color: color('secondary-light');
+						color: color('primary');
 					}
 
 					&:hover,
@@ -123,17 +123,17 @@ main {
 				.gsc-cursor {
 					display: flex;
 					flex-wrap: wrap;
-					justify-content: center;
 					align-items: center;
-					gap: units(1.5);;
+					justify-content: center;
+					gap: units(1.5);
 				}
 
 				.gsc-cursor-page {
-					color: color('primary');
-					padding: units(0.5) units(1.5);
-					cursor: pointer;
 					margin: 0;
-					border-radius: units(0.5);
+					padding: units(0.5) units(1.5);
+					color: color('primary');
+
+					@include u-radius('sm');
 					text-decoration: underline;
 
 					&.gsc-cursor-current-page {
@@ -146,7 +146,6 @@ main {
 					padding: units(0.5) units(1);
 					color: color('primary');
 					font-weight: fw('bold');
-					cursor: pointer;
 
 					&:hover,
 					&:focus {

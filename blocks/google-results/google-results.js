@@ -106,9 +106,6 @@ export default async function decorate( block ) {
 			const element = window.google?.search?.cse?.element?.getElement( 'searchresults-only0' );
 			if ( element ) {
 				element.execute( query );
-				const url = new URL( window.location.href );
-				url.searchParams.set( 'q', query );
-				window.history.replaceState( {}, '', url.toString() );
 			}
 		} );
 	} else {
@@ -119,7 +116,14 @@ export default async function decorate( block ) {
 		searchCallbacks: {
 			web: {
 				starting: () => { loader.hidden = false; },
-				ready: () => { loader.hidden = true; },
+				ready: ( gname, query ) => {
+					loader.hidden = true;
+					const url = new URL( window.location.href );
+					url.searchParams.set( 'q', query );
+					window.history.replaceState( {}, '', url.toString() );
+					const searchInput = block.querySelector( 'input[name="q"]' );
+					if ( searchInput ) searchInput.value = query;
+				},
 			},
 		},
 	};
