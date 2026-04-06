@@ -10,12 +10,7 @@ const MONTH_NAMES = [
 ];
 
 /**
- * Day names array used for formatting dates
- */
-const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-/**
- * Weekday labels for calendar headers
+ * Weekday labels for calendar headers and date formatting
  */
 const WEEKDAY_LABELS = [
 	{ short: 'Sun', full: 'Sunday' },
@@ -295,12 +290,14 @@ function generateCalendarGrid( year, month ) {
 
 /**
  * Render navigation buttons
+ * @param {string} monthName - Current month name
+ * @param {number} year - Current year
  * @returns {HTMLElement} - Navigation buttons container
  */
-function renderNavigationButtons() {
+function renderNavigationButtons( monthName, year ) {
 	const navContainer = domEl( 'nav', {
 		class: 'calendar__nav',
-		'aria-label': 'Calendar navigation'
+		'aria-label': `Calendar navigation. Current month: ${monthName} ${year}`
 	} );
 
 	const prevButton = domEl( 'button', {
@@ -337,11 +334,10 @@ function renderNavigationButtons() {
 function renderCalendarHeader( year, month ) {
 	const monthName = getMonthName( month );
 	const header = domEl( 'div', {
-		class: 'calendar__header',
-		'aria-label': `Calendar header for ${monthName} ${year}`
+		class: 'calendar__header'
 	} );
 
-	const navButtons = renderNavigationButtons();
+	const navButtons = renderNavigationButtons( monthName, year );
 	header.appendChild( navButtons );
 
 	const title = domEl( 'h2', {
@@ -514,7 +510,7 @@ function renderCalendarGrid( grid, eventsByDate, onDayClick, today, year, month 
  * @returns {string} - Formatted date string (e.g., "Monday, March 24, 2026")
  */
 function formatDateDisplay( date ) {
-	const dayName = DAY_NAMES[date.getDay()];
+	const dayName = WEEKDAY_LABELS[date.getDay()].full;
 	const monthName = MONTH_NAMES[date.getMonth()];
 	const dayNum = date.getDate();
 	const year = date.getFullYear();
