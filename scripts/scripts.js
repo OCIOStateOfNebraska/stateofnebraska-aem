@@ -399,7 +399,7 @@ function decorateIconList( element ) {
 					child.childNodes.forEach( c => {
 						if ( found ) {
 							after.appendChild( c );
-						} else if ( c.tagName == 'BR' ) {
+						} else if ( c.tagName.toUpperCase() === 'BR' ) {
 							found = true;
 						}
 					} );
@@ -450,7 +450,7 @@ export function decorateMain( main ) {
 
 function decorateSections( main ) {
 	const templateData = getMetadata( 'layout' ).trim().toLowerCase();
-	const isFullWidthTemplate = ( templateData != 'side-nav' ) && ( templateData != 'in-page-nav' );
+	const isFullWidthTemplate = ( templateData !== 'side-nav' ) && ( templateData !== 'in-page-nav' );
 
 	main.querySelectorAll( ':scope > div' ).forEach( ( section ) => {
 		const wrappers = [];
@@ -483,7 +483,7 @@ function decorateSections( main ) {
 						.filter( ( style ) => style )
 						.map( ( style ) => toClassName( style.trim() ) );
 					styles.forEach( ( style ) => section.classList.add( style ) );
-				} else if ( key == 'layout' ) {
+				} else if ( key === 'layout' ) {
 					const [col1, col2] = meta[key].split( '/' ).map( Number );
 					const isValidLayout = col1 > 0 && col2 > 0 && col1 + col2 === 12;
 
@@ -527,7 +527,7 @@ function decorateSections( main ) {
 
 						if( url ) {
 							// Bump up from the default DA size
-							if( url.searchParams.get( 'width' ) == 750 ) {
+							if( url.searchParams.get( 'width' ) === 750 ) {
 								url.searchParams.set( 'width', 1920 );
 							}
 
