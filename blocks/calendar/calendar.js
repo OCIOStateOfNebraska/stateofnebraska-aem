@@ -391,13 +391,12 @@ function isToday( date, today ) {
  * Render calendar grid
  * @param {Array} grid - Array of day objects
  * @param {Object} eventsByDate - Events grouped by date key
- * @param {Function} onDayClick - Click handler for day cells
  * @param {Date} today - Today's date
  * @param {number} year - Calendar year
  * @param {number} month - Calendar month (0-11)
  * @returns {HTMLElement} - Calendar grid element
  */
-function renderCalendarGrid( grid, eventsByDate, onDayClick, today, year, month ) {
+function renderCalendarGrid( grid, eventsByDate, today, year, month ) {
 	const monthName = getMonthName( month );
 	const gridElement = domEl( 'div', {
 		class: 'calendar__grid',
@@ -485,26 +484,6 @@ function renderCalendarGrid( grid, eventsByDate, onDayClick, today, year, month 
 
 			dayCell.appendChild( eventsContainer );
 		}
-
-		dayCell.addEventListener( 'click', () => {
-			onDayClick( cell );
-		} );
-
-		dayCell.addEventListener( 'keydown', ( e ) => {
-			if ( e.key === 'Enter' || e.key === ' ' ) {
-				e.preventDefault();
-				onDayClick( cell );
-			}
-		} );
-
-		dayCell.addEventListener( 'focus', () => {
-			// When a day gets focus, make it the only tabbable day
-			const allDays = gridElement.querySelectorAll( '.calendar__day' );
-			allDays.forEach( ( day ) => {
-				day.setAttribute( 'tabindex', '-1' );
-			} );
-			dayCell.setAttribute( 'tabindex', '0' );
-		} );
 
 		gridElement.appendChild( dayCell );
 	} );
@@ -1003,7 +982,7 @@ export default async function decorate( block ) {
 		calendarContainer.appendChild( weekdayHeaders );
 
 		state.grid = generateCalendarGrid( state.year, state.month );
-		const gridElement = renderCalendarGrid( state.grid, eventsByDate, handleDayClick, today, state.year, state.month );
+		const gridElement = renderCalendarGrid( state.grid, eventsByDate, today, state.year, state.month );
 		calendarContainer.appendChild( gridElement );
 
 		// Re-render event display if a date is selected
@@ -1105,14 +1084,46 @@ export default async function decorate( block ) {
 		}
 	}
 
+	calendarContainer.addEventListener( 'click', ( e ) => {
+		const dayCell = e.target.closest( '.calendar__day' );
+		if ( !dayCell ) return;
+
+		const dateKey = dayCell.getAttribute( 'data-date' );
+		const cell = state.grid.find( ( c ) => c.dateKey === dateKey );
+		if ( cell ) {
+			handleDayClick( cell );
+		}
+	} );
+
 	calendarContainer.addEventListener( 'keydown', ( e ) => {
 		const focusedDay = e.target.closest( '.calendar__day' );
 		if ( !focusedDay ) return;
+
+		if ( e.key === 'Enter' || e.key === ' ' ) {
+			e.preventDefault();
+			const dateKey = focusedDay.getAttribute( 'data-date' );
+			const cell = state.grid.find( ( c ) => c.dateKey === dateKey );
+			if ( cell ) {
+				handleDayClick( cell );
+			}
+			return;
+		}
 
 		const navKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
 		if ( navKeys.includes( e.key ) ) {
 			handleKeyboardNavigation( e, state.grid );
 		}
+	} );
+
+	calendarContainer.addEventListener( 'focusin', ( e ) => {
+		const dayCell = e.target.closest( '.calendar__day' );
+		if ( !dayCell ) return;
+
+		const allDays = calendarContainer.querySelectorAll( '.calendar__day' );
+		allDays.forEach( ( day ) => {
+			day.setAttribute( 'tabindex', '-1' );
+		} );
+		dayCell.setAttribute( 'tabindex', '0' );
 	} );
 
 	updateCalendar();
