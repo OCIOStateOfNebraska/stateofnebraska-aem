@@ -591,7 +591,8 @@ function renderEventDisplay( cell, eventsByDate ) {
 	} );
 
 	const dateHeader = domEl( 'h3', {
-		class: 'calendar__events-header'
+		class: 'calendar__events-header',
+		tabindex: '-1'
 	}, formatDateDisplay( cell.date ) );
 
 	eventDisplay.appendChild( dateHeader );
@@ -629,7 +630,7 @@ function renderEventDisplay( cell, eventsByDate ) {
 
 				const linkAttrs = {
 					href: eventUrl,
-					class: isExternal ? 'calendar__events-link usa-link--external' : 'calendar__events-link',
+					class: isExternal ? 'usa-link usa-link--external' : 'usa-link',
 					title: fullText !== truncatedText ? fullText : undefined // Full text on hover
 				};
 
@@ -767,6 +768,16 @@ export default async function decorate( block ) {
 
 		// Update event display
 		updateEventDisplay();
+
+		setTimeout( () => {
+			const eventsPanel = calendarContainer.querySelector( '.calendar__events' );
+			if ( eventsPanel ) {
+				const heading = eventsPanel.querySelector( '.calendar__events-header' );
+				if ( heading ) {
+					heading.focus();
+				}
+			}
+		}, 50 );
 
 		// Announce selection to screen readers
 		const dateLabel = formatDateDisplay( cell.date );

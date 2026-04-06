@@ -38,12 +38,6 @@ $calendar-block: 'calendar';
 			transform: translateY(-1px);
 		}
 
-		// Enhanced focus styles for accessibility
-		&:focus {
-			outline: 3px solid color('primary-dark');
-			outline-offset: 2px;
-		}
-
 		&:active {
 			transform: translateY(0);
 		}
@@ -101,16 +95,10 @@ $calendar-block: 'calendar';
 			box-shadow: 0 2px 4px rgb(0 0 0 / 8%);
 		}
 
-		// Enhanced focus styles for WCAG AAA compliance
 		&:focus {
-			outline: 3px solid color('primary-dark');
-			outline-offset: 2px;
+			outline: units(0.5) solid color('primary-dark');
+			outline-offset: units(0.5);
 			z-index: 1;
-		}
-
-		&:focus-visible {
-			outline: 3px solid color('primary-dark');
-			outline-offset: 2px;
 		}
 
 		&:active {
@@ -189,11 +177,6 @@ $calendar-block: 'calendar';
 			background-color: color('accent-warm-lightest');
 			box-shadow: 0 0 0 1px color('accent-warm-darker') inset, 0 2px 4px rgb(0 0 0 / 8%);
 		}
-
-		&:focus {
-			outline: 3px solid color('accent-warm-darker');
-			outline-offset: 2px;
-		}
 	}
 
 	.calendar__day--selected {
@@ -209,11 +192,6 @@ $calendar-block: 'calendar';
 			border-color: color('primary-dark');
 			background-color: color('primary-lighter');
 			box-shadow: 0 0 0 1px color('primary-dark') inset, 0 2px 4px rgb(0 0 0 / 8%);
-		}
-
-		&:focus {
-			outline: 3px solid color('primary-dark');
-			outline-offset: 2px;
 		}
 	}
 
@@ -234,10 +212,6 @@ $calendar-block: 'calendar';
 		&:hover {
 			border-color: color('base');
 			background-color: color('base-lighter');
-		}
-
-		&:focus {
-			outline-color: color('base-darker');
 		}
 	}
 
@@ -295,21 +269,6 @@ $calendar-block: 'calendar';
 			color: color('base-dark');
 			font-style: italic;
 			list-style-type: none;
-		}
-	}
-
-	.calendar__events-link {
-		color: color('primary');
-		text-decoration: underline;
-
-		&:hover,
-		&:focus {
-			color: color('primary-dark');
-		}
-
-		&:focus {
-			outline: units(0.5) solid color('primary');
-			outline-offset: units(0.5);
 		}
 	}
 
