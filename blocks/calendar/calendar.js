@@ -421,7 +421,15 @@ function renderCalendarGrid( grid, eventsByDate, onDayClick, today, year, month 
 	}
 
 	grid.forEach( ( cell, index ) => {
-		// Only the initial focus day is tabbable (roving tabindex pattern)
+		/**
+		 * Roving tabindex pattern: Only one day cell is tabbable at a time.
+		 * Without this, users would need to Tab through all 42 day cells (6 rows × 7 days)
+		 * to exit the calendar grid. With roving tabindex:
+		 * - Tab once to enter the grid (focus lands on initial day)
+		 * - Arrow keys navigate between days (focus moves, tabindex updates)
+		 * - Tab again to exit the grid to next control
+		 * This dramatically improves keyboard navigation efficiency.
+		 */
 		const isInitialFocus = index === initialFocusIndex;
 
 		const ariaLabel = buildDayAriaLabel( cell, eventsByDate, today );
