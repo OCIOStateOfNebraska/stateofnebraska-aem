@@ -342,10 +342,13 @@ export default function decorate( block ) {
 
 	// Show warning if required start date is missing
 	if ( !eventStartDate ) {
-		const warningCard = document.createElement( 'div' );
-		warningCard.style.cssText = 'background: #fff3cd; border: 2px solid #ffc107; padding: 1rem; color: #856404; border-radius: 4px; margin-bottom: 1rem;';
-		warningCard.innerHTML = '<strong>⚠️ Event Block:</strong> Missing required metadata. Add <code style="background: #fff; padding: 0.2rem 0.4rem; border-radius: 2px;">event-start-date</code> to page metadata.';
-		container.appendChild( warningCard );
+		const warningAlert = domEl( 'div', { class: 'usa-alert usa-alert--warning usa-alert--slim' } );
+		const alertBody = domEl( 'div', { class: 'usa-alert__body' } );
+		const alertText = domEl( 'p', { class: 'usa-alert__text' } );
+		alertText.innerHTML = '<strong>Event Block:</strong> Missing required metadata. Add <code>event-start-date</code> to page metadata.';
+		alertBody.appendChild( alertText );
+		warningAlert.appendChild( alertBody );
+		container.appendChild( warningAlert );
 		console.warn( 'Missing required event metadata. Add event-start-date to page metadata.' ); // eslint-disable-line no-console
 	}
 
@@ -358,10 +361,13 @@ export default function decorate( block ) {
 			console.warn( `Event end date is before start date: "${eventTitle}". Date card will not be displayed.` ); // eslint-disable-line no-console
 
 			// Show visible warning for authors
-			const dateWarningCard = document.createElement( 'div' );
-			dateWarningCard.style.cssText = 'background: #fff3cd; border: 2px solid #ffc107; padding: 1rem; color: #856404; border-radius: 4px; margin-bottom: 1rem;';
-			dateWarningCard.innerHTML = '<strong>⚠️ Event Block:</strong> Event end date is before start date. Please correct the dates in page metadata.';
-			container.appendChild( dateWarningCard );
+			const dateWarningAlert = domEl( 'div', { class: 'usa-alert usa-alert--warning usa-alert--slim' } );
+			const alertBody = domEl( 'div', { class: 'usa-alert__body' } );
+			const alertText = domEl( 'p', { class: 'usa-alert__text' } );
+			alertText.innerHTML = '<strong>Event Block:</strong> Event end date is before start date. Please correct the dates in page metadata.';
+			alertBody.appendChild( alertText );
+			dateWarningAlert.appendChild( alertBody );
+			container.appendChild( dateWarningAlert );
 		} else {
 			// Valid dates - create and display date card
 
