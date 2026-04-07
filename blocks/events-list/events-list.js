@@ -123,7 +123,7 @@ export default async function decorate( block ) {
 				};
 			} )
 			.filter( ( event ) => {
-				if ( !event.startDate ) return true;
+				if ( !event.startDate ) return false;
 
 				// Compare only dates, not times (show events for entire day)
 				const today = new Date();
