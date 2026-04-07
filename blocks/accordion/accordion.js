@@ -1,6 +1,7 @@
 import { domEl } from '../../scripts/dom-helpers.js';
 import { createId } from '../../scripts/utils.js';
 import { accordion } from '../../scripts/deps/bundle-uswds.js';
+import { default as decorateTable } from '../table/table.js';
 
 export default function decorate( block ) {
 	let accordions = block.children;
@@ -67,24 +68,10 @@ export default function decorate( block ) {
 	block.appendChild( usaAccordion );
 
 	// Fixing tables inside of accordion
-	const tables = usaAccordion.querySelectorAll( 'table' );
+	const tables = usaAccordion.querySelectorAll( '.usa-accordion__content> div> table' );
 
 	tables.forEach( table => {
-		const row = table.querySelector( 'tbody > tr' );
-		if ( !row ) return;
-		
-		const thead = document.createElement( 'thead' );
-		const headerRow = document.createElement( 'tr' );
-
-		[...row.children].forEach( child => {
-			const th = domEl( 'th', { scope : 'col' } );
-			th.innerHTML = child.innerHTML;
-			headerRow.append( th );
-		} );
-		
-		thead.append( headerRow );
-		table.prepend( thead );
-		row.remove();
+		decorateTable( table );
 	} );
 
 	accordion.on(  );
