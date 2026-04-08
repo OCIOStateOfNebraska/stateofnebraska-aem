@@ -68,10 +68,18 @@ export default function decorate( block ) {
 	block.appendChild( usaAccordion );
 
 	// Fixing tables inside of accordion
-	const tables = usaAccordion.querySelectorAll( '.usa-accordion__content> div> table' );
+	const tables = usaAccordion.querySelectorAll( '.usa-accordion__content> div> table ' );
 
 	tables.forEach( table => {
 		decorateTable( table );
+
+		const container = table.closest( 'div' );
+		const innerTable = table.querySelector( 'table' );
+
+		if( innerTable ){
+			container.append( innerTable );
+			table.remove();
+		}
 	} );
 
 	accordion.on(  );
