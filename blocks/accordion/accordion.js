@@ -72,13 +72,14 @@ export default function decorate( block ) {
 
 	tables.forEach( table => {
 		decorateTable( table );
-		
+
 		const container = table.closest( 'div' );
 		const innerTable = table.querySelector( 'table' );
 
-		container.append( innerTable );
-		table.remove();
-
+		if( innerTable ){
+			container.append( innerTable );
+			table.remove();
+		}
 	} );
 
 	accordion.on(  );
