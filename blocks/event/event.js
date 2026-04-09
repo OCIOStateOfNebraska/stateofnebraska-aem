@@ -43,7 +43,9 @@ function formatDate( dateObject, dateString, timeString = null ) {
 		container.appendChild( timeEl );
 
 		if ( timeString ) {
-			const comma = document.createTextNode( ', ' );
+			const comma = document.createElement( 'span' );
+			comma.className = 'usa-sr-only';
+			comma.textContent = ', ';
 			container.appendChild( comma );
 			container.appendChild( document.createElement( 'br' ) );
 			const timeSpan = document.createElement( 'span' );
@@ -110,7 +112,9 @@ function formatDateRange( startDate, startDateString, endDate, endDateString, ti
 		container.appendChild( timeEl );
 
 		if ( timeString ) {
-			const comma = document.createTextNode( ', ' );
+			const comma = document.createElement( 'span' );
+			comma.className = 'usa-sr-only';
+			comma.textContent = ', ';
 			container.appendChild( comma );
 			container.appendChild( document.createElement( 'br' ) );
 			const timeSpan = document.createElement( 'span' );
