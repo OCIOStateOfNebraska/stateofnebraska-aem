@@ -21,7 +21,7 @@ html {
 
 body {
 	display: none;
-	overflow-x: hidden;
+	overflow-x: clip;
 
 	&:has(header .header[data-block-status='loaded']),
 	&.appear { // stylelint-disable-line selector-no-qualifying-type
@@ -30,7 +30,7 @@ body {
 }
 
 main {
-	overflow-x: hidden; // https://stackoverflow.com/questions/14270084/overflow-xhidden-doesnt-prevent-content-from-overflowing-in-mobile-browsers
+	overflow-x: clip; // https://stackoverflow.com/questions/14270084/overflow-xhidden-doesnt-prevent-content-from-overflowing-in-mobile-browsers
 }
 
 figure,
@@ -87,6 +87,12 @@ h2 {
 			margin-top: units(3);
 			background-color: color('secondary');
 			content: '';
+		}
+
+		.section-background--full.section-background--theme & {
+			&:after {
+				background-color: currentColor;
+			}
 		}
 	}
 }

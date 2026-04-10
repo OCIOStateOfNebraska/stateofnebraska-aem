@@ -1,0 +1,49 @@
+@use '../../styles/ne-global-imports' as *;
+
+$template: 'event-template';
+
+.#{$template} {
+	img,
+	picture {
+		display: block;
+		width: 100%;
+		max-width: units('desktop');
+		margin: units(10) auto 0;
+	}
+
+	picture {
+		& + p {
+			&:has(em) {
+				max-width: units('desktop');
+				margin: units(2) auto units(10);
+				padding: 0;
+				color: color('base-darkest');
+				font-family: family('body');
+				font-size: size('body', 'xs');
+				line-height: lh('body', 3);
+
+				em {
+					font-style: normal;
+				}
+			}
+		}
+	}
+
+	figure {
+		max-width: units('desktop');
+		margin: units(10) auto;
+
+		img,
+		picture {
+			margin: 0;
+		}
+
+		figcaption {
+			margin-top: units(2);
+			color: color('base-darkest');
+			font-family: family('body');
+			font-size: size('body', 'xs');
+			line-height: lh('body', 3);
+		}
+	}
+}
