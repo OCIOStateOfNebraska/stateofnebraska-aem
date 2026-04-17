@@ -1,0 +1,105 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+@use 'sass:math';
+
+@mixin card-grid-wrapper {
+	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
+	$block: 'usa-card';
+
+	margin-bottom: units($component-spacing-lg);
+
+	.section-background--full &:last-child {
+		margin-bottom: 0;
+	}
+
+	.#{$block} {
+		&,
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		&-group {
+			margin-bottom: 0;
+			row-gap: units($theme-card-gap);
+		}
+
+		&__heading {
+			color: color('primary');
+		}
+
+		&__img {
+			aspect-ratio: 16 / 9;
+		}
+
+		picture,
+		img {
+			margin: 0;
+		}
+
+		picture {
+			height: 100%;
+		}
+
+		p {
+			font-size: size('body', 'sm');
+		}
+
+		&:not(:has(picture, svg)) {
+			.#{$block}__container {
+				border-top: 2px solid color('secondary');
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+			}
+		}
+	}
+
+	// When section has dark/theme background, cards stay white but prevent text inheritance
+	.section-background--dark &,
+	.section-background--theme & {
+		.#{$block}__container {
+			background-color: color('white'); // keep cards white
+			color: color('ink'); // override inherited white text from section
+		}
+
+		.#{$block}__heading {
+			color: color('primary'); // override inherited white text
+		}
+	}
+
+	// Theme variant: only affects accent colors on white cards
+	.section-background--theme & {
+		.#{$block} {
+			&__heading {
+				color: var(--theme-card-accent);
+			}
+
+			&__container {
+				border-top-color: var(--theme-card-accent);
+			}
+		}
+	}
+
+	// Filled variant (dark cards with light text) - when block has .filled class
+	&:has(.filled) {
+		.#{$block} {
+			&__container {
+				background-color: color('primary-dark'); // use specific dark teal (#004d66)
+				color: color('white');
+			}
+
+			&__heading {
+				color: color('white'); // white heading text on filled cards
+			}
+
+			.usa-button {
+				$button-context: 'Button';
+				@include set-text-and-bg('secondary', $context: $button-context);
+
+				&:hover,
+				&.usa-button--hover {
+					@include set-text-and-bg('secondary-light', $context: $button-context);
+				}
+			}
+		}
+	}
+}
