@@ -11,9 +11,11 @@
 	--theme-icon-btn-grid: #{color('primary-vivid')};
 	--theme-icon-btn-grid-text: #{color('white')};
 	--theme-icon-btn-grid-hover: #{color('primary-lightest')};
-	--theme-card-accent: #{color('primary')};
+	--theme-card-accent: #{color('secondary')};
+	--theme-card-button-text: #{color('ink')};
+	--theme-card-heading: #{color('primary-darker')};
 	--theme-card-filled-text: #{color('white')};
-	--theme-card-filled-heading: #{color('secondary')};
+	--theme-card-filled-accent: #{color('secondary')};
 }
 
 .theme--red {
@@ -27,9 +29,11 @@
 	--theme-icon-btn-grid: #{$ne-color-red};
 	--theme-icon-btn-grid-text: #{color('white')};
 	--theme-icon-btn-grid-hover: #{$ne-color-light-red};
-	--theme-card-accent: #{$ne-color-dark-red};
+	--theme-card-accent: #{$ne-color-darkest-red};
+	--theme-card-button-text: #{color('white')};
+	--theme-card-heading: #{$ne-color-darkest-red};
 	--theme-card-filled-text: #{color('white')};
-	--theme-card-filled-heading: #{color('secondary')};
+	--theme-card-filled-accent: #{color('white')};
 }
 
 .theme--green {
@@ -43,7 +47,9 @@
 	--theme-icon-btn-grid: #{color('accent-warm')};
 	--theme-icon-btn-grid-text: #{color('ink')};
 	--theme-icon-btn-grid-hover: #{color('accent-warm-lighter')};
-	--theme-card-accent: #{color('accent-warm')};
-	--theme-card-filled-text: #{color('ink')};
-	--theme-card-filled-heading: #{$ne-color-dark-blue};
+	--theme-card-accent: #{color('accent-warm-darker')};
+	--theme-card-button-text: #{color('white')};
+	--theme-card-heading: #{color('accent-warm-darker')};
+	--theme-card-filled-text: #{color('white')};
+	--theme-card-filled-accent: #{color('white')};
 }

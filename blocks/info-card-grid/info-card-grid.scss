@@ -9,7 +9,15 @@
 
 	.#{$block} {
 		.usa-button {
+			$button-context: 'Button';
+
+			@include set-text-and-bg('secondary', $context: $button-context);
 			width: 100%;
+
+			&:hover,
+			&.usa-button--hover {
+				@include set-text-and-bg('secondary-light', $context: $button-context);
+			}
 		}
 	}
 
@@ -27,11 +35,35 @@
 			width: units(8);
 			height: units(8);
 		}
+	}
 
-		// Filled cards use secondary (yellow) buttons
-		.usa-button {
-			background-color: var(--theme-card-filled-heading);
-			color: color('ink');
+	.section-background--theme & {
+		.#{$block} {
+			.usa-button {
+				&,
+				&:hover,
+				&.usa-button--hover {
+					background: var(--theme-card-accent);
+					color: var(--theme-card-button-text);
+				}
+
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+		}
+
+		&:has(.filled) {
+			.#{$block} {
+				.usa-button {
+					&,
+					&:hover,
+					&.usa-button--hover {
+						background: var(--theme-card-filled-accent);
+						color: color('ink');
+					}
+				}
+			}
 		}
 	}
 }

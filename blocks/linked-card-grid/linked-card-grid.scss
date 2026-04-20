@@ -5,6 +5,10 @@
 	$block: 'usa-card';
 	$icon-size: px-to-rem(48px);
 
+	@mixin hover-shadow($color: color('secondary')) {
+		box-shadow: 0 0 0 3px $color, 0 8px 16px 0 rgb(0 0 0 / 10%);
+	}
+
 	@include card-grid-base.card-grid-wrapper;
 
 	.#{$block} {
@@ -18,11 +22,11 @@
 			position: relative;
 
 			&:has(a) {
+				transition: box-shadow $transition-slow;
 				cursor: pointer;
 				
 				&:hover {
-					transition: box-shadow $transition-slow;
-					box-shadow: 0 0 0 3px color('secondary'), 0 8px 16px 0 rgb(0 0 0 / 10%);
+					@include hover-shadow;
 
 					.usa-button__wrap {
 						transform: translateX(units(0.5));
@@ -67,39 +71,48 @@
 		}
 	}
 
+	&:has(.filled) {
+		.#{$block} {
+			.usa-button__wrap {
+				svg {
+					fill: color('white');
+				}
+			}
+		}
+	}
+
 	// Theme-aware hover and icon colors
 	.section-background--theme & {
 		.#{$block} {
 			&__container{
 				&:has(a) {
 					&:hover {
-						box-shadow: 0 0 0 3px var(--theme-card-accent), 0 8px 16px 0 rgb(0 0 0 / 10%);
+						@include hover-shadow(var(--theme-card-accent));
 					}
 				}
 			}
 
 			.usa-button__wrap {
 				svg {
-					fill: var(--theme-card-accent);
+					fill: var(--theme-card-heading);
 				}
 			}
 		}
-	}
 
-	// Filled variant - when block has .filled class
-	&:has(.filled) {
-		.#{$block} {
-			&__container {
-				&:has(a) {
-					&:hover {
-						box-shadow: 0 0 0 3px var(--theme-card-filled-heading), 0 8px 16px 0 rgb(0 0 0 / 10%);
+		&:has(.filled) {
+			.#{$block} {
+				&__container{
+					&:has(a) {
+						&:hover {
+							@include hover-shadow(color('white'));
+						}
 					}
 				}
-			}
 
-			.usa-button__wrap {
-				svg {
-					fill: color('white'); // white arrow on filled/dark cards
+				.usa-button__wrap {
+					svg {
+						fill: var(--theme-card-filled-text);
+					}
 				}
 			}
 		}

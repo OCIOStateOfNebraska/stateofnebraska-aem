@@ -44,7 +44,7 @@
 			font-size: size('body', 'sm');
 		}
 
-		&:not(:has(picture, svg)) {
+		&:not(:has(.#{$block}__img)) {
 			.#{$block}__container {
 				border-top: 2px solid color('secondary');
 				border-top-left-radius: 0;
@@ -53,51 +53,53 @@
 		}
 	}
 
-	// When section has dark/theme background, cards stay white but prevent text inheritance
-	.section-background--dark &,
-	.section-background--theme & {
-		.#{$block}__container {
-			background-color: color('white'); // keep cards white
-			color: color('ink'); // override inherited white text from section
-		}
-
-		.#{$block}__heading {
-			color: color('primary'); // override inherited white text
-		}
-	}
-
-	// Theme variant: only affects accent colors on white cards
-	.section-background--theme & {
-		.#{$block} {
-			&__heading {
-				color: var(--theme-card-accent);
-			}
-
-			&__container {
-				border-top-color: var(--theme-card-accent);
-			}
-		}
-	}
-
-	// Filled variant (dark cards with light text) - when block has .filled class
 	&:has(.filled) {
 		.#{$block} {
 			&__container {
-				background-color: color('primary-dark'); // use specific dark teal (#004d66)
+				background-color: color('primary-dark');
 				color: color('white');
+			}
+			
+			&__heading {
+				color: color('white');
+			}
+			
+			&:not(:has(.#{$block}__img)) {
+				.#{$block}__container {
+					border-top: 0;
+				}
+			}
+		}
+	}
+
+	// TODO: Dark & Filled - section background goes light
+
+	.section-background--theme & {
+		.#{$block} {
+			&__container {
+				border-top: 0;
 			}
 
 			&__heading {
-				color: color('white'); // white heading text on filled cards
+				color: var(--theme-card-heading);
 			}
+		}
 
-			.usa-button {
-				$button-context: 'Button';
-				@include set-text-and-bg('secondary', $context: $button-context);
+		&:not(:has(.#{$block}__img)) {
+			.#{$block}__container {
+				border-top-color: var(--theme-card-accent);
+			}
+		}
 
-				&:hover,
-				&.usa-button--hover {
-					@include set-text-and-bg('secondary-light', $context: $button-context);
+		&:has(.filled) {
+			.#{$block} {
+				&__container {
+					background-color: var(--theme-section-bg);
+					color: var(--theme-card-filled-text);
+				}
+
+				&__heading {
+					color: var(--theme-card-filled-text);
 				}
 			}
 		}
