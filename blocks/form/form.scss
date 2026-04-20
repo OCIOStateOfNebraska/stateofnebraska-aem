@@ -4,8 +4,12 @@
 
 $uswds-block: 'usa-banner';
 
-form:not(.edit-mode) [data-visible='false'] {
-	display: none !important; // stylelint-disable-line declaration-no-important
+form {
+	&:not(.edit-mode) {
+		[data-visible='false'] {
+			display: none !important; // stylelint-disable-line declaration-no-important
+		}
+	} 
 }
 
 .form-wrapper {
