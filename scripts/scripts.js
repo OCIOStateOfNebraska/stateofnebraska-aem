@@ -472,6 +472,8 @@ function decorateSections( main ) {
 		// Process section metadata
 		const sectionMeta = section.querySelector( 'div.section-metadata' );
 		const hasIconButtonGrid = section.querySelector( '.icon-button-grid' ) !== null;
+		const hasFilledCards = section.querySelector( '.info-card-grid.filled, .info-card-grid .icon, .linked-card-grid.filled' ) !== null;
+		const backgroundOptions = { 'light': false, 'dark': false, 'theme': false };
 
 		if ( sectionMeta ) {
 			const meta = readBlockConfig( sectionMeta );
@@ -503,11 +505,11 @@ function decorateSections( main ) {
 				}
 				else if ( key === 'background' ) {
 					const value = String( meta[key] ?? '' ).trim().toLowerCase();
-					const backgroundOptions = [ 'light', 'dark', 'theme' ];
 
-					if( backgroundOptions.includes( value ) ) {
+					if( Object.keys( backgroundOptions ).includes( value ) ) {
 						section.classList.add( 'section-background', 'section-background--' + value );
-
+						backgroundOptions[value] = true;
+						
 						if( isFullWidthTemplate ) {
 							// Apply full-width background treatment
 							section.classList.add( 'section-background--full' );
@@ -546,11 +548,17 @@ function decorateSections( main ) {
 			} );
 
 			// Default to dark if this component is within and background isn't specified
-			if( hasIconButtonGrid && !meta['background'] ) {
+			if( hasIconButtonGrid && Object.keys( backgroundOptions ).filter( key => backgroundOptions[key] ).length ) {
 				section.classList.add( 'section-background', 'section-background--dark' );
 				if( isFullWidthTemplate ) {
 					section.classList.add( 'section-background--full' );
 				}
+			} else if( hasFilledCards && ( backgroundOptions.dark || backgroundOptions.theme ) ) {
+				// If the section has filled cards, force a light version
+				section.classList.remove( 'section-background--dark' );
+				backgroundOptions.dark = false;
+				section.classList.add( 'section-background--light' );
+				backgroundOptions.light = true;
 			}
 
 			sectionMeta.parentElement.remove(); // itself + wrapping div

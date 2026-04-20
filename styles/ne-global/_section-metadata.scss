@@ -52,7 +52,10 @@
 			&:before {
 				z-index: -2; // behind the image
 			}
+		}
 
+		&.#{$block}--dark,
+		&.#{$block}--theme:not(.#{$block}--light) {
 			&,
 			a:not(.usa-button) {
 				@include u-text('white');
@@ -77,6 +80,13 @@
 			&,
 			&:before {
 				background: var(--theme-section-bg);
+			}
+
+			&.#{$block}--light {
+				&,
+				&:before {
+					background: var(--theme-section-bg-light);
+				}
 			}
 		}
 
@@ -131,6 +141,14 @@
 						background: linear-gradient(to right, var(--theme-section-bg), rgb(from var(--theme-hero-bg) r g b / $overlay-fade));
 					}
 				}
+
+				&.#{$block}--light {
+					.#{$block}__image {
+						&:after {
+							background: linear-gradient(to right, var(--theme-section-bg-light), rgb(from var(--theme-section-bg-light) r g b / $overlay-fade));
+						}
+					}
+				}
 			}
 		}
 
@@ -155,6 +173,14 @@
 				.#{$block}__image {
 					&:after {
 						background: linear-gradient(to right, var(--theme-section-bg), rgb(from var(--theme-hero-bg) r g b / $overlay-fade));
+					}
+				}
+
+				&.#{$block}--light {
+					.#{$block}__image {
+						&:after {
+							background: linear-gradient(to right, var(--theme-section-bg-light), rgb(from var(--theme-section-bg-light) r g b / $overlay-fade));
+						}
 					}
 				}
 			}
