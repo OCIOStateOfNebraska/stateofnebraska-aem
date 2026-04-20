@@ -76,7 +76,6 @@ function generateWholeCard( container ) {
 		}
 
 		div.appendChild( contentDiv );
-		console.log( contentDiv );
 		generateContent( contentDiv, container );
 	} );
 }
