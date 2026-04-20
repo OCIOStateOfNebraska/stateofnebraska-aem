@@ -127,7 +127,7 @@ export default function decorate( block ) {
 	} );
 
 	ul.querySelectorAll( 'picture > img' ).forEach( ( img ) => {
-		img.closest( 'picture' ).replaceWith( createOptimizedPicture( img.src, img.alt, false, [{ width: '605' }] ) ) 
+		img.closest( 'picture' ).replaceWith( createOptimizedPicture( img.src, img.alt, false, [{ width: '605' }] ) );
 	} );
 	ul.querySelectorAll( 'picture > img' ).forEach( ( img ) => {
 		img.setAttribute( 'height', '340' );
