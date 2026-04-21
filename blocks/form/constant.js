@@ -10,29 +10,29 @@ export const DEFAULT_THANK_YOU_MESSAGE = 'Thank you for your submission.';
 // AEM preview/live URLs (*.page, *.live) or localhost → returns 'warn'
 const VALID_LOG_LEVELS = ['error', 'debug', 'warn', 'info', 'off'];
 
-export const getLogLevelFromURL = (urlString = null) => {
+export const getLogLevelFromURL = ( urlString = null ) => {
 	const DEFAULT_LOG_LEVEL = 'off';
 	const FALLBACK_LOG_LEVEL = 'warn';
 
 	try {
 		let url;
-		if (urlString) {
-			url = new URL(urlString);
-		} else if (typeof window !== 'undefined' && window.location) {
-			url = new URL(window.location.href);
+		if ( urlString ) {
+			url = new URL( urlString );
+		} else if ( typeof window !== 'undefined' && window.location ) {
+			url = new URL( window.location.href );
 		} else {
 			return DEFAULT_LOG_LEVEL;
 		}
 
 		const { searchParams, hostname } = url;
-		const logParam = searchParams.get('log');
-		if (logParam !== null || hostname.match(/\.(page|live)$|^localhost$/)) {
-			if (VALID_LOG_LEVELS.includes(logParam)) return logParam;
+		const logParam = searchParams.get( 'log' );
+		if ( logParam !== null || hostname.match( /\.(page|live)$|^localhost$/ ) ) {
+			if ( VALID_LOG_LEVELS.includes( logParam ) ) return logParam;
 			return FALLBACK_LOG_LEVEL;
 		}
 
 		return DEFAULT_LOG_LEVEL;
-	} catch (error) {
+	} catch ( error ) {
 		return DEFAULT_LOG_LEVEL;
 	}
 };
