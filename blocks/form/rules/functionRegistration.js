@@ -19,7 +19,34 @@
  ************************************************************************ */
 import { registerFunctions } from './model/afb-runtime.js';
 
-export default async function registerCustomFunctions() {
+const preloadedUrls = new Set();
+
+export function preloadFunctionScripts(customFunctionsPath, codeBasePath) {
+  if (typeof document === 'undefined' || !document?.head) return;
+  const base = (typeof codeBasePath === 'string' && codeBasePath !== '')
+    ? codeBasePath.replace(/\/$/, '')
+    : '';
+  const prefix = base ? `${base}/` : '/';
+  const paths = [`${prefix}blocks/form/rules/functions.js`];
+  if (typeof customFunctionsPath === 'string' && customFunctionsPath.trim() !== '') {
+    paths.push(`${prefix}${customFunctionsPath.replace(/^\//, '').trim()}`);
+  }
+  paths.forEach((href) => {
+    try {
+      const url = href.startsWith('http') ? href : new URL(href, window.location.origin).href;
+      if (preloadedUrls.has(url)) return;
+      preloadedUrls.add(url);
+      const link = document.createElement('link');
+      link.rel = 'modulepreload';
+      link.href = url;
+      document.head.appendChild(link);
+    } catch {
+      // Skip invalid URL or DOM error
+    }
+  });
+}
+
+export default async function registerCustomFunctions(customFunctionsPath, codeBasePath) {
   try {
     // eslint-disable-next-line no-inner-declarations
     function registerFunctionsInRuntime(module) {
@@ -36,11 +63,15 @@ export default async function registerCustomFunctions() {
       }
     }
 
-    const customFunctionModule = await import('../functions.js');
     const ootbFunctionModule = await import('./functions.js');
     registerFunctionsInRuntime(ootbFunctionModule);
-    registerFunctionsInRuntime(customFunctionModule);
+    if (codeBasePath != null && codeBasePath !== undefined && customFunctionsPath
+      && customFunctionsPath !== undefined) {
+      const customFunctionModule = await import(`${codeBasePath}${customFunctionsPath}`);
+      registerFunctionsInRuntime(customFunctionModule);
+    }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log(`error occured while registering custom functions in web worker ${e.message}`);
   }
 }
