@@ -1,95 +1,114 @@
-import { domEl } from '../../scripts/dom-helpers.js';
-import {  getIndividualIcon } from '../../scripts/utils.js';
+import {
+	button, div, img, figcaption, figure, p
+} from '../../scripts/dom-helpers.js';
+import { getIndividualIcon } from '../../scripts/utils.js';
 
-function showcasePicture( e, modal, thumbnailContainer){
-	modal.classList.remove('hidden');
-	const figure =  modal.querySelector( 'figure' );
-	if(	figure ){
-		thumbnailContainer.append( figure );
-	}
-	modal.prepend( e.currentTarget );
-	e.currentTarget.focus();
-	// rows.forEach( row => row.classList.remove( 'showcased' ) );
-	// item.classList.add( 'showcased' );
+function createModal( images, index ) {
+	const modal = div(
+		{ class: 'gallery__modal-overlay' },
+		div(
+			{ 
+				class: 'gallery__modal-content',
+				role: 'dialog',
+				['aria-modal']: true,
+				['aria-label']: 'Image viewer',
+				['aria-describedby']: 'fig' + index
+			},
+			div(
+				{ class: 'modal-controls' },
+				button( { class: 'usa-button usa-button--outline', id: 'close-button', ['aria-label']:'Close image' } ),
+			),
+			figure(
+				{ class: 'image-container', 'aria-describedby': 'fig' + index},
+				img( { src: images[index]['image'].src, alt: images[index]['image'].alt } ),
+				images[index].caption? figcaption(
+					{ class: 'modal-caption', id: 'fig' + index },
+					images[index].caption,
+					images[index].link ? images[index].link: ''
+				):
+					images[index].link ? images[index].link: ''
+			),
+		),
+	);
+
+	const closeButton = modal.querySelector( '#close-button' );
+	getIndividualIcon( closeButton, 'close' );
 	
-	// const img = item.querySelector( 'img' );
-	// console.log(img.getAttribute('width'))	
-}
+	closeButton.addEventListener( 'click', () => {
+		modal.remove();
+		images[index].button.focus();
+	} );
 
-
-export default function decorate( block ) {
-	const rows = Array.from( block.children );
-	const thumbnailContainer = domEl( 'div', { class: 'thumbnail__container' }); 
-
-	const modal = domEl( 'div', { class: 'gallery__modal hidden', role: 'dialog', ['aria-modal']: true, ['aria-labelledby']: 'gallery-caption' } ); 
-	const modalButton  = domEl( 'button', { class: 'usa-button usa-button--outline', ['aria-label']:'Close image'} );
-	// getIndividualIcon( modalButton, 'expand_more' );
-	modalButton.addEventListener( 'click', () => modal.classList.add( 'hidden' ) )
-	modalButton.textContent = 'Hide Image';
-
-	rows.forEach( row => {
-		let count = 1; 
-		// row.classList.add( 'gallery__item' );
-		const figure = domEl( 'figure', { class: 'gallery__media' } );    
-		const button  = domEl( 'button', { class: 'gallery__thumbnail' } );    
-		figure.addEventListener( 'click', (e) => showcasePicture(e, modal, thumbnailContainer) );
-
-		const img = row.querySelector( 'picture' );
-		const caption = row.querySelector( 'p' );
-		const link = row.querySelector( 'a' );
-
-		button.append( img );
-		figure.append( button );
-
-		const width = Number( figure.querySelector( 'img' )?.getAttribute( 'width' ) );
-		const height = Number( figure.querySelector( 'img' )?.getAttribute( 'height' ) );
-
-		// console.log(width)
-		// console.log(height)	
-
-		// if( width > height ){
-		// 	row.classList.add( 'horizontal' );
-
-		// }
-		// if( width == height ){
-		// 	row.classList.add( 'square' );
-
-		// }
-		// else {
-		// 	row.classList.add( 'portrait' );
-		// }
-		
-		if( caption ){
-			const figcaption = document.createElement( 'figcaption' );        
-			figcaption.textContent = caption.textContent;
-			figure.append( figcaption );
-
-			const label = 'fig' + count;
-			figure.role = 'group';
-			figure.setAttribute( 'aria-labelledby', label );
-			figcaption.id = label;
-			
-			count ++;
+	modal.addEventListener( 'keydown', ( e ) => {
+		if( e.key === 'Escape' ){
+			modal.remove();
+			images[index].button.focus();
 		}
-
-		thumbnailContainer.append( figure );
-		
-		if( link ){
-			link.classList.add( 'gallery__link' );
-			thumbnailContainer.append( link );
-		}
-		
-		const divs = Array.from( row.querySelectorAll( 'div' ) );
-		divs.forEach( div => div.remove() );	
-
-		row.remove()
-		
 	} );
 	
+	document.body.appendChild( modal );
+	closeButton.focus();
+}
+
+export default function decorate( block ) {
+	const images = [];
+	[...block.children].forEach( ( row ) => {
+		const image = row.querySelector( 'img' );
+		const caption = row.querySelector( 'p:not(:has(.usa-button))' );
+		const link = row.querySelector( 'a' );
+		if( link ) link.className = 'usa-link';
+
+		const imageObj ={
+			'image': image,
+			'caption': caption?.textContent,
+			'link': link,
+		};
+		images.push( imageObj );
+	} );
 	
+	const galleryGrid = div( { class: 'gallery__grid' } );
 
+	const missingAlts = [];
+	
+	images.forEach( ( imgEl, index ) => {
 
-	modal.append( modalButton );
-	block.append( modal );
-	block.append( thumbnailContainer );
+		if( imgEl.image.alt == '' ){
+			missingAlts.push( index+1 );
+		}
+		else{
+			const galleryItem = button( { 
+				class: 'gallery__item',
+				['aria-label']: `Open image ${index + 1} of ${images.length}`
+			}, 
+			imgEl['image'].cloneNode( true ),
+			div( { class: 'hover-circle' , ['aria-hidden']: true } ),	
+			);
+
+			galleryItem.querySelector( 'a' )?.classList.add( 'hidden' );
+			galleryGrid.appendChild( galleryItem );
+			imgEl['button'] = galleryItem;
+
+			galleryItem.addEventListener( 'click', () => {
+				createModal( images, index );
+			} );
+		}
+	} );
+
+	block.textContent = '';
+	
+	if( missingAlts.length > 0 ){
+		const alert = div( 
+			{ class: 'usa-alert usa-alert--error usa-alert--no-heading' },
+			div( { class: 'usa-alert__body' },
+				p( { class: 'usa-alert__text' },
+					missingAlts.length == 1?
+						`image number ${missingAlts.toString()} doesn't have an alt text`:
+						'Following images don\'t have an alt text: ' + missingAlts.toString()
+				)
+			)
+		);
+		block.prepend( alert );
+	}
+
+	block.appendChild( galleryGrid );
 }
