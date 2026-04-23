@@ -1,5 +1,4 @@
 /* global WebImporter */
-
 /**
  * Processes PDF links in the main element, preparing them for download and updating their href attributes to point to the new base URL.
  * @param {Element} main 
@@ -15,6 +14,7 @@ export function processPdfLinks( main, pageUrl, host ) {
 			const u = new URL( href, pageUrl );
 			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname ).replace( '/sites/default/', '/' );
 			// no "element", the "from" property is provided instead - importer will download the "from" resource as "path"
+
 			results.push( {
 				path: newPath,
 				from: u.toString(),
@@ -34,6 +34,80 @@ export function processPdfLinks( main, pageUrl, host ) {
 }
 
 /**
+ * Processes PDF and Word document links in the main element, collecting them for the asset list.
+ * Does not modify any references - links remain as-is in the HTML.
+ * @param {Element} main 
+ * @param {string} pageUrl The original page URL
+ * @param {string} host Not used - kept for backward compatibility
+ * @param {string} assetFolder The folder in AEM DAM where assets will be stored, used to rewrite links to point to the new location where files will be uploaded
+ * @returns {Array<{path: string, from: string, report: {'asset-url': string}}>} Returns an array of file objects for document links found.
+ */
+export function processResources( main, pageUrl, host, assetFolder ) {
+	const hostUrl = new URL( host );
+	const results = [];
+	const assetPath = `https://sower-media.nebraska.gov/content/dam/${assetFolder}`; // Base path for assets in AEM, adjust as needed
+	const daUpload = ['.pdf'];
+	const downloadExtensions = ['.doc', '.docx'];
+	
+	main.querySelectorAll( 'a' ).forEach( ( a ) => {
+		const href = a.getAttribute( 'href' );
+		if ( href && ( href.startsWith( 'http://' ) || href.startsWith( 'https://' ) ) || href?.startsWith( '/' ) ) {
+
+			try {
+				// Only process links from the same origin with a specified document extension
+				if ( ( href.startsWith( '/' ) || new URL( href ).hostname === hostUrl.hostname ) ) 
+				{
+					const isDaUpload = daUpload.some( ext => href.endsWith( ext ) );
+					const isDownload = downloadExtensions.some( ext => href.endsWith( ext ) );
+
+					if( isDaUpload ) {
+						// Prep the link for da-upload
+						a.removeAttribute( 'title' ); // Importer won't add to asset list if title attribute is present, so remove it if exists
+					} else if ( isDownload ) {
+						a.setAttribute( 'title', a.innerText || a.textContent || ' ' ); 
+						// Download the resource for manual upload
+						const downloadUrl = new URL( href, pageUrl );
+						let newPath = WebImporter.FileUtils.sanitizePath( downloadUrl.pathname ).replace( '/sites/default/', '/' );
+						const newHref = `${assetPath}${newPath}`;
+						a.setAttribute( 'href', newHref ); // Update link to point to new path (without host) for download
+
+						results.push( {
+							path: newPath,
+							from: downloadUrl.toString(),
+							report: {
+								'href': href,
+								'upload-to': newHref,
+							}
+						} );
+					}
+				}
+				
+			} catch ( ex ) {
+				console.error( 'Error sanitizing resource:', ex );
+			}
+		} 
+	} );
+	return results;
+}
+
+export function handleIFrames( main ) {
+	const iframes = main.querySelectorAll( 'iframe' );
+	iframes.forEach( ( iframe ) => {
+		const title = iframe.getAttribute( 'title' ) || '';
+		const srcUrl = new URL( iframe.src );
+		const isYoutube = srcUrl.hostname.endsWith( 'youtube.com' ) || srcUrl.hostname.endsWith( 'youtu.be' );
+		if ( isYoutube ) {
+			const a = wrapText( iframe.src, 'a' );
+			a.href = iframe.src;
+			iframe.replaceWith( a );
+			a.after( document.createTextNode( ` (${title})` ) );
+		} else {
+			iframe.remove();
+		}
+	} );
+}
+
+/**
  * Updates all anchor links in the main element to point to the new host, preserving their paths.
  * @param {Element} main 
  * @param {string} url 
@@ -42,7 +116,7 @@ export function processPdfLinks( main, pageUrl, host ) {
 export function updateLinks( main, url, host ) {
 	main.querySelectorAll( 'a' ).forEach( ( a ) => {
 		const href = a.getAttribute( 'href' );
-		if ( href && !href.endsWith( '.pdf' ) && !href.startsWith( 'http://' ) && !href.startsWith( 'https://' ) ) {
+		if ( href && !href.endsWith( '.pdf' ) && !href.startsWith( 'http://' ) && !href.startsWith( 'https://' ) && !href.startsWith( 'mailto:' ) ) {
 			const u = new URL( href, url );
 			const newPath = WebImporter.FileUtils.sanitizePath( u.pathname );
 			const newHref = new URL( newPath, host ).toString();
@@ -75,7 +149,9 @@ export function updateImageLinks( main, url, host ) {
  */
 export function removeEmptyTable( container ) {
 	container.querySelectorAll( 'table' ).forEach( ( each ) => {
-		if ( !each.querySelector( 'th' ) ) {
+		const isNestedTable = each.parentElement?.closest( 'table' ) !== null; 
+		// MDS table block is a nested table with no headers (don't remove this instance)
+		if ( !each.querySelector( 'th' ) &&  !isNestedTable ) {
 			each.remove();
 		}
 	} );
@@ -313,6 +389,23 @@ export function wrapText( text, wrapper ) {
 	return wrapperEl;
 }
 
+export const createLogger = ( currentPage = null ) => {
+	// This helper finds the filename from the stack
+	const getCaller = () => {
+		const stack = new Error().stack?.split( '\n' );
+		const raw = stack?.[3]?.split( '/' ).pop()?.replace( ')', '' ) || 'script';
+		return raw.replace( /\.(?:js|mjs)/i, '' ).replace( /\?[^:]+/, '' );
+	};
+
+	return {
+		log:   ( ...args ) => console.log( `%c${getCaller()} %c[${currentPage ?? ''}]\n`, 'color:#007acc;font-weight:bold;', 'color:#007acc;font-weight:bold;', ...args ),
+		info:  ( ...args ) => console.info( `%c${getCaller()} %c[${currentPage ?? ''}]\n`, 'color:skyblue;font-weight:bold;', 'color:skyblue;font-weight:bold;', ...args ),
+		warn:  ( ...args ) => console.warn( `%c${getCaller()} %c[${currentPage ?? ''}]\n`, 'color:orange;font-weight:bold;', 'color:orange;font-weight:bold;', ...args ),
+		error: ( ...args ) => console.error( `%c${getCaller()} %c[${currentPage ?? ''}]\n`, 'color:red;font-weight:bold;', 'color:red;font-weight:bold;', ...args ),
+	};
+};
+export const logger = createLogger();
+
 export default {
 	processPdfLinks,
 	updateLinks,
@@ -329,4 +422,5 @@ export default {
 	replaceHeadings,
 	wrapElement,
 	wrapText,
+	createLogger,
 };
