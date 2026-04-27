@@ -92,20 +92,36 @@ $block: 'gallery';
 		max-width: 80vw;
 		max-height: 90vh;
 		transition: transform 0.3s ease;
-		background: color('white');
+		background: color('transparent');
 
 		.image-container {
 			@include u-width('full');
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 1rem;
 
 			img {
 				@include u-width('full');
 				max-height: calc(70vh - 100px);
 				object-fit: contain;
-			}
+			}			
 		}
 
 		.modal-controls {
 			align-self: flex-end;
+
+			button{
+				margin: 0;
+				padding: 0;
+				color: color('white');
+				font-size: size('body', $theme-h2-font-size);
+				box-shadow: none;
+			}
+		}
+
+		.modal-caption{
+			color: color('white');
 		}
 	}
 }

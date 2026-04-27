@@ -23,10 +23,9 @@ function createModal( images, index ) {
 				img( { src: images[index]['image'].src, alt: images[index]['image'].alt } ),
 				images[index].caption? figcaption(
 					{ class: 'modal-caption', id: 'fig' + index },
-					images[index].caption,
-					images[index].link ? images[index].link: ''
-				):
-					images[index].link ? images[index].link: ''
+					images[index].caption + ' ',
+				): '',
+				images[index].link ? images[index].link: ''
 			),
 		),
 	);
@@ -56,7 +55,7 @@ export default function decorate( block ) {
 		const image = row.querySelector( 'img' );
 		const caption = row.querySelector( 'p:not(:has(.usa-button))' );
 		const link = row.querySelector( 'a' );
-		if( link ) link.className = 'usa-link';
+		link?.classList.add( 'usa-button--secondary' );
 
 		const imageObj ={
 			'image': image,
@@ -102,7 +101,7 @@ export default function decorate( block ) {
 			div( { class: 'usa-alert__body' },
 				p( { class: 'usa-alert__text' },
 					missingAlts.length == 1?
-						`image number ${missingAlts.toString()} doesn't have an alt text`:
+						`Image number ${missingAlts.toString()} doesn't have an alt text`:
 						'Following images don\'t have an alt text: ' + missingAlts.toString()
 				)
 			)
