@@ -3,6 +3,11 @@ import {
 } from '../../scripts/dom-helpers.js';
 import { getIndividualIcon } from '../../scripts/utils.js';
 
+/**
+ * Creates popup with image, caption and link for selected gallery item
+ * @param {Object} images //object with image and optional caption and link
+ * @param {number} index 
+ */
 function createModal( images, index ) {
 	const modal = div(
 		{ class: 'gallery__modal-overlay' },
@@ -49,6 +54,10 @@ function createModal( images, index ) {
 	closeButton.focus();
 }
 
+/**
+ * Creates gallery block
+ * @param {HTMLElement} block 
+ */
 export default function decorate( block ) {
 	const images = [];
 	[...block.children].forEach( ( row ) => {

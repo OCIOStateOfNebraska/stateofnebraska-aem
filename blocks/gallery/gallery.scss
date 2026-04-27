@@ -30,6 +30,19 @@ $block: 'gallery';
 				@include u-width(5);
 			}
 		}
+
+		// Removes the circle from the focused image if you hover over another one
+		&:hover {
+			.#{$block}__item {
+				&:focus {
+					&:not(:hover) {
+						.hover-circle {
+							transform: scale(0);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	&__item {
@@ -103,15 +116,15 @@ $block: 'gallery';
 
 			img {
 				@include u-width('full');
-				max-height: calc(70vh - 100px);
+				max-height: 70vh;
 				object-fit: contain;
-			}			
+			}
 		}
 
 		.modal-controls {
 			align-self: flex-end;
 
-			button{
+			button {
 				margin: 0;
 				padding: 0;
 				color: color('white');
@@ -120,7 +133,7 @@ $block: 'gallery';
 			}
 		}
 
-		.modal-caption{
+		.modal-caption {
 			color: color('white');
 		}
 	}
