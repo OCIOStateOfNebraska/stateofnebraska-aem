@@ -2,7 +2,16 @@
 @use 'sass:meta';
 @use 'sass:math';
 
-$uswds-block: 'usa-banner';
+$block: 'form';
+
+.#{$block}.block {
+	&.full-width {
+
+		p, form, button {
+			max-width: 100%;
+		}
+	}
+}
 
 form {
 	&:not(.edit-mode) {
