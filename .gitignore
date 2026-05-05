@@ -11,3 +11,4 @@ helix-importer-ui
 .env
 .configs
 *.code-workspace
+_refs/

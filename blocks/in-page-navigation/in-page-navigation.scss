@@ -10,6 +10,10 @@ $block: 'usa-in-page-nav';
 		display: block;
 		max-width: unset;
 
+		&__nav {
+			background: transparent;
+		}
+
 		&__list {
 			display: flex;
 			min-height: units(6);

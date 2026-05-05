@@ -1,5 +1,5 @@
 /* global WebImporter */
-import { replaceButtons, wrapElement, wrapText } from './importer-utils.js';
+import { logger, replaceButtons, wrapElement, wrapText } from './importer-utils.js';
 
 /**
  * MDS Components - Reusable block transformation utilities for Master Design System components
@@ -13,14 +13,14 @@ import { replaceButtons, wrapElement, wrapText } from './importer-utils.js';
  *   const table = createAccordion( items );
  */
 
-/**
- * Logs a warning for transformation issues
- * @param {string} blockName - The block being transformed
- * @param {string} message - Warning message
- */
+// /**
+//  * Logs a warning for transformation issues
+//  * @param {string} blockName - The block being transformed
+//  * @param {string} message - Warning message
+//  */
 function logWarning( blockName, message ) {
 	// eslint-disable-next-line no-console
-	console.warn( `[MDS:${blockName}] ${message}` );
+	logger.warn( `[${blockName}] ${message}` );
 }
 
 /**

@@ -6,13 +6,26 @@ $component-spacing-sm: 3; // for "small" components that can sit right next to o
 $component-spacing-lg: 15; // for big bulky components that need more space around them
 
 $hero-spacing-sm: 10; 
-$hero-spacing-lg: 15; 
+$hero-spacing-lg: 15;
+$internal-hero-aspect-ratio-w: 1727;
+$internal-hero-aspect-ratio-h: 86;
+$homepage-hero-aspect-ratio-w: 1728;
+$homepage-hero-aspect-ratio-h: 103;
 
 
-// Custom red
+// Custom colors
 $ne-color-red: #B3314E;
-$ne-color-green: #a4aa2d;
-$ne-color-yellow: #feb703;
 $ne-color-dark-red: #971943;
+$ne-color-darkest-red: #6A1528;
+$ne-color-light-red: #F6DFE4;
+
+$ne-color-green: #a4aa2d;
+
+$ne-color-yellow: #feb703;
+$ne-color-yellow-background: #fdb626;
+
 $ne-color-dark-blue: #003A4D;
+
+$ne-color-gray-background: #8aa1b4;
+$ne-color-dark-gray-background: #434446;
 

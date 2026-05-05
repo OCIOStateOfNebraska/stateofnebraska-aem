@@ -1,6 +1,7 @@
 import { domEl } from '../../scripts/dom-helpers.js';
 import { createId } from '../../scripts/utils.js';
 import { accordion } from '../../scripts/deps/bundle-uswds.js';
+import { default as decorateTable } from '../table/table.js';
 
 export default function decorate( block ) {
 	let accordions = block.children;
@@ -65,6 +66,21 @@ export default function decorate( block ) {
 
 	block.textContent = '';
 	block.appendChild( usaAccordion );
+
+	// Fixing tables inside of accordion
+	const tables = usaAccordion.querySelectorAll( '.usa-accordion__content> div> table ' );
+
+	tables.forEach( table => {
+		decorateTable( table );
+
+		const container = table.closest( 'div' );
+		const innerTable = table.querySelector( 'table' );
+
+		if( innerTable ){
+			container.append( innerTable );
+			table.remove();
+		}
+	} );
 
 	accordion.on(  );
 

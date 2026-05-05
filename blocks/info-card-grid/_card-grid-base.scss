@@ -1,0 +1,105 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:meta';
+@use 'sass:math';
+
+@mixin card-grid-wrapper {
+	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
+	$block: 'usa-card';
+
+	margin-bottom: units($component-spacing-lg);
+
+	.section-background--full &:last-child {
+		margin-bottom: 0;
+	}
+
+	.#{$block} {
+		&,
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		&-group {
+			margin-bottom: 0;
+			row-gap: units($theme-card-gap);
+		}
+
+		&__heading {
+			color: color('primary');
+		}
+
+		&__img {
+			aspect-ratio: 16 / 9;
+		}
+
+		picture,
+		img {
+			margin: 0;
+		}
+
+		picture {
+			height: 100%;
+		}
+
+		p {
+			font-size: size('body', 'sm');
+		}
+
+		&:not(:has(.#{$block}__img)) {
+			.#{$block}__container {
+				border-top: 2px solid color('secondary');
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+			}
+		}
+	}
+
+	&:has(.filled) {
+		.#{$block} {
+			&__container {
+				background-color: color('primary-dark');
+				color: color('white');
+			}
+			
+			&__heading {
+				color: color('white');
+			}
+			
+			&:not(:has(.#{$block}__img)) {
+				.#{$block}__container {
+					border-top: 0;
+				}
+			}
+		}
+	}
+
+	.section-background--theme & {
+		.#{$block} {
+			&__container {
+				border-top: 0;
+			}
+
+			&__heading {
+				color: var(--theme-card-heading);
+			}
+		}
+
+		&:not(:has(.#{$block}__img)) {
+			.#{$block}__container {
+				border-top-color: var(--theme-card-accent);
+			}
+		}
+
+		&:has(.filled) {
+			.#{$block} {
+				&__container {
+					background-color: var(--theme-section-bg);
+					color: var(--theme-card-filled-text);
+				}
+
+				&__heading {
+					color: var(--theme-card-filled-text);
+				}
+			}
+		}
+	}
+}

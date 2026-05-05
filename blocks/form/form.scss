@@ -4,6 +4,14 @@
 
 $uswds-block: 'usa-banner';
 
+form {
+	&:not(.edit-mode) {
+		[data-visible='false'] {
+			display: none !important; // stylelint-disable-line declaration-no-important
+		}
+	} 
+}
+
 .form-wrapper {
 	@include meta.load-css('~uswds/uswds-form-controls/index'); // avoid affecting top search
 
