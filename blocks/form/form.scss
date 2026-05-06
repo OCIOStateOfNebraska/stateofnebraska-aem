@@ -4,15 +4,6 @@
 
 $block: 'form';
 
-.#{$block}.block {
-	&.full-width {
-
-		p, form, button {
-			max-width: 100%;
-		}
-	}
-}
-
 form {
 	&:not(.edit-mode) {
 		[data-visible='false'] {
@@ -127,5 +118,12 @@ form {
 		legend {
 			margin-top: 0 !important; // stylelint-disable-line declaration-no-important
 		}
+	}
+}
+
+// stylelint-disable-next-line scss/selector-nest-combinators
+.#{$block}.block.full-width {                                      
+	p, form, button {
+		max-width: 100%;
 	}
 }
