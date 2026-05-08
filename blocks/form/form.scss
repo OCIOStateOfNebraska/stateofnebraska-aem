@@ -2,7 +2,7 @@
 @use 'sass:meta';
 @use 'sass:math';
 
-$uswds-block: 'usa-banner';
+$block: 'form';
 
 form {
 	&:not(.edit-mode) {
@@ -118,5 +118,16 @@ form {
 		legend {
 			margin-top: 0 !important; // stylelint-disable-line declaration-no-important
 		}
+	}
+}
+
+// stylelint-disable-next-line scss/selector-nest-combinators
+.#{$block}.block.full-width {
+	// Gives control to form editor to determine layout of fields
+	p, 
+	form, 
+	button,
+	.field-label {
+		max-width: 100%;
 	}
 }
