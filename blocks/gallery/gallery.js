@@ -1,7 +1,8 @@
 import {
-	button, div, img, figcaption, figure, p
+	button, div, img, figcaption, figure, p, a
 } from '../../scripts/dom-helpers.js';
 import { getIndividualIcon } from '../../scripts/utils.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 /**
  * Creates popup with image, caption and link for selected gallery item
@@ -9,9 +10,9 @@ import { getIndividualIcon } from '../../scripts/utils.js';
  * @param {number} index 
  */
 function createModal( images, index ) {
-	const modal = div(
+	const modal = div (
 		{ class: 'gallery__modal-overlay' },
-		div(
+		div (
 			{ 
 				class: 'gallery__modal-content',
 				role: 'dialog',
@@ -19,18 +20,18 @@ function createModal( images, index ) {
 				['aria-label']: 'Image viewer',
 				['aria-describedby']: 'fig' + index
 			},
-			div(
+			div (
 				{ class: 'modal-controls' },
 				button( { class: 'usa-button usa-button--outline', id: 'close-button', ['aria-label']:'Close image' } ),
 			),
-			figure(
+			figure (
 				{ class: 'image-container', 'aria-describedby': 'fig' + index},
-				img( { src: images[index]['image'].src, alt: images[index]['image'].alt } ),
+				img ( { src: images[index]['image'].src, alt: images[index]['image'].alt } ),
 				images[index].caption? figcaption(
 					{ class: 'modal-caption', id: 'fig' + index },
 					images[index].caption + ' ',
 				): '',
-				images[index].link ? images[index].link: ''
+				images[index].link ? images[index].link: ''				
 			),
 		),
 	);
@@ -55,17 +56,48 @@ function createModal( images, index ) {
 }
 
 /**
+* Takes override data and creates populated element that is the same as manual entries. This is critical for formatting.
+* @param {object} overrideRow - The `overrideRow` is a filtered object returned from search-index.json.
+*/
+export function buildWithOverrideData( overrideRow ) {
+	const image = overrideRow.image;
+	const alt = overrideRow.imageAlt;
+	
+	if( image === ''  || alt === '' ){
+		return null;
+	}
+	
+	const row = div( {},
+		createOptimizedPicture( image, alt || '', false, [{ width: '800' }] ),
+		a( { href: overrideRow.path, class: 'usa-button usa-link--external usa-button--secondary' }, 'Open image page' )
+	);
+	
+	return row;
+}
+
+/**
  * Creates gallery block
  * @param {HTMLElement} block 
- */
-export default function decorate( block ) {
+*/
+export default function decorate( block, override=[] ) {
+	let rows;
+
+	if ( override.length ) {
+		rows = override.map( buildWithOverrideData );
+	} else {
+		rows = [...block.children];
+	}
+
 	const images = [];
-	[...block.children].forEach( ( row ) => {
+	rows.forEach( ( row ) => {
+		if( !row ){
+			return;
+		}
 		const image = row.querySelector( 'img' );
 		const caption = row.querySelector( 'p:not(:has(.usa-button))' );
 		const link = row.querySelector( 'a' );
 		link?.classList.add( 'usa-button--secondary' );
-
+		
 		const imageObj ={
 			'image': image,
 			'caption': caption?.textContent,

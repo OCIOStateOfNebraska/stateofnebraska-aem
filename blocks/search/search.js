@@ -7,6 +7,7 @@ import { Fuse } from '../../scripts/deps/bundle-uswds.js';
 import renderResult from './search-result.js';
 import createPagination from './search-pagination.js';
 import backdropDecorate from '../backdrop-grid/backdrop-grid.js';
+import galleryDecorate from '../gallery/gallery.js';
 import { loadCSS } from '../../scripts/aem.js';
  
 /**
@@ -26,7 +27,9 @@ const SEARCH_SETTINGS_PAGINATION = 'show-pagination';
 const SEARCH_SETTINGS_SORTKEY = 'sort-key';
 const SEARCH_SETTINGS_COUNT = 'result-count';
 const SEARCH_SETTINGS_DESCRIPTION = 'show-description';
+const SEARCH_SETTINGS_IMAGE = 'show-image';
 const SEARCH_SETTINGS_FILTERTAG = 'filter-by';
+const SEARCH_SETTINGS_LIMIT = 'limit-per-page';
 
 // FUSE.js relevance scoring options https://www.fusejs.io/concepts/scoring-theory.html#fuzziness-score
 const fuseOptionsRelevance = {
@@ -67,6 +70,8 @@ class SearchBlock {
 		this.blockClassDynamicCollection = block.classList.contains( 'dynamic-collection' );
 		/** @member {string} */
 		this.blockBackdropGridCollection = block.classList.contains( 'backdrop-grid' );
+		/** @member {string} */
+		this.blockGallery = block.classList.contains( 'gallery' );
 		/** @member {object} */
 		this.placeholders = null;
 		/** @member {string} */
@@ -75,9 +80,11 @@ class SearchBlock {
 		/** @member {number} */
 		this.limit = 10;
 		/** @member {number} */
-		this.count = 3;
+		this.count = null;
 		/** @member {boolean} */
-		this.showPagination = true;
+		this.showImage = false;
+		/** @member {boolean} */
+		this.showDescription = false;
 		/** @member {boolean} */
 		this.showDescription = false;
 		/** @member {boolean} */
@@ -155,6 +162,10 @@ class SearchBlock {
 			this.showDescription = settingVal;
 		}
 
+		if ( key === SEARCH_SETTINGS_IMAGE ) {
+			this.showImage = settingVal;
+		}
+
 		if ( key === SEARCH_SETTINGS_SORTKEY && settingVal ) {
 			this.sort = setting;
 		}
@@ -164,7 +175,11 @@ class SearchBlock {
 		}
 
 		if ( key === SEARCH_SETTINGS_COUNT && settingVal && setting <= this.limit ) {
-			this.count = setting;
+			this.count = Number( setting );
+		}
+
+		if ( key === SEARCH_SETTINGS_LIMIT ) {
+			this.limit = Number( setting );
 		}
 	}
 
@@ -175,7 +190,12 @@ class SearchBlock {
 	filterData() {
 		if ( this.sort !== 'relevance' ) {
 			const fuseTags = new Fuse( this.allData, fuseOptionsTags );
-			this.allData = this.flattenSearch( fuseTags.search( this.filter ? this.filter.toLowerCase().trim() : '' ) );
+			this.allData = this.flattenSearch( fuseTags.search( this.filter ? this.filter.toLowerCase().trim() : '', ) );
+			if( this.blockGallery ){
+				this.allData = this.allData.filter( item => item.image !== '' ) ;
+			}
+			console.log( this.allData );
+			if( this.count !== null ) this.allData = this.allData.slice( 0, this.count );
 			const comparisonFunction = this.sort === 'publicationDate' ? this.sortByPublicationDate.bind( this ) : this.sortBy( this.sort );
 			this.allData.sort( comparisonFunction );
 		}
@@ -376,8 +396,9 @@ class SearchBlock {
 						this.form.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 					}
 				} );
-			} else if ( this.blockClassDynamicCollection || this.blockBackdropGridCollection ) {
-				data = filteredData.slice( 0, this.count ); // only first 3 results
+			} else if ( this.blockClassDynamicCollection || this.blockBackdropGridCollection || this.blockGallery ) {
+				const count = this.count !== null? this.count: 3; // if count is null, display only first 3 results
+				data = filteredData.slice( 0, count );
 			}
 
 			if ( this.blockBackdropGridCollection ) {
@@ -385,10 +406,16 @@ class SearchBlock {
 				backdropDecorate( this.block, data );
 				return;
 			}
+			
+			if ( this.blockGallery ) {
+				await loadCSS( `${window.hlx.codeBasePath}/blocks/gallery/gallery.css` );
+				galleryDecorate( this.block, data );
+				return;
+			}
 
 			searchResults.classList.remove( NO_RESULTS_CLASS );
 			data.forEach( result => {
-				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection, this.sort, this.externalUrl, this.showDescription ) );
+				searchResults.append( renderResult( result, searchTerms, headingTag, this.filter, this.blockClassDynamicCollection, this.sort, this.externalUrl, this.showDescription, this.showImage ) );
 			} );
 		} else {
 			searchResults.classList.add( NO_RESULTS_CLASS );
