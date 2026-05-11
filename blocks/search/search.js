@@ -194,7 +194,6 @@ class SearchBlock {
 			if( this.blockGallery ){
 				this.allData = this.allData.filter( item => item.image !== '' ) ;
 			}
-			console.log( this.allData );
 			if( this.count !== null ) this.allData = this.allData.slice( 0, this.count );
 			const comparisonFunction = this.sort === 'publicationDate' ? this.sortByPublicationDate.bind( this ) : this.sortBy( this.sort );
 			this.allData.sort( comparisonFunction );
@@ -326,8 +325,11 @@ class SearchBlock {
 		 * Clears the search results container and pagination.
 		 * @function clearSearchResults
 		*/
-	clearSearchResults() {
-		const searchResults = this.block.querySelector( '.' + SEARCH_RESULTS_CONTAINER_CLASS.split( ' ' ).join( '.' ) );
+	clearSearchResults() {		
+		let searchResults = this.block.querySelector( '.' + SEARCH_RESULTS_CONTAINER_CLASS.split( ' ' ).join( '.' ) );
+		if( !searchResults && this.blockGallery ){
+			searchResults = this.block.querySelector( '.gallery__grid' );
+		}
 		const pagination = this.block.querySelector( '.usa-pagination' );
 
 		if ( pagination ) {
@@ -375,18 +377,21 @@ class SearchBlock {
 	async renderResults( filteredData, searchTerms ) {
 		this.clearSearchResults();
 
-		const searchResults = this.block.querySelector( '.' + SEARCH_RESULTS_CONTAINER_CLASS.split( ' ' ).join( '.' ) );
+		let searchResults = this.block.querySelector( '.' + SEARCH_RESULTS_CONTAINER_CLASS.split( ' ' ).join( '.' ) );
+		if( !searchResults && this.blockGallery ){
+			searchResults = this.block.querySelector( '.gallery__grid' );
+		}
 		const headingTag = searchResults.dataset.h;
 
 		if ( filteredData.length ) {
 			let data = filteredData;
 			let currentOffset;
-
+			
 			if ( this.showPagination ) {
 				currentOffset = parseInt( this.offset.value, 10 );
 				data = filteredData.slice( currentOffset, ( currentOffset + this.limit ) );
 				createPagination( currentOffset, filteredData, this.limit, this.block );
-
+				
 				const paginationContainerEle = this.block.querySelector( '.usa-pagination' );
 				paginationContainerEle.addEventListener( 'click', ( e ) => {
 					e.preventDefault();
@@ -400,7 +405,7 @@ class SearchBlock {
 				const count = this.count !== null? this.count: 3; // if count is null, display only first 3 results
 				data = filteredData.slice( 0, count );
 			}
-
+			
 			if ( this.blockBackdropGridCollection ) {
 				await loadCSS( `${window.hlx.codeBasePath}/blocks/backdrop-grid/backdrop-grid.css` );
 				backdropDecorate( this.block, data );
@@ -411,7 +416,7 @@ class SearchBlock {
 				await loadCSS( `${window.hlx.codeBasePath}/blocks/gallery/gallery.css` );
 				galleryDecorate( this.block, data );
 				return;
-			}
+			}	
 
 			searchResults.classList.remove( NO_RESULTS_CLASS );
 			data.forEach( result => {

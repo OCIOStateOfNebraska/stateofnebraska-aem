@@ -63,7 +63,7 @@ export function buildWithOverrideData( overrideRow ) {
 	const image = overrideRow.image;
 	const alt = overrideRow.imageAlt;
 	
-	if( image === ''  || alt === '' ){
+	if( !image  || !alt ){
 		return null;
 	}
 	
@@ -134,6 +134,7 @@ export default function decorate( block, override=[] ) {
 		}
 	} );
 
+	const pagination = block.querySelector( '.usa-pagination' );
 	block.textContent = '';
 	
 	if( missingAlts.length > 0 ){
@@ -151,4 +152,7 @@ export default function decorate( block, override=[] ) {
 	}
 
 	block.appendChild( galleryGrid );
+	if( pagination ){
+		block.append( pagination );
+	}
 }
