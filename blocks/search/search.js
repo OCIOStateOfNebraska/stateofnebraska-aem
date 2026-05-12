@@ -78,7 +78,7 @@ class SearchBlock {
 		// Getting text content since the hostname is stripped in the href
 		this.source = this.block.querySelector( 'a[href]' )?.href || '/query-index.json'; // Use optional chaining
 		/** @member {number} */
-		this.limit = 10;
+		this.limit = null;
 		/** @member {number} */
 		this.count = null;
 		/** @member {boolean} */
@@ -119,6 +119,13 @@ class SearchBlock {
 		try {
 			this.allData = await ffetch( this.source ).all();
 			this.placeholders = await fetchPlaceholders();
+
+			// Check if limit exist if not assign it to 10
+			const hasLimit = [...this.block.children].find( row =>
+				row.firstElementChild.querySelector( 'p' )?.textContent === SEARCH_SETTINGS_LIMIT );
+			const limit = hasLimit? hasLimit.children[1]?.querySelector( 'p' )?.textContent : 10 ;
+			this.limit = Number( limit );
+
 			// Get Settings
 			[...this.block.children].forEach( ( row, index ) => {
 				if ( index > 0 ) {
@@ -174,12 +181,8 @@ class SearchBlock {
 			this.filter = setting;
 		}
 
-		if ( key === SEARCH_SETTINGS_COUNT && settingVal && setting <= this.limit ) {
+		if ( key === SEARCH_SETTINGS_COUNT && settingVal && setting >= this.limit ) {
 			this.count = Number( setting );
-		}
-
-		if ( key === SEARCH_SETTINGS_LIMIT ) {
-			this.limit = Number( setting );
 		}
 	}
 

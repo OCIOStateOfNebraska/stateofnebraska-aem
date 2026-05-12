@@ -69,7 +69,7 @@ export function buildWithOverrideData( overrideRow ) {
 	
 	const row = div( {},
 		createOptimizedPicture( image, alt || '', false, [{ width: '800' }] ),
-		a( { href: overrideRow.path, class: 'usa-button usa-link--external usa-button--secondary' }, 'Open image page' )
+		a( { href: overrideRow.path , class: 'usa-button'}, 'Open image page' )
 	);
 	
 	return row;
