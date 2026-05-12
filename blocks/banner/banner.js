@@ -12,7 +12,7 @@ export default async function decorate( block ) {
 	const placeholders = await fetchPlaceholders();
 	const { banner } = placeholders;
 
-	const section = domEl( 'section', { class: 'usa-banner usa-banner--ne', 'aria-labelledby': bannerTextId } );
+	const section = domEl( 'section', { class: 'usa-banner usa-banner--ne' } );
 	const innerDiv = domEl( 'div', { class: 'usa-banner__header usa-banner__inner' } );
 	const pEle = p( { class: 'usa-banner__header-text', id: bannerTextId}, banner ? banner : 'An official website of the State of Nebraska' );
 	const iconImg = domEl( 'img', { src: '/icons/nebraska-icon.svg', alt: '', 'aria-hidden': 'true', class: 'usa-banner__header-flag', loading: 'lazy'} );
