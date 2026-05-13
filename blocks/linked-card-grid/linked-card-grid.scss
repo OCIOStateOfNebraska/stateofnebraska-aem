@@ -12,35 +12,15 @@
 	@include card-grid-base.card-grid-wrapper;
 
 	.#{$block} {
-		a {
-			svg {
-				display: none; // backup because sometimes the external link svg renders when it should not
-			}
-		}
+		&__link {
+			text-decoration: none;
 
-		&__container {
-			position: relative;
-
-			&:has(a) {
-				transition: box-shadow $transition-slow;
-				cursor: pointer;
-				
-				&:hover {
-					@include hover-shadow;
-
-					.usa-button__wrap {
-						transform: translateX(units(0.5));
-						transition: transform $transition;
-					}
-
-					.#{$block}__heading {
-						text-decoration: underline;
-						text-decoration-thickness: 2px;
-					}
-				}
+			&:hover {
+				text-decoration: underline;
+				text-decoration-thickness: 2px;
 			}
 
-			a {
+			&:after { // cover the whole card so it's clickable
 				@include u-radius('md');
 				position: absolute;
 				width: 100%;
@@ -48,8 +28,27 @@
 				border-top-left-radius: 0;
 				border-top-right-radius: 0;
 				text-decoration: none;
+				content: '';
 				z-index: 1;
 				inset: 0;
+			}
+
+			svg {
+				display: none; // backup because sometimes the external link svg renders when it should not
+			}
+		}
+
+		&__container {
+			position: relative;
+			transition: box-shadow $transition-slow;
+
+			&:has(.#{$block}__link:hover) {
+				@include hover-shadow;
+
+				.usa-button__wrap {
+					transform: translateX(units(0.5));
+					transition: transform $transition;
+				}
 			}
 		}
 
@@ -84,11 +83,9 @@
 	// Theme-aware hover and icon colors
 	.section-background--theme & {
 		.#{$block} {
-			&__container{
-				&:has(a) {
-					&:hover {
-						@include hover-shadow(var(--theme-card-accent));
-					}
+			&__container {
+				&:has(.#{$block}__link:hover) {
+					@include hover-shadow(var(--theme-card-accent));
 				}
 			}
 
@@ -102,10 +99,8 @@
 		&:has(.filled) {
 			.#{$block} {
 				&__container{
-					&:has(a) {
-						&:hover {
-							@include hover-shadow(color('white'));
-						}
+					&:has(.#{$block}__link:hover) {
+						@include hover-shadow(color('white'));
 					}
 				}
 
