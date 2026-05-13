@@ -7,6 +7,7 @@ import { getIndividualIcon, isSameDomainOrSubdomain } from '../../scripts/utils.
 async function decorateSkipnav( placeholders ) {
 	const { skipnav } = placeholders;
 	const skipNav = a( { class: 'usa-skipnav', href: '#main-content', id: 'skip' }, skipnav ? skipnav : 'Skip to main content' );
+	skipNav.appendChild( domEl( 'span', { class: 'usa-sr-only' }, ' (on same page)' ) );
 	return skipNav;
 }
 
