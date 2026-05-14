@@ -8,6 +8,7 @@ indices:
       - nav
       - alert
       - search-results
+      - ocio-services/**
     target: /query-index.json
     properties:
       title:
@@ -41,6 +42,7 @@ indices:
       - footer
       - nav
       - alert
+      - ocio-services/**
     target: /search-index.json
     properties:
       title:
@@ -78,7 +80,6 @@ indices:
   events:
     target: /events-index.json
     include:
-      - /test-pages/events/**
       - /events/**
     properties:
       template:
