@@ -31,7 +31,7 @@ function createModal( images, index ) {
 					{ class: 'modal-caption', id: 'fig' + index },
 					images[index].caption + ' ',
 				): '',
-				images[index].link ? images[index].link: ''				
+				images[index].link ? images[index].link: ''	
 			),
 		),
 	);

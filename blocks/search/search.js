@@ -193,7 +193,7 @@ class SearchBlock {
 	filterData() {
 		if ( this.sort !== 'relevance' ) {
 			const fuseTags = new Fuse( this.allData, fuseOptionsTags );
-			this.allData = this.flattenSearch( fuseTags.search( this.filter ? this.filter.toLowerCase().trim() : '', ) );
+			this.allData = this.flattenSearch( fuseTags.search( this.filter ? this.filter.toLowerCase().trim() : '' ) );
 			if( this.blockGallery ){
 				this.allData = this.allData.filter( item => item.image !== '' ) ;
 			}
