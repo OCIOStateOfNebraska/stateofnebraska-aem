@@ -37,19 +37,6 @@ export default async function decorate( block ) {
 
 	block.parentNode.classList.add( 'usa-in-page-nav-container' );
 
-	const observer = new MutationObserver( () => {
-		const links = sidenav.querySelectorAll( '.usa-in-page-nav__link' );
-		if ( links.length ) {
-			links.forEach( ( link ) => {
-				if ( !link.querySelector( '.sr-only' ) ) {
-					link.appendChild( domEl( 'span', { 'class': 'usa-sr-only' }, ' (on same page)' ) );
-				}
-			} );
-			observer.disconnect();
-		}
-	} );
-	observer.observe( sidenav, { childList: true, subtree: true } );
-
 	inPageNavigation.on();
 	
 	sidenav.addEventListener( 'click', mobileNavCurrent );

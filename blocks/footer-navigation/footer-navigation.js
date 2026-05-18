@@ -43,7 +43,6 @@ export default async function decorate( block ) {
 	function styleBackToTop() {
 		const container = domEl( 'div', { class: 'grid-container usa-footer__return-to-top' } );
 		const a = domEl( 'a', { class: 'usa-button usa-button--outline', 'href': '#skip' }, 'Return to top' );
-		a.appendChild( domEl( 'span', { class: 'usa-sr-only' }, ' (on same page)' ) );
 		container.append( a );
 		getIndividualIcon( a, 'arrow_upward' );
 		block.prepend( container );
@@ -75,7 +74,9 @@ export default async function decorate( block ) {
 
 				section.append( child.firstElementChild );
 			}
-			rows.append( section );
+			if( section.children.length ) {
+				rows.append( section );
+			}
 			grid.append( rows );
 		} );
 		container.append( grid );
@@ -213,7 +214,7 @@ export default async function decorate( block ) {
 		if ( row ) {
 			const container = secondaryGridContainer;
 			const nav = domEl( 'nav', { class: 'usa-identifier grid-container', 'aria-label': 'Footer state sites navigation' } );
-			const grid = domEl( 'section', { class: 'usa-identifier__section usa-identifier__section--required-links' } );
+			const grid = domEl( 'div', { class: 'usa-identifier__section usa-identifier__section--required-links' } );
 			Array.from( row ).forEach( child => {
 				while ( child.firstElementChild ) {
 					child.querySelectorAll( 'ul' ).forEach( el => {
