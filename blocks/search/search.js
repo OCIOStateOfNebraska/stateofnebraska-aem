@@ -84,7 +84,7 @@ class SearchBlock {
 		/** @member {boolean} */
 		this.showImage = false;
 		/** @member {boolean} */
-		this.showDescription = false;
+		this.showPagination = true;
 		/** @member {boolean} */
 		this.showDescription = false;
 		/** @member {boolean} */
