@@ -22,7 +22,7 @@ function buildNav() {
 	back.addEventListener( 'click', ( e ) => {
 		e.preventDefault();
 		window.history.back();
-	});
+	} );
 	const iconWrap = document.createElement( 'span' );
 	iconWrap.className = 'usa-icon__wrap';
 	iconWrap.setAttribute( 'aria-hidden', 'true' );
@@ -43,7 +43,7 @@ function buildNav() {
 	printLink.addEventListener( 'click', ( e ) => {
 		e.preventDefault();
 		window.print();
-	});
+	} );
 	printWrap.append( printLink );
 
 	nav.append( backWrap, printWrap );
@@ -80,5 +80,5 @@ export default async function decorate( block ) {
 		heading,
 		headers,
 		rowTemplate,
-	});
+	} );
 }
