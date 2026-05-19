@@ -1,0 +1,50 @@
+@use '../../styles/ne-global-imports' as *;
+
+.divider {
+	display: flex;
+	// Default before the ResizeObserver has run.
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	min-height: 1px;
+	gap: units(2);
+
+	&[data-orientation='vertical'] {
+		flex-direction: column;
+	}
+
+	&[data-orientation='horizontal'] {
+		flex-direction: row;
+	}
+
+	&__line {
+		flex: 1 0 0;
+		background: color('base-lighter');	
+	}
+
+	&[data-orientation='vertical'] &__line {
+		width: 1px;
+		min-height: 1px;
+	}
+
+	&:not([data-orientation='vertical']) &__line {
+		min-width: 1px;
+		height: 1px;
+	}
+
+	&__label {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: units(0.5) units(2);
+		border-radius: 999px;
+		color: color('ink');
+		font-family: family('sans');
+		font-size: size('ui', 'md');
+		font-weight: bold;
+		line-height: 1.5;
+		white-space: nowrap;
+	}
+}
