@@ -34,8 +34,9 @@ export default async function decorate( block ) {
 
 	block.textContent = '';
 	block.appendChild( sidenav );
-	
+
 	block.parentNode.classList.add( 'usa-in-page-nav-container' );
+
 	inPageNavigation.on();
 	
 	sidenav.addEventListener( 'click', mobileNavCurrent );
