@@ -395,12 +395,12 @@ function decorateIconList( element ) {
 				// move everything after the br to a new paragraph
 				if ( child.tagName && [ 'H2', 'H3', 'H4' ].includes( child.tagName.toUpperCase() ) ) {
 					const after = document.createElement( 'p' );
-					let found = false;
+					let foundBR = false;
 					child.childNodes.forEach( c => {
-						if ( found ) {
+						if ( foundBR ) {
 							after.appendChild( c );
-						} else if ( c.tagName.toUpperCase() === 'BR' ) {
-							found = true;
+						} else if ( c.tagName?.toUpperCase() === 'BR' ) {
+							foundBR = true;
 						}
 					} );
 

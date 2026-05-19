@@ -129,3 +129,14 @@ form {
 		}
 	}
 }
+
+// stylelint-disable-next-line scss/selector-nest-combinators
+.#{$block}.block.full-width {
+	// Gives control to form editor to determine layout of fields
+	p, 
+	form, 
+	button,
+	.field-label {
+		max-width: 100%;
+	}
+}
