@@ -35,12 +35,14 @@ const withFieldWrapper = ( element ) => ( fd ) => {
 
 const createTextArea = withFieldWrapper( ( fd ) => {
 	const input = document.createElement( 'textarea' );
+	input.classList.add( 'usa-textarea' );
 	setPlaceholder( input, fd );
 	return input;
 } );
 
 const createSelect = withFieldWrapper( ( fd ) => {
 	const select = document.createElement( 'select' );
+	select.classList.add( 'usa-select' );
 	createDropdownUsingEnum( fd, select );
 	return select;
 } );
