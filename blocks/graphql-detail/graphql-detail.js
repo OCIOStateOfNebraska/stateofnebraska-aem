@@ -9,20 +9,31 @@ import { getIndividualIcon } from '../../scripts/utils.js';
  * would apply (em-wrapped link → `usa-button usa-button--outline`) is
  * applied directly here because the autoblocker only runs at page-decorate
  * time, not on DOM we build dynamically.
+ *
+ * `backUrl` is the configured fallback used when the user landed here
+ * directly (bookmark / external link / new tab)
  */
-function buildNav() {
+function buildNav( backUrl ) {
 	const nav = document.createElement( 'div' );
 	nav.className = 'graphql-detail__nav';
 
+	const sameOriginReferrer = document.referrer
+		&& new URL( document.referrer ).origin === window.location.origin;
 	const backWrap = document.createElement( 'p' );
 	backWrap.className = 'usa-button__wrap';
 	const back = document.createElement( 'a' );
 	back.className = 'usa-button graphql-detail__back';
-	back.href = '#';
-	back.addEventListener( 'click', ( e ) => {
-		e.preventDefault();
-		window.history.back();
-	} );
+	if ( sameOriginReferrer ) {
+		back.href = document.referrer;
+		if ( window.history.length > 1 ) {
+			back.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				window.history.back();
+			} );
+		}
+	} else {
+		back.href = backUrl || '#';
+	}
 	const iconWrap = document.createElement( 'span' );
 	iconWrap.className = 'usa-icon__wrap';
 	iconWrap.setAttribute( 'aria-hidden', 'true' );
@@ -53,6 +64,7 @@ function buildNav() {
 export default async function decorate( block ) {
 	const [
 		queryRow,
+		backUrlRow,
 		headingRow,
 		headersRow,
 		rowTemplateRow,
@@ -61,6 +73,8 @@ export default async function decorate( block ) {
 
 	/** @type {HTMLAnchorElement | null} */
 	const queryUrl = extractLink( queryRow );
+	/** @type {HTMLAnchorElement | null} cell-2 holds the link to the results page */
+	const backUrlLink = extractLink( backUrlRow );
 	/** @type {HTMLElement} cell-2 of the heading row is the heading template */
 	const heading = headingRow.children[1];
 	/** @type {Array<string>} */
@@ -73,7 +87,7 @@ export default async function decorate( block ) {
 	// body, so the nav row persists across spinner → result swap.
 	const body = document.createElement( 'div' );
 	body.className = 'graphql-detail__body';
-	block.replaceChildren( buildNav(), body );
+	block.replaceChildren( buildNav( backUrlLink?.href ), body );
 
 	await renderTable( body, {
 		queryUrl: queryUrl.href,
