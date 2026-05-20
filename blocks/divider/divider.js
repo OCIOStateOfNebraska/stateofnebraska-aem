@@ -10,7 +10,7 @@ export default function decorate( block ) {
 		block.classList.add( 'divider--labeled' );
 		block.append(
 			span( { class: 'divider__line' } ),
-			span( { class: 'divider__label', 'aria-hidden': 'true' }, label ),
+			span( { class: 'divider__label' }, label ),
 			span( { class: 'divider__line' } ),
 		);
 	} else {
