@@ -4,7 +4,7 @@
 $block: 'graphql-detail';
 
 .section {
-	&.#{$block} {
+	&.#{$block}-container {
 		.divider {
 			margin-bottom: 56px;
 		}
@@ -78,9 +78,9 @@ $block: 'graphql-detail';
 	.graphql-heading {
 		margin-bottom: units(4);
 		padding: units(3) units(4);
-		border: 1px solid #dfe1e2;
+		border: 1px solid color('base-lighter');
 		border-radius: radius('sm');
-		background-color: #fff;
+		background-color: color('white');
 
 		p {
 			margin: 0;

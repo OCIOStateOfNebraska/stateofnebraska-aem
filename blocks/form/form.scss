@@ -4,6 +4,7 @@
 
 $block: 'form';
 
+// stylelint-disable-next-line scss/selector-nest-combinators
 .#{$block}.block {
 	&.full-width {
 
