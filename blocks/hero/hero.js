@@ -36,7 +36,7 @@ export default function decorate( block ) {
 			<path class="usa-hero__svg-mid" d="M0,72c107.9,2.9,275.1,3.8,479.7-10.3C801.6,39.5,922.6.5,1159.3-.1c133.6-.4,328.7,11.4,567.7,72.1v14.9H0v-14.9Z"/>
 		</svg>
 	`;
-	const svgDiv = div( { class: 'usa-hero__svg' } );
+	const svgDiv = div( { class: 'usa-hero__svg', 'aria-hidden': true } );
 	svgDiv.innerHTML = svg;
 
 	block.innerText = '';
