@@ -120,12 +120,12 @@ export default async function decorate( block ) {
 		e.preventDefault();
 
 		const href = a.getAttribute( 'href' );
-		const focusEle = href === '#' ? document.querySelector( '.usa-skipnav') : document.getElementById( href.substring( 1 ) );
+		const focusEle = href === '#' ? document.querySelector( '.usa-skipnav' ) : document.getElementById( href.substring( 1 ) );
 		if ( focusEle ) {
 			focusEle.scrollIntoView( { behavior: 'smooth' } );
 			focusEle.focus( { preventScroll: true } );
 		}
-	});
+	} );
 
 	window.__gcse = {
 		searchCallbacks: {

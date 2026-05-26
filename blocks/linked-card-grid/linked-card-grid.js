@@ -30,7 +30,7 @@ function generateContent( div, container ) {
 	// Extract the link
 	const wrap = div.querySelector( 'p:has(a)' ); //
 	wrap.className = 'usa-button__wrap';
-	const a = wrap.querySelector( 'a' ) ? wrap.querySelector( 'a' ) : null;
+	const cardLink = wrap.querySelector( 'a' ) ? wrap.querySelector( 'a' ) : null;
 
 	// take out the heading and put into its own container
 	if ( heading ) {
@@ -38,12 +38,14 @@ function generateContent( div, container ) {
 		const header = domEl( 'div', { class: 'usa-card__header' }, heading );
 		container.prepend( header );
 		
-		if ( a ) {
-			// Move the link in the header 
-			a.textContent = ''; 
-			a.className = '';
-			heading.append( a );
-			
+		if ( cardLink ) {
+			// Wrap the heading text in the link
+			cardLink.textContent = heading.textContent;
+			cardLink.classList = 'usa-card__link'; // remove all button classes, etc.
+			heading.innerHTML = '';
+			heading.appendChild( cardLink );
+			header.appendChild( heading );
+
 			// Icon element
 			wrap.setAttribute( 'aria-hidden', true );
 			getIndividualIcon( wrap, 'arrow_forward' );

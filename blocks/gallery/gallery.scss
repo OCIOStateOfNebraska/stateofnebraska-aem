@@ -137,4 +137,10 @@ $block: 'gallery';
 			color: color('white');
 		}
 	}
+
+	.usa-pagination{
+		margin: auto;
+		
+		@include u-margin-y(2);
+	}
 }

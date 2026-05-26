@@ -1,0 +1,95 @@
+@use '../../styles/ne-global-imports' as *;
+@use '../../styles/ne-spinner';
+
+$block: 'graphql-detail';
+
+.section {
+	&.#{$block}-container {
+		.divider {
+			margin-bottom: 56px;
+		}
+	}
+}
+
+.graphql-detail {
+	.ne-spinner {
+		margin: units(5) auto;
+	}
+
+	// Header strip above the detail body. `__back` is a plain anchor on the
+	// left with a USWDS icon; `__nav .usa-button--outline` is a print button
+	// on the right (also with an icon). Both are hidden in the printed
+	// output.
+	&__nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: units(10); 
+
+		// The print button arrives wrapped in a <p class="usa-button__wrap">,
+		// which has default paragraph spacing — strip it.
+		.usa-button__wrap {
+			margin: 0;
+		}
+
+		// Icon sizing applies to both the back link and the print button.
+		.usa-icon__wrap {
+			display: inline-flex;
+
+			svg {
+				width: 1.25rem;
+				height: 1.25rem;
+			}
+		}
+	}
+
+	&__back {
+		display: inline-flex;
+		align-items: center;
+		gap: .25rem;
+	}
+
+	@media print {
+		&__nav {
+			display: none;
+		}
+	}
+
+	// The shared `createTable` helper auto-applies the `scrollable` class to
+	// the inner table block whenever a cell uses `<each:NAME>` so the table
+	// block's stacked-mobile path is skipped (it assumes one <td> per row
+	// and breaks on rowspan'd cells). Cells should still wrap normally
+	// (`white-space: normal`) — the scroll only kicks in if the table's
+	// natural minimum width exceeds the container.
+	.usa-table-container--scrollable {
+		margin: 0;
+		overflow-x: auto;
+
+		td {
+			white-space: normal;
+			vertical-align: top;
+		}
+	}
+
+	// Heading section appears above the table; substituted against the
+	// first result by renderTable. Authors typically structure the cell as
+	// label/value pairs (`<strong>Label</strong>  <field>`), separated by
+	// paragraph breaks which mergeParagraphs collapses into one <p>.
+	.graphql-heading {
+		margin-bottom: units(4);
+		padding: units(3) units(4);
+		border: 1px solid color('base-lighter');
+		border-radius: radius('sm');
+		background-color: color('white');
+
+		p {
+			margin: 0;
+			line-height: 1.8;
+		}
+
+		strong {
+			display: inline-block;
+			min-width: 12rem;
+		}
+	}
+}

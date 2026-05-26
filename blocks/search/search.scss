@@ -1,5 +1,5 @@
 @use '../../styles/ne-global-imports' as *;
-@use '~uswds/usa-pagination/src/styles/usa-pagination';
+@use '../../styles/ne-pagination';
 
 .search {
 	.usa-search {
@@ -37,30 +37,3 @@
 	}
 }
 
-.usa-pagination {
-	max-width: measure($theme-text-measure);
-	font-size: font-size('body', 5);
-
-	&__link-text,
-	.usa-icon__wrap {
-		pointer-events: none;
-	}
-	
-	&__link {
-		&--disabled {
-			display: none;
-		}
-	}
-	
-	&__button {
-		border-radius: radius('sm');
-	}
-	
-	.usa-current {
-		background-color: color(primary);
-	}
-	
-	.usa-icon__wrap {
-		display: flex;
-	}
-}

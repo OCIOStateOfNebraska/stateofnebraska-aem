@@ -395,12 +395,12 @@ function decorateIconList( element ) {
 				// move everything after the br to a new paragraph
 				if ( child.tagName && [ 'H2', 'H3', 'H4' ].includes( child.tagName.toUpperCase() ) ) {
 					const after = document.createElement( 'p' );
-					let found = false;
+					let foundBR = false;
 					child.childNodes.forEach( c => {
-						if ( found ) {
+						if ( foundBR ) {
 							after.appendChild( c );
-						} else if ( c.tagName.toUpperCase() === 'BR' ) {
-							found = true;
+						} else if ( c.tagName?.toUpperCase() === 'BR' ) {
+							foundBR = true;
 						}
 					} );
 
@@ -486,19 +486,22 @@ function decorateSections( main ) {
 						.map( ( style ) => toClassName( style.trim() ) );
 					styles.forEach( ( style ) => section.classList.add( style ) );
 				} else if ( key === 'layout' ) {
-					const [col1, col2] = meta[key].split( '/' ).map( Number );
-					const isValidLayout = col1 > 0 && col2 > 0 && col1 + col2 === 12;
+					const cols = meta[key].split( '/' ).map( ( n ) => Number( n.trim() ) );
+					const sum = cols.reduce( ( a, b ) => a + b, 0 );
+					const isValidLayout = cols.length >= 2
+						&& cols.every( ( n ) => Number.isInteger( n ) && n > 0 )
+						&& sum === 12;
 
 					if ( isValidLayout ) {
-						section.dataset.layout = col1 + '/' + col2;
+						section.dataset.layout = cols.join( '/' );
 						section.classList.add( 'grid-row', 'grid-gap' );
 
 						const divs = Array.from( section.children ).filter(
 							el => !el.querySelector( '.section-metadata' )
 						);
 
-						divs.forEach( async ( div, i ) => {
-							const colSize = i % 2 === 0 ? col1 : col2;
+						divs.forEach( ( div, i ) => {
+							const colSize = cols[i % cols.length];
 							div.classList.add( `desktop:grid-col-${colSize}` );
 						} );
 					}
