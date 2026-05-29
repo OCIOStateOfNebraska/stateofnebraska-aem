@@ -244,4 +244,19 @@ function getMonthNumber( monthName ) {
 	return dateObject.getMonth() + 1 ;
 }
 
-export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon, isSameDomainOrSubdomain, getMonthNumber };
+/**
+ * Determines if the current page is a full-width template vs one with a sidebar
+ * @param {function} getMetadata - reference to the getMetadata function
+ * @returns {Boolean}
+ */
+function isFullWidthTemplate( getMetadata ) {
+	const template = getMetadata( 'template' );
+	if( template || template.trim().toLowerCase() === 'default' ) {
+		const layout = getMetadata( 'layout' ).trim().toLowerCase();
+		return ( layout !== 'side-nav' ) && ( layout !== 'in-page-nav' );
+	}
+
+	return true;
+}
+
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon, isSameDomainOrSubdomain, getMonthNumber, isFullWidthTemplate };
