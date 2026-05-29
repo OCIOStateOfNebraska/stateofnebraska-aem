@@ -1,4 +1,4 @@
-import { domEl } from '../../scripts/dom-helpers.js';
+import { domEl, div, a, h3 } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { getIndividualIcon } from '../../scripts/utils.js';
 
@@ -89,7 +89,6 @@ function showSlide( indicator, slider, block ) {
 		} );
 		slides.forEach( ( slide ,i ) =>{
 			slide.classList.remove( 'usa-current' );
-			slide.setAttribute( 'aria-selected', 'false' );
 			const link = slide.querySelector( 'a' );
 			if( !link ) return;
 
@@ -103,7 +102,6 @@ function showSlide( indicator, slider, block ) {
 		
 		indicators[index].classList.add( 'usa-current' );
 		slides[index].classList.add( 'usa-current' );
-		slides[index].setAttribute( 'aria-selected', 'true' );
 
 
 		slider.scrollTo( {
@@ -252,34 +250,65 @@ function showSlide( indicator, slider, block ) {
 	} );
 }
 
-export default function decorate( block ) {
-	const ul = domEl( 'ul', { class: 'carousel-group usa-list--unstyled' } );
+/**
+* Takes override data and creates populated element that is the same as manual entries. This is critical for formatting.
+* @param {object} overrideRow - The `overrideRow` is a filtered object returned from search-index.json.
+*/
+function buildWithOverrideData( overrideRow ) {
+	const image = overrideRow.image;
+	const alt = overrideRow.imageAlt;
+	
+	if( !image  || !alt ){
+		return null;
+	}
+	
+	const row = div( {},
+		div( {}, createOptimizedPicture( image, alt || '', false ) ),
+		div( {}, 
+			h3( {},
+				a( { href: overrideRow.path }, overrideRow.title )
+			)
+		)
+	);
+	return row;
+}
+
+export default function decorate( block, override=[] ) {
+	let rows;
+	
+	if ( override.length ) {
+		rows = override.map( buildWithOverrideData );
+	} else {
+		rows = [...block.children];
+	}
+
+
+	const carouselGroup = domEl( 'div', { class: 'carousel-group' } );
 	const indicators = domEl( 'ul', {
 		class: 'carousel-group__indicator usa-list--unstyled',
-		role:'tablist'
+		role:'tablist',
+		'aria-label': 'Slide navigation' 
 	} );
-	indicators.setAttribute( 'aria-label', 'Slide navigation' );
 
-	const arrowContainer = domEl( 'p', { class: 'carousel-controls__container' } );
+	const arrowContainer = domEl( 'div', { class: 'carousel-controls__container' } );
 	const arrowLeft = domEl( 'button', {
 		class: 'usa-button usa-button--outline carousel-controls__item',
-		title: 'Previous slide'
+		title: 'Previous slide',
+		'aria-label' : 'Previous slide'
 	} );
-	arrowLeft.setAttribute( 'aria-label', 'Previous slide' );
 
 	const pauseBtn = domEl( 'button', {
 		class: 'usa-button usa-button--outline carousel-controls__item carousel-toggle',
 		title: 'Pause',
+		'aria-label': 'Pause carousel',
+		'aria-pressed': 'false'
 	} );
 
-	pauseBtn.setAttribute( 'aria-label', 'Pause carousel' );
-	pauseBtn.setAttribute( 'aria-pressed', 'false' );
-	
 	const arrowRight = domEl( 'button', {
 		class: 'usa-button usa-button--outline carousel-controls__item',
-		title: 'Next slide'
+		title: 'Next slide',
+		'aria-label': 'Next slide' 
 	} );
-	arrowRight.setAttribute( 'aria-label', 'Next slide' );
 
 	getIndividualIcon( arrowLeft, 'navigate_before' );
 	getIndividualIcon( pauseBtn, 'pause' );
@@ -290,39 +319,42 @@ export default function decorate( block ) {
 	arrowContainer.prepend( arrowLeft );
 
 	// checks if row contains image
-	const validRows = [...block.children].filter( row =>row = row.querySelector( 'picture' ) );
-
+	if( !rows ) {
+		return;
+	}
+	
+	const validRows = rows.filter( row =>row = row.querySelector( 'picture' ) );
+	
 	validRows.forEach( ( row ) => {	
 		const indicator = domEl( 'li', {
 			class: 'carousel-card__indicator',
 			role: 'tab',
-			tabindex: '0'
+			tabindex: '0',
+			'aria-controls': `carousel-slide-${indicators.children.length + 1}`,
+			'aria-label': `Slide indicator ${indicators.children.length + 1} of ${validRows.length}`
 		} );
-		indicator.setAttribute( 'aria-controls', `carousel-slide-${indicators.children.length + 1}` );
-		indicator.setAttribute( 'aria-label', `Slide indicator ${indicators.children.length + 1} of ${validRows.length}` );
 		
-		
-		const li = domEl( 'li', { 
+		const carouselCard = domEl( 'div', { 
 			class: 'carousel-card',
 			role: 'group',
-			id: `carousel-slide-${indicators.children.length + 1}`
+			id: `carousel-slide-${indicators.children.length + 1}`,
+			'aria-roledescription': 'slide',
+			'aria-label': `Slide ${indicators.children.length + 1} of ${validRows.length}`
 		} );
-		li.setAttribute( 'aria-roledescription', 'slide' );
-		li.setAttribute( 'aria-label', `Slide ${indicators.children.length + 1} of ${validRows.length}` );
-
+		
 		const cardContainer = domEl( 'div', { class: 'carousel-card__container' } );
-
+		
 		while ( row.firstElementChild ) {
 			cardContainer.append( row.firstElementChild );
-			li.append( cardContainer );
+			carouselCard.append( cardContainer );
 		}
-	
+		
 		generateWholeCard( cardContainer );
 		indicators.append( indicator );
-		ul.append( li );
+		carouselGroup.append( carouselCard );
 	} );
 
-	ul
+	carouselGroup
 		.querySelectorAll( 'picture > img' )
 		.forEach( ( img ) =>
 			img
@@ -337,6 +369,6 @@ export default function decorate( block ) {
 	block.textContent = '';
 	block.append( indicators );
 	block.append( arrowContainer );
-	block.append( ul );
-	showSlide( indicators.children, ul, block );
+	block.append( carouselGroup );
+	showSlide( indicators.children, carouselGroup, block );
 }

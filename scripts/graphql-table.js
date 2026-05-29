@@ -10,7 +10,7 @@ import createPagination from '../blocks/search/search-pagination.js';
  */
 export async function getAllResults( queryUrl, pageSize, params ) {
 	const query = buildUrl( queryUrl, pageSize, params );
-	console.log( "#getAllResults - query: ", query );
+	console.log( '#getAllResults - query: ', query );
 	const response = await fetch( query );
 	if ( !response.ok ) {
 		throw new Error( `Response status: ${response.status}` );
@@ -18,7 +18,7 @@ export async function getAllResults( queryUrl, pageSize, params ) {
 
 	const results = await response.json();
 	const items = Object.values( results.data )[0]?.items ?? [];
-	console.log( "getAllResults: ", items );
+	console.log( 'getAllResults: ', items );
 	return items;
 }
 
@@ -176,7 +176,7 @@ export function substitute( template, values ) {
 	const pattern = /<([^<>\s]+)>/g;
 	const replace = ( str ) => str.replace( pattern, ( _match, name ) => (
 		resolvePlaceholder( name, values )
-	));
+	) );
 
 	const walker = document.createTreeWalker( result, NodeFilter.SHOW_TEXT );
 	for ( let node = walker.nextNode(); node; node = walker.nextNode() ) {
@@ -201,9 +201,9 @@ export function substitute( template, values ) {
 		// unless the author opts in to a button via separate styling.
 		[...a.classList].forEach( ( c ) => {
 			if ( c.startsWith( 'usa-button' ) ) a.classList.remove( c );
-		});
+		} );
 		a.parentElement?.classList.remove( 'usa-button__wrap' );
-	});
+	} );
 
 	return result;
 }
@@ -237,7 +237,7 @@ export function mergeParagraphs( element ) {
 		if ( i < kept.length - 1 ) {
 			merged.append( document.createElement( 'br' ) );
 		}
-	});
+	} );
 	paragraphs.forEach( ( p ) => p.remove() );
 	element.append( merged );
 }
@@ -287,7 +287,7 @@ function buildDataRows( rowTemplate, items, cellMarkers ) {
 				template: marker.stripped,
 				subItems: Array.isArray( subItems ) ? subItems : [],
 			};
-		});
+		} );
 
 		const loopCounts = cellPlans
 			.filter( ( p ) => p.kind === 'loop' )
@@ -316,7 +316,7 @@ function buildDataRows( rowTemplate, items, cellMarkers ) {
 					}
 					tr.append( td );
 				}
-			});
+			} );
 			rows.push( tr );
 		}
 	}
@@ -492,7 +492,7 @@ async function fetchAndRender( block, { queryUrl, pageSize, heading, headers, ro
 		if ( !Number.isFinite( newOffset ) || newOffset < 0 || newOffset >= allResults.length ) return;
 		currentOffset = newOffset;
 		renderPage();
-	});
+	} );
 
 	renderPaginationNav();
 }
@@ -530,5 +530,5 @@ export function renderTable( block, config ) {
 	fetchAndRender( block, config ).catch( ( err ) => {
 		console.error( 'renderTable failed:', err );
 		renderErrorAlert( block );
-	});
+	} );
 }
