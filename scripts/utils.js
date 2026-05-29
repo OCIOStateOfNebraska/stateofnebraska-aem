@@ -251,7 +251,7 @@ function getMonthNumber( monthName ) {
  */
 function isFullWidthTemplate( getMetadata ) {
 	const template = getMetadata( 'template' );
-	if( template || template.trim().toLowerCase() === 'default' ) {
+	if( !template || template.trim().toLowerCase() === 'default' ) {
 		const layout = getMetadata( 'layout' ).trim().toLowerCase();
 		return ( layout !== 'side-nav' ) && ( layout !== 'in-page-nav' );
 	}
