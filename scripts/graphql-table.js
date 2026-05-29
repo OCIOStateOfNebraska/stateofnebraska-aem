@@ -380,6 +380,19 @@ function buildSpinner() {
 }
 
 /**
+ * Builds a loading overlay that covers its positioned parent, dims the
+ * content underneath, and centers a spinner. Used on pagination page
+ * fetches so the user sees feedback without the table contents being
+ * blown away. Styled by `styles/_ne-spinner.scss` (`.ne-loading-overlay`).
+ */
+function buildOverlay() {
+	const overlay = document.createElement( 'div' );
+	overlay.className = 'ne-loading-overlay';
+	overlay.append( buildSpinner() );
+	return overlay;
+}
+
+/**
  * Convert a M/D/YY (or M/D/YYYY) value to ISO `YYYY-MM-DD`. Falls back to
  * the original string if it doesn't parse as a date. Used by `normalizeParams`
  * to bridge between the form-builder's date output and AEM's `Calendar`
@@ -425,16 +438,37 @@ async function renderErrorAlert( block ) {
  * Does the actual work: fetch, choose between alert/heading/table, wire
  * pagination. Awaited internally by `renderTable`'s catch handler but not
  * by callers — `renderTable` returns immediately after showing the spinner.
+ *
+ * When `pageSize` is set, two fetches run in parallel:
+ *   - a small `limit=pageSize` query — renders the first page as soon as
+ *     it lands so the user gets to interactive results fast.
+ *   - the unbounded query — its result feeds jump-to-N pagination, which
+ *     is wired up once the full set is in memory.
+ * The pagination nav is held back until that full set lands; in the gap
+ * the user sees page 1 only. This trades one extra server-side filter
+ * pass (the small + the big both hit AEM's filter) for fast time-to-first
+ * render on large datasets.
  */
 async function fetchAndRender( block, { queryUrl, pageSize, heading, headers, rowTemplate, params, emptyMessage } ) {
 	const rawParams = params ?? Object.fromEntries( new URLSearchParams( window.location.search ) );
+	// Convert M/D/YY date values to ISO so AEM's Calendar filters match.
 	const effectiveParams = normalizeParams( rawParams );
-	// Always fetch the full result set — `pageSize` controls client-side
-	// pagination, not the persisted-query limit. AEM's institutionList has
-	// no totalCount field, so to enable jump-to-N we need everything.
-	const allResults = await getAllResults( queryUrl, undefined, effectiveParams );
+	const cellMarkers = rowTemplate.map( ( tmpl ) => findEachMarker( tmpl ) );
+	const limit = Number.isFinite( pageSize ) && pageSize > 0 ? pageSize : null;
 
-	if ( allResults.length === 0 && emptyMessage ) {
+	// Fire both fetches in parallel. When no limit is set, both refs point
+	// at the same promise — `await firstPagePromise` gets the full set and
+	// the `.then` on `fullPromise` short-circuits below.
+	const fullPromise = getAllResults( queryUrl, undefined, effectiveParams );
+	const firstPagePromise = limit ? getAllResults( queryUrl, limit, effectiveParams ) : fullPromise;
+	// Suppress unhandled rejection — the outer await on the page query will
+	// surface the same error if both fail; if only the full query fails we
+	// log it below in the .then chain.
+	fullPromise.catch( () => {} );
+
+	const firstPage = await firstPagePromise;
+
+	if ( firstPage.length === 0 && emptyMessage ) {
 		const alertBlock = buildBlock( 'alert', [[emptyMessage, '']] );
 		alertBlock.classList.add( 'warning' );
 		block.replaceChildren( alertBlock );
@@ -443,18 +477,13 @@ async function fetchAndRender( block, { queryUrl, pageSize, heading, headers, ro
 		return;
 	}
 
-	const cellMarkers = rowTemplate.map( ( tmpl ) => findEachMarker( tmpl ) );
-	const limit = Number.isFinite( pageSize ) && pageSize > 0 ? pageSize : null;
-	const paginated = limit !== null && allResults.length > limit;
-
-	const firstSlice = paginated ? allResults.slice( 0, limit ) : allResults;
-	const tableBlock = createTable( headers, rowTemplate, firstSlice );
+	const tableBlock = createTable( headers, rowTemplate, firstPage );
 
 	let headingEl = null;
-	if ( heading && allResults.length > 0 ) {
-		const candidate = substitute( heading, allResults[0] );
+	if ( heading && firstPage.length > 0 ) {
+		const candidate = substitute( heading, firstPage[0] );
 		mergeParagraphs( candidate );
-		// Skip rendering when the cell has no author content (or every
+		// Skip rendering when the cell had no author content (or every
 		// placeholder resolved to empty) — no callout for empty data.
 		if ( candidate.textContent.trim() !== '' ) {
 			candidate.classList.add( 'graphql-heading' );
@@ -467,34 +496,164 @@ async function fetchAndRender( block, { queryUrl, pageSize, heading, headers, ro
 	await loadBlock( tableBlock );
 	tableBlock.querySelector( 'caption' )?.remove();
 
-	if ( !paginated ) return;
+	if ( !limit ) return;
 
 	const tbody = tableBlock.querySelector( 'tbody' );
 	let currentOffset = 0;
+	let allResults = null;             // populated when the full set lands
+	let knownLastPage = firstPage.length < limit;
+	let pageFetchInFlight = false;
 
-	const renderPaginationNav = () => {
+	// Per-offset page cache so prev/next during the pre-full-set phase is
+	// usually instant. Seed it with the first page we already have.
+	const pageCache = new Map( [[0, firstPage]] );
+	// De-dupe concurrent fetches for the same offset (a click and a
+	// prefetch can race for the same page).
+	const inFlight = new Map();
+
+	const fetchPage = ( offset ) => {
+		if ( pageCache.has( offset ) ) return Promise.resolve( pageCache.get( offset ) );
+		if ( inFlight.has( offset ) ) return inFlight.get( offset );
+		const p = getAllResults( queryUrl, limit, { ...effectiveParams, offset } )
+			.then( ( slice ) => {
+				pageCache.set( offset, slice );
+				return slice;
+			})
+			.finally( () => inFlight.delete( offset ) );
+		inFlight.set( offset, p );
+		return p;
+	};
+
+	// Warm the next two pages in the background so forward clicks hit the
+	// cache. No-op once the full set has landed (client-side slicing is
+	// already instant) or once we know we're on the last page. Stops
+	// scheduling further pages as soon as one comes back short (last page).
+	const PREFETCH_AHEAD = 2;
+	const prefetchNext = () => {
+		if ( allResults || knownLastPage ) return;
+		for ( let i = 1; i <= PREFETCH_AHEAD; i += 1 ) {
+			const offset = currentOffset + ( i * limit );
+			if ( pageCache.has( offset ) || inFlight.has( offset ) ) continue;
+			fetchPage( offset ).then( ( slice ) => {
+				// A short page means we've prefetched past the end — don't
+				// keep requesting offsets beyond it.
+				if ( slice.length < limit ) knownLastPage = true;
+			}).catch( () => {} );
+		}
+	};
+
+	const renderNav = () => {
 		block.querySelector( ':scope > .usa-pagination' )?.remove();
-		createPagination( currentOffset, allResults, limit, block );
+		if ( allResults ) {
+			// Full data: jump-to-N pagination.
+			if ( allResults.length <= limit ) return;
+			createPagination( currentOffset, allResults, limit, block );
+			return;
+		}
+		// Pre-full-set: prev/next only. We fake `data.length` so
+		// createPagination renders the prev/next arrows correctly; the
+		// `.usa-pagination--minimal` class hides the numeric page links.
+		if ( knownLastPage && currentOffset === 0 ) return; // single page, no nav
+		const fakeLength = knownLastPage
+			? currentOffset + limit
+			: currentOffset + ( 2 * limit );
+		createPagination( currentOffset, { length: fakeLength }, limit, block );
+		block.querySelector( ':scope > .usa-pagination' )?.classList.add( 'usa-pagination--minimal' );
 	};
 
-	const renderPage = () => {
-		const slice = allResults.slice( currentOffset, currentOffset + limit );
-		tbody.replaceChildren( ...buildDataRows( rowTemplate, slice, cellMarkers ) );
-		renderPaginationNav();
-	};
-
-	block.addEventListener( 'click', ( e ) => {
+	block.addEventListener( 'click', async ( e ) => {
 		const link = e.target.closest( '.usa-pagination a' );
 		if ( !link ) return;
 		e.preventDefault();
 		if ( link.classList.contains( 'usa-pagination__link--disabled' ) ) return;
+		if ( pageFetchInFlight ) return;
+
 		const newOffset = parseInt( link.dataset.paginationButton, 10 );
-		if ( !Number.isFinite( newOffset ) || newOffset < 0 || newOffset >= allResults.length ) return;
-		currentOffset = newOffset;
-		renderPage();
+		if ( !Number.isFinite( newOffset ) || newOffset < 0 ) return;
+
+		if ( allResults ) {
+			// Full set cached — client-side slice.
+			if ( newOffset >= allResults.length ) return;
+			currentOffset = newOffset;
+			const slice = allResults.slice( currentOffset, currentOffset + limit );
+			tbody.replaceChildren( ...buildDataRows( rowTemplate, slice, cellMarkers ) );
+			renderNav();
+			return;
+		}
+
+		// Pre-full-set. If the page is already cached (prefetched or visited
+		// before), render synchronously with no overlay. Otherwise show the
+		// overlay spinner while we fetch it.
+		if ( pageCache.has( newOffset ) ) {
+			const slice = pageCache.get( newOffset );
+			currentOffset = newOffset;
+			tbody.replaceChildren( ...buildDataRows( rowTemplate, slice, cellMarkers ) );
+			knownLastPage = slice.length < limit;
+			renderNav();
+			prefetchNext();
+			return;
+		}
+
+		pageFetchInFlight = true;
+		tableBlock.classList.add( 'ne-loading-host' );
+		const overlay = buildOverlay();
+		tableBlock.append( overlay );
+		try {
+			// Race the targeted page request against the full set. If the
+			// full set lands first (or during the wait), slice the requested
+			// page from it rather than blocking on the slower limited request.
+			await Promise.race( [
+				fetchPage( newOffset ).catch( () => {} ),
+				fullPromise.catch( () => {} ),
+			] );
+
+			if ( allResults ) {
+				// Full set is here — serve the requested page from it. The
+				// fullPromise handler already upgraded the nav to jump-to-N.
+				if ( newOffset < allResults.length ) {
+					currentOffset = newOffset;
+					const slice = allResults.slice( currentOffset, currentOffset + limit );
+					tbody.replaceChildren( ...buildDataRows( rowTemplate, slice, cellMarkers ) );
+				}
+				renderNav();
+				return;
+			}
+
+			// Page request won the race; it's cached now so this is instant.
+			const slice = await fetchPage( newOffset );
+			if ( slice.length === 0 && newOffset > currentOffset ) {
+				// Walked past the end. Disable next and keep the user on the
+				// last real page.
+				knownLastPage = true;
+				renderNav();
+				return;
+			}
+			currentOffset = newOffset;
+			tbody.replaceChildren( ...buildDataRows( rowTemplate, slice, cellMarkers ) );
+			knownLastPage = slice.length < limit;
+			renderNav();
+			prefetchNext();
+		} finally {
+			overlay.remove();
+			pageFetchInFlight = false;
+		}
 	});
 
-	renderPaginationNav();
+	renderNav();
+	prefetchNext();
+
+	// Upgrade to jump-to-N once the full set lands. tbody keeps showing
+	// whichever page the user navigated to; only the nav re-renders. The
+	// full set is now the single source of truth, so the per-page cache is
+	// dropped — subsequent clicks slice from `allResults` and never read it.
+	fullPromise.then( ( all ) => {
+		allResults = all;
+		pageCache.clear();
+		inFlight.clear();
+		renderNav();
+	}).catch( ( err ) => {
+		console.error( 'Failed to fetch full result set for pagination:', err );
+	});
 }
 
 /**

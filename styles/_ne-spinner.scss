@@ -13,3 +13,21 @@
 @keyframes ne-spin {
 	to { transform: rotate(360deg); }
 }
+
+// Loading overlay: covers its positioned parent, dims the content
+// underneath, and centers a spinner. Apply `.ne-loading-host` to the
+// element you want the overlay to cover (it just establishes the
+// positioning context) and append a `.ne-loading-overlay` child.
+.ne-loading-host {
+	position: relative;
+}
+
+.ne-loading-overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(255, 255, 255, 0.6);
+}
