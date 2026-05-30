@@ -3,6 +3,23 @@ import {
 } from '../../scripts/aem.js';
 
 const CONVERGE_SDK_URL = 'https://api.demo.convergepay.com/hosted-payments/PayWithConverge.js';
+const SESSION_URL = '/bin/elavon';
+
+const TOKEN_REQUEST_FIELDS = [
+	'transactionType',
+	'amount',
+	'firstName',
+	'lastName',
+	'avsAddress',
+	'address2',
+	'city',
+	'state',
+	'avsZip',
+	'country',
+	'email',
+	'phone',
+	'description',
+];
 
 function createFormBlock( sourceBlock ) {
 	const link = sourceBlock.querySelector( 'a[href]' );
@@ -39,9 +56,39 @@ function showResult( block, status, msg ) {
 }
 
 async function fetchSessionToken( form ) {
-	// TODO: replace with real server-side token mint endpoint.
 	const formData = new FormData( form );
-	return '';
+	const params = new URLSearchParams();
+	TOKEN_REQUEST_FIELDS.forEach( ( field ) => {
+		const raw = formData.get( field );
+		if ( raw == null ) return;
+		let value = String( raw ).trim();
+		// ssl_amount needs a bare number, so strip everything but digits/decimal.
+		if ( field === 'amount' ) {
+			value = value.replace( /[^\d.]/g, '' );
+		}
+		if ( value !== '' ) {
+			params.set( field, value );
+		}
+	} );
+
+	const response = await fetch( SESSION_URL, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			Accept: 'text/plain',
+		},
+		body: params.toString(),
+	} );
+
+	if ( !response.ok ) {
+		throw new Error( `Session token request failed with status ${response.status}` );
+	}
+
+	const token = ( await response.text() ).trim();
+	if ( !token ) {
+		throw new Error( 'Empty session token returned' );
+	}
+	return token;
 }
 
 function openConvergeLightbox( token, block ) {
