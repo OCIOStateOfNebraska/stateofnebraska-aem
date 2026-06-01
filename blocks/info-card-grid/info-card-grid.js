@@ -1,5 +1,6 @@
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { domEl } from '../../scripts/dom-helpers.js';
+import { isFullWidthTemplate } from '../../scripts/utils.js';
 
 /**
 * Generates the media content in the card.
@@ -69,8 +70,7 @@ export default function decorate( block ) {
 	const count = block.children.length;
 	const parent = block.parentElement;
 	const layout = parent?.parentElement?.dataset?.layout;
-	const templateLayout = getMetadata( 'layout' ).trim().toLowerCase();
-	const isFullWidthTemplate = ( templateLayout !== 'side-nav' ) && ( templateLayout !== 'in-page-nav' );
+	const fullWidth = isFullWidthTemplate( getMetadata );
 
 	let grid = 'grid-col-12 tablet:grid-col-6 desktop:grid-col-4';
 
@@ -86,7 +86,7 @@ export default function decorate( block ) {
 		}
 	} else {
 		// Add widescreen column for 4+ cards on full-width templates
-		if ( count >= 4 && isFullWidthTemplate ) {
+		if ( count >= 4 && fullWidth ) {
 			grid += ' widescreen:grid-col-3';
 		}
 	}
