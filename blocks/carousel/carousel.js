@@ -58,6 +58,10 @@ function showSlide( indicator, slider, block ) {
 	let slideShow = null;
 	let isPaused = false;
 
+	function shouldResumeAutoPlay() {
+		return !isPaused && !block.contains( document.activeElement );
+	}
+
 	function startAutoPlay(){
 		stopAutoPlay();
 		slideShow = setInterval( slideShowFunc, 5000 );
@@ -74,7 +78,7 @@ function showSlide( indicator, slider, block ) {
 	// Main slide switch function
 	// -----------------------------
 	function changeSlide( index, options = {} ) {
-		const { focusInside = false } = options;		
+		const { focusInside = false,  announce = false } = options;		
 
 		stopAutoPlay();
 
@@ -85,7 +89,7 @@ function showSlide( indicator, slider, block ) {
 		indicators.forEach( ( dot, i ) => {
 			dot.classList.remove( 'usa-current' ); 
 			dot.setAttribute( 'tabindex', i == index ? '0' : '-1' );
-			dot.setAttribute( 'aria-selected', i == index ? 'true' : 'false' );
+			dot.setAttribute( 'aria-current', i == index ? 'true' : 'false' );
 		} );
 		slides.forEach( ( slide ,i ) =>{
 			slide.classList.remove( 'usa-current' );
@@ -109,7 +113,18 @@ function showSlide( indicator, slider, block ) {
 			behavior: 'smooth',
 		} );
 
-		if( !isPaused && !slideShow ) startAutoPlay();
+		if ( announce ) {
+			const heading = slides[index].querySelector( '.carousel-card__heading' );
+			const title = heading?.textContent?.trim() || slides[index]?.querySelector( 'img' )?.alt || `Slide ${index + 1}`;
+
+			const liveRegion = block.querySelector( '.carousel-live-region' );
+
+			if ( liveRegion ) {
+				liveRegion.textContent = `${title}, slide ${index + 1} of ${slides.length}`;
+			}
+		}
+
+		if( shouldResumeAutoPlay() && !slideShow ) startAutoPlay();
 
 		//if changed via keyboard, focus inside slide
 		if ( focusInside ) {
@@ -122,7 +137,7 @@ function showSlide( indicator, slider, block ) {
 	// Autoplay loop
 	// -----------------------------
 	function slideShowFunc(  ) {
-		changeSlide( currentIndex + 1 );
+		changeSlide( currentIndex + 1, { announce: false } );
 	}
 
 	// -----------------------------
@@ -153,33 +168,25 @@ function showSlide( indicator, slider, block ) {
 	// -----------------------------
 	// Focus handling pause/resume
 	// -----------------------------
-	block.addEventListener( 'focusin', ( e ) => {
-		setTimeout( (  ) => {
-			const target = e.target;
-
-			if ( target.matches( '.carousel-toggle' ) ||
-			target.matches( '.carousel-card__indicator' ) ||
-			target.matches( '.carousel-controls__item' ) ||
-			target.matches( '.carousel-card a' ) )
-			{
-				stopAutoPlay();
-			}
-		}, 50 );
+	block.addEventListener( 'focusin', () => {
+		stopAutoPlay();
 	} );
-	block.addEventListener( 'focusout', (  ) => {
-		// use timeout to wait until new focus target is set
-		setTimeout( (  ) => {
-			const active = document.activeElement;
-			if ( !block.contains( active )  && !isPaused ) startAutoPlay();
-		}, 50 );
+
+	block.addEventListener( 'focusout', ( e ) => {
+		if ( !block.contains( e.relatedTarget ) && !isPaused ) {
+			startAutoPlay();
+		}
 	} );
 
 	// -----------------------------
 	// Mouse hover pause/resume
 	// -----------------------------
-	slider.addEventListener( 'mouseenter', (  ) => stopAutoPlay() );
-	slider.addEventListener( 'mouseleave', (  ) => {
-		if ( !isPaused )  startAutoPlay();
+	block.addEventListener( 'mouseenter', stopAutoPlay );
+
+	block.addEventListener( 'mouseleave', () => {
+		if ( !isPaused && !block.contains( document.activeElement ) ) {
+			startAutoPlay();
+		}
 	} );
 
 	// -----------------------------
@@ -188,33 +195,33 @@ function showSlide( indicator, slider, block ) {
 	function handleArrowKeysOnTabs( e ) {
 		if( e.key === 'ArrowLeft' ){
 			e.preventDefault();
-			changeSlide( currentIndex - 1 );
+			changeSlide( currentIndex - 1, { announce: true } );
 			indicators[currentIndex].focus();
 		}
 		if( e.key === 'ArrowRight' ){
 			e.preventDefault();
-			changeSlide( currentIndex + 1 );
+			changeSlide( currentIndex + 1,  { announce: true } );
 			indicators[currentIndex].focus();
 		}
 	}
 
 	indicators.forEach( ( dot, i ) => {
-		dot.addEventListener( 'click', (  ) => changeSlide( i ) );
+		dot.addEventListener( 'click', (  ) => changeSlide( i,  { announce: true } ) );
 		dot.addEventListener( 'keydown', handleArrowKeysOnTabs );
 	} );
 
 	arrowLeft.addEventListener( 'keydown', ( e ) =>{
 		if( e.key === 'Enter' || e.key === ' ' ){
-			changeSlide( currentIndex - 1 );
+			changeSlide( currentIndex - 1,  { announce: true } );
 			indicators[currentIndex].focus();
 		}
 	} );
-	arrowLeft.addEventListener( 'click', () => changeSlide( currentIndex - 1 ) );
+	arrowLeft.addEventListener( 'click', () => changeSlide( currentIndex - 1,  { announce: true } ) );
 
-	arrowRight.addEventListener( 'click', () => changeSlide( currentIndex + 1 ) );
+	arrowRight.addEventListener( 'click', () => changeSlide( currentIndex + 1,  { announce: true } ) );
 	arrowRight.addEventListener( 'keydown',  ( e ) =>{
 		if( e.key === 'Enter' || e.key === ' ' ){
-			changeSlide( currentIndex + 1 );
+			changeSlide( currentIndex + 1,  { announce: true } );
 			indicators[currentIndex].focus();
 		}
 	} );
@@ -284,9 +291,8 @@ export default function decorate( block, override=[] ) {
 
 
 	const carouselGroup = domEl( 'div', { class: 'carousel-group' } );
-	const indicators = domEl( 'ul', {
+	const indicators = domEl( 'div', {
 		class: 'carousel-group__indicator usa-list--unstyled',
-		role:'tablist',
 		'aria-label': 'Slide navigation' 
 	} );
 
@@ -324,20 +330,19 @@ export default function decorate( block, override=[] ) {
 	}
 	
 	const validRows = rows.filter( row =>row = row.querySelector( 'picture' ) );
-	
+	const carouselId = `carousel-${crypto.randomUUID()}`;
+		
 	validRows.forEach( ( row ) => {	
-		const indicator = domEl( 'li', {
+		const indicator = domEl( 'button', {
 			class: 'carousel-card__indicator',
-			role: 'tab',
-			tabindex: '0',
-			'aria-controls': `carousel-slide-${indicators.children.length + 1}`,
+			tabindex: '0',			
 			'aria-label': `Slide indicator ${indicators.children.length + 1} of ${validRows.length}`
 		} );
 		
 		const carouselCard = domEl( 'div', { 
 			class: 'carousel-card',
 			role: 'group',
-			id: `carousel-slide-${indicators.children.length + 1}`,
+			id: `${carouselId}-slide-${indicators.children.length + 1}`,
 			'aria-roledescription': 'slide',
 			'aria-label': `Slide ${indicators.children.length + 1} of ${validRows.length}`
 		} );
@@ -362,11 +367,19 @@ export default function decorate( block, override=[] ) {
 				.replaceWith( createOptimizedPicture( img.src, img.alt, false ) ),
 		);
 
+	const liveRegion = domEl( 'div', {
+		class: 'usa-sr-only carousel-live-region',
+		'aria-live': 'polite',
+		'aria-atomic': 'true',
+	} );
+
+	
 	block.setAttribute( 'role', 'region' );
 	block.setAttribute( 'aria-roledescription', 'carousel' );
-	block.setAttribute( 'aria-label', 'Carousel' );
-
+	block.setAttribute( 'aria-label', 'Featured content' );
+	
 	block.textContent = '';
+	block.append( liveRegion );
 	block.append( indicators );
 	block.append( arrowContainer );
 	block.append( carouselGroup );
