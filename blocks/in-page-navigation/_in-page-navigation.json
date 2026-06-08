@@ -1,0 +1,62 @@
+{
+  "definitions": [
+    {
+      "title": "In-Page Navigation",
+      "id": "in-page-navigation",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "In-Page Navigation",
+              "model": "in-page-navigation"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "in-page-navigation",
+      "fields": [
+        {
+          "component": "text",
+          "name": "title-text",
+          "label": "Title Text",
+          "description": "Label shown above the in-page nav list (default: \"On this page\")"
+        },
+        {
+          "component": "select",
+          "name": "title-heading-level",
+          "label": "Title Heading Level",
+          "options": [
+            {
+              "name": "H2 (default)",
+              "value": ""
+            },
+            {
+              "name": "H2",
+              "value": "h2"
+            },
+            {
+              "name": "H3",
+              "value": "h3"
+            },
+            {
+              "name": "H4",
+              "value": "h4"
+            }
+          ]
+        },
+        {
+          "component": "number",
+          "name": "scroll-offset",
+          "label": "Scroll Offset (px)",
+          "description": "Pixels to offset scroll position when navigating to a heading (default: 48)"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

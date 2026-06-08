@@ -1,0 +1,85 @@
+{
+  "definitions": [
+    {
+      "title": "Search",
+      "id": "search",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Search",
+              "model": "search"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "search",
+      "fields": [
+        {
+          "component": "aem-content",
+          "name": "source",
+          "label": "Data Source",
+          "description": "Path to the query index JSON (defaults to /query-index.json)"
+        },
+        {
+          "component": "select",
+          "name": "style",
+          "label": "Display Mode",
+          "options": [
+            {
+              "name": "Full Search",
+              "value": ""
+            },
+            {
+              "name": "Dynamic Collection",
+              "value": "dynamic-collection"
+            }
+          ]
+        },
+        {
+          "component": "boolean",
+          "name": "show-search-box",
+          "label": "Show Search Box",
+          "valueType": "string"
+        },
+        {
+          "component": "boolean",
+          "name": "show-pagination",
+          "label": "Show Pagination",
+          "valueType": "string"
+        },
+        {
+          "component": "select",
+          "name": "sort-key",
+          "label": "Sort By",
+          "options": [
+            {
+              "name": "Relevance (default)",
+              "value": ""
+            },
+            {
+              "name": "Publication Date",
+              "value": "publicationDate"
+            },
+            {
+              "name": "Title",
+              "value": "title"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "name": "filter-by",
+          "label": "Filter by Tag",
+          "description": "Filter results to items matching this tag value"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

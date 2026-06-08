@@ -1,0 +1,42 @@
+{
+  "definitions": [
+    {
+      "title": "Info Card Grid",
+      "id": "info-card-grid",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Info Card Grid",
+              "model": "info-card-grid"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "info-card-grid",
+      "fields": [
+        {
+          "component": "select",
+          "name": "style",
+          "label": "Card Style",
+          "options": [
+            {
+              "name": "Default (with image)",
+              "value": ""
+            },
+            {
+              "name": "Blue (with icon)",
+              "value": "blue"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

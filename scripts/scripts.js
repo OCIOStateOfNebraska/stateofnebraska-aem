@@ -411,7 +411,7 @@ function decorateIconList( element ) {
 }
 
 function decorateImgs( element ) {
-	element.querySelectorAll( 'p img:only-child, p picture:only-child, p figure:only-child' ).forEach( ( img ) => {
+	element.querySelectorAll( 'p img:only-child, p picture:only-child, p figure:only-child p' ).forEach( ( img ) => {
 		// if there is nothing else in the paragraph, unwrap the image
 		if( !img.closest( 'body' ) ) { return; } // skip if ul is not in the DOM (i.e. a fragment)
 
@@ -443,7 +443,7 @@ export function decorateMain( main ) {
 
 export function decorateInner( container ) {
 	decorateH2s( container );
-	decorateImgs( container );
+//	decorateImgs( container );
 	decorateButtons( container );
 	decorateYouTube( container );
 	decorateGoogleMaps( container );
@@ -453,7 +453,7 @@ export function decorateInner( container ) {
 	decorateBlocks( container );
 	decorateUnstyledLinks( container );
 	decorateExternalLinks( container );
-}
+}	
 
 /**
  *
