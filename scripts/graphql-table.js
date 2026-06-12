@@ -161,6 +161,9 @@ export function resolvePlaceholder( name, values ) {
 	return keys.some( ( k ) => resolveKey( k, values ).exists ) ? '' : `<${name}>`;
 }
 
+// Fallback for rows with no pdfAsset.
+const MISSING_PDF_MESSAGE_HTML = 'A copy of this order may be requested from the Department using the <a href="https://ndbf.nebraska.gov/about/contact-us">"Contact Us" form</a>.';
+
 /**
  * Returns a clone of `template` with `<name>` placeholders replaced. See
  * `resolvePlaceholder` for the placeholder grammar. Substitution runs on:
@@ -191,7 +194,15 @@ export function substitute( template, values ) {
 		const raw = a.getAttribute( 'href' )
 			.replace( /%3C/gi, '<' )
 			.replace( /%3E/gi, '>' );
-		a.setAttribute( 'href', replace( raw ) );
+		const newHref = replace( raw );
+
+		// Unresolved `<pdfAsset...>` → row has no PDF, swap in fallback.
+		if ( newHref.includes( '<pdfAsset' ) ) {
+			a.outerHTML = MISSING_PDF_MESSAGE_HTML;
+			return;
+		}
+
+		a.setAttribute( 'href', newHref );
 
 		// scripts.js's `decorateButtons` runs over <main> before any block
 		// decorator and converts any <a> that's the sole child of its
