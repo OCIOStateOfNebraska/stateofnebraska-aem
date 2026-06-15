@@ -50,19 +50,21 @@ function generateWholeCard( container ) {
 }
 
 function showSlide( indicator, slider, block ) {
+	const preferesReducedMotion = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 	const arrowLeft = block.querySelector( '[title="Previous slide"]' );
 	const arrowRight = block.querySelector( '[title="Next slide"]' );
 	const indicators = Array.from( indicator );
 	const slides = Array.from( slider.children );
 	let currentIndex = 0;
 	let slideShow = null;
-	let isPaused = false;
+	let isPaused = preferesReducedMotion;
 
 	function shouldResumeAutoPlay() {
 		return !isPaused && !block.contains( document.activeElement );
 	}
 
 	function startAutoPlay(){
+		if ( preferesReducedMotion ) return;
 		stopAutoPlay();
 		slideShow = setInterval( slideShowFunc, 5000 );
 	}
@@ -81,20 +83,21 @@ function showSlide( indicator, slider, block ) {
 		const { focusInside = false,  announce = false } = options;		
 
 		stopAutoPlay();
-
+		
 		if ( index < 0 ) index = slides.length - 1;
 		if ( index >= slides.length ) index = 0;
 		currentIndex = index;
 
 		indicators.forEach( ( dot, i ) => {
-			dot.classList.remove( 'usa-current' ); 
-			dot.setAttribute( 'tabindex', i == index ? '0' : '-1' );
-			dot.setAttribute( 'aria-current', i == index ? 'true' : 'false' );
+			const isActive = i === index;
+			dot.classList.toggle( 'usa-current', isActive ); 
+			dot.setAttribute( 'tabindex', isActive ? '0' : '-1' );
+			dot.setAttribute( 'aria-current', isActive ? 'true' : 'false' );
 		} );
 		slides.forEach( ( slide ,i ) =>{
 			const isActive = i === index;
-			slide.classList.remove( 'usa-current', isActive );
-
+			slide.classList.toggle( 'usa-current', isActive );
+			
 			if( isActive ){
 				slide.removeAttribute( 'aria-hidden' );
 				slide.removeAttribute( 'inert' );				
@@ -115,22 +118,17 @@ function showSlide( indicator, slider, block ) {
 			}
 		} );
 		
-		indicators[index].classList.add( 'usa-current' );
-		slides[index].classList.add( 'usa-current' );
-
-
 		slider.scrollTo( {
 			left: slides[index].offsetLeft,
 			behavior: 'smooth',
 		} );
 
-		if ( announce ) {
-			const heading = slides[index].querySelector( '.carousel-card__heading' );
-			const title = heading?.textContent?.trim() || slides[index]?.querySelector( 'img' )?.alt || `Slide ${index + 1}`;
-
+		if ( announce ) {			
 			const liveRegion = block.querySelector( '.carousel-live-region' );
-
+			
 			if ( liveRegion ) {
+				const heading = slides[index].querySelector( '.carousel-card__heading' );
+				const title = heading?.textContent?.trim() || slides[index]?.querySelector( 'img' )?.alt || `Slide ${index + 1}`;
 				liveRegion.textContent = `${title}, slide ${index + 1} of ${slides.length}`;
 			}
 		}
