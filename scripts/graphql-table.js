@@ -161,9 +161,6 @@ export function resolvePlaceholder( name, values ) {
 	return keys.some( ( k ) => resolveKey( k, values ).exists ) ? '' : `<${name}>`;
 }
 
-// Fallback for rows with no pdfAsset.
-const MISSING_PDF_MESSAGE_HTML = 'A copy of this order may be requested from the Department using the <a href="https://ndbf.nebraska.gov/about/contact-us">"Contact Us" form</a>.';
-
 /**
  * Returns a clone of `template` with `<name>` placeholders replaced. See
  * `resolvePlaceholder` for the placeholder grammar. Substitution runs on:
@@ -175,6 +172,9 @@ const MISSING_PDF_MESSAGE_HTML = 'A copy of this order may be requested from the
  *    detail-page configuration row.
  */
 export function substitute( template, values ) {
+	// Fallback for rows with no pdfAsset.
+	const MISSING_PDF_MESSAGE_HTML = 'A copy of this order may be requested from the Department using the <a href="https://ndbf.nebraska.gov/about/contact-us">"Contact Us" form</a>.';
+
 	const result = template.cloneNode( true );
 	const pattern = /<([^<>\s]+)>/g;
 	const replace = ( str ) => str.replace( pattern, ( _match, name ) => (
