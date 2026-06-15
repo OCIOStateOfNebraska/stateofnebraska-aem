@@ -25,7 +25,7 @@ const BILLING_FIELDS = [
 function createFormBlock( sourceBlock ) {
 	const link = sourceBlock.querySelector( 'a[href]' );
 	const formBlock = buildBlock( 'form', link?.outerHTML || '' );
-	formBlock.classList.add('full-width');
+	formBlock.classList.add( 'full-width' );
 	const wrapper = document.createElement( 'div' );
 	wrapper.append( formBlock );
 	decorateBlock( formBlock );
@@ -132,6 +132,7 @@ async function fetchSessionToken( form ) {
 }
 
 function openConvergeLightbox( token, block ) {
+	// eslint-disable-next-line camelcase
 	const paymentFields = { ssl_txn_auth_token: token };
 	const callback = {
 		onError: ( error ) => { showErrorAlert( block, errorMessage( error ) ); },
@@ -151,7 +152,7 @@ export default async function decorate( block ) {
 	if ( !form ) return;
 
 	const submitBtn = form.querySelector( 'button[type="submit"]' );
-	form.querySelector('.wizard-button-wrapper')?.append(submitBtn);
+	form.querySelector( '.wizard-button-wrapper' )?.append( submitBtn );
 	if ( !submitBtn ) return;
 
 	submitBtn.addEventListener( 'click', async ( e ) => {
