@@ -152,108 +152,10 @@ form {
 		order: 1;
 	}
 
-	div[data-variant='addDeleteButtons'] .item-add,
-	div[data-variant='addDeleteButtons'] .item-remove {
-		display: block;
-	}
-
-	/* Wizard layout — ported from adobe-rnd/aem-boilerplate-forms */
-	--form-wizard-border: 0;
-	--form-wizard-background-color: #{color('white')};
-	--form-wizard-border-color: #757575;
-	--form-wizard-number-color: #{color('primary')};
-	--form-wizard-padding: units(2);
-
-	.usa-form .wizard {
-		display: grid;
-		counter-reset: wizard-step-counter;
-		grid-template-columns: minmax(0, 1fr);
-		border: var(--form-wizard-border) solid var(--form-wizard-border-color);
-		background-color: var(--form-wizard-background-color);
-		gap: unset;
-		padding: units(2) var(--form-wizard-padding);
-
-		> legend {
-			width: 100%;
-		}
-
-		> fieldset > legend {
-			display: none;
-		}
-
-		// hides every step except the active one — the rule that was missing
-		> fieldset:not(.current-wizard-step) {
-			display: none;
-		}
-
-		.wizard-menu-items {
-			display: flex;
-			gap: units(5);
-			flex-wrap: wrap;
-			list-style: none;
-			padding: 0 0 var(--form-wizard-padding);
-			margin: 0;
-			grid-column: span 12;
-		}
-
-		.wizard-menu-item {
-			counter-increment: wizard-step-counter;
-
-			&::before {
-				content: counter(wizard-step-counter);
-				border: 2px solid var(--form-wizard-number-color);
-				color: var(--form-wizard-number-color);
-				border-radius: 50%;
-				width: 35px;
-				height: 35px;
-				margin-right: 10px;
-				text-align: center;
-				line-height: 1.6;
-				display: inline-block;
-			}
-		}
-
-		.wizard-menu-active-item::before {
-			background: var(--form-wizard-number-color);
-			color: color('white');
-			font-weight: 600;
-		}
-
-		.wizard-button-wrapper {
-			display: flex;
-			justify-content: end;
-			gap: units(5);
-			margin: var(--form-wizard-padding) 0;
-			width: 100%;
-			grid-column: span 12;
-
-			.field-wrapper {
-				flex: unset;
-			}
-		}
-
-		> .field-description {
-			width: 100%;
-		}
-
-		// hide Back on first step, Next on last step
-		> .current-wizard-step.panel-wrapper:first-of-type ~ .wizard-button-wrapper > .wizard-button-prev,
-		> .current-wizard-step.panel-wrapper:last-of-type ~ .wizard-button-wrapper > .wizard-button-next {
-			display: none;
-		}
-
-		// wizard title on left variant
-		&.left {
-			display: flex;
-
-			.wizard-menu-items {
-				flex-direction: column;
-				width: 300px;
-			}
-
-			.panel-wrapper {
-				flex: 1;
-			}
+	[data-variant='addDeleteButtons'] {
+		.item-add,
+		.item-remove {
+			display: block;
 		}
 	}
 
@@ -263,14 +165,6 @@ form {
 		.panel-wrapper,
 		.repeat-wrapper {
 			gap: units(2.5) units(1.5);
-		}
-
-		.usa-form .wizard {
-			margin: 0;
-
-			.wizard-menu-items {
-				gap: units(2.5);
-			}
 		}
 	}
 
@@ -285,14 +179,18 @@ form {
 	   (ties break on source order, and these come last). */
 
 	@include at-media-max('desktop-lg') {
-		.panel-wrapper[class*='col-'] {
-			grid-column: 1 / -1;
+		.panel-wrapper {
+			&[class*='col-'] {
+				grid-column: 1 / -1;
+			}
 		}
 	}
 
 	@include at-media-max('tablet') {
-		.field-wrapper[class*='col-'] {
-			grid-column: 1 / -1;
+		.field-wrapper {
+			&[class*='col-'] {
+				grid-column: 1 / -1;
+			}
 		}
 	}
 }
