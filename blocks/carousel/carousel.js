@@ -92,7 +92,18 @@ function showSlide( indicator, slider, block ) {
 			dot.setAttribute( 'aria-current', i == index ? 'true' : 'false' );
 		} );
 		slides.forEach( ( slide ,i ) =>{
-			slide.classList.remove( 'usa-current' );
+			const isActive = i === index;
+			slide.classList.remove( 'usa-current', isActive );
+
+			if( isActive ){
+				slide.removeAttribute( 'aria-hidden' );
+				slide.removeAttribute( 'inert' );				
+			}
+			else{
+				slide.setAttribute( 'aria-hidden', 'true' );
+				slide.setAttribute( 'inert', '' );	
+			}
+			
 			const link = slide.querySelector( 'a' );
 			if( !link ) return;
 
