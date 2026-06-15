@@ -8,6 +8,7 @@ import renderResult from './search-result.js';
 import createPagination from './search-pagination.js';
 import backdropDecorate from '../backdrop-grid/backdrop-grid.js';
 import galleryDecorate from '../gallery/gallery.js';
+import carouselDecorate from '../carousel/carousel.js';
 import { loadCSS } from '../../scripts/aem.js';
  
 /**
@@ -72,6 +73,8 @@ class SearchBlock {
 		this.blockBackdropGridCollection = block.classList.contains( 'backdrop-grid' );
 		/** @member {string} */
 		this.blockGallery = block.classList.contains( 'gallery' );
+		/** @member {string} */
+		this.blockCarousel = block.classList.contains( 'carousel' );
 		/** @member {object} */
 		this.placeholders = null;
 		/** @member {string} */
@@ -181,7 +184,7 @@ class SearchBlock {
 			this.filter = setting;
 		}
 
-		if ( key === SEARCH_SETTINGS_COUNT && settingVal && setting >= this.limit ) {
+		if ( key === SEARCH_SETTINGS_COUNT && settingVal ) {
 			this.count = Number( setting );
 		}
 	}
@@ -194,7 +197,7 @@ class SearchBlock {
 		if ( this.sort !== 'relevance' ) {
 			const fuseTags = new Fuse( this.allData, fuseOptionsTags );
 			this.allData = this.flattenSearch( fuseTags.search( this.filter ? this.filter.toLowerCase().trim() : '' ) );
-			if( this.blockGallery ){
+			if( this.blockGallery  || this.blockCarousel ){
 				this.allData = this.allData.filter( item => item.image !== '' ) ;
 			}
 			if( this.count !== null ) this.allData = this.allData.slice( 0, this.count );
@@ -404,7 +407,7 @@ class SearchBlock {
 						this.form.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 					}
 				} );
-			} else if ( this.blockClassDynamicCollection || this.blockBackdropGridCollection || this.blockGallery ) {
+			} else if ( this.blockClassDynamicCollection || this.blockBackdropGridCollection || this.blockGallery || this.blockCarousel ) {
 				const count = this.count !== null? this.count: 3; // if count is null, display only first 3 results
 				data = filteredData.slice( 0, count );
 			}
@@ -418,6 +421,12 @@ class SearchBlock {
 			if ( this.blockGallery ) {
 				await loadCSS( `${window.hlx.codeBasePath}/blocks/gallery/gallery.css` );
 				galleryDecorate( this.block, data );
+				return;
+			}	
+			
+			if ( this.blockCarousel ) {
+				await loadCSS( `${window.hlx.codeBasePath}/blocks/carousel/carousel.css` );
+				carouselDecorate( this.block, data );
 				return;
 			}	
 

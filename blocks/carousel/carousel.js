@@ -1,4 +1,4 @@
-import { domEl } from '../../scripts/dom-helpers.js';
+import { domEl, div, a, h3 } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { getIndividualIcon } from '../../scripts/utils.js';
 
@@ -50,15 +50,21 @@ function generateWholeCard( container ) {
 }
 
 function showSlide( indicator, slider, block ) {
+	const preferesReducedMotion = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 	const arrowLeft = block.querySelector( '[title="Previous slide"]' );
 	const arrowRight = block.querySelector( '[title="Next slide"]' );
 	const indicators = Array.from( indicator );
 	const slides = Array.from( slider.children );
 	let currentIndex = 0;
 	let slideShow = null;
-	let isPaused = false;
+	let isPaused = preferesReducedMotion;
+
+	function shouldResumeAutoPlay() {
+		return !isPaused && !block.contains( document.activeElement );
+	}
 
 	function startAutoPlay(){
+		if ( preferesReducedMotion ) return;
 		stopAutoPlay();
 		slideShow = setInterval( slideShowFunc, 5000 );
 	}
@@ -74,22 +80,33 @@ function showSlide( indicator, slider, block ) {
 	// Main slide switch function
 	// -----------------------------
 	function changeSlide( index, options = {} ) {
-		const { focusInside = false } = options;		
+		const { focusInside = false,  announce = false } = options;		
 
 		stopAutoPlay();
-
+		
 		if ( index < 0 ) index = slides.length - 1;
 		if ( index >= slides.length ) index = 0;
 		currentIndex = index;
 
 		indicators.forEach( ( dot, i ) => {
-			dot.classList.remove( 'usa-current' ); 
-			dot.setAttribute( 'tabindex', i == index ? '0' : '-1' );
-			dot.setAttribute( 'aria-selected', i == index ? 'true' : 'false' );
+			const isActive = i === index;
+			dot.classList.toggle( 'usa-current', isActive ); 
+			dot.setAttribute( 'tabindex', isActive ? '0' : '-1' );
+			dot.setAttribute( 'aria-current', isActive ? 'true' : 'false' );
 		} );
 		slides.forEach( ( slide ,i ) =>{
-			slide.classList.remove( 'usa-current' );
-			slide.setAttribute( 'aria-selected', 'false' );
+			const isActive = i === index;
+			slide.classList.toggle( 'usa-current', isActive );
+			
+			if( isActive ){
+				slide.removeAttribute( 'aria-hidden' );
+				slide.removeAttribute( 'inert' );				
+			}
+			else{
+				slide.setAttribute( 'aria-hidden', 'true' );
+				slide.setAttribute( 'inert', '' );	
+			}
+			
 			const link = slide.querySelector( 'a' );
 			if( !link ) return;
 
@@ -101,17 +118,22 @@ function showSlide( indicator, slider, block ) {
 			}
 		} );
 		
-		indicators[index].classList.add( 'usa-current' );
-		slides[index].classList.add( 'usa-current' );
-		slides[index].setAttribute( 'aria-selected', 'true' );
-
-
 		slider.scrollTo( {
 			left: slides[index].offsetLeft,
 			behavior: 'smooth',
 		} );
 
-		if( !isPaused && !slideShow ) startAutoPlay();
+		if ( announce ) {			
+			const liveRegion = block.querySelector( '.carousel-live-region' );
+			
+			if ( liveRegion ) {
+				const heading = slides[index].querySelector( '.carousel-card__heading' );
+				const title = heading?.textContent?.trim() || slides[index]?.querySelector( 'img' )?.alt || `Slide ${index + 1}`;
+				liveRegion.textContent = `${title}, slide ${index + 1} of ${slides.length}`;
+			}
+		}
+
+		if( shouldResumeAutoPlay() && !slideShow ) startAutoPlay();
 
 		//if changed via keyboard, focus inside slide
 		if ( focusInside ) {
@@ -124,7 +146,7 @@ function showSlide( indicator, slider, block ) {
 	// Autoplay loop
 	// -----------------------------
 	function slideShowFunc(  ) {
-		changeSlide( currentIndex + 1 );
+		changeSlide( currentIndex + 1, { announce: false } );
 	}
 
 	// -----------------------------
@@ -155,33 +177,25 @@ function showSlide( indicator, slider, block ) {
 	// -----------------------------
 	// Focus handling pause/resume
 	// -----------------------------
-	block.addEventListener( 'focusin', ( e ) => {
-		setTimeout( (  ) => {
-			const target = e.target;
-
-			if ( target.matches( '.carousel-toggle' ) ||
-			target.matches( '.carousel-card__indicator' ) ||
-			target.matches( '.carousel-controls__item' ) ||
-			target.matches( '.carousel-card a' ) )
-			{
-				stopAutoPlay();
-			}
-		}, 50 );
+	block.addEventListener( 'focusin', () => {
+		stopAutoPlay();
 	} );
-	block.addEventListener( 'focusout', (  ) => {
-		// use timeout to wait until new focus target is set
-		setTimeout( (  ) => {
-			const active = document.activeElement;
-			if ( !block.contains( active )  && !isPaused ) startAutoPlay();
-		}, 50 );
+
+	block.addEventListener( 'focusout', ( e ) => {
+		if ( !block.contains( e.relatedTarget ) && !isPaused ) {
+			startAutoPlay();
+		}
 	} );
 
 	// -----------------------------
 	// Mouse hover pause/resume
 	// -----------------------------
-	slider.addEventListener( 'mouseenter', (  ) => stopAutoPlay() );
-	slider.addEventListener( 'mouseleave', (  ) => {
-		if ( !isPaused )  startAutoPlay();
+	block.addEventListener( 'mouseenter', stopAutoPlay );
+
+	block.addEventListener( 'mouseleave', () => {
+		if ( !isPaused && !block.contains( document.activeElement ) ) {
+			startAutoPlay();
+		}
 	} );
 
 	// -----------------------------
@@ -190,33 +204,33 @@ function showSlide( indicator, slider, block ) {
 	function handleArrowKeysOnTabs( e ) {
 		if( e.key === 'ArrowLeft' ){
 			e.preventDefault();
-			changeSlide( currentIndex - 1 );
+			changeSlide( currentIndex - 1, { announce: true } );
 			indicators[currentIndex].focus();
 		}
 		if( e.key === 'ArrowRight' ){
 			e.preventDefault();
-			changeSlide( currentIndex + 1 );
+			changeSlide( currentIndex + 1,  { announce: true } );
 			indicators[currentIndex].focus();
 		}
 	}
 
 	indicators.forEach( ( dot, i ) => {
-		dot.addEventListener( 'click', (  ) => changeSlide( i ) );
+		dot.addEventListener( 'click', (  ) => changeSlide( i,  { announce: true } ) );
 		dot.addEventListener( 'keydown', handleArrowKeysOnTabs );
 	} );
 
 	arrowLeft.addEventListener( 'keydown', ( e ) =>{
 		if( e.key === 'Enter' || e.key === ' ' ){
-			changeSlide( currentIndex - 1 );
+			changeSlide( currentIndex - 1,  { announce: true } );
 			indicators[currentIndex].focus();
 		}
 	} );
-	arrowLeft.addEventListener( 'click', () => changeSlide( currentIndex - 1 ) );
+	arrowLeft.addEventListener( 'click', () => changeSlide( currentIndex - 1,  { announce: true } ) );
 
-	arrowRight.addEventListener( 'click', () => changeSlide( currentIndex + 1 ) );
+	arrowRight.addEventListener( 'click', () => changeSlide( currentIndex + 1,  { announce: true } ) );
 	arrowRight.addEventListener( 'keydown',  ( e ) =>{
 		if( e.key === 'Enter' || e.key === ' ' ){
-			changeSlide( currentIndex + 1 );
+			changeSlide( currentIndex + 1,  { announce: true } );
 			indicators[currentIndex].focus();
 		}
 	} );
@@ -252,34 +266,64 @@ function showSlide( indicator, slider, block ) {
 	} );
 }
 
-export default function decorate( block ) {
-	const ul = domEl( 'ul', { class: 'carousel-group usa-list--unstyled' } );
-	const indicators = domEl( 'ul', {
-		class: 'carousel-group__indicator usa-list--unstyled',
-		role:'tablist'
-	} );
-	indicators.setAttribute( 'aria-label', 'Slide navigation' );
+/**
+* Takes override data and creates populated element that is the same as manual entries. This is critical for formatting.
+* @param {object} overrideRow - The `overrideRow` is a filtered object returned from search-index.json.
+*/
+function buildWithOverrideData( overrideRow ) {
+	const image = overrideRow.image;
+	const alt = overrideRow.imageAlt;
+	
+	if( !image  || !alt ){
+		return null;
+	}
+	
+	const row = div( {},
+		div( {}, createOptimizedPicture( image, alt || '', false ) ),
+		div( {}, 
+			h3( {},
+				a( { href: overrideRow.path }, overrideRow.title )
+			)
+		)
+	);
+	return row;
+}
 
-	const arrowContainer = domEl( 'p', { class: 'carousel-controls__container' } );
+export default function decorate( block, override=[] ) {
+	let rows;
+	
+	if ( override.length ) {
+		rows = override.map( buildWithOverrideData );
+	} else {
+		rows = [...block.children];
+	}
+
+
+	const carouselGroup = domEl( 'div', { class: 'carousel-group' } );
+	const indicators = domEl( 'div', {
+		class: 'carousel-group__indicator usa-list--unstyled',
+		'aria-label': 'Slide navigation' 
+	} );
+
+	const arrowContainer = domEl( 'div', { class: 'carousel-controls__container' } );
 	const arrowLeft = domEl( 'button', {
 		class: 'usa-button usa-button--outline carousel-controls__item',
-		title: 'Previous slide'
+		title: 'Previous slide',
+		'aria-label' : 'Previous slide'
 	} );
-	arrowLeft.setAttribute( 'aria-label', 'Previous slide' );
 
 	const pauseBtn = domEl( 'button', {
 		class: 'usa-button usa-button--outline carousel-controls__item carousel-toggle',
 		title: 'Pause',
+		'aria-label': 'Pause carousel',
+		'aria-pressed': 'false'
 	} );
 
-	pauseBtn.setAttribute( 'aria-label', 'Pause carousel' );
-	pauseBtn.setAttribute( 'aria-pressed', 'false' );
-	
 	const arrowRight = domEl( 'button', {
 		class: 'usa-button usa-button--outline carousel-controls__item',
-		title: 'Next slide'
+		title: 'Next slide',
+		'aria-label': 'Next slide' 
 	} );
-	arrowRight.setAttribute( 'aria-label', 'Next slide' );
 
 	getIndividualIcon( arrowLeft, 'navigate_before' );
 	getIndividualIcon( pauseBtn, 'pause' );
@@ -290,39 +334,41 @@ export default function decorate( block ) {
 	arrowContainer.prepend( arrowLeft );
 
 	// checks if row contains image
-	const validRows = [...block.children].filter( row =>row = row.querySelector( 'picture' ) );
-
+	if( !rows ) {
+		return;
+	}
+	
+	const validRows = rows.filter( row =>row = row.querySelector( 'picture' ) );
+	const carouselId = `carousel-${crypto.randomUUID()}`;
+		
 	validRows.forEach( ( row ) => {	
-		const indicator = domEl( 'li', {
+		const indicator = domEl( 'button', {
 			class: 'carousel-card__indicator',
-			role: 'tab',
-			tabindex: '0'
+			tabindex: '0',			
+			'aria-label': `Slide indicator ${indicators.children.length + 1} of ${validRows.length}`
 		} );
-		indicator.setAttribute( 'aria-controls', `carousel-slide-${indicators.children.length + 1}` );
-		indicator.setAttribute( 'aria-label', `Slide indicator ${indicators.children.length + 1} of ${validRows.length}` );
 		
-		
-		const li = domEl( 'li', { 
+		const carouselCard = domEl( 'div', { 
 			class: 'carousel-card',
 			role: 'group',
-			id: `carousel-slide-${indicators.children.length + 1}`
+			id: `${carouselId}-slide-${indicators.children.length + 1}`,
+			'aria-roledescription': 'slide',
+			'aria-label': `Slide ${indicators.children.length + 1} of ${validRows.length}`
 		} );
-		li.setAttribute( 'aria-roledescription', 'slide' );
-		li.setAttribute( 'aria-label', `Slide ${indicators.children.length + 1} of ${validRows.length}` );
-
+		
 		const cardContainer = domEl( 'div', { class: 'carousel-card__container' } );
-
+		
 		while ( row.firstElementChild ) {
 			cardContainer.append( row.firstElementChild );
-			li.append( cardContainer );
+			carouselCard.append( cardContainer );
 		}
-	
+		
 		generateWholeCard( cardContainer );
 		indicators.append( indicator );
-		ul.append( li );
+		carouselGroup.append( carouselCard );
 	} );
 
-	ul
+	carouselGroup
 		.querySelectorAll( 'picture > img' )
 		.forEach( ( img ) =>
 			img
@@ -330,13 +376,21 @@ export default function decorate( block ) {
 				.replaceWith( createOptimizedPicture( img.src, img.alt, false ) ),
 		);
 
+	const liveRegion = domEl( 'div', {
+		class: 'usa-sr-only carousel-live-region',
+		'aria-live': 'polite',
+		'aria-atomic': 'true',
+	} );
+
+	
 	block.setAttribute( 'role', 'region' );
 	block.setAttribute( 'aria-roledescription', 'carousel' );
-	block.setAttribute( 'aria-label', 'Carousel' );
-
+	block.setAttribute( 'aria-label', 'Featured content' );
+	
 	block.textContent = '';
+	block.append( liveRegion );
 	block.append( indicators );
 	block.append( arrowContainer );
-	block.append( ul );
-	showSlide( indicators.children, ul, block );
+	block.append( carouselGroup );
+	showSlide( indicators.children, carouselGroup, block );
 }
