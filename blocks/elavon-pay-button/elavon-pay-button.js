@@ -3,11 +3,13 @@ import {
 } from '../../scripts/aem.js';
 
 const CONVERGE_SDK_URL = 'https://api.demo.convergepay.com/hosted-payments/PayWithConverge.js';
-const SESSION_URL = '/bin/elavon';
+// LOCAL TEST: posts to the local AEM author via the mkcert HTTPS proxy (8444 -> 4502).
+// TODO: point back to the AEM publish endpoint for prod.
+const SESSION_URL = 'https://localhost:8444/bin/elavon';
 
-const TOKEN_REQUEST_FIELDS = [
-	'transactionType',
-	'amount',
+// Billing fields forwarded verbatim from the form. Item names, prices, and the total
+// amount are NOT sent — the backend derives them from the form node (source of truth).
+const BILLING_FIELDS = [
 	'firstName',
 	'lastName',
 	'avsAddress',
@@ -18,7 +20,6 @@ const TOKEN_REQUEST_FIELDS = [
 	'country',
 	'email',
 	'phone',
-	'description',
 ];
 
 function createFormBlock( sourceBlock ) {
@@ -32,43 +33,82 @@ function createFormBlock( sourceBlock ) {
 	return formBlock;
 }
 
-function getStatusElements( block ) {
-	let status = block.querySelector( '.elavon-pay-button__status' );
-	let response = block.querySelector( '.elavon-pay-button__response' );
-	if ( !status ) {
-		const wrapper = document.createElement( 'div' );
-		wrapper.className = 'elavon-pay-button__result';
-		wrapper.innerHTML = `
-			<p>Transaction Status: <span class="elavon-pay-button__status"></span></p>
-			<pre class="elavon-pay-button__response"></pre>
-		`;
-		block.append( wrapper );
-		status = wrapper.querySelector( '.elavon-pay-button__status' );
-		response = wrapper.querySelector( '.elavon-pay-button__response' );
-	}
-	return { status, response };
+// Derive a readable message from a Converge error object or thrown Error.
+function errorMessage( error ) {
+	if ( typeof error === 'string' && error.trim() ) return error;
+	return error?.errorMessage || error?.errorName || error?.message
+		|| 'There was a problem processing your payment. Please try again.';
 }
 
-function showResult( block, status, msg ) {
-	const { status: statusEl, response: responseEl } = getStatusElements( block );
-	statusEl.textContent = status;
-	responseEl.textContent = typeof msg === 'string' ? msg : JSON.stringify( msg, null, '\t' );
+// On a payment error, show a USWDS error alert above the form (form stays so the
+// user can retry). Replaces any prior error alert so they don't stack.
+async function showErrorAlert( block, message ) {
+	block.querySelector( '.elavon-pay-button__error' )?.remove();
+	const alertBlock = buildBlock( 'alert', [ [ 'Payment Error', `<p>${ message }</p>` ] ] );
+	alertBlock.classList.add( 'error' );
+	const wrapper = document.createElement( 'div' );
+	wrapper.className = 'elavon-pay-button__error';
+	wrapper.append( alertBlock );
+	decorateBlock( alertBlock );
+	block.prepend( wrapper );
+	await loadBlock( alertBlock );
+	wrapper.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+}
+
+// On approval, replace the form with a USWDS success alert
+async function showSuccessAlert( block ) {
+	const body = '<p>Your payment was processed successfully. A receipt has been sent to your email.</p>';
+	const alertBlock = buildBlock( 'alert', [ [ 'Payment Successful', body ] ] );
+	alertBlock.classList.add( 'success' );
+	const wrapper = document.createElement( 'div' );
+	wrapper.append( alertBlock );
+	decorateBlock( alertBlock );
+	block.replaceChildren( wrapper );
+	await loadBlock( alertBlock );
+}
+
+// Collect the cart items (code, quantity, optional conditional input) from the
+// repeatable fieldsets.
+function buildCartItems( form ) {
+	return [ ...form.querySelectorAll( 'fieldset[data-repeatable="true"]' ) ]
+		.map( ( fieldset ) => {
+			const code = fieldset.querySelector( 'select[name="transactionItemDropdown"]' )?.value?.trim();
+			if ( !code ) return null;
+			const qty = fieldset.querySelector( 'input[name="quantityInput"]' )?.value?.trim() || '';
+			let cond = '';
+			const condWrapper = fieldset.querySelector( '.field-conditionalinfoinput' );
+			if ( condWrapper && condWrapper.dataset.visible !== 'false' ) {
+				cond = condWrapper.querySelector( 'input[name="conditionalInfoInput"]' )?.value?.trim() || '';
+			}
+			return { code, qty, cond };
+		} )
+		.filter( Boolean );
 }
 
 async function fetchSessionToken( form ) {
 	const formData = new FormData( form );
 	const params = new URLSearchParams();
-	TOKEN_REQUEST_FIELDS.forEach( ( field ) => {
+
+	const formPath = form.dataset.formpath;
+	if ( !formPath ) {
+		throw new Error( 'Missing form path; cannot request a session token.' );
+	}
+	params.set( 'formPath', formPath );
+
+	BILLING_FIELDS.forEach( ( field ) => {
 		const raw = formData.get( field );
 		if ( raw == null ) return;
-		let value = String( raw ).trim();
-		// ssl_amount needs a bare number, so strip everything but digits/decimal.
-		if ( field === 'amount' ) {
-			value = value.replace( /[^\d.]/g, '' );
-		}
+		const value = String( raw ).trim();
 		if ( value !== '' ) {
 			params.set( field, value );
 		}
+	} );
+
+	// Itemized cart: code + quantity + optional conditional input, indexed per item.
+	buildCartItems( form ).forEach( ( item, i ) => {
+		params.set( `items[${ i }].code`, item.code );
+		if ( item.qty !== '' ) params.set( `items[${ i }].qty`, item.qty );
+		if ( item.cond !== '' ) params.set( `items[${ i }].cond`, item.cond );
 	} );
 
 	const response = await fetch( SESSION_URL, {
@@ -81,7 +121,7 @@ async function fetchSessionToken( form ) {
 	} );
 
 	if ( !response.ok ) {
-		throw new Error( `Session token request failed with status ${response.status}` );
+		throw new Error( `Payment failed with status ${ response.status }` );
 	}
 
 	const token = ( await response.text() ).trim();
@@ -94,10 +134,10 @@ async function fetchSessionToken( form ) {
 function openConvergeLightbox( token, block ) {
 	const paymentFields = { ssl_txn_auth_token: token };
 	const callback = {
-		onError: ( error ) => showResult( block, 'error', error ),
-		onCancelled: () => showResult( block, 'cancelled', '' ),
-		onDeclined: ( response ) => showResult( block, 'declined', response ),
-		onApproval: ( response ) => showResult( block, 'approval', response ),
+		onError: ( error ) => { showErrorAlert( block, errorMessage( error ) ); },
+		onCancelled: () => {},
+		onDeclined: () => {},
+		onApproval: () => { showSuccessAlert( block ); },
 	};
 	window.PayWithConverge.open( paymentFields, callback );
 }
@@ -110,8 +150,8 @@ export default async function decorate( block ) {
 	const form = formBlock.querySelector( 'form' );
 	if ( !form ) return;
 
-	// Override form submit.
 	const submitBtn = form.querySelector( 'button[type="submit"]' );
+	form.querySelector('.wizard-button-wrapper')?.append(submitBtn);
 	if ( !submitBtn ) return;
 
 	submitBtn.addEventListener( 'click', async ( e ) => {
@@ -128,7 +168,7 @@ export default async function decorate( block ) {
 			const token = await fetchSessionToken( form );
 			openConvergeLightbox( token, block );
 		} catch ( error ) {
-			showResult( block, 'error', error.message || String( error ) );
+			showErrorAlert( block, errorMessage( error ) );
 		}
 	}, { capture: true } );
 }
