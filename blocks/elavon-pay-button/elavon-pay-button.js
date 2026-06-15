@@ -2,13 +2,18 @@ import {
 	loadScript, loadBlock, buildBlock, decorateBlock,
 } from '../../scripts/aem.js';
 
-const CONVERGE_SDK_URL = 'https://api.demo.convergepay.com/hosted-payments/PayWithConverge.js';
-// LOCAL TEST: posts to the local AEM author via the mkcert HTTPS proxy (8444 -> 4502).
-// TODO: point back to the AEM publish endpoint for prod.
-const SESSION_URL = 'https://localhost:8444/bin/elavon';
+const CONVERGE_SDK_PATH = 'hosted-payments/PayWithConverge.js';
+const CONVERGE_SDK_HOSTS = {
+	demo: 'https://api.demo.convergepay.com',
+	prod: 'https://api.convergepay.com',
+};
+const SESSION_URL = '/bin/elavon';
 
-// Billing fields forwarded verbatim from the form. Item names, prices, and the total
-// amount are NOT sent — the backend derives them from the form node (source of truth).
+function convergeSdkUrl( block ) {
+	const host = block.classList.contains( 'demo' ) ? CONVERGE_SDK_HOSTS.demo : CONVERGE_SDK_HOSTS.prod;
+	return `${ host }/${ CONVERGE_SDK_PATH }`;
+}
+
 const BILLING_FIELDS = [
 	'firstName',
 	'lastName',
@@ -33,7 +38,6 @@ function createFormBlock( sourceBlock ) {
 	return formBlock;
 }
 
-// Derive a readable message from a Converge error object or thrown Error.
 function errorMessage( error ) {
 	if ( typeof error === 'string' && error.trim() ) return error;
 	return error?.errorMessage || error?.errorName || error?.message
@@ -144,6 +148,8 @@ function openConvergeLightbox( token, block ) {
 }
 
 export default async function decorate( block ) {
+	const sdkUrl = convergeSdkUrl( block );
+
 	// Wrap the authored content in a nested form block.
 	const formBlock = createFormBlock( block );
 	await loadBlock( formBlock );
@@ -165,7 +171,7 @@ export default async function decorate( block ) {
 		}
 
 		try {
-			await loadScript( CONVERGE_SDK_URL );
+			await loadScript( sdkUrl );
 			const token = await fetchSessionToken( form );
 			openConvergeLightbox( token, block );
 		} catch ( error ) {
