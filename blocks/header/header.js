@@ -6,7 +6,7 @@ import { getIndividualIcon, isSameDomainOrSubdomain } from '../../scripts/utils.
 
 async function decorateSkipnav( placeholders ) {
 	const { skipnav } = placeholders;
-	const skipNav = a( { class: 'usa-skipnav', href: '#main-content' }, skipnav ? skipnav : 'Skip to main content' );
+	const skipNav = a( { class: 'usa-skipnav', href: '#main-content', id: 'skip' }, skipnav ? skipnav : 'Skip to main content' );
 	return skipNav;
 }
 
@@ -135,28 +135,24 @@ async function createSubMenu( subMenu, id ) {
 function createSecondaryMenu( innerMenu, searchResultsUrl, showDropdowns ) {
 	const url = new URL( window.location );
 	const domain = url.origin;
-	const input = domEl( 'input', { class: 'usa-input usa-text-input', id: 'search-field', type: 'search', name: 'q' } );
-	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Search', src: `${domain}/icons/usa-icons/search.svg` } );
+	const input = domEl( 'input', { class: 'usa-input usa-text-input', id: 'search-field', type: 'search', name: 'q', required: 'required' } );
+	const img = domEl( 'img', { class: 'usa-search__submit-icon', alt: 'Submit Search', src: `${domain}/icons/usa-icons/search.svg` } );
 	const searchButton = domEl( 'button', { class: 'usa-button', type: 'submit' } );
 	searchButton.append( img );
-	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field' } );
+	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field' }, 'Search this website' );
 	const form = domEl( 'form', { class: 'usa-search usa-search--small', role: 'search', action: searchResultsUrl } );
 
 	form.append( label );
 	form.append( input );
 	form.append( searchButton );
-	let searchLabel = form.querySelector( '.usa-sr-only' );
-	searchLabel.innerHTML = 'Search';
 
 	const secondaryNav = domEl( 'div', { class: 'usa-nav__secondary' } );
-	const searchSection = domEl( 'section', { 'aria-label': 'Search component' } );
 	let searchHeader;
 	if ( !showDropdowns ) {
 		searchHeader = domEl( 'p', { class: 'usa-nav__search-header' }, 'Search' );
-		searchSection.append( searchHeader );
+		secondaryNav.append( searchHeader );
 	}
-	searchSection.append( form );
-	secondaryNav.append( searchSection );
+	secondaryNav.append( form );
 	innerMenu.append( secondaryNav );
 
 	const closeImage = domEl( 'img', { role: 'img', alt: 'Close', src: '../../icons/usa-icons/close.svg' } );

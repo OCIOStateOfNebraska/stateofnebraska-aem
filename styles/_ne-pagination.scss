@@ -1,0 +1,32 @@
+@use 'ne-global-imports' as *;
+@use '~uswds/usa-pagination/src/styles/usa-pagination';
+
+// Shared USWDS pagination styling for any block that uses the
+// `createPagination` helper from `blocks/search/search-pagination.js`.
+.usa-pagination {
+	max-width: measure($theme-text-measure);
+	font-size: font-size('body', 5);
+
+	&__link-text,
+	.usa-icon__wrap {
+		pointer-events: none;
+	}
+
+	&__link {
+		&--disabled {
+			display: none;
+		}
+	}
+
+	&__button {
+		border-radius: radius('sm');
+	}
+
+	.usa-current {
+		background-color: color(primary);
+	}
+
+	.usa-icon__wrap {
+		display: flex;
+	}
+}

@@ -4,6 +4,16 @@
 
 $block: 'form';
 
+// stylelint-disable-next-line scss/selector-nest-combinators
+.#{$block}.block {
+	&.full-width {
+
+		p, form, button {
+			max-width: 100%;
+		}
+	}
+}
+
 form {
 	&:not(.edit-mode) {
 		[data-visible='false'] {

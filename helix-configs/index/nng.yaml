@@ -1,4 +1,4 @@
-version: 1
+version: 2
 indices:
   site:
     exclude:
@@ -48,6 +48,9 @@ indices:
         select: head > meta[property="og:image"]
         value: |
           match(attribute(el, 'content'), 'https:\/\/[^/]+(\/.*)')
+      imageAlt:
+        value: attribute(el, 'content')
+        select: head > meta[property="og:image:alt"]
       description:
         select: head > meta[name="description"]
         value: |

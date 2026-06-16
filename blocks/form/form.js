@@ -35,12 +35,14 @@ const withFieldWrapper = ( element ) => ( fd ) => {
 
 const createTextArea = withFieldWrapper( ( fd ) => {
 	const input = document.createElement( 'textarea' );
+	input.classList.add( 'usa-textarea' );
 	setPlaceholder( input, fd );
 	return input;
 } );
 
 const createSelect = withFieldWrapper( ( fd ) => {
 	const select = document.createElement( 'select' );
+	select.classList.add( 'usa-select' );
 	createDropdownUsingEnum( fd, select );
 	return select;
 } );
@@ -547,5 +549,30 @@ export default async function decorate( block ) {
 		}
 		form.className = 'usa-form usa-form--large';
 		container.replaceWith( form );
+
+		// Form variation: search-redirect
+		if ( block.classList.contains( 'search-redirect' ) ) {
+			const { handleSearchRedirect } = await import( './search-redirect.js' );
+			// Row 2 holds the redirect path.
+			const redirectRow = block.children[1];
+			if ( redirectRow ) {
+				const link = redirectRow.querySelector( 'a[href]' );
+				const target = link ? link.getAttribute( 'href' ) : redirectRow.textContent.trim();
+				if ( target ) {
+					block.dataset.redirectTo = target;
+				} else {
+					console.error( 'Failed to read redirect.' );
+				}
+				redirectRow.remove();
+			}
+
+			// Overrides submit events to redirect to the specified path using form field values as query parameters.
+			const handleRedirect = ( e ) => handleSearchRedirect( e, form, block );
+			form.addEventListener( 'submit', handleRedirect, { capture: true } );
+			const submitBtn = form.querySelector( 'button[type="submit"]' );
+			if ( submitBtn ) {
+				submitBtn.addEventListener( 'click', handleRedirect, { capture: true } );
+			}
+		}
 	}
 }

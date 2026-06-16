@@ -46,9 +46,10 @@ function generateContent( div, container ) {
 	// take out the heading and put into its own container
 	if ( heading ) {
 		const link = buttonLink.getAttribute( 'href' );
-		const cardLink = domEl( 'a', { class: 'backdrop-card__link', href: link, 'aria-labelledby': heading.id} );
+		const cardLink = domEl( 'a', { class: 'backdrop-card__link', href: link }, heading.textContent );
+		heading.innerHTML = '';
 		heading.classList.add( 'backdrop-card__heading' );
-		heading.append( cardLink );
+		heading.appendChild( cardLink );
 		const headerWrap = domEl( 'div', { class: 'backdrop-card__header'}, meta, heading );
 		container.prepend( headerWrap );
 	}

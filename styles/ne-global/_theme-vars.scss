@@ -7,7 +7,7 @@
 	--theme-footer: #{color('secondary')};
 	--theme-icons: #{color('accent-warm-dark')};
 	--theme-section-bg: #{color('primary-darker')};
-	--theme-section-bg-light: transparent;
+	--theme-section-bg-light: #{color('primary-lightest')};
 	--theme-icon-btn-grid: #{color('primary-vivid')};
 	--theme-icon-btn-grid-text: #{color('white')};
 	--theme-icon-btn-grid-hover: #{color('primary-lightest')};

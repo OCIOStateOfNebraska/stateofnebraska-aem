@@ -15,7 +15,7 @@ import {
 	loadCSS,
 	loadBlock,
 } from './aem.js';
-import { getIndividualIcon, isSameDomainOrSubdomain } from './utils.js';
+import { getIndividualIcon, isFullWidthTemplate, isSameDomainOrSubdomain } from './utils.js';
 import { div, domEl } from './dom-helpers.js';
 
 // variable for caching site index
@@ -449,8 +449,7 @@ export function decorateMain( main ) {
 }
 
 function decorateSections( main ) {
-	const templateData = getMetadata( 'layout' ).trim().toLowerCase();
-	const isFullWidthTemplate = ( templateData !== 'side-nav' ) && ( templateData !== 'in-page-nav' );
+	const fullWidth = isFullWidthTemplate( getMetadata );
 
 	main.querySelectorAll( ':scope > div' ).forEach( ( section ) => {
 		const wrappers = [];
@@ -486,19 +485,22 @@ function decorateSections( main ) {
 						.map( ( style ) => toClassName( style.trim() ) );
 					styles.forEach( ( style ) => section.classList.add( style ) );
 				} else if ( key === 'layout' ) {
-					const [col1, col2] = meta[key].split( '/' ).map( Number );
-					const isValidLayout = col1 > 0 && col2 > 0 && col1 + col2 === 12;
+					const cols = meta[key].split( '/' ).map( ( n ) => Number( n.trim() ) );
+					const sum = cols.reduce( ( a, b ) => a + b, 0 );
+					const isValidLayout = cols.length >= 2
+						&& cols.every( ( n ) => Number.isInteger( n ) && n > 0 )
+						&& sum === 12;
 
 					if ( isValidLayout ) {
-						section.dataset.layout = col1 + '/' + col2;
+						section.dataset.layout = cols.join( '/' );
 						section.classList.add( 'grid-row', 'grid-gap' );
 
 						const divs = Array.from( section.children ).filter(
 							el => !el.querySelector( '.section-metadata' )
 						);
 
-						divs.forEach( async ( div, i ) => {
-							const colSize = i % 2 === 0 ? col1 : col2;
+						divs.forEach( ( div, i ) => {
+							const colSize = cols[i % cols.length];
 							div.classList.add( `desktop:grid-col-${colSize}` );
 						} );
 					}
@@ -510,7 +512,7 @@ function decorateSections( main ) {
 						section.classList.add( 'section-background', 'section-background--' + value );
 						backgroundOptions[value] = true;
 						
-						if( isFullWidthTemplate ) {
+						if( fullWidth ) {
 							// Apply full-width background treatment
 							section.classList.add( 'section-background--full' );
 						}
@@ -521,7 +523,7 @@ function decorateSections( main ) {
 				} else if( key === 'background-image' ) {
 					const value = String( meta[key] ?? '' ).trim();
 
-					if( isFullWidthTemplate && value && value.length ) {
+					if( fullWidth && value && value.length ) {
 						let url;
 						try {
 							url = new URL( value );
@@ -550,7 +552,7 @@ function decorateSections( main ) {
 			// Default to dark if this component is within and background isn't specified
 			if( hasIconButtonGrid && Object.keys( backgroundOptions ).filter( key => backgroundOptions[key] ).length ) {
 				section.classList.add( 'section-background', 'section-background--dark' );
-				if( isFullWidthTemplate ) {
+				if( fullWidth ) {
 					section.classList.add( 'section-background--full' );
 				}
 			} else if( hasFilledCards && ( backgroundOptions.dark || backgroundOptions.theme ) ) {
@@ -565,7 +567,7 @@ function decorateSections( main ) {
 		} else if( hasIconButtonGrid ) {
 			// Default to dark if this component is within and background isn't specified
 			section.classList.add( 'section-background', 'section-background--dark' );
-			if( isFullWidthTemplate ) {
+			if( fullWidth ) {
 				section.classList.add( 'section-background--full' );
 			}
 		}
