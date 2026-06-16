@@ -47,11 +47,11 @@ function errorMessage( error ) {
 // On a payment error, show a USWDS error alert above the form (form stays so the
 // user can retry). Replaces any prior error alert so they don't stack.
 async function showErrorAlert( block, message ) {
-	block.querySelector( '.elavon-pay-button__error' )?.remove();
+	block.querySelector( '.elavon-form__error' )?.remove();
 	const alertBlock = buildBlock( 'alert', [ [ 'Payment Error', `<p>${ message }</p>` ] ] );
 	alertBlock.classList.add( 'error' );
 	const wrapper = document.createElement( 'div' );
-	wrapper.className = 'elavon-pay-button__error';
+	wrapper.className = 'elavon-form__error';
 	wrapper.append( alertBlock );
 	decorateBlock( alertBlock );
 	block.prepend( wrapper );
