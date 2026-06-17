@@ -56,27 +56,49 @@
 		padding: units(0.5) units(1);
 
 		.file-description-name {
-			flex: 1;
-			text-decoration: underline; // clickable: previews the file
+			padding: 0;
+			border: 0;
+			background: transparent;
+			color: inherit;
+			font-family: inherit;
+			font-size: inherit;
+			text-align: left;
+			text-decoration: underline;
 			cursor: pointer;
+
+			&:focus-visible {
+				outline: 2px solid color('primary');
+				outline-offset: 2px;
+			}
 		}
 
 		.file-description-remove {
-			position: relative;
-			width: units(1.5);
-			height: units(1.5);
+			@include u-font-size('body', 'lg');
+
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 44px;
+			min-height: 44px;
+			margin-left: auto;
+			padding: 0;
 			border: 0;
-			border-radius: 3px;
-			background: color('base');
+			background: transparent;
+			color: color('base-darker');
 			cursor: pointer;
 
+			&:hover {
+				color: color('ink');
+			}
+
+			&:focus-visible {
+				outline: 2px solid color('primary');
+				outline-offset: -2px;
+			}
+
 			&:after {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				color: color('white');
-				content: 'X';
+				line-height: 1;
+				content: '\00d7';
 			}
 		}
 	}

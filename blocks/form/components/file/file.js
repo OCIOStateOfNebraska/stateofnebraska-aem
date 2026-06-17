@@ -138,7 +138,7 @@ function fileElement( file, index ) {
 	const el = document.createElement( 'div' );
 	el.dataset.index = index;
 	el.classList.add( 'file-description' );
-	el.innerHTML = `<span class="file-description-name">${file.name}</span>
+	el.innerHTML = `<button class="file-description-name" type="button">${file.name}</button>
 	<span class="file-description-size">${formatBytes( file.size )}</span>
 	<button class="file-description-remove" type="button" aria-label="Remove file"></button>`;
 	return el;
@@ -259,10 +259,14 @@ export default async function decorate( fieldDiv, field, htmlForm ) {
 		dragArea.classList.remove( 'file-dragArea-active' );
 	} );
 	fileListElement.addEventListener( 'click', ( e ) => {
-		if ( e.target.tagName === 'BUTTON' ) {
-			fileHandler.removeFile( e.target?.parentElement?.dataset?.index || 0 );
-		} else if ( e.target.tagName === 'SPAN' ) {
-			fileHandler.previewFile( e.target?.parentElement?.dataset?.index || 0 );
+		// both name and remove are buttons (keyboard-operable); distinguish by class
+		const control = e.target.closest( 'button' );
+		if ( !control ) return;
+		const index = control.parentElement?.dataset?.index || 0;
+		if ( control.classList.contains( 'file-description-remove' ) ) {
+			fileHandler.removeFile( index );
+		} else if ( control.classList.contains( 'file-description-name' ) ) {
+			fileHandler.previewFile( index );
 		}
 	} );
 	fieldDiv.insertBefore( fileListElement, input.nextElementSibling );
