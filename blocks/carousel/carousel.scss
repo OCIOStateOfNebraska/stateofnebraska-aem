@@ -259,6 +259,12 @@ main {
 	}
 }
 
+@media (prefers-reduced-motion: reduce) {
+	.carousel-toggle{
+		display: none;
+	}
+}
+
 
 .blue {
 	@include collection-theme(#033546b5,
