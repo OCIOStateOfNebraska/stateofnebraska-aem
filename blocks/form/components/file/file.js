@@ -140,7 +140,7 @@ function fileElement( file, index ) {
 	el.classList.add( 'file-description' );
 	el.innerHTML = `<span class="file-description-name">${file.name}</span>
 	<span class="file-description-size">${formatBytes( file.size )}</span>
-	<button class="file-description-remove" type="button"></button>`;
+	<button class="file-description-remove" type="button" aria-label="Remove file"></button>`;
 	return el;
 }
 

@@ -1,0 +1,83 @@
+@use '../../../../styles/ne-global-imports' as *;
+
+.file-wrapper {
+	&.decorated {
+		[type='file'] {
+			display: none;
+		}
+	}
+
+	.file-drag-area {
+		@include u-bg('white');
+		@include u-border(1px, 'dashed', 'base-light');
+		@include u-padding-y(4);
+		@include u-padding-x(2);
+		@include u-margin-top(3); 
+		@include u-font-size('body', '2xs');
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: units(2);
+
+		&:hover {
+			border-color: color('base');
+		}
+	}
+
+	// dragover → .usa-file-input--drag
+	.file-dragArea-active {
+		@include u-bg('primary-lighter');
+
+		border-color: color('primary');
+	}
+
+	// "Attach" button → .usa-file-input__choose
+	.file-attachButton {
+		@include u-padding(0);
+		@include u-font-weight('normal');
+		@include typeset-link;
+
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	// attached-file rows → .usa-file-input__preview
+	.file-description {
+		@include u-bg('primary-lighter');
+		@include u-font-size('body', '3xs');
+
+		display: flex;
+		align-items: center;
+		gap: units(1);
+		margin-top: 1px;
+		padding: units(0.5) units(1);
+
+		.file-description-name {
+			flex: 1;
+			text-decoration: underline; // clickable: previews the file
+			cursor: pointer;
+		}
+
+		.file-description-remove {
+			position: relative;
+			width: units(1.5);
+			height: units(1.5);
+			border: 0;
+			border-radius: 3px;
+			background: color('base');
+			cursor: pointer;
+
+			&:after {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				color: color('white');
+				content: 'X';
+			}
+		}
+	}
+}
