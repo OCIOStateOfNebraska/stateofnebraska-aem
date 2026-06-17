@@ -138,9 +138,9 @@ function fileElement( file, index ) {
 	const el = document.createElement( 'div' );
 	el.dataset.index = index;
 	el.classList.add( 'file-description' );
-	el.innerHTML = `<span class="file-description-name">${file.name}</span>
+	el.innerHTML = `<button class="file-description-name" type="button">${file.name}</button>
 	<span class="file-description-size">${formatBytes( file.size )}</span>
-	<button class="file-description-remove" type="button"></button>`;
+	<button class="file-description-remove" type="button" aria-label="Remove file"></button>`;
 	return el;
 }
 
@@ -182,9 +182,15 @@ function createFileHandler( allFiles, input ) {
 		attachFiles: ( inputEl, files ) => {
 			const multiple = inputEl.hasAttribute( 'multiple' );
 			let newFiles = Array.from( files );
+			const maxItems = parseInt( inputEl.dataset.maxItems, 10 );
+			let rejectedForMax = false;
 			if ( !multiple ) {
 				allFiles.splice( 0, allFiles.length );
 				newFiles = [newFiles[0]];
+			} else if ( maxItems > 0 && allFiles.length + newFiles.length > maxItems ) {
+				// block uploads beyond maxItems: only accept up to the remaining slots
+				newFiles = newFiles.slice( 0, Math.max( 0, maxItems - allFiles.length ) );
+				rejectedForMax = true;
 			}
 			const currentLength = allFiles.length;
 			allFiles.push( ...newFiles );
@@ -197,6 +203,10 @@ function createFileHandler( allFiles, input ) {
 				fileListElement.replaceChildren( ...newFileElements );
 			}
 			fileValidation( inputEl, allFiles );
+			// the kept files are within the limit, so surface why the extras were dropped
+			if ( rejectedForMax ) {
+				updateOrCreateInvalidMsg( inputEl, defaultErrorMessages.maxItems.replace( /\$0/, maxItems ) );
+			}
 			dispatchChangeEvent( input, allFiles );
 		},
 
@@ -205,9 +215,6 @@ function createFileHandler( allFiles, input ) {
 			let url = file.data || window.URL.createObjectURL( file );
 			if ( file.data ) {
 				const lastIndex = url.lastIndexOf( '/' );
-				/* added check for query param since sas url contains query params &
-					does not have file name, encoding is not required in this case
-				*/
 				if ( lastIndex >= 0 && url.indexOf( '?' ) === -1 ) {
 					// encode the filename after last slash to ensure the handling of special characters
 					url = `${url.substr( 0, lastIndex )}/${encodeURIComponent( url.substr( lastIndex + 1 ) )}`;
@@ -252,10 +259,14 @@ export default async function decorate( fieldDiv, field, htmlForm ) {
 		dragArea.classList.remove( 'file-dragArea-active' );
 	} );
 	fileListElement.addEventListener( 'click', ( e ) => {
-		if ( e.target.tagName === 'BUTTON' ) {
-			fileHandler.removeFile( e.target?.parentElement?.dataset?.index || 0 );
-		} else if ( e.target.tagName === 'SPAN' ) {
-			fileHandler.previewFile( e.target?.parentElement?.dataset?.index || 0 );
+		// both name and remove are buttons (keyboard-operable); distinguish by class
+		const control = e.target.closest( 'button' );
+		if ( !control ) return;
+		const index = control.parentElement?.dataset?.index || 0;
+		if ( control.classList.contains( 'file-description-remove' ) ) {
+			fileHandler.removeFile( index );
+		} else if ( control.classList.contains( 'file-description-name' ) ) {
+			fileHandler.previewFile( index );
 		}
 	} );
 	fieldDiv.insertBefore( fileListElement, input.nextElementSibling );
