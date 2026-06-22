@@ -24,10 +24,10 @@
 
 .ne-loading-overlay {
 	position: absolute;
-	inset: 0;
-	z-index: 1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: rgba(255, 255, 255, 0.6);
+	background-color: rgb(255 255 255 / 60%);
+	z-index: 1;
+	inset: 0;
 }

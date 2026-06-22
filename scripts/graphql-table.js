@@ -542,7 +542,7 @@ async function fetchAndRender( block, { queryUrl, pageSize, heading, headers, ro
 			.then( ( slice ) => {
 				pageCache.set( offset, slice );
 				return slice;
-			})
+			} )
 			.finally( () => inFlight.delete( offset ) );
 		inFlight.set( offset, p );
 		return p;
@@ -562,7 +562,7 @@ async function fetchAndRender( block, { queryUrl, pageSize, heading, headers, ro
 				// A short page means we've prefetched past the end — don't
 				// keep requesting offsets beyond it.
 				if ( slice.length < limit ) knownLastPage = true;
-			}).catch( () => {} );
+			} ).catch( () => {} );
 		}
 	};
 
@@ -661,7 +661,7 @@ async function fetchAndRender( block, { queryUrl, pageSize, heading, headers, ro
 			overlay.remove();
 			pageFetchInFlight = false;
 		}
-	});
+	} );
 
 	renderNav();
 	prefetchNext();
@@ -675,9 +675,9 @@ async function fetchAndRender( block, { queryUrl, pageSize, heading, headers, ro
 		pageCache.clear();
 		inFlight.clear();
 		renderNav();
-	}).catch( ( err ) => {
+	} ).catch( ( err ) => {
 		console.error( 'Failed to fetch full result set for pagination:', err );
-	});
+	} );
 }
 
 /**
