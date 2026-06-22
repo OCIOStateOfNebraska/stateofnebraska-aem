@@ -8,26 +8,26 @@
 	border-radius: 50%;
 	border-top-color: color('primary');
 	animation: ne-spin 0.8s linear infinite;
+
+	// Loading overlay: covers its positioned parent, dims the content
+	// underneath, and centers a spinner. Apply `.ne-spinner__outer-wrap` to the
+	// element you want the overlay to cover (it just establishes the
+	// positioning context) and append a `.ne-spinner__overlay` child.
+	&__outer-wrap {
+		position: relative;
+	}
+
+	&__overlay {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: rgb(255 255 255 / 60%);
+		z-index: 1;
+		inset: 0;
+	}
 }
 
 @keyframes ne-spin {
 	to { transform: rotate(360deg); }
-}
-
-// Loading overlay: covers its positioned parent, dims the content
-// underneath, and centers a spinner. Apply `.ne-loading-host` to the
-// element you want the overlay to cover (it just establishes the
-// positioning context) and append a `.ne-loading-overlay` child.
-.ne-loading-host {
-	position: relative;
-}
-
-.ne-loading-overlay {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: rgb(255 255 255 / 60%);
-	z-index: 1;
-	inset: 0;
 }

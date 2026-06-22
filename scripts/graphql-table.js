@@ -65,7 +65,7 @@ export function searchClassFromUrl( queryUrl ) {
 	const { pathname } = new URL( queryUrl, 'https://placeholder.com' );
 	const segments = pathname.split( '/' ).filter( Boolean );
 	if ( segments.length < 2 ) return null;
-	return segments.slice( -2 ).join( '-' );
+	return segments.slice( -2 ).join( '-' ).toLowerCase();
 }
 
 /**
@@ -407,11 +407,11 @@ function buildSpinner() {
  * Builds a loading overlay that covers its positioned parent, dims the
  * content underneath, and centers a spinner. Used on pagination page
  * fetches so the user sees feedback without the table contents being
- * blown away. Styled by `styles/_ne-spinner.scss` (`.ne-loading-overlay`).
+ * blown away. Styled by `styles/_ne-spinner.scss` (`.ne-spinner__overlay`).
  */
 function buildOverlay() {
 	const overlay = document.createElement( 'div' );
-	overlay.className = 'ne-loading-overlay';
+	overlay.className = 'ne-spinner__overlay';
 	overlay.append( buildSpinner() );
 	return overlay;
 }
@@ -619,7 +619,7 @@ async function fetchAndRender( block, { queryUrl, pageSize, heading, headers, ro
 		}
 
 		pageFetchInFlight = true;
-		tableBlock.classList.add( 'ne-loading-host' );
+		tableBlock.classList.add( 'ne-spinner__outer-wrap' );
 		const overlay = buildOverlay();
 		tableBlock.append( overlay );
 		try {
