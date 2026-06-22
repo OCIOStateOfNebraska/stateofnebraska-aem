@@ -1,6 +1,6 @@
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { domEl } from '../../scripts/dom-helpers.js';
-import { getIndividualIcon } from '../../scripts/utils.js';
+import { getIndividualIcon, isFullWidthTemplate } from '../../scripts/utils.js';
 
 /**
 * Generates a the media content in the card.
@@ -30,7 +30,7 @@ function generateContent( div, container ) {
 	// Extract the link
 	const wrap = div.querySelector( 'p:has(a)' ); //
 	wrap.className = 'usa-button__wrap';
-	const a = wrap.querySelector( 'a' ) ? wrap.querySelector( 'a' ) : null;
+	const cardLink = wrap.querySelector( 'a' ) ? wrap.querySelector( 'a' ) : null;
 
 	// take out the heading and put into its own container
 	if ( heading ) {
@@ -38,12 +38,14 @@ function generateContent( div, container ) {
 		const header = domEl( 'div', { class: 'usa-card__header' }, heading );
 		container.prepend( header );
 		
-		if ( a ) {
-			// Move the link in the header 
-			a.textContent = ''; 
-			a.className = '';
-			heading.append( a );
-			
+		if ( cardLink ) {
+			// Wrap the heading text in the link
+			cardLink.textContent = heading.textContent;
+			cardLink.classList = 'usa-card__link'; // remove all button classes, etc.
+			heading.innerHTML = '';
+			heading.appendChild( cardLink );
+			header.appendChild( heading );
+
 			// Icon element
 			wrap.setAttribute( 'aria-hidden', true );
 			getIndividualIcon( wrap, 'arrow_forward' );
@@ -88,8 +90,7 @@ export default function decorate( block ) {
 	const count = block.children.length;
 	const parent = block.parentElement;
 	const layout = parent?.parentElement?.dataset?.layout;
-	const templateLayout = getMetadata( 'layout' ).trim().toLowerCase();
-	const isFullWidthTemplate = ( templateLayout !== 'side-nav' ) && ( templateLayout !== 'in-page-nav' );
+	const fullWidth = isFullWidthTemplate( getMetadata );
 
 	let grid = 'grid-col-12 tablet:grid-col-6 desktop:grid-col-4';
 
@@ -105,7 +106,7 @@ export default function decorate( block ) {
 		}
 	} else {
 		// Add widescreen column for 4+ cards on full-width templates
-		if ( count >= 4 && isFullWidthTemplate ) {
+		if ( count >= 4 && fullWidth ) {
 			grid += ' widescreen:grid-col-3';
 		}
 	}

@@ -9,6 +9,8 @@ $block: 'usa-in-page-nav';
 	.#{$block} {
 		display: block;
 		max-width: unset;
+		max-height: calc(100vh - #{units($theme-in-page-nav-margin-top)});
+		overflow: auto;
 
 		&__nav {
 			background: transparent;

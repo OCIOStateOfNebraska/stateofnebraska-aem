@@ -1,4 +1,4 @@
-version: 3
+version: 4
 indices:
   site:
     exclude:
@@ -48,6 +48,9 @@ indices:
         select: head > meta[property="og:image"]
         value: |
           match(attribute(el, 'content'), 'https:\/\/[^/]+(\/.*)')
+      imageAlt:
+        value: attribute(el, 'content')
+        select: head > meta[property="og:image:alt"]
       description:
         select: head > meta[name="description"]
         value: |
@@ -75,3 +78,29 @@ indices:
         select: head > meta[name="publication-date"]
         value: |
           attribute(el, 'content')
+  events:
+    target: /events-index.json
+    include:
+      - /test-pages/events/**
+    properties:
+      template:
+        value: attribute(el, "content")
+        selectFirst: head > meta[name="template"]
+      eventStartDate:
+        value: attribute(el, "content")
+        selectFirst: head > meta[name="event-start-date"]
+      eventEndDate:
+        value: attribute(el, "content")
+        selectFirst: head > meta[name="event-end-date"]
+      eventLocation:
+        value: attribute(el, "content")
+        selectFirst: head > meta[name="event-location"]
+      eventAddress:
+        value: attribute(el, "content")
+        selectFirst: head > meta[name="event-address"]
+      title:
+        value: attribute(el, "content")
+        select: head > meta[property="og:title"]
+      description:
+        value: attribute(el, "content")
+        select: head > meta[name="description"]

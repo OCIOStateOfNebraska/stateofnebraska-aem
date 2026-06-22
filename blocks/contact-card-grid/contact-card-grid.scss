@@ -1,6 +1,14 @@
 @use '../../styles/ne-global-imports' as *;
 @use 'sass:meta';
 
+.contact-card-grid-wrapper {
+	margin-bottom: units($component-spacing-lg);
+
+	&:has(+.contact-card-grid-wrapper) {
+		margin-bottom: 0;
+	}
+}
+
 .contact-card-grid {
 	$block: 'usa-card';
 	$card-padding: units(3); // 24px (used for card body and media padding)
@@ -14,18 +22,26 @@
 	// Load USWDS card base styles
 	@include meta.load-css('~uswds/usa-card/src/styles/usa-card');
 
-	margin-bottom: units($component-spacing-lg);
 
 	// Grid container - override USWDS defaults for consistent spacing
 	.usa-card-group {
 		margin-right: units(-1); // -8px to offset card margins
 		margin-left: units(-1); // -8px to offset card margins
+
+		// Has only 1 or 2 cards
+		&:has(.#{$block}:first-child:last-child, .#{$block}:nth-child(2):last-child) {
+			justify-content: center;
+		}
 	}
 
 	// Individual contact card - override USWDS defaults
 	.#{$block} {
-		margin-bottom: units(2); // 16px - matches horizontal gap between cards
-		list-style: none;
+		list-style: '';
+
+		&,
+		&:last-child {
+			margin-bottom: units(2); // 16px - matches horizontal gap between cards
+		}
 
 		&__container {
 			// Override USWDS defaults for custom spacing and styling
@@ -108,27 +124,6 @@
 		width: 101%; // Icon size relative to container to match Figma (81% * 1.25)
 		height: 101%;
 		color: $placeholder-bluegray-dark;
-	}
-
-	// Manager card (first card) - centered on its own row (custom feature)
-	.contact-card--manager {
-		// Force card to take full width to be alone on row
-		flex: 0 0 100%;
-		max-width: 100%;
-
-		.usa-card__container {
-			// On tablet, match width of regular cards and center
-			@include at-media('tablet') {
-				width: calc(50% - 1rem); // Match tablet:grid-col-6
-				margin-right: auto;
-				margin-left: auto;
-			}
-
-			// On desktop, match width of regular cards
-			@include at-media('desktop') {
-				width: calc(33.333% - 1rem); // Match desktop:grid-col-4
-			}
-		}
 	}
 
 	// Custom title text styling (not a standard USWDS element)

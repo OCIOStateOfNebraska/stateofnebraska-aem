@@ -10,7 +10,7 @@ import createPagination from '../blocks/search/search-pagination.js';
  */
 export async function getAllResults( queryUrl, pageSize, params ) {
 	const query = buildUrl( queryUrl, pageSize, params );
-	console.log( "#getAllResults - query: ", query );
+	console.log( '#getAllResults - query: ', query );
 	const response = await fetch( query );
 	if ( !response.ok ) {
 		throw new Error( `Response status: ${response.status}` );
@@ -18,7 +18,7 @@ export async function getAllResults( queryUrl, pageSize, params ) {
 
 	const results = await response.json();
 	const items = Object.values( results.data )[0]?.items ?? [];
-	console.log( "getAllResults: ", items );
+	console.log( 'getAllResults: ', items );
 	return items;
 }
 
@@ -185,11 +185,14 @@ export function resolvePlaceholder( name, values ) {
  *    detail-page configuration row.
  */
 export function substitute( template, values ) {
+	// Fallback for rows with no pdfAsset.
+	const MISSING_PDF_MESSAGE_HTML = 'A copy of this order may be requested from the Department using the <a href="https://ndbf.nebraska.gov/about/contact-us">"Contact Us" form</a>.';
+
 	const result = template.cloneNode( true );
 	const pattern = /<([^<>\s]+)>/g;
 	const replace = ( str ) => str.replace( pattern, ( _match, name ) => (
 		resolvePlaceholder( name, values )
-	));
+	) );
 
 	const walker = document.createTreeWalker( result, NodeFilter.SHOW_TEXT );
 	for ( let node = walker.nextNode(); node; node = walker.nextNode() ) {
@@ -204,7 +207,15 @@ export function substitute( template, values ) {
 		const raw = a.getAttribute( 'href' )
 			.replace( /%3C/gi, '<' )
 			.replace( /%3E/gi, '>' );
-		a.setAttribute( 'href', replace( raw ) );
+		const newHref = replace( raw );
+
+		// Unresolved `<pdfAsset...>` → row has no PDF, swap in fallback.
+		if ( newHref.includes( '<pdfAsset' ) ) {
+			a.outerHTML = MISSING_PDF_MESSAGE_HTML;
+			return;
+		}
+
+		a.setAttribute( 'href', newHref );
 
 		// scripts.js's `decorateButtons` runs over <main> before any block
 		// decorator and converts any <a> that's the sole child of its
@@ -214,9 +225,9 @@ export function substitute( template, values ) {
 		// unless the author opts in to a button via separate styling.
 		[...a.classList].forEach( ( c ) => {
 			if ( c.startsWith( 'usa-button' ) ) a.classList.remove( c );
-		});
+		} );
 		a.parentElement?.classList.remove( 'usa-button__wrap' );
-	});
+	} );
 
 	return result;
 }
@@ -250,7 +261,7 @@ export function mergeParagraphs( element ) {
 		if ( i < kept.length - 1 ) {
 			merged.append( document.createElement( 'br' ) );
 		}
-	});
+	} );
 	paragraphs.forEach( ( p ) => p.remove() );
 	element.append( merged );
 }
@@ -300,7 +311,7 @@ function buildDataRows( rowTemplate, items, cellMarkers ) {
 				template: marker.stripped,
 				subItems: Array.isArray( subItems ) ? subItems : [],
 			};
-		});
+		} );
 
 		const loopCounts = cellPlans
 			.filter( ( p ) => p.kind === 'loop' )
@@ -329,7 +340,7 @@ function buildDataRows( rowTemplate, items, cellMarkers ) {
 					}
 					tr.append( td );
 				}
-			});
+			} );
 			rows.push( tr );
 		}
 	}
@@ -702,5 +713,5 @@ export function renderTable( block, config ) {
 	fetchAndRender( block, config ).catch( ( err ) => {
 		console.error( 'renderTable failed:', err );
 		renderErrorAlert( block );
-	});
+	} );
 }

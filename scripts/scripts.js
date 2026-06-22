@@ -15,7 +15,7 @@ import {
 	loadCSS,
 	loadBlock,
 } from './aem.js';
-import { getIndividualIcon, isSameDomainOrSubdomain } from './utils.js';
+import { getIndividualIcon, isFullWidthTemplate, isSameDomainOrSubdomain } from './utils.js';
 import { div, domEl } from './dom-helpers.js';
 
 // variable for caching site index
@@ -449,8 +449,7 @@ export function decorateMain( main ) {
 }
 
 function decorateSections( main ) {
-	const templateData = getMetadata( 'layout' ).trim().toLowerCase();
-	const isFullWidthTemplate = ( templateData !== 'side-nav' ) && ( templateData !== 'in-page-nav' );
+	const fullWidth = isFullWidthTemplate( getMetadata );
 
 	main.querySelectorAll( ':scope > div' ).forEach( ( section ) => {
 		const wrappers = [];
@@ -513,7 +512,7 @@ function decorateSections( main ) {
 						section.classList.add( 'section-background', 'section-background--' + value );
 						backgroundOptions[value] = true;
 						
-						if( isFullWidthTemplate ) {
+						if( fullWidth ) {
 							// Apply full-width background treatment
 							section.classList.add( 'section-background--full' );
 						}
@@ -524,7 +523,7 @@ function decorateSections( main ) {
 				} else if( key === 'background-image' ) {
 					const value = String( meta[key] ?? '' ).trim();
 
-					if( isFullWidthTemplate && value && value.length ) {
+					if( fullWidth && value && value.length ) {
 						let url;
 						try {
 							url = new URL( value );
@@ -553,7 +552,7 @@ function decorateSections( main ) {
 			// Default to dark if this component is within and background isn't specified
 			if( hasIconButtonGrid && Object.keys( backgroundOptions ).filter( key => backgroundOptions[key] ).length ) {
 				section.classList.add( 'section-background', 'section-background--dark' );
-				if( isFullWidthTemplate ) {
+				if( fullWidth ) {
 					section.classList.add( 'section-background--full' );
 				}
 			} else if( hasFilledCards && ( backgroundOptions.dark || backgroundOptions.theme ) ) {
@@ -568,7 +567,7 @@ function decorateSections( main ) {
 		} else if( hasIconButtonGrid ) {
 			// Default to dark if this component is within and background isn't specified
 			section.classList.add( 'section-background', 'section-background--dark' );
-			if( isFullWidthTemplate ) {
+			if( fullWidth ) {
 				section.classList.add( 'section-background--full' );
 			}
 		}
