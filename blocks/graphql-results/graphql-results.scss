@@ -16,8 +16,21 @@ $block: 'graphql-results';
 	}
 }
 
+.#{$block} {
+	&.ndbf-search-securities {
+		.usa-pagination {
+			justify-content: left;
+			
+			&__page-no, &__overflow {
+				display: none;
+			}
+		}
+	}
+}
+
 .graphql-results {
 	.ne-spinner {
 		margin: units(5) auto;
 	}
 }
+

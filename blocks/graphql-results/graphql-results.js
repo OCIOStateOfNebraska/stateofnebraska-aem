@@ -1,4 +1,4 @@
-import { renderTable } from '../../scripts/graphql-table.js';
+import { renderTable, searchClassFromUrl } from '../../scripts/graphql-table.js';
 
 export default async function decorate( block ) {
 	const [
@@ -11,6 +11,9 @@ export default async function decorate( block ) {
 
 	/** @type {HTMLAnchorElement | null} */
 	const queryUrl = extractLink( queryRow );
+	// Tag the block with the search it runs, e.g. `ndbf-search-securities`.
+	const searchClass = searchClassFromUrl( queryUrl.href );
+	if ( searchClass ) block.classList.add( searchClass );
 	/** @type {number} */
 	const pageSize = parseInt( pageSizeRow.children[1]?.innerText );
 	/** @type {Array<string>} */

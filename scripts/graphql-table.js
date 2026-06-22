@@ -56,6 +56,19 @@ export function buildUrl( queryUrl, pageSize, params = {} ) {
 }
 
 /**
+ * Derives a CSS class from a persisted-query URL identifying which search it
+ * runs — the last two path segments joined with a hyphen. e.g.
+ * `/graphql/execute.json/ndbf/search-securities` → `ndbf-search-securities`.
+ * Returns `null` if the URL has fewer than two usable path segments.
+ */
+export function searchClassFromUrl( queryUrl ) {
+	const { pathname } = new URL( queryUrl, 'https://placeholder.com' );
+	const segments = pathname.split( '/' ).filter( Boolean );
+	if ( segments.length < 2 ) return null;
+	return segments.slice( -2 ).join( '-' );
+}
+
+/**
  * Walks a dot-separated path through `root`. Returns `{ exists, value }`:
  *   - `exists` is true iff every segment of the path resolved cleanly
  *     (each intermediate was an object with the named property, and the
