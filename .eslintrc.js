@@ -36,7 +36,7 @@ module.exports = {
 			'date-input': 21,
 			'drop-down': 19,
 			email: 22,
-			'file-input': 20,
+			'file-input': 22,
 			'form-fragment': 15,
 			'form-image': 7,
 			'multiline-input': 23,

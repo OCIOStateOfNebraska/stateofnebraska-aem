@@ -7,6 +7,16 @@
 	max-width: measure($theme-text-measure);
 	font-size: font-size('body', 5);
 
+	// Applied while we only have first-page data and the full result set is
+	// still in flight. Shows just prev/next; page numbers are added when
+	// the full set lands and the nav re-renders without this class.
+	&--minimal {
+		.usa-pagination__page-no,
+		.usa-pagination__overflow {
+			display: none;
+		}
+	}
+
 	&__link-text,
 	.usa-icon__wrap {
 		pointer-events: none;
