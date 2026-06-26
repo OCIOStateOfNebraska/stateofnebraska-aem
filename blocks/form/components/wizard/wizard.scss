@@ -1,0 +1,59 @@
+@use '../../styles/ne-global-imports' as *;
+
+$block: 'wizard';
+
+.#{$block} {
+	&-menu-indicator {
+		display: flex;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+	}
+
+	&-menu-item {
+		position: relative;
+		flex: 1 1 0%;
+		min-height: units(1);
+		margin-right: px-to-rem(1);
+		margin-left: px-to-rem(1);
+		padding-top: units(1);
+
+		&:after {
+			position: absolute;
+			top: 0;
+			right: 0;
+			left: 0;
+			display: block;
+			height: units(1);
+			background-color: color('base-dark');
+			content: '';
+		}
+	}
+
+	&-menu-active-item {
+		&:after {
+			background-color: color('primary');
+		}
+	}
+
+	&-step--complete {
+		&:after {
+			background-color: color(';primary-darkest');
+		}
+	}
+
+	&-button-wrapper {
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		gap: 0 2rem;
+	}
+
+	.panel-wrapper {
+		display: none;
+	}
+
+	.current-wizard-step {
+		display: block;
+	}
+}
