@@ -474,18 +474,20 @@ function decorateSections( main ) {
 		const hasFilledCards = section.querySelector( '.info-card-grid.filled, .info-card-grid .icon, .linked-card-grid.filled' ) !== null;
 		const backgroundOptions = { 'light': false, 'dark': false, 'theme': false };
 
-		if ( sectionMeta ) {
-			const meta = readBlockConfig( sectionMeta );
+		// Support both old and new section metadata format
+		// https://github.com/adobe/helix-html-pipeline/releases/tag/v6.28.0
+		let sectionMetaObj = sectionMeta ? readBlockConfig( sectionMeta ) : section.dataset;
 
-			Object.keys( meta ).forEach( ( key ) => {
+		if ( sectionMetaObj ) {
+			Object.keys( sectionMetaObj ).forEach( ( key ) => {
 				if ( key === 'style' ) {
-					const styles = meta.style
+					const styles = sectionMetaObj.style
 						.split( ',' )
 						.filter( ( style ) => style )
 						.map( ( style ) => toClassName( style.trim() ) );
 					styles.forEach( ( style ) => section.classList.add( style ) );
 				} else if ( key === 'layout' ) {
-					const cols = meta[key].split( '/' ).map( ( n ) => Number( n.trim() ) );
+					const cols = sectionMetaObj[key].split( '/' ).map( ( n ) => Number( n.trim() ) );
 					const sum = cols.reduce( ( a, b ) => a + b, 0 );
 					const isValidLayout = cols.length >= 2
 						&& cols.every( ( n ) => Number.isInteger( n ) && n > 0 )
@@ -506,7 +508,7 @@ function decorateSections( main ) {
 					}
 				}
 				else if ( key === 'background' ) {
-					const value = String( meta[key] ?? '' ).trim().toLowerCase();
+					const value = String( sectionMetaObj[key] ?? '' ).trim().toLowerCase();
 
 					if( Object.keys( backgroundOptions ).includes( value ) ) {
 						section.classList.add( 'section-background', 'section-background--' + value );
@@ -521,7 +523,7 @@ function decorateSections( main ) {
 						section.classList.remove( 'section-background' );
 					}
 				} else if( key === 'background-image' ) {
-					const value = String( meta[key] ?? '' ).trim();
+					const value = String( sectionMetaObj[key] ?? '' ).trim();
 
 					if( fullWidth && value && value.length ) {
 						let url;
@@ -545,7 +547,7 @@ function decorateSections( main ) {
 						}
 					}
 				} else {
-					section.dataset[toCamelCase( key )] = meta[key];
+					section.dataset[toCamelCase( key )] = sectionMetaObj[key];
 				}
 			} );
 
@@ -562,8 +564,10 @@ function decorateSections( main ) {
 				section.classList.add( 'section-background--light' );
 				backgroundOptions.light = true;
 			}
-
-			sectionMeta.parentElement.remove(); // itself + wrapping div
+			
+			if( sectionMeta ) {
+				sectionMeta.parentElement.remove(); // itself + wrapping div
+			}
 		} else if( hasIconButtonGrid ) {
 			// Default to dark if this component is within and background isn't specified
 			section.classList.add( 'section-background', 'section-background--dark' );
