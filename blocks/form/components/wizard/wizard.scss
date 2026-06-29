@@ -39,7 +39,7 @@ $block: 'wizard';
 
 	&-step--complete {
 		&:after {
-			background-color: color(';primary-darkest');
+			background-color: color('primary-darkest');
 		}
 	}
 
