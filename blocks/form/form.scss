@@ -120,6 +120,12 @@ form {
 		@include u-font-weight('bold');
 		margin-top: units(.5);
 		color: color('error-dark');
+
+		p {
+			@include u-font-weight('normal');
+			color: color('base-dark');
+			font-size: size('body', 5);
+		}
 	}
 	
 	fieldset { // due to classes in aem forms, I need to override spacing for chrome 

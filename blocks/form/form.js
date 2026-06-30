@@ -145,7 +145,16 @@ const fieldRenderers = {
 };
 
 function colSpanDecorator( field, element ) {
-	const colSpan = field['Column Span'] || field.properties?.colspan;
+	let colSpan = field['Column Span Mobile'] || field.properties?.colspanmob;
+
+	if( window.matchMedia( '(min-width: 40em)' ).matches ){
+		colSpan = field['Column Span Tablet'] || field.properties?.colspantab;
+	}
+
+	if( window.matchMedia( '(min-width: 64em)' ).matches ){
+		colSpan = field['Column Span'] || field.properties?.colspan;
+	}
+
 	if ( colSpan && element ) {
 		element.classList.add( `col-${colSpan}` );
 	}
