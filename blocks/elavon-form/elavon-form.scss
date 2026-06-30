@@ -1,0 +1,168 @@
+@use '../../styles/ne-global-imports' as *;
+
+$elavon-rule-color: color('base-lighter');
+$elavon-value-size: units(2);
+$elavon-total-size: units(2.5);
+
+@mixin elavon-readonly-value {
+	.usa-input {
+		&:disabled {
+			@include u-font-weight('bold');
+
+			border: 0;
+			background: transparent;
+			color: inherit;
+			font-size: $elavon-value-size;
+			box-shadow: none;
+			opacity: 1;
+			-webkit-text-fill-color: currentcolor;
+		}
+	}
+}
+
+.wizard {
+	.field-panel-transaction-item {
+		.panel-wrapper {
+			align-items: flex-end;
+		}
+	}
+
+	.field-panel-total {
+		align-items: baseline;
+	}
+
+	.wizard-button-wrapper {
+		.button {
+			&[type='submit'] {
+				max-width: max-content;
+			}
+		}
+	}
+
+	.current-wizard-step {          
+		&:not(:last-of-type) {
+			~ .wizard-button-wrapper {
+				> [type='submit'] {
+					display: none;
+				}
+			}
+		}
+	}
+}
+
+.elavon-form {
+	.form-wrapper {
+		.usa-form {
+			.wizard {
+				background-color: transparent;
+			}
+		}
+	}
+
+	.field-unitpriceinput,
+	.field-amountinput {
+		@include elavon-readonly-value;
+	}
+
+	.field-panel-total {
+		.field-amount {
+			@include elavon-readonly-value;
+		}
+	}
+
+	@include at-media-max('tablet') {
+		.field-panel-transaction-item {
+			.repeat-wrapper {
+				> [data-repeatable='true'] {
+					position: relative;
+					padding: 1.75rem 1rem 1rem;
+					border: 1px solid $elavon-rule-color;
+					border-radius: 8px;
+					row-gap: 0.75rem;
+
+					> .button-wrapper {
+						position: absolute;
+						inset: 0.5rem 0.5rem auto auto;
+						width: auto;
+						margin-top: 0;
+
+						.usa-button {
+							width: auto;
+							margin: 0;
+							padding: 0.45rem 1.15rem;
+							font-size: 0.95rem;
+						}
+					}
+				}
+			}
+
+			.field-unitpriceinput,
+			.field-amountinput {
+				display: flex;
+				align-items: baseline;
+				justify-content: space-between;
+				gap: 0.5rem;
+				margin-top: 0;
+
+				.field-label {
+					margin: 0;
+				}
+
+				.usa-input {
+					width: auto;
+					height: auto;
+					padding: 0;
+					text-align: right;
+				}
+			}
+
+			.field-quantityinput {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 0.5rem;
+				margin-top: 0;
+
+				.field-label {
+					margin: 0;
+				}
+
+				.usa-input {
+					flex: 0 0 auto;
+					width: 5rem;
+				}
+			}
+		}
+
+		.field-panel-total {
+			.field-add-item-button {
+				padding-bottom: 1.5rem;
+				border-bottom: 2px solid $elavon-rule-color;
+			}
+
+			.plain-text-wrapper {
+				&.field-wrapper {
+					@include u-font-weight('bold');
+
+					grid-column: 1 / span 7;
+					margin-top: 0;
+				}
+			}
+
+			.field-amount {
+				&.field-wrapper {
+					grid-column: 8 / -1;
+					margin-top: 0;
+
+					.usa-input {
+						width: 100%;
+						height: auto;
+						padding: 0;
+						font-size: $elavon-total-size;
+						text-align: right;
+					}
+				}
+			}
+		}
+	}
+}
