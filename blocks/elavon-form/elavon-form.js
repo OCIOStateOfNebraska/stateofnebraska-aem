@@ -7,7 +7,7 @@ const CONVERGE_SDK_HOSTS = {
 	demo: 'https://api.demo.convergepay.com',
 	prod: 'https://api.convergepay.com',
 };
-const SESSION_URL = '/bin/elavon';
+const DEFAULT_SESSION_URL = '/bin/elavon';
 
 function convergeSdkUrl( block ) {
 	const host = block.classList.contains( 'demo' ) ? CONVERGE_SDK_HOSTS.demo : CONVERGE_SDK_HOSTS.prod;
@@ -27,8 +27,17 @@ const BILLING_FIELDS = [
 	'phone',
 ];
 
+function sessionUrl( block ) {
+	const row = block.children[ 1 ];
+	if ( !row ) return DEFAULT_SESSION_URL;
+	const link = row.querySelector( 'a[href]' );
+	return link?.getAttribute( 'href' ) || row.textContent.trim() || DEFAULT_SESSION_URL;
+}
+
 function createFormBlock( sourceBlock ) {
-	const link = sourceBlock.querySelector( 'a[href]' );
+	// Scope to the first row so an optional session-URL row can't be mistaken
+	// for the form-definition link.
+	const link = sourceBlock.firstElementChild?.querySelector( 'a[href]' );
 	const formBlock = buildBlock( 'form', link?.outerHTML || '' );
 	formBlock.classList.add( 'full-width' );
 	const wrapper = document.createElement( 'div' );
@@ -89,7 +98,7 @@ function buildCartItems( form ) {
 		.filter( Boolean );
 }
 
-async function fetchSessionToken( form ) {
+async function fetchSessionToken( form, url ) {
 	const formData = new FormData( form );
 	const params = new URLSearchParams();
 
@@ -115,7 +124,7 @@ async function fetchSessionToken( form ) {
 		if ( item.cond !== '' ) params.set( `items[${ i }].cond`, item.cond );
 	} );
 
-	const response = await fetch( SESSION_URL, {
+	const response = await fetch( url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
@@ -149,6 +158,7 @@ function openConvergeLightbox( token, block ) {
 
 export default async function decorate( block ) {
 	const sdkUrl = convergeSdkUrl( block );
+	const tokenUrl = sessionUrl( block );
 
 	// Wrap the authored content in a nested form block.
 	const formBlock = createFormBlock( block );
@@ -172,7 +182,7 @@ export default async function decorate( block ) {
 
 		try {
 			await loadScript( sdkUrl );
-			const token = await fetchSessionToken( form );
+			const token = await fetchSessionToken( form, tokenUrl );
 			openConvergeLightbox( token, block );
 		} catch ( error ) {
 			showErrorAlert( block, errorMessage( error ) );
