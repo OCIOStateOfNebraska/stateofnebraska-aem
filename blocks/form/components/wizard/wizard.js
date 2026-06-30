@@ -58,7 +58,6 @@ export class WizardLayout {
 	navigate( panel, forward = true ) {
 		const current = panel.querySelector( '.current-wizard-step' );
 		const currentMenuItem = panel.querySelector( '.wizard-menu-active-item' );
-		const indicators = panel.querySelectorAll( '.wizard-menu-item' );
 
 		let valid = true;
 		if ( forward ) {
@@ -71,17 +70,8 @@ export class WizardLayout {
 			navigateTo.classList.add( 'current-wizard-step' );
 			// add/remove active class from menu item
 			const navigateToMenuItem = panel.querySelector( `li[data-index="${navigateTo.dataset.index}"]` );
-			currentMenuItem?.classList.remove( 'wizard-menu-active-item' );
-			navigateToMenuItem?.classList.add( 'wizard-menu-active-item' );
-
-			for( let i = 0; i < indicators.length; i++ ){
-				if ( i < navigateTo.dataset.index ){
-					indicators[i].classList.add( 'wizard-step--complete' );
-				}
-				else{
-					indicators[i].classList.remove( 'wizard-step--complete' );
-				}
-			}
+			currentMenuItem.classList.remove( 'wizard-menu-active-item' );
+			navigateToMenuItem.classList.add( 'wizard-menu-active-item' );
 			const event = new CustomEvent( 'wizard:navigate', {
 				detail: {
 					prevStep: { id: current.id, index: +current.dataset.index },
@@ -109,7 +99,7 @@ export class WizardLayout {
 				activePanel?.classList.add( 'current-wizard-step' );
 				// for active menu item
 				panel.querySelector( '.wizard-menu-active-item' )?.classList.remove( 'wizard-menu-active-item' );
-				menuItems?.querySelector( `[data-index="${activePanel.dataset.index}"]` )?.classList.add( 'wizard-menu-active-item' );
+				menuItems.querySelector( `[data-index="${activePanel.dataset.index}"]` )?.classList.add( 'wizard-menu-active-item' );
 				target.querySelector( '[data-active="true"]' )?.focus();
 			}
 		} );
@@ -131,7 +121,7 @@ export class WizardLayout {
 
 	static createMenu( children ) {
 		const ul = document.createElement( 'ul' );
-		ul.className = 'wizard-menu-indicator';
+		ul.className = 'wizard-menu-items';
 		children.forEach( ( child, index ) => {
 			const li = document.createElement( 'li' );
 			li.innerHTML = child.querySelector( 'legend' )?.innerHTML || '';
@@ -147,7 +137,7 @@ export class WizardLayout {
 
 	addButton( wrapper, panel, buttonDef, forward = true ) {
 		const button = createButton( buttonDef );
-		button.classList.add( buttonDef.id, 'col-6' );
+		button.classList.add( buttonDef.id );
 		button.addEventListener( 'click', () => this.navigate( panel, forward ) );
 		wrapper.append( button );
 	}
