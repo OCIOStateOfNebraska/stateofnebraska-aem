@@ -30,9 +30,7 @@ export async function getAllResults( queryUrl, pageSize, params ) {
  * @param {{[k: string]: string}} [params] - additional `;key=value;` parameters
  */
 export function buildUrl( queryUrl, pageSize, params = {} ) {
-	const BASE_HOST = 'https://beta-ndbf.nebraska.gov';
-	const queryPath = new URL( queryUrl, 'https://placeholder.com' ).pathname;
-	const baseUrl = `${BASE_HOST}${queryPath}`;
+	const baseUrl = new URL( queryUrl );
 
 	// Build raw `;key=value;…` segments with literal characters; we encode
 	// the whole string in one pass at the end. This matches the official
