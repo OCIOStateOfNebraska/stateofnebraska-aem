@@ -144,20 +144,43 @@ const fieldRenderers = {
 	heading: createHeading,
 };
 
+const desktopMq = window.matchMedia( '(min-width: 64em)' );
+const tabletMq = window.matchMedia( '(min-width: 40em)' );
+const fieldElementMap = new WeakMap();
+
+function getColSpan( field ) {
+	if ( desktopMq.matches ) {
+		return field['Column Span'] || field.properties?.colspan;
+	} if ( tabletMq.matches ) {
+		return field['Column Span Tablet'] || field.properties?.colspantab;
+	}
+	return field['Column Span Mobile'] || field.properties?.colspanmob; 
+}
+
 function colSpanDecorator( field, element ) {
-	let colSpan = field['Column Span Mobile'] || field.properties?.colspanmob;
+	if ( !element ) return;
 
-	if( window.matchMedia( '(min-width: 40em)' ).matches ){
-		colSpan = field['Column Span Tablet'] || field.properties?.colspantab;
-	}
+	element.classList.remove(
+		...Array.from( element.classList ).filter( className => /^col-\d+$/.test( className ) )
+	);
 
-	if( window.matchMedia( '(min-width: 64em)' ).matches ){
-		colSpan = field['Column Span'] || field.properties?.colspan;
-	}
+	const colSpan = getColSpan( field );
 
-	if ( colSpan && element ) {
+	if ( colSpan ) {
 		element.classList.add( `col-${colSpan}` );
 	}
+}
+
+function updateColSpan( form ) {
+	if( !form ) return;
+
+	form.querySelectorAll( '[data-id]' ).forEach( element => {
+		const field = fieldElementMap.get( element );
+
+		if( field ){
+			colSpanDecorator( field, element );
+		}
+	} );
 }
 
 const handleFocus = ( input, field ) => {
@@ -296,6 +319,7 @@ export async function generateFormRendition( panel, container, formId, getItems 
 			return element;
 		}
 		const element = renderField( field );
+		fieldElementMap.set ( element, field );
 		if ( field.appliedCssClassNames ) {
 			element.className += ` ${field.appliedCssClassNames}`;
 		}
@@ -558,6 +582,17 @@ export default async function decorate( block ) {
 		}
 		form.className = 'usa-form usa-form--large';
 		container.replaceWith( form );
+		
+		let resizeTimeout;
+		const resizeObserver = new ResizeObserver( () => {
+			clearTimeout ( resizeTimeout );
+
+			resizeTimeout = setTimeout( () => {
+				updateColSpan ( form );
+			}, 100 );
+		} );
+		
+		resizeObserver.observe( block ) ;
 
 		// Form variation: search-redirect
 		if ( block.classList.contains( 'search-redirect' ) ) {
