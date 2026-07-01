@@ -329,6 +329,15 @@ export function createRadioOrCheckbox( fd ) {
 			}
 		}
 	}
+	if ( ( fd?.fieldType === 'radio' ) || fd?.fieldType === 'checkbox' ) {
+		if ( fd?.fieldType === 'checkbox' ) {	
+			input.classList.add( 'usa-checkbox__input' );
+			input.classList.add( 'usa-checkbox__input--tile' );
+		} else if ( fd?.fieldType === 'radio' ) {
+			input.classList.add( 'usa-radio__input' );
+			input.classList.add( 'usa-radio__input--tile' );
+		}
+	}
 	wrapper.insertAdjacentElement( 'afterbegin', input );
 	return wrapper;
 }

@@ -1,4 +1,4 @@
-import { renderTable } from '../../scripts/graphql-table.js';
+import { renderTable, searchClassFromUrl } from '../../scripts/graphql-table.js';
 import { getIndividualIcon } from '../../scripts/utils.js';
 
 /**
@@ -73,6 +73,9 @@ export default async function decorate( block ) {
 
 	/** @type {HTMLAnchorElement | null} */
 	const queryUrl = extractLink( queryRow );
+	// Tag the block with the search it runs, e.g. `ndbf-get-institution`.
+	const searchClass = searchClassFromUrl( queryUrl.href );
+	if ( searchClass ) block.classList.add( searchClass );
 	/** @type {HTMLAnchorElement | null} cell-2 holds the link to the results page */
 	const backUrlLink = extractLink( backUrlRow );
 	/** @type {HTMLElement} cell-2 of the heading row is the heading template */
