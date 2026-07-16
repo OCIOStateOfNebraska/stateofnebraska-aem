@@ -35,10 +35,25 @@ function buildHeroBlock( main, templateName ) {
 	const multipleSections = main.querySelectorAll( '.section' ).length > 1;
 
 	let picture = null;
+	let video = null;
 	// If there are no sections delineated, everything is in the hero section
 	// homepage always grabs the first image (it's required)
 	if ( heroSection && ( multipleSections || templateName === 'homepage' ) ) {
 		picture = heroSection.querySelector( 'picture' );
+		const videoLink = heroSection.querySelector( 'a' )?.href?.endsWith( 'mp4' ) 
+		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'mov' )
+		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'mkv' )
+		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'avi' )
+		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'webm' )
+		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'wmv' );
+
+		if( videoLink ) {
+			const extention = heroSection.querySelector( 'a' )?.href?.match(/\.\S{3,5}$/g)[0].replace('.','').trim();
+			video = domEl( 'video', { autoplay: '', muted: '', loop: '', playsinline: '', defaultMuted: '', preload:"auto"},
+		 		domEl( 'source', { src: heroSection.querySelector( 'a' ).href, type: `video/${extention}` })
+	 		)
+			heroSection.querySelector( 'a' ).remove();
+		}
 	}
 
 	const container = document.createElement( 'div' );
@@ -48,13 +63,13 @@ function buildHeroBlock( main, templateName ) {
 		if ( heroSection && multipleSections ) {
 			desc = heroSection.querySelectorAll( 'p, ul, ol' );
 		}
-		heroBlock = buildBlock( 'hero-homepage', { elems: [picture, h1, ...desc] } );
+		heroBlock = buildBlock( 'hero-homepage', { elems: [picture || video, h1, ...desc] } );
 
 		if( !heroSection.textContent.trim().length ) {
 			heroSection.remove();
 		}
 	} else {
-		heroBlock = buildBlock( 'hero', { elems: [picture, h1] } );
+		heroBlock = buildBlock( 'hero', { elems: [picture || video, h1, ] } );
 	}
 	container.appendChild( heroBlock );
 	main.prepend( container );

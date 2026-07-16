@@ -1,5 +1,5 @@
-import { div } from '../../scripts/dom-helpers.js';
-import { removeEmptyChildren } from '../../scripts/utils.js';
+import { div, button } from '../../scripts/dom-helpers.js';
+import { removeEmptyChildren, getIndividualIcon } from '../../scripts/utils.js';
 
 export default function decorate( block ) {
 	block.classList.add( 'usa-hero' );
@@ -7,6 +7,114 @@ export default function decorate( block ) {
 	const container = div( { class: 'grid-container' }, content );
 	
 	const backgroundImg = block.querySelector( 'picture' );
+	const video = block.querySelector( 'video' );
+	let videoBlock = null;
+	
+	if( !backgroundImg && video ) {
+		const reducedMotionMq = window.matchMedia( '(prefers-reduced-motion: reduce)' );
+		if( reducedMotionMq.matches ){
+			video.pause();
+		}
+		const playButton = button( { class: 'usa-hero__control usa-button usa-button--secondary usa-link', 
+			title: 'Pause',  
+			'aria-label': 'Pause video',  
+			'aria-pressed': false }, 
+			'' );
+		getIndividualIcon( playButton, 'pause' );
+		videoBlock = div( { class: 'usa-hero__video' }, video, playButton );
+		
+			let userPaused = false;
+		let pausedByInteraction = false;
+
+		function updateButtonState( isPaused ) {
+			playButton.innerHTML = '';
+
+			if ( isPaused ) {
+				playButton.setAttribute( 'title', 'Play' );
+				playButton.setAttribute( 'aria-label', 'Play video' );
+				playButton.setAttribute( 'aria-pressed', 'true' );
+				getIndividualIcon( playButton, 'play' );
+			} else {
+				playButton.setAttribute( 'title', 'Pause' );
+				playButton.setAttribute( 'aria-label', 'Pause video' );
+				playButton.setAttribute( 'aria-pressed', 'false' );
+				getIndividualIcon( playButton, 'pause' );
+			}
+		}
+
+		function pauseForInteraction() {
+			if ( reducedMotionMq.matches || video.paused ) {
+				return;
+			}
+
+			pausedByInteraction = true;
+			video.pause();
+			updateButtonState( true );
+		}
+
+		function resumeAfterInteraction() {
+			if (
+				reducedMotionMq.matches
+				|| userPaused
+				|| !pausedByInteraction
+			) {
+				return;
+			}
+
+			pausedByInteraction = false;
+
+			video.play().catch( () => {
+				updateButtonState( true );
+			} );
+
+			updateButtonState( false );
+		}
+
+		playButton.addEventListener( 'click', () => {
+			if ( video.paused ) {
+				userPaused = false;
+				pausedByInteraction = false;
+
+				video.play().catch( () => {
+					updateButtonState( true );
+				} );
+
+				updateButtonState( false );
+			} else {
+				userPaused = true;
+				pausedByInteraction = false;
+				video.pause();
+				updateButtonState( true );
+			}
+		} );
+
+		block.addEventListener( 'focusin', pauseForInteraction );
+
+		block.addEventListener( 'focusout', ( event ) => {
+			if ( block.contains( event.relatedTarget ) ) {
+				return;
+			}
+
+			resumeAfterInteraction();
+		} );
+
+		block.addEventListener( 'mouseenter', pauseForInteraction );
+		block.addEventListener( 'mouseleave', resumeAfterInteraction );
+
+		if ( reducedMotionMq.matches ) {
+			userPaused = true;
+			video.pause();
+			updateButtonState( true );
+		} else {
+			video.play()
+			.then( () => {
+				updateButtonState( false );
+			} )
+			.catch( () => {
+				updateButtonState( true );
+			} );
+		}
+	}	
 
 	const h1 = block.querySelector( 'h1' );
 	h1.classList.add( 'usa-hero__heading' );
@@ -43,6 +151,7 @@ export default function decorate( block ) {
 	block.innerText = '';
 	block.appendChild( container );
 	if( backgroundImg ) { container.before( backgroundImg ); }
+	if ( videoBlock ) { container.before( videoBlock ); }
 	block.appendChild( svgDiv );
 
 	block.querySelectorAll( 'p' ).forEach( el => {
