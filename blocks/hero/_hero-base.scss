@@ -144,6 +144,7 @@ $rect-mask: url('data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%
 			max-width: 75%;
 		}
 	}
+	
 	@media (prefers-reduced-motion: reduce) {
 		&__control {
 			display: none;

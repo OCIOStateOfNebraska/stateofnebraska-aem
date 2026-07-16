@@ -10,8 +10,7 @@ $block: 'usa-hero';
 	$mask-height-ratio: math.div($homepage-hero-aspect-ratio-h, $homepage-hero-aspect-ratio-w);
 
 	mask-image: hero-base.$rect-mask, $curve-mask;
-	mask-size: 100% calc(100% - (100vw * #{$mask-height-ratio}) + 2px),
-	100% calc(100vw * #{$mask-height-ratio});
+	mask-size: 100% calc(100% - (100vw * #{$mask-height-ratio}) + 2px),	100% calc(100vw * #{$mask-height-ratio});
 
 	p {
 		margin-top: 0;

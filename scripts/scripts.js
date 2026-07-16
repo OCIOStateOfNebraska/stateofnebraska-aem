@@ -48,10 +48,10 @@ function buildHeroBlock( main, templateName ) {
 		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'wmv' );
 
 		if( videoLink ) {
-			const extention = heroSection.querySelector( 'a' )?.href?.match(/\.\S{3,5}$/g)[0].replace('.','').trim();
-			video = domEl( 'video', { autoplay: '', muted: '', loop: '', playsinline: '', defaultMuted: '', preload:"auto"},
-		 		domEl( 'source', { src: heroSection.querySelector( 'a' ).href, type: `video/${extention}` })
-	 		)
+			const extention = heroSection.querySelector( 'a' )?.href?.match( /\.\S{3,5}$/g )[0].replace( '.','' ).trim();
+			video = domEl( 'video', { autoplay: '', muted: '', loop: '', playsinline: '', defaultMuted: '', preload:'auto' },
+				domEl( 'source', { src: heroSection.querySelector( 'a' ).href, type: `video/${extention}` } )
+			);
 			heroSection.querySelector( 'a' ).remove();
 		}
 	}
