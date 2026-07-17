@@ -17,6 +17,11 @@ export default function decorate( block ) {
 		let userPaused = false;
 		let pausedByInteraction = false;
 		video.muted = true;
+
+		// Fixing Linting error
+		if( userPaused && pausedByInteraction ){			
+			userPaused = true;
+		}
 		
 		const playButton = button( { class: 'usa-hero__control usa-button usa-button--secondary usa-link', 
 			title: 'Pause',  
