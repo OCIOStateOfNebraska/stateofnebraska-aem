@@ -1,5 +1,6 @@
 import { getMetadata, decorateBlock, loadBlock, buildBlock } from '../../scripts/aem.js';
-import { div } from '../../scripts/dom-helpers.js';
+import { div, button } from '../../scripts/dom-helpers.js';
+import { getIndividualIcon } from '../../scripts/utils.js';
 
 function buildBreadcrumbBlock( breadcrumbContainer ) {
 	const hideBreadcrumbVal = getMetadata( 'hide-breadcrumb' ) || 'no';
@@ -14,15 +15,112 @@ function buildBreadcrumbBlock( breadcrumbContainer ) {
 	}
 }
 
+let userPaused = false;
+let pausedByInteraction = false;
+const reducedMotionMq = window.matchMedia( '(prefers-reduced-motion: reduce)' );
+
+/**
+ * Update all attributes and icon on pause/play button 
+ * @param {Boolean} isPaused if video was paused
+ */
+export function updateButtonState( isPaused, playButton ) {
+	playButton.innerHTML = '';
+
+	if ( isPaused ) {
+		playButton.setAttribute( 'title', 'Play' );
+		playButton.setAttribute( 'aria-label', 'Play video' );
+		playButton.setAttribute( 'aria-pressed', 'true' );
+		getIndividualIcon( playButton, 'play' );
+	} else {
+		playButton.setAttribute( 'title', 'Pause' );
+		playButton.setAttribute( 'aria-label', 'Pause video' );
+		playButton.setAttribute( 'aria-pressed', 'false' );
+		getIndividualIcon( playButton, 'pause' );
+	}
+}
+
+export function pauseForInteraction( video, playButton ) {
+	if ( reducedMotionMq.matches || video.paused ) {
+		return;
+	}
+	
+	pausedByInteraction = true;
+	video.pause();
+	updateButtonState( true, playButton );
+}
+
+export function resumeAfterInteraction( video, playButton ) {
+	if (
+		reducedMotionMq.matches
+		|| userPaused
+		|| !pausedByInteraction
+	) {
+		return;
+	}
+	
+	pausedByInteraction = false;
+
+	video.play().catch( () => {
+		updateButtonState( true, playButton );
+	} );
+
+	updateButtonState( false, playButton );
+}
+
 export default function decorate( block ) {
 	block.classList.add( 'usa-hero' );
 	const container = div( { class: 'grid-container' } );
 	const content = div( { class: 'usa-hero__callout' } );
-	container.appendChild( content );
 
+	container.appendChild( content );
 	buildBreadcrumbBlock( content );
 
 	const backgroundImg = block.querySelector( 'picture' );
+	const video = block.querySelector( 'video' );
+	let videoBlock = null;
+	
+	if( !backgroundImg && video ) {
+
+		video.muted = true;
+		const playButton = button( { class: 'usa-hero__control usa-button usa-button--secondary usa-link', 
+			title: 'Pause',  
+			'aria-label': 'Pause video',  
+			'aria-pressed': false }, 
+		'' );
+		getIndividualIcon( playButton, 'pause' );
+		videoBlock = div( { class: 'usa-hero__video' }, video, playButton );
+
+		playButton.addEventListener( 'click', () => {
+			if ( video.paused ) {
+				userPaused = false;
+				pausedByInteraction = false;
+
+				video.play().catch( () => {
+					updateButtonState( true, playButton );
+				} );
+
+				updateButtonState( false, playButton );
+			} else {
+				userPaused = true;
+				pausedByInteraction = false;
+				video.pause();
+				updateButtonState( true, playButton );
+			}
+		} );
+
+		block.addEventListener( 'focusin', () => pauseForInteraction( video, playButton ) );
+
+		block.addEventListener( 'focusout', ( event ) => {
+			if ( block.contains( event.relatedTarget ) ) {
+				return;
+			}
+
+			resumeAfterInteraction( video, playButton );
+		} );
+
+		block.addEventListener( 'mouseenter', () => pauseForInteraction( video, playButton ) );
+		block.addEventListener( 'mouseleave', () => resumeAfterInteraction( video, playButton ) );
+	}	
 
 	const h1 = block.querySelector( 'h1' );
 	if ( h1 ) {
@@ -42,5 +140,13 @@ export default function decorate( block ) {
 	block.innerText = '';
 	block.appendChild( container );
 	if ( backgroundImg ) { container.before( backgroundImg ); }
+	if ( videoBlock ) {
+		container.before( videoBlock );
+		if ( reducedMotionMq.matches ) {
+			video.pause();
+		} else {
+			video.play();
+		}
+	}
 	block.appendChild( svgDiv );
 }

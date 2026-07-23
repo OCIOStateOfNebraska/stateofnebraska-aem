@@ -11,7 +11,7 @@ $block: 'usa-hero';
 	$mask-height-ratio: math.div($internal-hero-aspect-ratio-h, $internal-hero-aspect-ratio-w);
 
 	mask-image: hero-base.$rect-mask, $curve-mask;
-	mask-size: 100% calc(100% - (100vw * #{$mask-height-ratio}) + 2px), 100% calc(100vw * #{$mask-height-ratio});
+	mask-size: 100% calc(100% - (100vw * #{$mask-height-ratio}) + 2px),	100% calc(100vw * #{$mask-height-ratio});
 
 	picture,
 	img {
@@ -34,7 +34,26 @@ $block: 'usa-hero';
 		opacity: .5;
 	}
 
-	&:not(:has(picture)) {
+	&__control {
+		@include u-height(5);
+		@include u-width(5);
+		@include u-z('top');
+		position: absolute;
+		top: px-to-rem(25px);
+		right: px-to-rem(15px);
+		padding: px-to-rem(5px);
+
+		&:hover {
+			cursor: pointer;
+		}
+
+		svg {
+			@include u-height(4);
+			@include u-width(4);
+		}
+	}
+
+	&:not(:has(picture, video)) {
 		background: var(--theme-hero-bg, color('primary'));
 		background-image: linear-gradient(to bottom, color('white-transparent-80'), color('white'));
 
