@@ -34,7 +34,7 @@ form {
 	.usa-form {
 		display: grid;
 		grid-template-columns: repeat(12, minmax(0, 1fr));
-		gap: 0 units(4);
+		gap: units(2.5) units(4);
 	}
 	
 	/* grid css */
@@ -120,6 +120,12 @@ form {
 		@include u-font-weight('bold');
 		margin-top: units(.5);
 		color: color('error-dark');
+
+		p {
+			@include u-font-weight('normal');
+			color: color('base-dark');
+			font-size: size('body', 5);
+		}
 	}
 	
 	fieldset { // due to classes in aem forms, I need to override spacing for chrome 
@@ -127,6 +133,80 @@ form {
 		
 		legend {
 			margin-top: 0 !important; // stylelint-disable-line declaration-no-important
+		}
+	}
+
+	.panel-wrapper {
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		gap: units(2.5) units(4);
+	}
+
+	/* Repeatable panels — ported from adobe-rnd/aem-boilerplate-forms.
+	   repeat.js builds a bare `.repeat-wrapper` with no field-wrapper/col-* class,
+	   so without these rules it collapses into a single 1/12-width grid column. */
+	.repeat-wrapper {
+		grid-column: span 12;
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		gap: units(2.5) units(4);
+	}
+
+	.repeat-actions {
+		grid-column: span 12;
+		order: 2;
+	}
+
+	.item-add,
+	.item-remove {
+		overflow: unset;
+	}
+
+	.item-remove {
+		justify-self: end;
+		grid-column: span 12;
+		order: 1;
+	}
+
+	[data-variant='addDeleteButtons'] {
+		.item-add,
+		.item-remove {
+			display: block;
+		}
+	}
+
+	@media (width <= 599px) {
+		// tighten the column gutter on small screens (OOTB drops horz gap to ~10px)
+		.usa-form,
+		.panel-wrapper,
+		.repeat-wrapper {
+			gap: units(2.5) units(1.5);
+		}
+	}
+
+	/* Responsive tiers — Adobe Adaptive Forms panel-layout guidance.
+	   Universal Editor exposes no responsive UI, and the OOTB grid keeps col-*
+	   spans proportional at every width, so the documented Desktop/Tablet/Mobile
+	   behavior is implemented here in CSS.
+	     • Desktop (>= desktop-lg / 1200px): default grid — col-* panels side-by-side.
+	     • Tablet (< 1200px): side-by-side panels stack; fields keep their columns.
+	     • Mobile (<= tablet / 639px): single column — every field is full width.
+	   Each rule targets the col-* classes directly so it beats their specificity
+	   (ties break on source order, and these come last). */
+
+	@include at-media-max('desktop-lg') {
+		.panel-wrapper {
+			&[class*='col-'] {
+				grid-column: 1 / -1;
+			}
+		}
+	}
+
+	@include at-media-max('tablet') {
+		.field-wrapper {
+			&[class*='col-'] {
+				grid-column: 1 / -1;
+			}
 		}
 	}
 }

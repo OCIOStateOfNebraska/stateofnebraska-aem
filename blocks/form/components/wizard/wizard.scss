@@ -1,0 +1,125 @@
+@use '../../../../styles/ne-global-imports' as *;
+
+// Wizard layout — ported from adobe-rnd/aem-boilerplate-forms.
+// mappings.js loads this component CSS only when a form contains a wizard.
+.form-wrapper {
+	--form-wizard-border: 0;
+	--form-wizard-background-color: #{color('white')};
+	--form-wizard-border-color: #{color('gray-50')};
+	--form-wizard-number-color: #{color('primary')};
+	--form-wizard-padding: units(2);
+
+	.usa-form {
+		.wizard {
+			display: grid;
+			padding: units(2) var(--form-wizard-padding);
+			border: var(--form-wizard-border) solid var(--form-wizard-border-color);
+			background-color: var(--form-wizard-background-color);
+			counter-reset: wizard-step-counter;
+			grid-template-columns: minmax(0, 1fr);
+			gap: unset;
+
+			> legend {
+				width: 100%;
+			}
+
+			> fieldset {
+				> legend {
+					display: none;
+				}
+
+				// hides every step except the active one — the rule that was missing
+				&:not(.current-wizard-step) {
+					display: none;
+				}
+			}
+
+			.wizard-menu-items {
+				display: flex;
+				flex-wrap: wrap;
+				margin: 0;
+				padding: 0 0 var(--form-wizard-padding);
+				list-style: none;
+				gap: units(5);
+				grid-column: span 12;
+			}
+
+			.wizard-menu-item {
+				counter-increment: wizard-step-counter;
+
+				&:before {
+					display: inline-block;
+					width: 35px;
+					height: 35px;
+					margin-right: 10px;
+					border: 2px solid var(--form-wizard-number-color);
+					border-radius: 50%;
+					color: var(--form-wizard-number-color);
+					line-height: 1.6;
+					text-align: center;
+					content: counter(wizard-step-counter);
+				}
+			}
+
+			.wizard-menu-active-item {
+				&:before {
+					background: var(--form-wizard-number-color);
+					color: color('white');
+					font-weight: 600;
+				}
+			}
+
+			.wizard-button-wrapper {
+				display: flex;
+				justify-content: end;
+				width: 100%;
+				margin: var(--form-wizard-padding) 0;
+				gap: units(5);
+				grid-column: span 12;
+
+				.field-wrapper {
+					flex: unset;
+				}
+			}
+
+			> .field-description {
+				width: 100%;
+			}
+
+			// Hide Back on the first step, Next on the last step. These multi-combinator
+			// sibling selectors can't be nested without exceeding max-nesting-depth.
+			/* stylelint-disable scss/selector-nest-combinators */
+			> .current-wizard-step.panel-wrapper:first-of-type ~ .wizard-button-wrapper > .wizard-button-prev,
+			> .current-wizard-step.panel-wrapper:last-of-type ~ .wizard-button-wrapper > .wizard-button-next {
+				display: none;
+			}
+			/* stylelint-enable scss/selector-nest-combinators */
+
+			// wizard title on left variant
+			&.left {
+				display: flex;
+
+				.wizard-menu-items {
+					flex-direction: column;
+					width: 300px;
+				}
+
+				.panel-wrapper {
+					flex: 1;
+				}
+			}
+		}
+	}
+
+	@media (width <= 599px) {
+		.usa-form {
+			.wizard {
+				margin: 0;
+
+				.wizard-menu-items {
+					gap: units(2.5);
+				}
+			}
+		}
+	}
+}
