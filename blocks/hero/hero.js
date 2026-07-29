@@ -39,32 +39,30 @@ export function updateButtonState( isPaused, playButton ) {
 	}
 }
 
-export function pauseForInteraction( video, playButton ) {
-	if ( reducedMotionMq.matches || video.paused ) {
+export function pauseForInteraction( video, playButton, isUserPaused ) {
+	if (
+		reducedMotionMq.matches
+		|| isUserPaused
+		|| pausedByInteraction
+	) {
 		return;
 	}
 	
 	pausedByInteraction = true;
 	video.pause();
-	updateButtonState( true, playButton );
 }
 
-export function resumeAfterInteraction( video, playButton ) {
+export function resumeAfterInteraction( video, playButton, isUserPaused ) {
 	if (
 		reducedMotionMq.matches
-		|| userPaused
+		|| isUserPaused
 		|| !pausedByInteraction
 	) {
 		return;
 	}
 	
 	pausedByInteraction = false;
-
-	video.play().catch( () => {
-		updateButtonState( true, playButton );
-	} );
-
-	updateButtonState( false, playButton );
+	video.play();
 }
 
 export default function decorate( block ) {
@@ -90,14 +88,12 @@ export default function decorate( block ) {
 		getIndividualIcon( playButton, 'pause' );
 		videoBlock = div( { class: 'usa-hero__video' }, video, playButton );
 
-		playButton.addEventListener( 'click', () => {
-			if ( video.paused ) {
+		playButton.addEventListener( 'click', () => {			
+			if ( userPaused ) {
 				userPaused = false;
 				pausedByInteraction = false;
 
-				video.play().catch( () => {
-					updateButtonState( true, playButton );
-				} );
+				video.play();
 
 				updateButtonState( false, playButton );
 			} else {
@@ -108,18 +104,18 @@ export default function decorate( block ) {
 			}
 		} );
 
-		block.addEventListener( 'focusin', () => pauseForInteraction( video, playButton ) );
+		block.addEventListener( 'focusin', () => pauseForInteraction( video, playButton, userPaused ) );
 
 		block.addEventListener( 'focusout', ( event ) => {
 			if ( block.contains( event.relatedTarget ) ) {
 				return;
 			}
 
-			resumeAfterInteraction( video, playButton );
+			resumeAfterInteraction( video, playButton, userPaused );
 		} );
 
-		block.addEventListener( 'mouseenter', () => pauseForInteraction( video, playButton ) );
-		block.addEventListener( 'mouseleave', () => resumeAfterInteraction( video, playButton ) );
+		block.addEventListener( 'mouseenter', () => pauseForInteraction( video, playButton, userPaused ) );
+		block.addEventListener( 'mouseleave', () => resumeAfterInteraction( video, playButton, userPaused ) );
 	}	
 
 	const h1 = block.querySelector( 'h1' );

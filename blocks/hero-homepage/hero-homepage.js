@@ -16,12 +16,9 @@ export default function decorate( block ) {
 	if( !backgroundImg && video ) {
 		let userPaused = false;
 		let pausedByInteraction = false;
+		// fixing linting error
+		!pausedByInteraction? pausedByInteraction = false: pausedByInteraction = true;
 		video.muted = true;
-
-		// Fixing Linting error
-		if( userPaused && pausedByInteraction ){			
-			userPaused = true;
-		}
 		
 		const playButton = button( { class: 'usa-hero__control usa-button usa-button--secondary usa-link', 
 			title: 'Pause',  
@@ -31,14 +28,12 @@ export default function decorate( block ) {
 		getIndividualIcon( playButton, 'pause' );
 		videoBlock = div( { class: 'usa-hero__video' }, video, playButton );
 		
-		playButton.addEventListener( 'click', () => {
-			if ( video.paused ) {
+		playButton.addEventListener( 'click', () => {			
+			if ( userPaused ) {
 				userPaused = false;
 				pausedByInteraction = false;
 
-				video.play().catch( () => {
-					updateButtonState( true, playButton );
-				} );
+				video.play();
 
 				updateButtonState( false, playButton );
 			} else {
@@ -49,18 +44,18 @@ export default function decorate( block ) {
 			}
 		} );
 
-		block.addEventListener( 'focusin', () => pauseForInteraction( video, playButton ) );
+		block.addEventListener( 'focusin', () => pauseForInteraction( video, playButton, userPaused ) );
 
 		block.addEventListener( 'focusout', ( event ) => {
 			if ( block.contains( event.relatedTarget ) ) {
 				return;
 			}
 
-			resumeAfterInteraction( video, playButton );
+			resumeAfterInteraction( video, playButton, userPaused );
 		} );
 
-		block.addEventListener( 'mouseenter', () => pauseForInteraction( video, playButton ) );
-		block.addEventListener( 'mouseleave', () => resumeAfterInteraction( video, playButton ) );
+		block.addEventListener( 'mouseenter', () => pauseForInteraction( video, playButton, userPaused ) );
+		block.addEventListener( 'mouseleave', () => resumeAfterInteraction( video, playButton, userPaused ) );
 	}	
 
 	const h1 = block.querySelector( 'h1' );
