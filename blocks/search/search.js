@@ -200,14 +200,17 @@ class SearchBlock {
 			if( this.blockGallery  || this.blockCarousel ){
 				this.allData = this.allData.filter( item => item.image !== '' ) ;
 			}
-			if( this.count !== null ) this.allData = this.allData.slice( 0, this.count );
 			const comparisonFunction = this.sort === 'publicationDate' ? this.sortByPublicationDate.bind( this ) : this.sortBy( this.sort );
 			this.allData.sort( comparisonFunction );
 		}
-
+		
 		this.allData = this.allData.filter( item => {
 			return item.title && item.title.trim() !== '' && item.path && item.path.trim() !== '';
 		} );
+
+		if( this.count !== null ) {
+			this.allData = this.allData.slice( 0, this.count );
+		}
 	}
 
 	/**
