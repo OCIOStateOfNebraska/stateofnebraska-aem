@@ -109,7 +109,9 @@ export default function decorate( block ) {
 		}
 
 		generateWholeCard( cardContainer );
+		const whatever = domEl( 'li', { class: 'something' }, 'cool' );
 		ul.append( li );
+		ul.append( whatever );
 	} );
 
 	ul.querySelectorAll( 'picture > img' ).forEach( ( img ) => {

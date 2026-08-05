@@ -21,6 +21,11 @@
 		}
 	}
 
+	.something {
+
+		background-color: blue;
+		font-weight: bold;
+	}
 	// Icon-specific styling for filled variant - when block has .filled class
 	&:has(svg) {
 		.#{$block}__img {
