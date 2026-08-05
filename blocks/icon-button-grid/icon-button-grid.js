@@ -70,9 +70,11 @@ export default function decorate( block ) {
 			cardContainer.append( row.firstElementChild );
 			li.append( cardContainer );
 		}
+		const something = domEl( 'div', {class:'something'}, 'something');
 		
 		generateWholeCard( cardContainer );
 		ul.append( li );
+		ul.append( something );
 	} );
 
 	block.textContent = '';
