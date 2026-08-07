@@ -48,7 +48,7 @@ function handleFilter( block, dataSet ) {
 		'!=': ( a, b ) => a != b,
 		'>=': ( a, b ) => a >= b,
 		'<=': ( a, b ) => a <= b,
-		'contains': ( a, b ) => a.toLowerCase().includes( b ),
+		'contains': ( a, b ) => a.toLowerCase().includes( b.toLowerCase() ),
 		'before': ( a, b ) => new Date( a ) < new Date( b ),
 		'after': ( a, b ) => new Date( a ) > new Date( b ),
 		'current': ( a  ) => new Date( a ) >=  Date.now(),
