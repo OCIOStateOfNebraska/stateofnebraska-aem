@@ -18,6 +18,11 @@ $table-icon: px-to-rem(28px);
 .#{$block} {
 	@include u-margin(0);
 	@include u-width('full');
+	grid-column: 1;
+
+	&-container--scrollable{
+		display: grid;
+	}
 
 	&-toolbar{
 		@include u-border(1px);
@@ -27,6 +32,7 @@ $table-icon: px-to-rem(28px);
 		@include u-bg('base-lighter');
 		display: flex;
 		justify-content: space-between;
+		grid-column: 1;
 
 		.usa-text-input{
 			@include u-margin(0);
