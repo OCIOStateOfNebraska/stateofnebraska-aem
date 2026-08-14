@@ -246,7 +246,7 @@ export default async function decorate( block ) {
 		type = 'scrollable';
 	}
 	const table = block.querySelector( 'table' );
-	const p = block.querySelector( 'p' );
+	const p = block.querySelector( 'div:nth-child(1) > div > p' );
 	const caption = domEl( 'caption', {}, p );
 	const tbody = table.querySelector( 'tbody' );
 	const rows = tbody.querySelectorAll( 'tr' );
