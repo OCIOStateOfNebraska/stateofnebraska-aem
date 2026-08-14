@@ -14,6 +14,7 @@ async function fetchSearchIndex( indexPath ) {
  */
 async function fetchData( block ) {
 	const link = block.querySelector( 'a' );
+	const p = link.closest( 'p' );
 	const indexPath = link?.href?.trim();
 	
 	const searchIndex = await fetchSearchIndex( indexPath );
@@ -22,10 +23,17 @@ async function fetchData( block ) {
 		throw new Error( 'Invalid search index format' );
 	}
 
-	link.remove();
+	p.remove();
 	return searchIndex;
 }
 
+/**
+ * Check if the column is either a date or a date-time and
+ * save it to the appropriate array
+ * @param { Element } cell 
+ * @param { Array } dateColumns Array for dates
+ * @param { Array } dateTimeColumns Array for date-times
+ */
 function checkDate( cell, dateColumns, dateTimeColumns ) {
 	if( cell.textContent.toLowerCase().includes( '(date)' ) ){		
 		dateColumns.push( cell.cellIndex );
@@ -37,6 +45,12 @@ function checkDate( cell, dateColumns, dateTimeColumns ) {
 	} 
 }
 
+/**
+ * Handle filtering data that been fetched based on condition that user inputed
+ * @param { Element } block 
+ * @param { Array } dataSet Array with fetched data
+ * @returns filtered data array
+ */
 function handleFilter( block, dataSet ) {
 	const filterRows = Array.from( block.querySelectorAll( '.block > div' ) );
 	if( filterRows.length === 1 ) return dataSet;
@@ -70,6 +84,11 @@ function handleFilter( block, dataSet ) {
 	return filteredData;
 }
 
+/**
+ * Handles rebuilding a table based on data that has been fetched and filtered
+ * @param { Element } block 
+ * @returns block with rebuilt table
+ */
 export async function createBasicTable( block ) {
 	let dataSet = await fetchData( block );
 	if ( !dataSet ) return;
@@ -79,10 +98,9 @@ export async function createBasicTable( block ) {
 	const firstRow = tbody.querySelector( 'tr:nth-child(2)' );
 	const headings = Array.from( tbody.querySelectorAll( 'tr:nth-child(1) > td' ) );
 	const firstRowCells = firstRow?.querySelectorAll( 'td' );
-
+	
 	block.appendChild( table );
 	let rows = [];
-	
 	for ( let index = 0; index < dataSet.data.length; index++ ) {
 		rows.push( tr( {} ) );  
 	}
