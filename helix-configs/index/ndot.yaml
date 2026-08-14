@@ -1,4 +1,4 @@
-version: 2
+version: 3
 indices:
   site:
     exclude:
@@ -77,5 +77,54 @@ indices:
           parseTimestamp(headers['last-modified'], 'ddd, DD MMM YYYY hh:mm:ss GMT')
       publicationDate:
         select: head > meta[name="publication-date"]
+        value: |
+          attribute(el, 'content')    
+  procurement:
+    include:
+      - /business-center/procurement/**
+    exclude:
+      - business-center/procurement/policies-and-forms/**
+      - business-center/procurement/policies-and-procedures
+      - business-center/procurement/
+    target: /procurement.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: |
+          attribute(el, 'content')
+      description:
+        select: head > meta[name="description"]
+        value: |
+          attribute(el, 'content')
+      tags:
+        select: head > meta[name="tag"]
+        values: |
+          attribute(el, 'content')
+      bidPageData:
+        select: head > meta[name="bidpagedata"]
+        value: |
+          attribute(el, 'content')
+      buyer:
+        select: head > meta[name="buyer"]
+        value: |
+          attribute(el, 'content')    
+      deadlineDate:
+        select: head > meta[name="deadlinedate"]
+        value: |
+          attribute(el, 'content')    
+      itemName:
+        select: head > meta[name="itemname"]
+        value: |
+          attribute(el, 'content')    
+      openDate:
+        select: head > meta[name="opendate"]
+        value: |
+          attribute(el, 'content')    
+      postDate:
+        select: head > meta[name="postdate"]
+        value: |
+          attribute(el, 'content')    
+      updatedDeadlineDate:
+        select: head > meta[name="updateddeadlinedate"]
         value: |
           attribute(el, 'content')

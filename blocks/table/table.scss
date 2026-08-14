@@ -18,6 +18,11 @@ $table-icon: px-to-rem(28px);
 .#{$block} {
 	@include u-margin(0);
 	@include u-width('full');
+	grid-column: 1;
+
+	&-container--scrollable{
+		display: grid;
+	}
 
 	&-toolbar{
 		@include u-border(1px);
@@ -27,10 +32,16 @@ $table-icon: px-to-rem(28px);
 		@include u-bg('base-lighter');
 		display: flex;
 		justify-content: space-between;
+		grid-column: 1;
 
 		.usa-text-input{
 			@include u-margin(0);
 			@include u-padding(1);
+			@include u-border(1px);
+			@include u-border( 'solid' );
+			@include u-border( 'black' );
+			background-color: color( 'white' );
+			
 		}
 
 		.usa-table-results{
@@ -57,6 +68,7 @@ $table-icon: px-to-rem(28px);
 				@include u-padding-right(5);
 				@include u-border(0);
 				background-color: color('transparent');
+				color: color( 'black' );
 
 				&:after {
 					@include add-background-svg('usa-icons/sort_arrow');
