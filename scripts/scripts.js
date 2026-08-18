@@ -685,6 +685,34 @@ async function loadLazy( doc ) {
 	loadFooter( doc.querySelector( 'footer' ) );
 	loadCSS( `${window.hlx.codeBasePath}/styles/lazy-styles.css` );
 	loadFonts();
+
+	const loadQuickEdit = async ( ...args ) => {
+	// eslint-disable-next-line import/no-cycle
+	const { default: initQuickEdit } = await import( '../tools/quick-edit/quick-edit.js' );
+	initQuickEdit( ...args );
+	};
+
+	let a11yModeActive = false;
+	const loadA11yMode = async () => {
+		// eslint-disable-next-line import/no-cycle
+		const { default: initA11y } = await import( '../tools/plugins/accessibility-mode/accessibility-mode.js' );
+		a11yModeActive = !a11yModeActive;
+		initA11y( a11yModeActive );
+	};
+
+	const addSidekickListeners = ( sk ) => {
+		sk.addEventListener( 'custom:quick-edit', loadQuickEdit );
+		sk.addEventListener( 'custom:accessibility-mode', loadA11yMode );
+	};
+
+	const sk = document.querySelector( 'aem-sidekick' );
+	if ( sk ) {
+		addSidekickListeners( sk );
+	} else {
+		document.addEventListener( 'sidekick-ready', () => {
+			addSidekickListeners( document.querySelector( 'aem-sidekick' ) );
+		}, { once: true } );
+	}
 }
 
 /**
@@ -705,7 +733,7 @@ async function loadFonts() {
 	}
 }
 
-async function loadPage() {
+export async function loadPage() {
 	await loadEager( document );
 	await loadLazy( document );
 	loadDelayed();
@@ -726,4 +754,10 @@ await loadPage();
 ( async function loadDa() {
 	if ( !new URL( window.location.href ).searchParams.get( 'dapreview' ) ) return;
 	import( 'https://da.live/scripts/dapreview.js' ).then( ( { default: daPreview } ) => daPreview( loadPage ) );
+} )();
+
+// enable quick edit
+( () => {
+	const hasQE = new URL( window.location.href ).searchParams.has( 'quick-edit' );
+	if ( hasQE ) import( '../tools/quick-edit/quick-edit.js' ).then( ( mod ) => mod.default() );
 } )();

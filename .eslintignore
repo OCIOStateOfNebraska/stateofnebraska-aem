@@ -7,3 +7,4 @@ blocks/form/rules-doc/*
 scripts/editor-support-rte.js
 scripts/editor-support.js
 scripts/form-editor-support.js
+tools/plugins/accessibility-mode

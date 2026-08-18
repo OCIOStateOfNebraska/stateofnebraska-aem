@@ -71,6 +71,10 @@ export function domEl( tag, ...items ) {
   More short hand functions can be added for very common DOM elements below.
   domEl function from above can be used for one off DOM element occurrences.
 */
+export function createElement( tag, attributes, ...children ) {
+	return domEl( tag, attributes, ...children.flat() );
+}
+
 export function div( ...items ) { return domEl( 'div', ...items ); }
 export function p( ...items ) { return domEl( 'p', ...items ); }
 export function a( ...items ) { return domEl( 'a', ...items ); }
