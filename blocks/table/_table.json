@@ -1,0 +1,46 @@
+{
+  "definitions": [
+    {
+      "title": "Table",
+      "id": "table",
+      "model": "table",
+      "plugins": {
+        "da": {
+          "name": "Table",
+          "rows": 1,
+          "columns": 1,
+          "fields": [
+            {
+              "name": "table",
+              "selector": "div>div"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "table",
+      "fields": [
+        {
+          "component": "multiselect",
+          "name": "style",
+          "label": "Table Style",
+          "options": [
+            {
+              "name": "Column Headers with Row Headers",
+              "value": "col-header"
+            },
+            {
+              "name": "Scrollable",
+              "value": "scrollable"
+            }
+          ],
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

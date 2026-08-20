@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Header",
+      "id": "header",
+      "model": "header",
+      "plugins": {
+        "da": {
+          "name": "Header",
+          "rows": 0,
+          "columns": 0
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "header",
+      "fields": []
+    }
+  ],
+  "filters": []
+}

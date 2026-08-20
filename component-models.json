@@ -52,7 +52,8 @@
             "name": "h6",
             "value": "h6"
           }
-        ]
+        ],
+        "value": ""
       }
     ]
   },
@@ -91,7 +92,8 @@
             "name": "secondary",
             "value": "secondary"
           }
-        ]
+        ],
+        "value": ""
       }
     ]
   },
@@ -113,9 +115,172 @@
             "name": "Highlight",
             "value": "highlight"
           }
+        ],
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "accordion-block",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Bordered",
+            "value": "bordered"
+          }
+        ],
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "alert",
+    "fields": [
+      {
+        "component": "select",
+        "name": "style",
+        "label": "Alert Type",
+        "options": [
+          {
+            "name": "Info (default)",
+            "value": ""
+          },
+          {
+            "name": "Emergency",
+            "value": "emergency"
+          },
+          {
+            "name": "Warning",
+            "value": "warning"
+          },
+          {
+            "name": "Error",
+            "value": "error"
+          },
+          {
+            "name": "Success",
+            "value": "success"
+          }
+        ],
+        "value": ""
+      },
+      {
+        "component": "boolean",
+        "name": "no-icon",
+        "label": "Hide Icon"
+      },
+      {
+        "component": "boolean",
+        "name": "slim",
+        "label": "Slim"
+      }
+    ]
+  },
+  {
+    "id": "backdrop-grid",
+    "fields": []
+  },
+  {
+    "id": "banner",
+    "fields": []
+  },
+  {
+    "id": "breadcrumb",
+    "fields": []
+  },
+  {
+    "id": "columns",
+    "fields": [
+      {
+        "component": "number",
+        "valueType": "number",
+        "name": "columns",
+        "label": "Number of Columns",
+        "value": 2,
+        "validation": {
+          "numberMin": 1,
+          "numberMax": 6
+        }
+      },
+      {
+        "component": "select",
+        "name": "classes",
+        "value": "",
+        "label": "Column Layout",
+        "description": "Custom desktop column widths (must total 12). Leave blank for equal-width columns.",
+        "options": [
+          {
+            "name": "Equal width (default)",
+            "value": ""
+          },
+          {
+            "name": "4/8",
+            "value": "layout-4-8"
+          },
+          {
+            "name": "8/4",
+            "value": "layout-8-4"
+          },
+          {
+            "name": "6/6",
+            "value": "layout-6-6"
+          },
+          {
+            "name": "3/9",
+            "value": "layout-3-9"
+          },
+          {
+            "name": "9/3",
+            "value": "layout-9-3"
+          },
+          {
+            "name": "4/4/4",
+            "value": "layout-4-4-4"
+          },
+          {
+            "name": "3/6/3",
+            "value": "layout-3-6-3"
+          }
         ]
       }
     ]
+  },
+  {
+    "id": "figure",
+    "fields": [
+      {
+        "component": "select",
+        "name": "style",
+        "label": "Alignment",
+        "options": [
+          {
+            "name": "Full width (default)",
+            "value": ""
+          },
+          {
+            "name": "Left",
+            "value": "left"
+          },
+          {
+            "name": "Right",
+            "value": "right"
+          }
+        ],
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "footer-navigation",
+    "fields": []
+  },
+  {
+    "id": "footer",
+    "fields": []
   },
   {
     "id": "form",
@@ -7480,6 +7645,204 @@
             "valueType": "string"
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "fragment",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "fragment",
+        "label": "Fragment Path"
+      }
+    ]
+  },
+  {
+    "id": "header",
+    "fields": []
+  },
+  {
+    "id": "hero-homepage",
+    "fields": []
+  },
+  {
+    "id": "hero",
+    "fields": [
+      {
+        "component": "boolean",
+        "name": "hide-breadcrumb",
+        "label": "Hide Breadcrumb"
+      }
+    ]
+  },
+  {
+    "id": "icon-button-grid",
+    "fields": []
+  },
+  {
+    "id": "in-page-navigation",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title-text",
+        "label": "Title Text",
+        "description": "Label shown above the in-page nav list (default: \"On this page\")"
+      },
+      {
+        "component": "select",
+        "name": "title-heading-level",
+        "label": "Title Heading Level",
+        "options": [
+          {
+            "name": "H2 (default)",
+            "value": ""
+          },
+          {
+            "name": "H2",
+            "value": "h2"
+          },
+          {
+            "name": "H3",
+            "value": "h3"
+          },
+          {
+            "name": "H4",
+            "value": "h4"
+          }
+        ],
+        "value": ""
+      },
+      {
+        "component": "number",
+        "name": "scroll-offset",
+        "label": "Scroll Offset (px)",
+        "description": "Pixels to offset scroll position when navigating to a heading (default: 48)"
+      }
+    ]
+  },
+  {
+    "id": "info-card-grid",
+    "fields": [
+      {
+        "component": "select",
+        "name": "style",
+        "label": "Card Style",
+        "options": [
+          {
+            "name": "Default (with image)",
+            "value": ""
+          },
+          {
+            "name": "Blue (with icon)",
+            "value": "blue"
+          }
+        ],
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "intro",
+    "fields": []
+  },
+  {
+    "id": "linked-card-grid",
+    "fields": []
+  },
+  {
+    "id": "manual-collection",
+    "fields": []
+  },
+  {
+    "id": "search",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "source",
+        "label": "Data Source",
+        "description": "Path to the query index JSON (defaults to /query-index.json)"
+      },
+      {
+        "component": "select",
+        "name": "style",
+        "label": "Display Mode",
+        "options": [
+          {
+            "name": "Full Search",
+            "value": ""
+          },
+          {
+            "name": "Dynamic Collection",
+            "value": "dynamic-collection"
+          }
+        ],
+        "value": ""
+      },
+      {
+        "component": "boolean",
+        "name": "show-search-box",
+        "label": "Show Search Box"
+      },
+      {
+        "component": "boolean",
+        "name": "show-pagination",
+        "label": "Show Pagination"
+      },
+      {
+        "component": "select",
+        "name": "sort-key",
+        "label": "Sort By",
+        "options": [
+          {
+            "name": "Relevance (default)",
+            "value": ""
+          },
+          {
+            "name": "Publication Date",
+            "value": "publicationDate"
+          },
+          {
+            "name": "Title",
+            "value": "title"
+          }
+        ],
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "filter-by",
+        "label": "Filter by Tag",
+        "description": "Filter results to items matching this tag value"
+      }
+    ]
+  },
+  {
+    "id": "side-navigation",
+    "fields": []
+  },
+  {
+    "id": "summary-box",
+    "fields": []
+  },
+  {
+    "id": "table",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Table Style",
+        "options": [
+          {
+            "name": "Column Headers with Row Headers",
+            "value": "col-header"
+          },
+          {
+            "name": "Scrollable",
+            "value": "scrollable"
+          }
+        ],
+        "value": ""
       }
     ]
   }

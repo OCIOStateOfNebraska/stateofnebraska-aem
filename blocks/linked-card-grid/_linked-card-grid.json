@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Linked Card Grid",
+      "id": "linked-card-grid",
+      "model": "linked-card-grid",
+      "plugins": {
+        "da": {
+          "name": "Linked Card Grid",
+          "rows": 1,
+          "columns": 1
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "linked-card-grid",
+      "fields": []
+    }
+  ],
+  "filters": []
+}

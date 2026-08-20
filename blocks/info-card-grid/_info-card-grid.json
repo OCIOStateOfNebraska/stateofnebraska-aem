@@ -1,0 +1,40 @@
+{
+  "definitions": [
+    {
+      "title": "Info Card Grid",
+      "id": "info-card-grid",
+      "model": "info-card-grid",
+      "plugins": {
+        "da": {
+          "name": "Info Card Grid",
+          "rows": 1,
+          "columns": 2
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "info-card-grid",
+      "fields": [
+        {
+          "component": "select",
+          "name": "style",
+          "label": "Card Style",
+          "options": [
+            {
+              "name": "Default (with image)",
+              "value": ""
+            },
+            {
+              "name": "Blue (with icon)",
+              "value": "blue"
+            }
+          ],
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

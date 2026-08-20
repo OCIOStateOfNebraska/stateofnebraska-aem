@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Side Navigation",
+      "id": "side-navigation",
+      "model": "side-navigation",
+      "plugins": {
+        "da": {
+          "name": "Side Navigation",
+          "rows": 0,
+          "columns": 0
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "side-navigation",
+      "fields": []
+    }
+  ],
+  "filters": []
+}

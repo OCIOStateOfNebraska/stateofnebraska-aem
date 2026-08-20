@@ -1,0 +1,105 @@
+---
+name: workflow-model-design
+description: Design and create AEM Workflow models on AEM as a Cloud Service. Use when creating workflow models via the Workflow Model Editor or content package XML, defining step types (PROCESS, PARTICIPANT, DYNAMIC_PARTICIPANT, OR_SPLIT, AND_SPLIT), configuring step properties, declaring workflow variables, and deploying models through the Cloud Manager pipeline.
+license: Apache-2.0
+---
+
+# Workflow Model Design (Cloud Service)
+
+Design workflow models for AEM as a Cloud Service: step structure, transitions, OR/AND splits, variables, and model XML deployment.
+
+## Audience
+
+Developers (and the IDE LLM acting on their behalf) authoring AEM workflow models for AEM as a Cloud Service — designing the step graph, splits, joins, transitions, and the model XML that ships through the Cloud Manager pipeline.
+
+## Variant Scope
+
+- AEM as a Cloud Service only.
+- Models are stored at `/conf/global/settings/workflow/models/`. Do not write to `/libs` or `/etc` — `/libs` is immutable and `/etc/workflow/models/` is the legacy 6.5 path, deprecated on AEMaaCS.
+- Deploy via Cloud Manager pipeline; design-time → runtime sync is required after deploy (Tools → Workflow → Models → Sync).
+- **Not for AEM 6.5 LTS.** If the target is 6.5 LTS, stop and use the 6.5-lts variant of this skill — `/etc/workflow/models/` legacy auto-deploy and `mvn install -PautoInstallPackage` deploys documented there do not apply on AEMaaCS.
+
+## Dependencies
+
+- `workflow-foundation` references (architecture, API, JCR paths, Cloud Service guardrails) — load alongside.
+- `workflow-development` — every PROCESS step in the model needs a `WorkflowProcess` (or `process.label`) registered as an OSGi service. Model XML and Java code are co-authored.
+- `workflow-launchers` — when a launcher routes content into the model, see launcher-side guardrails.
+
+## Workflow
+
+```text
+Model Design Progress
+- [ ] 1) Clarify the workflow purpose: what triggers it, what steps are needed, who approves
+- [ ] 2) Map out steps: PROCESS (auto), PARTICIPANT (human), OR_SPLIT (decision), AND_SPLIT (parallel)
+- [ ] 3) Decide payload type: single JCR_PATH page/asset, or multi-page via workflow package
+- [ ] 4) Identify workflow variables needed for inter-step data passing
+- [ ] 5) Design model XML: flow/parsys layer with correct nt:unstructured step components and sling:resourceType per step
+- [ ] 6) Add filter.xml entry with mode="merge" for the model path
+- [ ] 7) Deploy via Cloud Manager pipeline
+- [ ] 8) Open the model in Tools → Workflow → Models → Edit → Sync; verify the model appears in /var/workflow/models/ and all steps render on the editor canvas
+- [ ] 9) Start a test workflow instance; confirm it runs to completion
+```
+
+## Output Contract
+
+**Generate only these files for a `/conf`-based model:**
+
+| File | Node type | Purpose |
+|---|---|---|
+| `jcr_root/conf/.../models/<id>/.content.xml` | `cq:Page` | Model root page |
+| `jcr_root/conf/.../models/<id>/jcr:content/.content.xml` | `cq:PageContent` | Title, template, resourceType |
+| `jcr_root/conf/.../models/<id>/jcr:content/flow/.content.xml` | `nt:unstructured` + parsys | Step nodes |
+
+**Never generate — hard stops:**
+
+- ❌ **Any file under `jcr_root/var/`** — AEM Sync writes `/var/workflow/models/` automatically after you click Sync in the editor. Never ship `/var` content in a content package.
+- ❌ **A `model/` directory inside `jcr:content/` at the `/conf` path** — a `cq:WorkflowModel` node with `<nodes>` and `<transitions>` is the runtime format. It must never appear under `/conf`. The Workflow Model Editor cannot open a model that contains it.
+- ❌ **`<filter root="/var/workflow/models/..."/>` in filter.xml** — `/var` is never a package filter target. The only filter entry needed is the `/conf` path.
+- ❌ **Any path under `/etc/workflow/models/`** — deprecated and unsupported on AEM as a Cloud Service.
+
+**filter.xml — correct entry:**
+```xml
+<filter root="/conf/global/settings/workflow/models/my-workflow" mode="merge"/>
+```
+
+## Node Types Quick Reference
+
+| Type | Purpose | Key metaData property |
+|---|---|---|
+| `START` | Entry point | — |
+| `END` | Terminal | — |
+| `PROCESS` | Auto-executed Java step | `PROCESS` = FQCN or process.label |
+| `PARTICIPANT` | Human task (static assignee) | `PARTICIPANT` = principal name |
+| `DYNAMIC_PARTICIPANT` | Human task (runtime assignee) | `DYNAMIC_PARTICIPANT` = chooser.label |
+| `OR_SPLIT` | One branch selected by rule | Transition `rule` = ECMAScript (Rhino) |
+| `AND_SPLIT` | All branches execute in parallel | — |
+| `AND_JOIN` | Wait for all parallel branches | — |
+| `EXTERNAL_PROCESS` | Poll an external system | `EXTERNAL_PROCESS` = FQCN |
+
+## Default Path Rule
+
+**Unless the user explicitly names a specific AEM site, always generate models at `/conf/global/settings/workflow/models/<id>`.** Do not infer a site-scoped path (e.g., `/conf/wknd/…`) from conversational context such as "for the WKND site" or "install on the WKND instance." Workflow models are not site-scoped by default — they are global resources. Only use `/conf/<site>/settings/workflow/models/<id>` when the user explicitly states that the model should be scoped to a specific site.
+
+## Cloud Service Deployment
+
+1. Place model XML at: `conf/global/settings/workflow/models/<name>/.content.xml` (the `flow/parsys` design-time format — not `jcr:content/model/`)
+2. Add to `ui.content` package with `filter.xml` entry `mode="merge"`
+3. Deploy via Cloud Manager pipeline
+4. Open **Tools → Workflow → Models** → select model → **Edit** → **Sync**
+5. Verify the model appears in `/var/workflow/models/<name>` via CRX/DE and all steps render on the canvas
+
+**Design-time vs runtime paths**: `/conf/global/settings/workflow/models/` stores the editor's
+`flow/parsys` format — this is what you author and deploy. Steps are `nt:unstructured` nodes with
+`sling:resourceType`; no `cq:WorkflowNode` or `cq:WorkflowTransition` nodes appear here.
+`/var/workflow/models/` holds the runtime copy generated by Sync — it uses `cq:WorkflowModel`,
+`cq:WorkflowNode`, and `cq:WorkflowTransition`. Never write `cq:WorkflowModel` nodes to the `/conf`
+path, and never hand-author `/var` content — AEM manages the runtime layer entirely via Sync.
+
+## References
+
+- [step-types-catalog.md](./references/workflow-model-design/step-types-catalog.md) — complete step type reference with XML snippets
+- [model-xml-reference.md](./references/workflow-model-design/model-xml-reference.md) — full model XML structure and property reference
+- [model-design-patterns.md](./references/workflow-model-design/model-design-patterns.md) — common design patterns: linear, decision, parallel, loop-back
+- [architecture-overview.md](./references/workflow-foundation/architecture-overview.md)
+- [jcr-paths-reference.md](./references/workflow-foundation/jcr-paths-reference.md)
+- [cloud-service-guardrails.md](./references/workflow-foundation/cloud-service-guardrails.md)

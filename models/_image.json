@@ -3,12 +3,27 @@
     {
       "title": "Image",
       "id": "image",
+      "model": "image",
       "plugins": {
         "xwalk": {
           "page": {
             "resourceType": "core/franklin/components/image/v1/image",
             "template": {}
           }
+        },
+        "da": {
+          "name": "image",
+          "type": "image",
+          "fields": [
+            {
+              "name": "image",
+              "selector": "img[src]"
+            },
+            {
+              "name": "imageAlt",
+              "selector": "img[alt]"
+            }
+          ]
         }
       }
     }

@@ -3,6 +3,8 @@
     {
       "title": "Section",
       "id": "section",
+      "model": "section",
+      "filter": "section",
       "plugins": {
         "xwalk": {
           "page": {
@@ -11,6 +13,9 @@
               "model": "section"
             }
           }
+        },
+        "da": {
+          "unsafeHTML": "<div></div>"
         }
       }
     }
@@ -34,7 +39,8 @@
               "name": "Highlight",
               "value": "highlight"
             }
-          ]
+          ],
+          "value": ""
         }
       ]
     }
@@ -47,12 +53,26 @@
         "image",
         "button",
         "title",
-        "hero",
-        "cards",
+        "accordion",
+        "alert",
+        "backdrop-grid",
         "columns",
+        "figure",
         "fragment",
         "form",
-        "embed-adaptive-form"
+        "embed-adaptive-form",
+        "hero",
+        "hero-homepage",
+        "icon-button-grid",
+        "in-page-navigation",
+        "info-card-grid",
+        "intro",
+        "linked-card-grid",
+        "manual-collection",
+        "search",
+        "side-navigation",
+        "summary-box",
+        "table"
       ]
     }
   ]

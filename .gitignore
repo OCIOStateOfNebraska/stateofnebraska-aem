@@ -3,6 +3,7 @@
 coverage
 logs
 node_modules
+.agents
 
 helix-importer-ui
 .DS_Store

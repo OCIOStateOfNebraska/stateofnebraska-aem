@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Backdrop Grid",
+      "id": "backdrop-grid",
+      "model": "backdrop-grid",
+      "plugins": {
+        "da": {
+          "name": "Backdrop Grid",
+          "rows": 1,
+          "columns": 2
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "backdrop-grid",
+      "fields": []
+    }
+  ],
+  "filters": []
+}

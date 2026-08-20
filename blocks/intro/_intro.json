@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Intro",
+      "id": "intro",
+      "model": "intro",
+      "plugins": {
+        "da": {
+          "name": "Intro",
+          "rows": 1,
+          "columns": 1
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "intro",
+      "fields": []
+    }
+  ],
+  "filters": []
+}

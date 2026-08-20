@@ -7,18 +7,24 @@
         {
           "title": "Text",
           "id": "text",
+          "model": "text",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/text/v1/text",
                 "template": {}
               }
+            },
+            "da": {
+              "name": "text",
+              "type": "text"
             }
           }
         },
         {
           "title": "Title",
           "id": "title",
+          "model": "title",
           "plugins": {
             "xwalk": {
               "page": {
@@ -27,24 +33,44 @@
                   "model": "title"
                 }
               }
+            },
+            "da": {
+              "name": "title",
+              "type": "title"
             }
           }
         },
         {
           "title": "Image",
           "id": "image",
+          "model": "image",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/image/v1/image",
                 "template": {}
               }
+            },
+            "da": {
+              "name": "image",
+              "type": "image",
+              "fields": [
+                {
+                  "name": "image",
+                  "selector": "img[src]"
+                },
+                {
+                  "name": "imageAlt",
+                  "selector": "img[alt]"
+                }
+              ]
             }
           }
         },
         {
           "title": "Button",
           "id": "button",
+          "model": "button",
           "plugins": {
             "xwalk": {
               "page": {
@@ -53,6 +79,19 @@
                   "model": "button"
                 }
               }
+            },
+            "da": {
+              "unsafeHTML": "<p><a href=\"\">Button Text</a></p>",
+              "fields": [
+                {
+                  "name": "link",
+                  "selector": "p>a[href]"
+                },
+                {
+                  "name": "linkText",
+                  "selector": "p>a"
+                }
+              ]
             }
           }
         }
@@ -65,6 +104,8 @@
         {
           "title": "Section",
           "id": "section",
+          "model": "section",
+          "filter": "section",
           "plugins": {
             "xwalk": {
               "page": {
@@ -73,6 +114,9 @@
                   "model": "section"
                 }
               }
+            },
+            "da": {
+              "unsafeHTML": "<div></div>"
             }
           }
         }
@@ -82,6 +126,140 @@
       "title": "Blocks",
       "id": "blocks",
       "components": [
+        {
+          "title": "Accordion",
+          "id": "accordion",
+          "model": "accordion-block",
+          "plugins": {
+            "da": {
+              "name": "Accordion",
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Alert",
+          "id": "alert",
+          "model": "alert",
+          "plugins": {
+            "da": {
+              "name": "Alert",
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Backdrop Grid",
+          "id": "backdrop-grid",
+          "model": "backdrop-grid",
+          "plugins": {
+            "da": {
+              "name": "Backdrop Grid",
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Banner",
+          "id": "banner",
+          "model": "banner",
+          "plugins": {
+            "da": {
+              "name": "Banner",
+              "rows": 0,
+              "columns": 0
+            }
+          }
+        },
+        {
+          "title": "Breadcrumb",
+          "id": "breadcrumb",
+          "model": "breadcrumb",
+          "plugins": {
+            "da": {
+              "name": "Breadcrumb",
+              "rows": 0,
+              "columns": 0
+            }
+          }
+        },
+        {
+          "title": "Columns",
+          "id": "columns",
+          "model": "columns",
+          "filter": "columns",
+          "plugins": {
+            "da": {
+              "name": "columns",
+              "rows": 1,
+              "columns": 2,
+              "behaviour": "columns"
+            }
+          }
+        },
+        {
+          "title": "Columns Row",
+          "id": "columns-row",
+          "model": "columns-row",
+          "filter": "columns-row",
+          "plugins": {
+            "da": {
+              "name": "columns-row",
+              "behaviour": "columns-row"
+            }
+          }
+        },
+        {
+          "title": "Columns Cell",
+          "id": "columns-cell",
+          "model": "columns-cell",
+          "filter": "columns-cell",
+          "plugins": {
+            "da": {
+              "unsafeHTML": "<div></div>",
+              "behaviour": "columns-cell"
+            }
+          }
+        },
+        {
+          "title": "Figure",
+          "id": "figure",
+          "model": "figure",
+          "plugins": {
+            "da": {
+              "name": "Figure",
+              "rows": 1,
+              "columns": 1
+            }
+          }
+        },
+        {
+          "title": "Footer Navigation",
+          "id": "footer-navigation",
+          "model": "footer-navigation",
+          "plugins": {
+            "da": {
+              "name": "Footer Navigation",
+              "rows": 4,
+              "columns": 1
+            }
+          }
+        },
+        {
+          "title": "Footer",
+          "id": "footer",
+          "model": "footer",
+          "plugins": {
+            "da": {
+              "name": "Footer",
+              "rows": 0,
+              "columns": 0
+            }
+          }
+        },
         {
           "title": "Adaptive Form",
           "id": "form",
@@ -567,6 +745,222 @@
                   }
                 }
               }
+            }
+          }
+        },
+        {
+          "title": "Fragment",
+          "id": "fragment",
+          "model": "fragment",
+          "plugins": {
+            "da": {
+              "unsafeHTML": "<div class=\"fragment\"><div><div><p><a href=\"\">Fragment URL</a></p></div></div></div>",
+              "fields": [
+                {
+                  "name": "url",
+                  "selector": "div>div>p>a[href]"
+                },
+                {
+                  "name": "urlText",
+                  "selector": "div>div>p>a"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Header",
+          "id": "header",
+          "model": "header",
+          "plugins": {
+            "da": {
+              "name": "Header",
+              "rows": 0,
+              "columns": 0
+            }
+          }
+        },
+        {
+          "title": "Hero Homepage",
+          "id": "hero-homepage",
+          "model": "hero-homepage",
+          "plugins": {
+            "da": {
+              "unsafeHTML": "<div class=\"hero-homepage\"><div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture><h1></h1></div></div></div>",
+              "fields": [
+                {
+                  "name": "image",
+                  "selector": "div>div>picture>img[src]"
+                },
+                {
+                  "name": "imageAlt",
+                  "selector": "div>div>picture>img[alt]"
+                },
+                {
+                  "name": "text",
+                  "selector": "div>div>h1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Hero",
+          "id": "hero",
+          "model": "hero",
+          "plugins": {
+            "da": {
+              "unsafeHTML": "<div class=\"hero\"><div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture><h1></h1></div></div></div>",
+              "fields": [
+                {
+                  "name": "image",
+                  "selector": "div>div>picture>img[src]"
+                },
+                {
+                  "name": "imageAlt",
+                  "selector": "div>div>picture>img[alt]"
+                },
+                {
+                  "name": "text",
+                  "selector": "div>div>h1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Icon Button Grid",
+          "id": "icon-button-grid",
+          "model": "icon-button-grid",
+          "plugins": {
+            "da": {
+              "name": "Icon Button Grid",
+              "rows": 1,
+              "columns": 1
+            }
+          }
+        },
+        {
+          "title": "In-Page Navigation",
+          "id": "in-page-navigation",
+          "model": "in-page-navigation",
+          "plugins": {
+            "da": {
+              "name": "In-Page Navigation",
+              "rows": 0,
+              "columns": 0
+            }
+          }
+        },
+        {
+          "title": "Info Card Grid",
+          "id": "info-card-grid",
+          "model": "info-card-grid",
+          "plugins": {
+            "da": {
+              "name": "Info Card Grid",
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Intro",
+          "id": "intro",
+          "model": "intro",
+          "plugins": {
+            "da": {
+              "name": "Intro",
+              "rows": 1,
+              "columns": 1
+            }
+          }
+        },
+        {
+          "title": "Linked Card Grid",
+          "id": "linked-card-grid",
+          "model": "linked-card-grid",
+          "plugins": {
+            "da": {
+              "name": "Linked Card Grid",
+              "rows": 1,
+              "columns": 1
+            }
+          }
+        },
+        {
+          "title": "Manual Collection",
+          "id": "manual-collection",
+          "model": "manual-collection",
+          "plugins": {
+            "da": {
+              "name": "Manual Collection",
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Search",
+          "id": "search",
+          "model": "search",
+          "plugins": {
+            "da": {
+              "name": "Search",
+              "rows": 1,
+              "columns": 1,
+              "fields": [
+                {
+                  "name": "searchUrl",
+                  "selector": "div>div>p>a[href]"
+                },
+                {
+                  "name": "searchUrlText",
+                  "selector": "div>div>p>a"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Side Navigation",
+          "id": "side-navigation",
+          "model": "side-navigation",
+          "plugins": {
+            "da": {
+              "name": "Side Navigation",
+              "rows": 0,
+              "columns": 0
+            }
+          }
+        },
+        {
+          "title": "Summary Box",
+          "id": "summary-box",
+          "model": "summary-box",
+          "plugins": {
+            "da": {
+              "name": "Summary Box",
+              "rows": 1,
+              "columns": 1
+            }
+          }
+        },
+        {
+          "title": "Table",
+          "id": "table",
+          "model": "table",
+          "plugins": {
+            "da": {
+              "name": "Table",
+              "rows": 1,
+              "columns": 1,
+              "fields": [
+                {
+                  "name": "table",
+                  "selector": "div>div"
+                }
+              ]
             }
           }
         }

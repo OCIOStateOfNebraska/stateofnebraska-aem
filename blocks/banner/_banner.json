@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Banner",
+      "id": "banner",
+      "model": "banner",
+      "plugins": {
+        "da": {
+          "name": "Banner",
+          "rows": 0,
+          "columns": 0
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "banner",
+      "fields": []
+    }
+  ],
+  "filters": []
+}

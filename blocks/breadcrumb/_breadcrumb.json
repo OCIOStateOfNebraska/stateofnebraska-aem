@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Breadcrumb",
+      "id": "breadcrumb",
+      "model": "breadcrumb",
+      "plugins": {
+        "da": {
+          "name": "Breadcrumb",
+          "rows": 0,
+          "columns": 0
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "breadcrumb",
+      "fields": []
+    }
+  ],
+  "filters": []
+}
