@@ -75,6 +75,8 @@ $block: 'stat-callout-card';
 			@include at-media('tablet') {
 				@include u-padding-top(5);
 				@include u-padding-left(10);
+				align-items: left;
+				justify-content: left;
 			}
 		}
 		
