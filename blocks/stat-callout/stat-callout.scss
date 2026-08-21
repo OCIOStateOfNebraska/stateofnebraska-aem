@@ -71,12 +71,14 @@ $block: 'stat-callout-card';
 			justify-content: center;
 			width: 100%;
 			background-color: color('primary-darker');
+			text-align: center;
 			
 			@include at-media('tablet') {
 				@include u-padding-top(5);
 				@include u-padding-left(10);
 				align-items: center;
 				justify-content: flex-start;
+				text-align: left;
 			}
 		}
 		
