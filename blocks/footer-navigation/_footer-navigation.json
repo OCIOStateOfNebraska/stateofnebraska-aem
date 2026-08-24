@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Footer Navigation",
+      "id": "footer-navigation",
+      "model": "footer-navigation",
+      "plugins": {
+        "da": {
+          "name": "Footer Navigation",
+          "rows": 4,
+          "columns": 1
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "footer-navigation",
+      "fields": []
+    }
+  ],
+  "filters": []
+}

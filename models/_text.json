@@ -3,12 +3,17 @@
     {
       "title": "Text",
       "id": "text",
+      "model": "text",
       "plugins": {
         "xwalk": {
           "page": {
             "resourceType": "core/franklin/components/text/v1/text",
             "template": {}
           }
+        },
+        "da": {
+          "name": "text",
+          "type": "text"
         }
       }
     }

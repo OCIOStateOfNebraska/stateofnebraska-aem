@@ -1,0 +1,120 @@
+{
+  "definitions": [
+    {
+      "title": "Columns",
+      "id": "columns",
+      "model": "columns",
+      "filter": "columns",
+      "plugins": {
+        "da": {
+          "name": "columns",
+          "rows": 1,
+          "columns": 2,
+          "behaviour": "columns"
+        }
+      }
+    },
+    {
+      "title": "Columns Row",
+      "id": "columns-row",
+      "model": "columns-row",
+      "filter": "columns-row",
+      "plugins": {
+        "da": {
+          "name": "columns-row",
+          "behaviour": "columns-row"
+        }
+      }
+    },
+    {
+      "title": "Columns Cell",
+      "id": "columns-cell",
+      "model": "columns-cell",
+      "filter": "columns-cell",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div></div>",
+          "behaviour": "columns-cell"
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "columns",
+      "fields": [
+        {
+          "component": "number",
+          "valueType": "number",
+          "name": "columns",
+          "label": "Number of Columns",
+          "value": 2,
+          "validation": {
+            "numberMin": 1,
+            "numberMax": 6
+          }
+        },
+        {
+          "component": "select",
+          "name": "classes",
+          "value": "",
+          "label": "Column Layout",
+          "description": "Custom desktop column widths (must total 12). Leave blank for equal-width columns.",
+          "options": [
+            {
+              "name": "Equal width (default)",
+              "value": ""
+            },
+            {
+              "name": "4/8",
+              "value": "layout-4-8"
+            },
+            {
+              "name": "8/4",
+              "value": "layout-8-4"
+            },
+            {
+              "name": "6/6",
+              "value": "layout-6-6"
+            },
+            {
+              "name": "3/9",
+              "value": "layout-3-9"
+            },
+            {
+              "name": "9/3",
+              "value": "layout-9-3"
+            },
+            {
+              "name": "4/4/4",
+              "value": "layout-4-4-4"
+            },
+            {
+              "name": "3/6/3",
+              "value": "layout-3-6-3"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "columns",
+      "components": [
+        "columns-row"
+      ]
+    },
+    {
+      "id": "columns-row",
+      "components": []
+    },
+    {
+      "id": "columns-cell",
+      "components": [
+        "text",
+        "image"
+      ]
+    }
+  ]
+}

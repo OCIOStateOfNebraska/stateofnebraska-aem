@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Manual Collection",
+      "id": "manual-collection",
+      "model": "manual-collection",
+      "plugins": {
+        "da": {
+          "name": "Manual Collection",
+          "rows": 1,
+          "columns": 2
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "manual-collection",
+      "fields": []
+    }
+  ],
+  "filters": []
+}

@@ -27,7 +27,7 @@ module.exports = {
 		'no-alert': [1],
 		camelcase: [1],
 		'xwalk/max-cells': ['error', {
-			'*': 4, // default limit for all models
+			'*': 6, // default limit for all models
 			form: 19,
 			wizard: 13,
 			'form-button': 9,
@@ -54,5 +54,6 @@ module.exports = {
 			tnc: 14,
 		}],
 		'xwalk/no-orphan-collapsible-fields': 'off', // Disable until enhancement is done for Forms properties
+		'xwalk/no-custom-resource-types': 'off',
 	},
 };

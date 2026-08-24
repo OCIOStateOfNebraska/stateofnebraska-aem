@@ -3,6 +3,7 @@
     {
       "title": "Button",
       "id": "button",
+      "model": "button",
       "plugins": {
         "xwalk": {
           "page": {
@@ -11,6 +12,19 @@
               "model": "button"
             }
           }
+        },
+        "da": {
+          "unsafeHTML": "<p><a href=\"\">Button Text</a></p>",
+          "fields": [
+            {
+              "name": "link",
+              "selector": "p>a[href]"
+            },
+            {
+              "name": "linkText",
+              "selector": "p>a"
+            }
+          ]
         }
       }
     }
@@ -51,7 +65,8 @@
               "name": "secondary",
               "value": "secondary"
             }
-          ]
+          ],
+          "value": ""
         }
       ]
     }

@@ -1,0 +1,62 @@
+{
+  "definitions": [
+    {
+      "title": "Alert",
+      "id": "alert",
+      "model": "alert",
+      "plugins": {
+        "da": {
+          "name": "Alert",
+          "rows": 1,
+          "columns": 2
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "alert",
+      "fields": [
+        {
+          "component": "select",
+          "name": "style",
+          "label": "Alert Type",
+          "options": [
+            {
+              "name": "Info (default)",
+              "value": ""
+            },
+            {
+              "name": "Emergency",
+              "value": "emergency"
+            },
+            {
+              "name": "Warning",
+              "value": "warning"
+            },
+            {
+              "name": "Error",
+              "value": "error"
+            },
+            {
+              "name": "Success",
+              "value": "success"
+            }
+          ],
+          "value": ""
+        },
+        {
+          "component": "boolean",
+          "name": "no-icon",
+          "label": "Hide Icon"
+        },
+        {
+          "component": "boolean",
+          "name": "slim",
+          "label": "Slim"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

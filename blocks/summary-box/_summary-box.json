@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Summary Box",
+      "id": "summary-box",
+      "model": "summary-box",
+      "plugins": {
+        "da": {
+          "name": "Summary Box",
+          "rows": 1,
+          "columns": 1
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "summary-box",
+      "fields": []
+    }
+  ],
+  "filters": []
+}

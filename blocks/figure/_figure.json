@@ -1,0 +1,44 @@
+{
+  "definitions": [
+    {
+      "title": "Figure",
+      "id": "figure",
+      "model": "figure",
+      "plugins": {
+        "da": {
+          "name": "Figure",
+          "rows": 1,
+          "columns": 1
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "figure",
+      "fields": [
+        {
+          "component": "select",
+          "name": "style",
+          "label": "Alignment",
+          "options": [
+            {
+              "name": "Full width (default)",
+              "value": ""
+            },
+            {
+              "name": "Left",
+              "value": "left"
+            },
+            {
+              "name": "Right",
+              "value": "right"
+            }
+          ],
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

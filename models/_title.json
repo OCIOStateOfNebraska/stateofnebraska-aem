@@ -3,6 +3,7 @@
     {
       "title": "Title",
       "id": "title",
+      "model": "title",
       "plugins": {
         "xwalk": {
           "page": {
@@ -11,6 +12,10 @@
               "model": "title"
             }
           }
+        },
+        "da": {
+          "name": "title",
+          "type": "title"
         }
       }
     }
@@ -53,7 +58,8 @@
               "name": "h6",
               "value": "h6"
             }
-          ]
+          ],
+          "value": ""
         }
       ]
     }

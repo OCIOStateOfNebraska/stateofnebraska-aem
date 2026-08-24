@@ -1,0 +1,23 @@
+{
+  "definitions": [
+    {
+      "title": "Icon Button Grid",
+      "id": "icon-button-grid",
+      "model": "icon-button-grid",
+      "plugins": {
+        "da": {
+          "name": "Icon Button Grid",
+          "rows": 1,
+          "columns": 1
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "icon-button-grid",
+      "fields": []
+    }
+  ],
+  "filters": []
+}

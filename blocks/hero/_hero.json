@@ -1,0 +1,41 @@
+{
+  "definitions": [
+    {
+      "title": "Hero",
+      "id": "hero",
+      "model": "hero",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div class=\"hero\"><div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture><h1></h1></div></div></div>",
+          "fields": [
+            {
+              "name": "image",
+              "selector": "div>div>picture>img[src]"
+            },
+            {
+              "name": "imageAlt",
+              "selector": "div>div>picture>img[alt]"
+            },
+            {
+              "name": "text",
+              "selector": "div>div>h1"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "hero",
+      "fields": [
+        {
+          "component": "boolean",
+          "name": "hide-breadcrumb",
+          "label": "Hide Breadcrumb"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

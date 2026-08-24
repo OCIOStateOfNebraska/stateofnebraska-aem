@@ -1,0 +1,92 @@
+{
+  "definitions": [
+    {
+      "title": "Search",
+      "id": "search",
+      "model": "search",
+      "plugins": {
+        "da": {
+          "name": "Search",
+          "rows": 1,
+          "columns": 1,
+          "fields": [
+            {
+              "name": "searchUrl",
+              "selector": "div>div>p>a[href]"
+            },
+            {
+              "name": "searchUrlText",
+              "selector": "div>div>p>a"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "search",
+      "fields": [
+        {
+          "component": "aem-content",
+          "name": "source",
+          "label": "Data Source",
+          "description": "Path to the query index JSON (defaults to /query-index.json)"
+        },
+        {
+          "component": "select",
+          "name": "style",
+          "label": "Display Mode",
+          "options": [
+            {
+              "name": "Full Search",
+              "value": ""
+            },
+            {
+              "name": "Dynamic Collection",
+              "value": "dynamic-collection"
+            }
+          ],
+          "value": ""
+        },
+        {
+          "component": "boolean",
+          "name": "show-search-box",
+          "label": "Show Search Box"
+        },
+        {
+          "component": "boolean",
+          "name": "show-pagination",
+          "label": "Show Pagination"
+        },
+        {
+          "component": "select",
+          "name": "sort-key",
+          "label": "Sort By",
+          "options": [
+            {
+              "name": "Relevance (default)",
+              "value": ""
+            },
+            {
+              "name": "Publication Date",
+              "value": "publicationDate"
+            },
+            {
+              "name": "Title",
+              "value": "title"
+            }
+          ],
+          "value": ""
+        },
+        {
+          "component": "text",
+          "name": "filter-by",
+          "label": "Filter by Tag",
+          "description": "Filter results to items matching this tag value"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}
