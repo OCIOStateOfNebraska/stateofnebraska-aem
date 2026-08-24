@@ -19,7 +19,7 @@ module.exports = {
 	rules: {
 		indent: [1, 'tab', { SwitchCase: 1 }],
 		'no-undefined': [0],
-		'linebreak-style': [1, 'windows'],
+		'linebreak-style': [1, 'unix'],
 		quotes: [1, 'single'],
 		semi: [1, 'always'],
 		'space-in-parens': [1, 'always'],
