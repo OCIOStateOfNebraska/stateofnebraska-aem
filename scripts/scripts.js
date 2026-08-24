@@ -595,7 +595,7 @@ function decorateSections( main ) {
 
 export function decorateInner( container ) {
 	decorateH2s( container );
-//	decorateImgs( container );
+	decorateImgs( container );
 	decorateButtons( container );
 	decorateYouTube( container );
 	decorateGoogleMaps( container );
@@ -687,14 +687,12 @@ async function loadLazy( doc ) {
 	loadFonts();
 
 	const loadQuickEdit = async ( ...args ) => {
-		// eslint-disable-next-line import/no-cycle
 		const { default: initQuickEdit } = await import( '../tools/quick-edit/quick-edit.js' );
 		initQuickEdit( ...args );
 	};
 
 	let a11yModeActive = false;
 	const loadA11yMode = async () => {
-		// eslint-disable-next-line import/no-cycle
 		const { default: initA11y } = await import( '../tools/plugins/accessibility-mode/accessibility-mode.js' );
 		a11yModeActive = !a11yModeActive;
 		initA11y( a11yModeActive );
