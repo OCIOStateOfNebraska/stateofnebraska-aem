@@ -14,7 +14,9 @@
     "prepare": "husky",
     "sass": "node sass-compile.js",
     "dev": "npm run bundle && node sass-compile.js watch & aem up",
-    "bundle": "microbundle ./scripts/bundle-uswds.js -o ./scripts/deps/bundle-uswds.js -f modern --no-sourcemap --target web; mv ./scripts/deps/bundle-uswds.modern.mjs ./scripts/deps/bundle-uswds.js"
+    "bundle": "npm run bundle:uswds && npm run bundle:fuse",
+    "bundle:uswds": "microbundle ./scripts/bundle-uswds.js -o ./scripts/deps/bundle-uswds.js -f modern --no-sourcemap --target web && node -e \"require('fs').renameSync('./scripts/deps/bundle-uswds.mjs')\"",
+    "bundle:fuse": "microbundle ./scripts/bundle-fuse.js -o ./scripts/deps/fuse.js -f modern --no-sourcemap --target web && node -e \"require('fs').renameSync('./scripts/deps/fuse.modern.mjs','./scripts/deps/fuse.js')\""
   },
   "engines": {
     "node": ">=22.0.0",

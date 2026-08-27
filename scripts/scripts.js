@@ -49,7 +49,8 @@ function buildHeroBlock( main, templateName ) {
 
 		if( videoLink ) {
 			const extention = heroSection.querySelector( 'a' )?.href?.match( /\.\S{3,5}$/g )[0].replace( '.','' ).trim();
-			video = domEl( 'video', { autoplay: '', muted: '', loop: '', playsinline: '', defaultMuted: '', preload:'auto' },
+			// preload:none prevents video from competing with LCP resources
+			video = domEl( 'video', { autoplay: '', muted: '', loop: '', playsinline: '', defaultMuted: '', preload:'none' },
 				domEl( 'source', { src: heroSection.querySelector( 'a' ).href, type: `video/${extention}` } )
 			);
 			heroSection.querySelector( 'a' ).remove();
@@ -656,6 +657,7 @@ async function loadEager( doc ) {
 	if ( main ) {
 		decorateMain( main );
 		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
+		document.body.classList.add( 'appear' );
 	}
 
 	// pull in template name from document metadata

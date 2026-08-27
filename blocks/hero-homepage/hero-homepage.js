@@ -93,7 +93,12 @@ export default function decorate( block ) {
 	block.innerText = '';
 	block.appendChild( container );
 
-	if( backgroundImg ) { container.before( backgroundImg ); }
+	if( backgroundImg ) {
+		// hint to browser that the hero image is the LCP candidate
+		const heroImg = backgroundImg.querySelector( 'img' );
+		if ( heroImg ) heroImg.setAttribute( 'fetchpriority', 'high' );
+		container.before( backgroundImg );
+	}
 	if ( videoBlock ) {
 		container.before( videoBlock );
 		if ( reducedMotionMq.matches ) {

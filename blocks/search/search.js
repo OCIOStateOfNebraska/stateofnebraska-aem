@@ -3,7 +3,7 @@ import { li, span, ul, input, domEl } from '../../scripts/dom-helpers.js';
 import ffetch from '../../scripts/ffetch.js';
 import Events from '../../scripts/Events.class.js';
 
-import { Fuse } from '../../scripts/deps/bundle-uswds.js';
+import { Fuse } from '../../scripts/deps/fuse.js';
 import renderResult from './search-result.js';
 import createPagination from './search-pagination.js';
 import backdropDecorate from '../backdrop-grid/backdrop-grid.js';
