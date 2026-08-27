@@ -14,6 +14,12 @@ $block: 'stat-callout-card';
 
 	li {
 		@include u-margin(0);
+
+		&.desktop\:grid-col-6 {
+			@include at-media('desktop') {
+				width: 47%;
+			}
+		}
 	}
 
 	.section-background--full &:last-child {
