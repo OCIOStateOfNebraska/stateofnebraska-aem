@@ -29,6 +29,23 @@ body {
 	}
 }
 
+header:has(.header[data-block-status='initialized']),
+header:has(.header[data-block-status='loading']) {
+	min-height: px-to-rem(333px);
+	background-color: color('primary-dark');
+}
+
+header:has(.header[data-block-status='loaded']) {
+	min-height: 0;
+}
+
+@include at-media('desktop') {
+	header:has(.header[data-block-status='initialized']),
+	header:has(.header[data-block-status='loading']) {
+		min-height: px-to-rem(206px);
+	}
+}
+
 main {
 	overflow-x: clip; // https://stackoverflow.com/questions/14270084/overflow-xhidden-doesnt-prevent-content-from-overflowing-in-mobile-browsers
 }

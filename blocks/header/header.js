@@ -215,6 +215,9 @@ async function loadAndDecorateNav() {
 	if ( picture && link ) {
 		link.textContent = '';
 		link.className = '';
+		const img = picture.querySelector( 'img' );
+		img.height = 68;
+		img.width = 195;
 		link.append( picture );
 	}
 

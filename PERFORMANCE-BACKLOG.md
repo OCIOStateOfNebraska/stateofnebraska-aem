@@ -19,7 +19,7 @@ Priority model:
   - Removed static top-level `import { header, accordion }` from bundle-uswds in blocks/header/header.js.
   - Added dynamic `import()` at the end of decorate(), after all structural HTML is appended to the DOM.
   - USWDS accordion and header behavior now attaches after markup is rendered, not at module parse time.
-  - Added `document.body.classList.add( 'appear' )` immediately after the first section loads in scripts/scripts.js so text LCP is not gated by header completion or the 2s fallback.
+  - Kept `document.body.classList.add( 'appear' )` after first-section load in scripts/scripts.js for fast LCP, and added eager global CSS in styles/ne-global/_ne-tags.scss to reserve header loading height until the header block reaches `loaded` status.
 - Change:
   - Keep a minimal, above-the-fold header shell in eager.
   - Move non-critical header behaviors (complex nav enhancements, deferred interactions) to lazy where possible.
@@ -193,3 +193,4 @@ Priority model:
 - **scripts/aem.js is prohibited from modification.** Any aem.js-related guidance is documentation-only and must be addressed through scripts/scripts.js, block-level overrides, or template customization.
 - P0 tasks are implemented. Run `npm run bundle` after any change to scripts/bundle-uswds.js or scripts/bundle-fuse.js to regenerate compiled output in scripts/deps/.
 - Lighthouse run `utils/localhost_3000-20260827T074515.json` measured homepage Performance 62, FCP 2.9s, LCP 4.5s, TBT 0ms, CLS 0.015. Treat Chrome extension payloads and `__internal__/livereload.js` as local-test noise, not production bottlenecks.
+- Follow-up Lighthouse run for `/test-pages/olek-test` measured Performance 80, FCP 0.3s, LCP 0.4s, TBT 0ms, CLS 0.459. The follow-up fix reserves header loading height in eager global CSS; retest target is CLS <= 0.10 while keeping LCP <= 2.5s.
