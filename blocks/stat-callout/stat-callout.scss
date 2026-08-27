@@ -31,7 +31,7 @@ $block: 'stat-callout-card';
 		&__header {
 			@include u-padding(5);
 			@include u-padding-bottom(2);
-			@include u-z ('top');
+			@include u-z (2);
 			position: relative;
 			display: flex;
 			align-items: center;
