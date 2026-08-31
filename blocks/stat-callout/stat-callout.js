@@ -12,7 +12,7 @@ export default function decorate( block ) {
 	const divArray = [...block.children];
 
 	if ( fullWidth ) {
-		[...block.children].forEach( ( row ) => {
+		divArray.forEach( ( row ) => {
 			const cols = [...row.children];
 
 			if ( cols.length >= 2 ) {
@@ -31,7 +31,7 @@ export default function decorate( block ) {
 					div( { class: 'usa-card__header' }, heading ), 
 					div( { class: 'usa-card__body' }, bodyText ) ) );
 		} ); } );
-	console.log( containerArray );
+
 	const ulElement = ul( { class: 'usa-card-group grid-row' }, ...containerArray.flat() );
 	block.innerHTML = '';
 	block.append( ulElement );
