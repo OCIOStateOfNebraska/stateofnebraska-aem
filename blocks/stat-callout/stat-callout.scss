@@ -1,0 +1,102 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:math';
+
+
+
+.stat-callout-wrapper {
+	
+	ul {
+		@include u-margin(0);
+		@include u-padding(0);
+		gap: units(3);
+		list-style: none;
+	}
+
+	li {
+		@include u-margin(0);
+
+		&.desktop\:grid-col-6 {
+			@include at-media('desktop') {
+				width: 47%;
+			}
+		}
+	}
+
+	.section-background--full &:last-child {
+		@include u-margin-bottom(0);
+	}
+
+	.usa-card {
+
+		&__header {
+			@include u-padding(5);
+			@include u-padding-bottom(2);
+			@include u-z (300);
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 20%;
+			background-color: color('primary');
+			font-size: font-size('heading', $theme-h2-font-size);
+			font-weight: font-weight('bold');
+			text-align: center;
+			
+			@include at-media('tablet') {
+				@include u-padding-right(3);
+				@include u-padding-bottom(5);
+			}
+
+
+			&:after {
+				@include u-z (100);
+				position: absolute;
+				bottom: -24.5%;
+				left: 0;
+				width: 100%;
+				height: 25%;
+				background-color: color('primary');
+				content: '';
+				clip-path: polygon(0 0, 100% 0, 50% 100%);
+				
+				@include at-media('tablet') {
+					top: 0;
+					left: 99%;
+					width: 25%;
+					height: 100%;
+					clip-path: polygon(0 0, 100% 50%, 0 100%);
+				}
+			}
+		}
+
+		&__body {
+			@include u-padding(5);
+			@include u-padding-top(10);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			background-color: color('primary-darker');
+			text-align: center;
+			
+			@include at-media('tablet') {
+				@include u-padding-top(5);
+				@include u-padding-left(10);
+				align-items: center;
+				justify-content: flex-start;
+				text-align: left;
+			}
+		}
+		
+		&__container {
+			display: flex;
+			flex-direction: column;
+			background-color: color('primary');
+			color: color('white');
+			
+			@include at-media('tablet') {
+				flex-direction: row;
+			}
+		}
+	}
+}
