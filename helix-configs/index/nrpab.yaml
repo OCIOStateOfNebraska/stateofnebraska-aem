@@ -1,0 +1,105 @@
+version: 1
+indices:
+  site:
+    exclude:
+      - tools/**
+      - library/**
+      - footer
+      - nav
+      - alert
+      - search-results
+      - ocio-services/**
+    target: /query-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: |
+          attribute(el, 'content')
+      image:
+        select: head > meta[property="og:image"]
+        value: |
+          match(attribute(el, 'content'), 'https:\/\/[^/]+(\/.*)')
+      description:
+        select: head > meta[name="description"]
+        value: |
+          attribute(el, 'content')
+      hideInSideNav:
+        select: head > meta[name="hide-in-side-nav"]
+        value: |
+          attribute(el, 'content')
+      lastModified:
+        select: none
+        value: |
+          parseTimestamp(headers['last-modified'], 'ddd, DD MMM YYYY hh:mm:ss GMT')
+      navOrder:
+        select: head > meta[name="nav-order"]
+        value: |
+          attribute(el, 'content')
+  search:
+    exclude:
+      - tools/**
+      - library/**
+      - footer
+      - nav
+      - alert
+      - ocio-services/**
+    target: /search-index.json
+    properties:
+      title:
+        value: attribute(el, 'content')
+        select: head > meta[property="og:title"]
+      image:
+        value: match(attribute(el, 'content'), 'https:\/\/[^/]+(\/.*)')
+        select: head > meta[property="og:image"]
+      imageAlt:
+        value: attribute(el, 'content')
+        select: head > meta[property="og:image:alt"]
+      description:
+        value: attribute(el, 'content')
+        select: head > meta[name="description"]
+      keywords:
+        value: attribute(el, 'content')
+        select: head > meta[name="keywords"]
+      tags:
+        values:
+          - attribute(el, 'content')
+        select: head > meta[property="article:tag"]
+      h2s:
+        values:
+          - textContent(el)
+        select: h2
+      body:
+        value: textContent(el)
+        selectFirst: main p
+      lastModified:
+        value: parseTimestamp(headers['last-modified'], 'ddd, DD MMM YYYY hh:mm:ss GMT')
+        select: none
+      publicationDate:
+        value: attribute(el, 'content')
+        select: head > meta[name="publication-date"]
+  events:
+    target: /events-index.json
+    include:
+      - /events/**
+    properties:
+      template:
+        value: attribute(el, "content")
+        selectFirst: head > meta[name="template"]
+      eventStartDate:
+        value: attribute(el, "content")
+        selectFirst: head > meta[name="event-start-date"]
+      eventEndDate:
+        value: attribute(el, "content")
+        selectFirst: head > meta[name="event-end-date"]
+      eventLocation:
+        value: attribute(el, "content")
+        selectFirst: head > meta[name="event-location"]
+      eventAddress:
+        value: attribute(el, "content")
+        selectFirst: head > meta[name="event-address"]
+      title:
+        value: attribute(el, "content")
+        select: head > meta[property="og:title"]
+      description:
+        value: attribute(el, "content")
+        select: head > meta[name="description"]
