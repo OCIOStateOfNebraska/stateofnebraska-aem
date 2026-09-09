@@ -1,6 +1,7 @@
 import { getMetadata, decorateBlock, loadBlock, buildBlock, fetchPlaceholders } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { a, domEl } from '../../scripts/dom-helpers.js';
+import { header, accordion } from '../../scripts/deps/bundle-uswds.js';
 import { getIndividualIcon, isSameDomainOrSubdomain } from '../../scripts/utils.js';
 
 async function decorateSkipnav( placeholders ) {
@@ -319,10 +320,8 @@ export default async function decorate( block ) {
 	block.appendChild( overLay );
 	block.appendChild( navEle );
 
-	// Defer USWDS behavior until after structural HTML is in the DOM
-	const { header: uswdsHeader, accordion: uswdsAccordion } = await import( '../../scripts/deps/bundle-uswds.js' );
-	uswdsAccordion.on();
-	uswdsHeader.on();
+	accordion.on();
+	header.on();
 
 	return block;
 }
