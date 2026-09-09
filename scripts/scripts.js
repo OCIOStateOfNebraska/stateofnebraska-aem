@@ -536,7 +536,7 @@ function decorateSections( main ) {
 						// Invalid option was selected, behave as default section
 						section.classList.remove( 'section-background' );
 					}
-				} else if( key === 'background-image' ) {
+				} else if( key === 'background-image' || key === 'backgroundImage' ) {
 					const value = String( sectionMetaObj[key] ?? '' ).trim();
 
 					if( fullWidth && value && value.length ) {

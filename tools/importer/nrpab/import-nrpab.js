@@ -1,17 +1,19 @@
+/* global WebImporter */
+/* eslint-disable no-console */
 import { createStylizedHeading } from '../mds-blocks.js';
 const createMetadataBlock = ( main, document ) => {
 	const meta = {
-        Description : 'Nebraska Real Property Appraiser Board '
-    };
+		Description : 'Nebraska Real Property Appraiser Board '
+	};
 
-    const title = ( document.querySelector('title').textContent.split( ':' )[1] ) || document.querySelector( '.page_title_large' )?.textContent;  
-    if (title) {
-        meta.Title = title;
-        meta.Description += ` - ${title} page`;
-    }
-    const h1 = document.createElement('h1');
-    h1.textContent = meta.Title;
-    main.prepend(h1);
+	const title = ( document.querySelector( 'title' ).textContent.split( ':' )[1] ) || document.querySelector( '.page_title_large' )?.textContent;  
+	if ( title ) {
+		meta.Title = title;
+		meta.Description += ` - ${title} page`;
+	}
+	const h1 = document.createElement( 'h1' );
+	h1.textContent = meta.Title;
+	main.prepend( h1 );
 	// helper to create the metadata block
 	const block = WebImporter.Blocks.getMetadataBlock( document, meta );
 
@@ -23,26 +25,26 @@ const createMetadataBlock = ( main, document ) => {
 };
 
 const normalizeURLs = ( main, pageUrl ) => {
-    pageUrl = pageUrl.replace( 'localhost:3001', 'main--nrpab--ociostateofnebraska.aem.page').toLowerCase();
-    const URLs = Array.from(main.querySelectorAll('a')).map(a => {
-        a.href = a.href.replace( 'localhost:3001', 'main--nrpab--ociostateofnebraska.aem.page').replace( '.html', '' );
-        return a;
-    });
-    URLs.forEach(url => {
-        if(url.href.includes('main--nrpab--ociostateofnebraska.aem.page')) {
-            url.href = url.href.toLowerCase().replaceAll('_', '-');
-        }
-        if (url.href.endsWith('.pdf')) {
-            url.href = `${pageUrl.split( '?' )[0].split('/').slice(0, -1).join('/')}/docs/${url.href.split('/').pop()}`;
-        }
-    });
+	pageUrl = pageUrl.replace( 'localhost:3001', 'main--nrpab--ociostateofnebraska.aem.page' ).toLowerCase();
+	const URLs = Array.from( main.querySelectorAll( 'a' ) ).map( a => {
+		a.href = a.href.replace( 'localhost:3001', 'main--nrpab--ociostateofnebraska.aem.page' ).replace( '.html', '' );
+		return a;
+	} );
+	URLs.forEach( url => {
+		if( url.href.includes( 'main--nrpab--ociostateofnebraska.aem.page' ) ) {
+			url.href = url.href.toLowerCase().replaceAll( '_', '-' );
+		}
+		if ( url.href.endsWith( '.pdf' ) ) {
+			url.href = `${pageUrl.split( '?' )[0].split( '/' ).slice( 0, -1 ).join( '/' )}/docs/${url.href.split( '/' ).pop()}`;
+		}
+	} );
 };
 
 const createHeading = ( main ) => {
-    main.querySelectorAll('.page_title_large').forEach( heading => {
-        const stylizedHeading = createStylizedHeading( heading.textContent );
-        heading.replaceWith(stylizedHeading);
-    });
+	main.querySelectorAll( '.page_title_large' ).forEach( heading => {
+		const stylizedHeading = createStylizedHeading( heading.textContent );
+		heading.replaceWith( stylizedHeading );
+	} );
 };
 
 
@@ -60,11 +62,11 @@ export default {
 			'.topnav',
 			'.footer',
 			'.news_right',
-            '#branding',
+			'#branding',
 		] );
 		createMetadataBlock( main, document );
-        normalizeURLs( main, url );
-        createHeading( main );
+		normalizeURLs( main, url );
+		createHeading( main );
 		WebImporter.rules.transformBackgroundImages( main, document );
 		WebImporter.rules.adjustImageUrls( main, url, params.originalURL );
 		WebImporter.rules.convertIcons( main, document );
