@@ -47,8 +47,7 @@ function buildHeroBlock( main, templateName ) {
 		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'webm' )
 		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'wmv' );
 
-		if( videoLink ) {
-			// preload:none prevents video from competing with LCP resources
+		if( videoLink ) {			
 			video = domEl( 'video', { autoplay: '', muted: '', loop: '', playsinline: '', defaultMuted: '', preload:'none' },
 				domEl( 'source', { src: heroSection.querySelector( 'a' ).href } )
 			);
@@ -656,7 +655,6 @@ async function loadEager( doc ) {
 	if ( main ) {
 		decorateMain( main );
 		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
-		document.body.classList.add( 'appear' );
 	}
 
 	// pull in template name from document metadata
