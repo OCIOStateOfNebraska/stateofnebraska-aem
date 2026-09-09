@@ -48,10 +48,9 @@ function buildHeroBlock( main, templateName ) {
 		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'wmv' );
 
 		if( videoLink ) {
-			const extention = heroSection.querySelector( 'a' )?.href?.match( /\.\S{3,5}$/g )[0].replace( '.','' ).trim();
 			// preload:none prevents video from competing with LCP resources
 			video = domEl( 'video', { autoplay: '', muted: '', loop: '', playsinline: '', defaultMuted: '', preload:'none' },
-				domEl( 'source', { src: heroSection.querySelector( 'a' ).href, type: `video/${extention}` } )
+				domEl( 'source', { src: heroSection.querySelector( 'a' ).href } )
 			);
 			heroSection.querySelector( 'a' ).remove();
 		}
