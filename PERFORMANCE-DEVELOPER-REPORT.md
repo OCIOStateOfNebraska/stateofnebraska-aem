@@ -15,8 +15,6 @@ Highest priority is reducing homepage LCP and search/form interaction latency (I
 
 Measured Lighthouse homepage run from `utils/localhost_3000-20260827T074515.json` confirms the homepage bottleneck is LCP/render delay, not JavaScript blocking: Performance 62, FCP 2.9s, LCP 4.5s, TBT 0ms, CLS 0.015.
 
-Follow-up Lighthouse run for `/test-pages/olek-test` measured Performance 80 with excellent FCP/LCP/TBT but failing CLS: FCP 0.3s, LCP 0.4s, TBT 0ms, CLS 0.459. The main shift target was `main#main-content`, indicating the page was revealed before the header structure reached its final height.
-
 ## 2. Key Metrics and Targets
 
 ### Core Web Vitals
@@ -51,12 +49,6 @@ Follow-up Lighthouse run for `/test-pages/olek-test` measured Performance 80 wit
   - Resource profile: 228 KiB total, including 73 KiB fonts, 40 KiB CSS, and 85 KiB scripts.
   - LCP element was text in main content, not the hero image. This makes body visibility timing and critical CSS more important than image byte savings for this specific run.
   - Caveat: the run was against localhost with Chrome extensions and live reload enabled; ignore extension payloads and `__internal__/livereload.js` for production decisions.
-- CLS follow-up from `/test-pages/olek-test`:
-  - Performance score: 80.
-  - FCP: 0.3s, LCP: 0.4s, TBT: 0ms.
-  - CLS: 0.459, above the <= 0.10 target.
-  - Main shifted elements: `main#main-content` and the first `.usa-section`.
-  - Fix implemented: body reveal remains early after the first section loads, while eager global CSS now reserves header loading height until the header block reaches `loaded` status.
 
 ## Search Results Page
 - Primary risk metrics: INP and TBT.
@@ -86,9 +78,9 @@ Follow-up Lighthouse run for `/test-pages/olek-test` measured Performance 80 wit
 - Do:
   - Keep only minimal header shell and accessibility-critical behavior in eager.
   - Move complex nav enhancements and non-critical setup to lazy.
-  - Keep `body.appear` after first-section load and reserve header loading height in eager global CSS.
+  - Add `body.appear` immediately after the first section loads so LCP text is not blocked by header completion or the 2s fallback.
 - Expected metric lift:
-  - Preserve fast LCP while reducing CLS caused by main content moving after header layout finalizes. TBT is already 0ms in measured runs.
+  - Lower LCP on homepage. TBT is already 0ms in the measured run.
 
 ### P0-2 Enforce Hero Critical-Path Media Policy
 - Files:
