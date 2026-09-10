@@ -47,10 +47,9 @@ function buildHeroBlock( main, templateName ) {
 		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'webm' )
 		|| heroSection.querySelector( 'a' )?.href?.endsWith( 'wmv' );
 
-		if( videoLink ) {
-			const extention = heroSection.querySelector( 'a' )?.href?.match( /\.\S{3,5}$/g )[0].replace( '.','' ).trim();
-			video = domEl( 'video', { autoplay: '', muted: '', loop: '', playsinline: '', defaultMuted: '', preload:'auto' },
-				domEl( 'source', { src: heroSection.querySelector( 'a' ).href, type: `video/${extention}` } )
+		if( videoLink ) {			
+			video = domEl( 'video', { autoplay: '', muted: '', loop: '', playsinline: '', defaultMuted: '', preload:'none' },
+				domEl( 'source', { src: heroSection.querySelector( 'a' ).href } )
 			);
 			heroSection.querySelector( 'a' ).remove();
 		}
@@ -537,7 +536,7 @@ function decorateSections( main ) {
 						// Invalid option was selected, behave as default section
 						section.classList.remove( 'section-background' );
 					}
-				} else if( key === 'background-image' ) {
+				} else if( key === 'background-image' || key === 'backgroundImage' ) {
 					const value = String( sectionMetaObj[key] ?? '' ).trim();
 
 					if( fullWidth && value && value.length ) {
