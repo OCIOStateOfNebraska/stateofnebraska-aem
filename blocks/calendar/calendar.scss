@@ -546,3 +546,27 @@ $calendar-block: 'calendar';
 		}
 	}
 }
+
+.section-background {
+	&:has(.#{$calendar-block}) {
+		.#{$calendar-block} {
+
+			a,
+			button {
+				color: color('primary');
+
+				&:hover {
+					color: color('primary-darker');
+				}
+			}
+
+			button {
+				box-shadow: inset 0 0 0 2px #00607f;
+
+				&:hover {
+					box-shadow: inset 0 0 0 2px #003A4D;
+				}
+			}
+		}
+	}
+}
