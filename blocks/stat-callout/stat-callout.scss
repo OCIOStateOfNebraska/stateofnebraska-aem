@@ -14,11 +14,11 @@
 
 	li {
 		@include u-margin(0);
+	}
 
-		&.desktop\:grid-col-6 {
-			@include at-media('desktop') {
-				width: 47%;
-			}
+	.desktop\:grid-col-6 {
+		@include at-media('desktop') {
+			width: 47%;
 		}
 	}
 

@@ -114,22 +114,27 @@ function createSort( block ) {
 		// Percentage
 		if( /^(-|)\d+(\.\d+)?%$/.test( text ) ) {
 			td.setAttribute( 'data-sort-value', Number( text.replace( '%', '' ) ) /100 );
+			td.setAttribute( 'data-type', 'numeric' );
 		}
 		// Numbers
 		else if( /^(-|)\d+((\.|,|)(\d+)?)+$/.test( text ) ){
 			td.setAttribute( 'data-sort-value', Number( text.replaceAll( ',', '' ) ) );
+			td.setAttribute( 'data-type', 'numeric' );
 		}
 		// Position to number
 		else if( /^\d+(th|st|nd|rd)$/.test( text.toLowerCase() ) ){
 			td.setAttribute( 'data-sort-value', Number( text.slice( 0, text.length-2 ) ) );
+			td.setAttribute( 'data-type', 'numeric' );
 		}
 		// Date
 		else if( !Number.isNaN( Date.parse( text ) ) ){
 			td.setAttribute( 'data-sort-value', new Date( text ).getTime() );
+			td.setAttribute( 'data-type', 'numeric' );
 		}
 		// Month to number
 		else if( getMonthNumber( text ) ){
 			td.setAttribute( 'data-sort-value', getMonthNumber( text ) );
+			td.setAttribute( 'data-type', 'numeric' );
 		}
 		else{
 			td.setAttribute( 'data-sort-value', text );
@@ -290,9 +295,48 @@ export default async function decorate( block ) {
 			} );
 		} );
 	}
-	
-	
-	
+
+	if ( type === 'scrollable' || type === 'col-header' ) {
+		const scrollContainer = container || block;
+		const setStickyColumnOffsets = () => {
+			const firstColSticky = table.querySelectorAll( 'td:first-child, th:first-child' );
+			const secondColSticky = table.querySelectorAll( 'td:nth-child(2), th:nth-child(2)' );
+			let maxWidth = 0;
+
+			firstColSticky.forEach( ( cell ) => {
+				maxWidth = Math.max( maxWidth, cell.getBoundingClientRect().width );
+			} );
+
+			const secondColLeft = `${maxWidth}px`;
+			table.style.setProperty( '--sticky-col-2-left', secondColLeft );
+			const isScrolled = scrollContainer.scrollLeft > 2;
+
+			firstColSticky.forEach( ( cell ) => {
+				cell.classList.toggle( 'is-sticky', isScrolled );
+				if ( isScrolled ) {
+					cell.style.left = '0px';
+				} else {
+					cell.style.left = '';
+				}
+			} );
+
+			secondColSticky.forEach( ( cell ) => {
+				cell.classList.toggle( 'is-sticky', isScrolled );
+				if ( isScrolled ) {
+					cell.style.left = `calc(${secondColLeft} - 1px)`;
+				} else {
+					cell.style.left = '';
+				}
+			} );
+		};
+
+		setStickyColumnOffsets();
+		scrollContainer.addEventListener( 'scroll', setStickyColumnOffsets );
+		window.addEventListener( 'resize', setStickyColumnOffsets );
+		const resizeObserver = new ResizeObserver( () => setStickyColumnOffsets() );
+		resizeObserver.observe( table );
+	}
+
 	block.textContent = '';
 	if ( container ) {
 		block.append( container );

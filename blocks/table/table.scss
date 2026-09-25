@@ -5,26 +5,114 @@ $block: 'usa-table';
 $table-icon: px-to-rem(28px);
 
 .table {
-	margin: units($component-spacing-sm) 0;	
+	margin: units($component-spacing-sm) 0;
 
-	.usa-text-input{
+	.usa-text-input {
 		@include u-height(5);
 		@include u-margin-bottom(1);
 		@include u-width('card-lg');
 		@include u-border(1px);
+	}
+
+
+	&:not(:has(.#{$block}--stacked)) {
+
+		th,
+		td {
+			height: px-to-rem(48px);
+		}
 	}
 }
 
 .#{$block} {
 	@include u-margin(0);
 	@include u-width('full');
-	grid-column: 1;
+	font-size: size('body', 'sm');
 
-	&-container--scrollable{
-		display: grid;
+	&-container--scrollable {
+		overflow-x: auto;
+		border: 0;
+
+		.#{$block}-toolbar {
+			position: sticky;
+			left: 0;
+			z-index: 1;
+		}
+
+		table {
+			transition: box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+			border: 1px solid #000;
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+
+		.usa-table {
+
+			th,
+			td {
+				border: 0;
+				border-bottom: 1px solid #1c1c1c2e;
+			}
+		}
+
+		.usa-table {
+
+			th,
+			td {
+				& + & {
+					border-left: 1px solid #1c1c1c2e;
+				}
+			}
+		}
+
+		.usa-table {
+			th,
+			td {
+				&.is-sticky {
+					&:first-child,
+					&:nth-child(2) {
+						position: sticky;
+						background-color: color('white');
+						z-index: 2;
+
+						&:after {
+							position: absolute;
+							top: 0;
+							right: 0;
+							width: px-to-rem(1px);
+							height: 100%;
+							background-color: #1c1c1c2e;
+							box-shadow: 0 0 16px 0 #1c1c1c2e;
+							content: '';
+							z-index: 3;
+						}
+					}
+				}
+			}
+		}
+
+		.usa-table {
+			th,
+			td {
+				&.is-sticky {
+					&:first-child {
+						&:before {
+							position: absolute;
+							top: 0;
+							left: 0;
+							width: px-to-rem(1px);
+							height: 100%;
+							background-color: color('black');
+							content: '';
+							z-index: 3;
+						}
+					}
+				}
+			}
+		}
 	}
 
-	&-toolbar{
+	&-toolbar {
 		@include u-border(1px);
 		@include u-border-bottom(0);
 		@include u-padding(1);
@@ -32,27 +120,34 @@ $table-icon: px-to-rem(28px);
 		@include u-bg('base-lighter');
 		display: flex;
 		justify-content: space-between;
-		grid-column: 1;
 
-		.usa-text-input{
+		.usa-text-input {
 			@include u-margin(0);
 			@include u-padding(1);
 			@include u-border(1px);
-			@include u-border( 'solid' );
-			@include u-border( 'black' );
-			background-color: color( 'white' );
-			
+			@include u-border('solid');
+			@include u-border('black');
+			background-color: color('white');
+
 		}
 
-		.usa-table-results{
+		.usa-table-results {
 			@include u-margin(0);
 			@include u-height('full');
 		}
 	}
 
-	tr{
-		&.hidden{
+	tr {
+		&.hidden {
 			display: none;
+		}
+
+		&:hover {
+			border-left: 4px solid color('secondary');
+
+			>td {
+				background-color: color('accent-cool-lighter');
+			}
 		}
 	}
 
@@ -68,22 +163,26 @@ $table-icon: px-to-rem(28px);
 				@include u-padding-right(5);
 				@include u-border(0);
 				background-color: color('transparent');
-				color: color( 'black' );
+				color: color('black');
 
 				&:after {
 					@include add-background-svg('usa-icons/sort_arrow');
 					position: absolute;
 					top: 50%;
-					right: 0;					
+					right: 0;
 					width: $table-icon;
 					height: $table-icon;
 					margin-top: -1 * math.div($table-icon, 2);
 					content: '';
 				}
 
-				&:hover{
+				&:hover {
 					cursor: pointer;
 				}
+			}
+
+			&:hover {
+				background-color: color('accent-cool-lighter');
 			}
 
 
@@ -121,8 +220,14 @@ $table-icon: px-to-rem(28px);
 	}
 
 	td {
+		text-align: left;
+
 		&[data-sort-active] {
 			background-color: color('primary-lighter');
+		}
+
+		&[data-type='numeric'] {
+			text-align: right;
 		}
 	}
 
@@ -132,5 +237,20 @@ $table-icon: px-to-rem(28px);
 		font-size: size('body', 'md');
 		font-weight: font-weight('normal');
 		caption-side: bottom;
+	}
+
+}
+
+@include at-media('desktop') {
+	.cropped {
+		.#{$block}-container--scrollable {
+			overflow-x: hidden;
+		}
+
+		td,
+		th {
+			text-overflow: ellipsis;
+			white-space: normal;
+		}
 	}
 }
