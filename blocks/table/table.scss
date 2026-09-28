@@ -33,12 +33,6 @@ $table-icon: px-to-rem(28px);
 		overflow-x: auto;
 		border: 0;
 
-		.#{$block}-toolbar {
-			position: sticky;
-			left: 0;
-			z-index: 1;
-		}
-
 		table {
 			transition: box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 			border: 1px solid #000;
@@ -46,52 +40,49 @@ $table-icon: px-to-rem(28px);
 			border-spacing: 0;
 		}
 
-		.usa-table {
-
-			th,
-			td {
-				border: 0;
-				border-bottom: 1px solid #1c1c1c2e;
-			}
+		thead {
+			background-color: color('primary');
+			color: color('white');
 		}
 
-		.usa-table {
+		th,
+		td {
+			border: 0;
+			border-bottom: 1px solid #1c1c1c2e;
 
-			th,
-			td {
-				& + & {
-					border-left: 1px solid #1c1c1c2e;
-				}
-			}
-		}
+			&.is-sticky {
 
-		.usa-table {
-			th,
-			td {
-				&.is-sticky {
-					&:first-child,
-					&:nth-child(2) {
-						position: sticky;
-						background-color: color('white');
-						z-index: 2;
+				&:first-child,
+				&:nth-child(2) {
+					position: sticky;
+					background-color: color('white');
+					z-index: 2;
 
-						&:after {
-							position: absolute;
-							top: 0;
-							right: 0;
-							width: px-to-rem(1px);
-							height: 100%;
-							background-color: #1c1c1c2e;
-							box-shadow: 0 0 16px 0 #1c1c1c2e;
-							content: '';
-							z-index: 3;
-						}
+					&:after {
+						position: absolute;
+						top: 0;
+						right: 0;
+						width: px-to-rem(1px);
+						height: 100%;
+						background-color: #1c1c1c2e;
+						box-shadow: 0 0 16px 0 #1c1c1c2e;
+						content: '';
+						z-index: 3;
 					}
 				}
 			}
 		}
 
+		th,
+		td {
+			&+& {
+				border-left: 1px solid #1c1c1c2e;
+			}
+		}
+
+
 		.usa-table {
+
 			th,
 			td {
 				&.is-sticky {
@@ -117,7 +108,11 @@ $table-icon: px-to-rem(28px);
 		@include u-border-bottom(0);
 		@include u-padding(1);
 		@include u-height(7);
-		@include u-bg('base-lighter');
+		@include u-bg('primary-darker');
+		@include u-text('white');
+		position: sticky;
+		left: 0;
+		z-index: 1;
 		display: flex;
 		justify-content: space-between;
 
@@ -143,12 +138,15 @@ $table-icon: px-to-rem(28px);
 		}
 
 		&:hover {
-			border-left: 4px solid color('secondary');
+			&:has(td) {
+				border-left: 4px solid color('secondary');
 
-			>td {
-				background-color: color('accent-cool-lighter');
+				>td {
+					background-color: color('accent-cool-lighter');
+				}
 			}
 		}
+
 	}
 
 	th {
@@ -162,27 +160,32 @@ $table-icon: px-to-rem(28px);
 				@include u-padding-left(2);
 				@include u-padding-right(5);
 				@include u-border(0);
+				display: flex;
+				align-items: center;
+				gap: px-to-rem(10px);
 				background-color: color('transparent');
 				color: color('black');
-
-				&:after {
-					@include add-background-svg('usa-icons/sort_arrow');
-					position: absolute;
-					top: 50%;
-					right: 0;
-					width: $table-icon;
-					height: $table-icon;
-					margin-top: -1 * math.div($table-icon, 2);
-					content: '';
-				}
 
 				&:hover {
 					cursor: pointer;
 				}
+
+				.table__header__arrow {
+					display: flex;
+					align-items: center;
+					min-width: px-to-rem(20px);
+					height: 100%;
+
+					.usa-icon {
+						width: 100%;
+						height: auto;
+					}
+				}
 			}
 
 			&:hover {
-				background-color: color('accent-cool-lighter');
+				border-bottom: 4px solid #FFC44D;
+
 			}
 
 
@@ -190,11 +193,6 @@ $table-icon: px-to-rem(28px);
 				background-color: color('primary-light');
 
 				button {
-
-					&:after {
-						@include add-background-svg('usa-icons/arrow_upward');
-					}
-
 					&:focus {
 						outline-color: color('secondary');
 					}
@@ -205,10 +203,6 @@ $table-icon: px-to-rem(28px);
 				background-color: color('primary-light');
 
 				button {
-
-					&:after {
-						@include add-background-svg('usa-icons/arrow_downward');
-					}
 
 					&:focus {
 						outline-color: color('secondary');
@@ -224,6 +218,14 @@ $table-icon: px-to-rem(28px);
 
 		&[data-sort-active] {
 			background-color: color('primary-lighter');
+
+			button {
+				@include u-text('black');
+
+				svg {
+					fill: color('black');
+				}
+			}
 		}
 
 		&[data-type='numeric'] {
@@ -239,6 +241,18 @@ $table-icon: px-to-rem(28px);
 		caption-side: bottom;
 	}
 
+	td[role='columnheader']:not([aria-sort]),
+	th[role='columnheader']:not([aria-sort]) {
+		@include u-bg('primary');
+
+		button {
+			@include u-text('white');
+
+			svg {
+				fill: color('white');
+			}
+		}
+	}
 }
 
 @include at-media('desktop') {

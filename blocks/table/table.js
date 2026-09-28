@@ -1,5 +1,5 @@
 import { domEl } from '../../scripts/dom-helpers.js';
-import { getMonthNumber } from '../../scripts/utils.js';
+import { getMonthNumber, getIndividualIcon } from '../../scripts/utils.js';
 import { createBasicTable } from './dynamic-table.js';
 
 /**
@@ -103,6 +103,9 @@ function createSort( block ) {
 		button.textContent = th.textContent;
 		th.textContent = '';
 		th.append( button );
+		const arrow = domEl( 'span', { class: 'table__header__arrow' } );
+		getIndividualIcon( arrow, 'sort_arrow' );
+		button.append( arrow );
 	} );
 
 	/**
@@ -190,6 +193,9 @@ function createSort( block ) {
 		let isAscending = false;
 		ths.forEach( ( th ) => {
 			if ( th !== parentTh ) {
+				const arrowReset = th.querySelector( '.table__header__arrow' );
+				getIndividualIcon( arrowReset, 'sort_arrow' );
+				arrowReset.innerHTML = '';
 				th.removeAttribute( 'aria-sort' );
 				return;
 			}
@@ -197,6 +203,10 @@ function createSort( block ) {
 			if( cur === null ) cur = 'descending';
 			const next = cur === 'ascending' ? 'descending' : 'ascending';
 			th.querySelector( 'button' ).title = `Sort by ${th.textContent.trim()} in ${cur} order.`;
+			const arrow = parentTh.querySelector( '.table__header__arrow' );
+			arrow.innerHTML = '';
+			cur === 'ascending'? getIndividualIcon( arrow, 'arrow_upward' ):
+				getIndividualIcon( arrow, 'arrow_downward' );
 			th.ariaLabel = `${th.textContent.trim()}, sortable column, currently sorted.`;
 			th.setAttribute( 'aria-sort', next );
 			isAscending = next === 'ascending';
