@@ -60,17 +60,15 @@ export default function decorate(block) {
         const li = domEl('li', { class: `usa-card ${grid}` });
         const cardContainer = domEl('div', { class: 'usa-card__container' });
 
-        const emptyDiv = col.querySelector('div:not(:has(p))');
-        if( emptyDiv != null ) {
-            getIndividualIcon(emptyDiv, 'format_quote');
-            col.firstElementChild.children.push(emptyDiv);
-            console.log(col.firstElementChild.children);
-        }                
-
+        if( col.firstElementChild.children.length === 0 ) {
+            const quoteEl = domEl( 'div', { class: 'usa-icon usa-icon--star' }, '' )
+            getIndividualIcon( quoteEl, 'format_quote' );
+            cardContainer.prepend( quoteEl )
+        }             
 
         [...col.firstElementChild.children].forEach((row) => {
             const starCount = parseFloat(row.textContent);
-            row.innerHTML = ''; // Clear the row content after extracting the star count
+            row.remove(); // Clear the row content after extracting the star count
             const starList = domEl('ul', { class: 'usa-icon-list' });
             for (let i = 1; i <= 5; i++) {
                 let starIcon = domEl('li', { class: 'usa-icon usa-icon--star' });
