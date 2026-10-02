@@ -1,0 +1,37 @@
+@use '../../styles/ne-global-imports' as *;
+@use 'sass:math';
+
+.testimonial-wrapper {
+	
+
+	.usa-card-group {
+		list-style: none;
+	}
+
+	li{        
+		@include u-margin(0);
+		@include u-padding(0);
+		gap: units(2);
+		list-style: none;
+	}
+
+	.usa-card {
+		&__body {
+			font-size: 16px;
+		}
+
+		&__header {
+			font-size: 16px;
+		}
+
+		&__subheader {
+			font-size: 16px;
+		}
+
+		&__container {
+			position: relative;
+			transition: box-shadow $transition-slow;
+			background-color: color('white');
+		}
+	}
+}
