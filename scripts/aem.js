@@ -137,9 +137,9 @@ function setup() {
 	window.hlx.codeBasePath = '';
 	window.hlx.lighthouse = new URLSearchParams( window.location.search ).get( 'lighthouse' ) === 'on';
 
-  	try {
+	try {
 		[ window.hlx.codeBasePath ] = new URL( import.meta.url ).pathname.split( '/scripts/' );
-  	} catch ( error ) {
+	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.log( error );
 	}
@@ -400,18 +400,18 @@ function decorateButtons( element ) {
 				}
 				if (
 					up.childNodes.length === 1
-		  && up.tagName === 'STRONG'
-		  && twoup.childNodes.length === 1
-		  && twoup.tagName === 'P'
+			&& up.tagName === 'STRONG'
+			&& twoup.childNodes.length === 1
+			&& twoup.tagName === 'P'
 				) {
 					a.className = 'button primary';
 					twoup.classList.add( 'button-container' );
 				}
 				if (
 					up.childNodes.length === 1
-		  && up.tagName === 'EM'
-		  && twoup.childNodes.length === 1
-		  && twoup.tagName === 'P'
+			&& up.tagName === 'EM'
+			&& twoup.childNodes.length === 1
+			&& twoup.tagName === 'P'
 				) {
 					a.className = 'button secondary';
 					twoup.classList.add( 'button-container' );
