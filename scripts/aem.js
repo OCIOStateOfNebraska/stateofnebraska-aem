@@ -21,9 +21,9 @@ function sampleRUM( checkpoint, data ) {
 		if ( !window.hlx.rum ) {
 			const param = new URLSearchParams( window.location.search ).get( 'rum' );
 			const weight = ( window.SAMPLE_PAGEVIEWS_AT_RATE === 'high' && 10 )
-        || ( window.SAMPLE_PAGEVIEWS_AT_RATE === 'low' && 1000 )
-        || ( param === 'on' && 1 )
-        || 100;
+		|| ( window.SAMPLE_PAGEVIEWS_AT_RATE === 'low' && 1000 )
+		|| ( param === 'on' && 1 )
+		|| 100;
 			const id = Math.random().toString( 36 ).slice( -4 );
 			const isSelected = param !== 'off' && Math.random() * weight < 1;
 			// eslint-disable-next-line object-curly-newline, max-len
@@ -138,10 +138,10 @@ function setup() {
 	window.hlx.lighthouse = new URLSearchParams( window.location.search ).get( 'lighthouse' ) === 'on';
 
   	try {
-    	[ window.hlx.codeBasePath ] = new URL( import.meta.url ).pathname.split( '/scripts/' );
+		[ window.hlx.codeBasePath ] = new URL( import.meta.url ).pathname.split( '/scripts/' );
   	} catch ( error ) {
-    	// eslint-disable-next-line no-console
-    	console.log(error);
+		// eslint-disable-next-line no-console
+		console.log( error );
 	}
 }
 
@@ -370,12 +370,12 @@ function wrapTextNodes( block ) {
 	block.querySelectorAll( ':scope > div > div' ).forEach( ( blockColumn ) => {
 		if ( blockColumn.hasChildNodes() ) {
 			const hasWrapper = !!blockColumn.firstElementChild
-        && validWrappers.some( ( tagName ) => blockColumn.firstElementChild.tagName === tagName );
+		&& validWrappers.some( ( tagName ) => blockColumn.firstElementChild.tagName === tagName );
 			if ( !hasWrapper ) {
 				wrap( blockColumn );
 			} else if (
 				blockColumn.firstElementChild.tagName === 'PICTURE'
-        && ( blockColumn.children.length > 1 || !!blockColumn.textContent.trim() )
+		&& ( blockColumn.children.length > 1 || !!blockColumn.textContent.trim() )
 			) {
 				wrap( blockColumn );
 			}
@@ -400,18 +400,18 @@ function decorateButtons( element ) {
 				}
 				if (
 					up.childNodes.length === 1
-          && up.tagName === 'STRONG'
-          && twoup.childNodes.length === 1
-          && twoup.tagName === 'P'
+		  && up.tagName === 'STRONG'
+		  && twoup.childNodes.length === 1
+		  && twoup.tagName === 'P'
 				) {
 					a.className = 'button primary';
 					twoup.classList.add( 'button-container' );
 				}
 				if (
 					up.childNodes.length === 1
-          && up.tagName === 'EM'
-          && twoup.childNodes.length === 1
-          && twoup.tagName === 'P'
+		  && up.tagName === 'EM'
+		  && twoup.childNodes.length === 1
+		  && twoup.tagName === 'P'
 				) {
 					a.className = 'button secondary';
 					twoup.classList.add( 'button-container' );
