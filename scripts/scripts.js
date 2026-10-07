@@ -736,7 +736,7 @@ export async function loadPage() {
 	loadDelayed();
 }
 
-await loadPage();
+if ( !window.hlx.suppressLoadPage ) await loadPage();
 
 // add class to to make the content appear in case header gets stuck
 ( function bodyAppear() {
