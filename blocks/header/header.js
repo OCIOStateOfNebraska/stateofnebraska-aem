@@ -313,12 +313,15 @@ export default async function decorate( block ) {
 	const navEle = await loadAndDecorateNav();
 
 	block.innerHTML = '';
+
 	const overLay = domEl( 'div', { class: 'usa-overlay' } );
+	const aemEmbed = domEl( 'aem-embed', { class: 'header', url: `https://main--nrpab--ociostateofnebraska.aem.page/nav`, type: 'header' } );
 	block.append( skipNav );
 	if ( alertEle ) { block.append( alertEle ); }
 	block.appendChild( bannerEle );
 	block.appendChild( overLay );
 	block.appendChild( navEle );
+	block.appendChild( aemEmbed );
 
 	accordion.on();
 	header.on();

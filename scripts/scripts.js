@@ -21,6 +21,21 @@ import { div, domEl } from './dom-helpers.js';
 // variable for caching site index
 window.siteIndexCache = window.siteIndexCache || {};
 
+async function loadAemEmbedScript( ) {
+	return new Promise( ( resolve, reject ) => {
+		if ( !document.querySelector( `head > script[src="/scripts/aem-embed.js"]` ) ) {
+			const script = document.createElement( 'script' );
+			script.type = 'module';
+			script.src = '/scripts/aem-embed.js';
+			script.onload = resolve;
+			script.onerror = reject;
+			document.head.append( script );
+		} else {
+			resolve();
+		}
+	} );
+}
+
 /**
  * Builds hero block and prepends to main.
  * @param {Element} main The container element
@@ -684,6 +699,7 @@ async function loadLazy( doc ) {
 	loadFooter( doc.querySelector( 'footer' ) );
 	loadCSS( `${window.hlx.codeBasePath}/styles/lazy-styles.css` );
 	loadFonts();
+	await loadAemEmbedScript();
 
 	const loadQuickEdit = async ( ...args ) => {
 		const { default: initQuickEdit } = await import( '../tools/quick-edit/quick-edit.js' );
@@ -736,7 +752,7 @@ export async function loadPage() {
 	loadDelayed();
 }
 
-await loadPage();
+if (!window.hlx.suppressLoadPage) await loadPage();
 
 // add class to to make the content appear in case header gets stuck
 ( function bodyAppear() {
