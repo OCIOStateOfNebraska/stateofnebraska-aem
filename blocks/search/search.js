@@ -1,4 +1,5 @@
-import { decorateIcons, fetchPlaceholders } from '../../scripts/aem.js';
+import { decorateIcons } from '../../scripts/aem.js';
+import { fetchPlaceholders } from '../../scripts/utils.js';
 import { li, span, ul, input, domEl } from '../../scripts/dom-helpers.js';
 import ffetch from '../../scripts/ffetch.js';
 import Events from '../../scripts/Events.class.js';

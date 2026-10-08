@@ -1,4 +1,5 @@
-import { loadScript, readBlockConfig, fetchPlaceholders } from '../../scripts/aem.js';
+import { loadScript, readBlockConfig } from '../../scripts/aem.js';
+import { fetchPlaceholders } from '../../scripts/utils.js';
 import { domEl, input, span } from '../../scripts/dom-helpers.js';
 
 /**
