@@ -1,16 +1,17 @@
 export default function decorate( block ) 
 {
-	const anchor = block.querySelector( 'a' );
-	const link = anchor.href;
-	anchor.textContent = '';
-	const p = block.querySelector( '.embed>*:nth-child(1)' );
+	const anchor = block.querySelector( 'a' ) ;
+	const link =  anchor.href;
+	anchor.remove();
+	const p = block.querySelector( 'div:has(>p)' );
 	const div = document.createElement( 'div' );
 
-	if ( p.innerHTML !== '' && p.innerHTML !== null ) {
+	if ( p && p.innerHTML !== '' && p.innerHTML !== null ) {
 		div.innerHTML += p.innerHTML;
+		p.remove();
 	}
 
-	block.textContent = '';
+	block.innerHTML = '';
 
 	const getClassValue = ( prefix ) => {
 		const c = [...block.classList].find( ( el ) => el.startsWith( prefix + '-' ) );
