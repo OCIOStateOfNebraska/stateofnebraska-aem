@@ -1,6 +1,6 @@
-import { fetchPlaceholders } from '../../scripts/aem.js';
 import {
 	fetchIndex,
+	fetchPlaceholders,
 } from '../../scripts/utils.js';
 /**
  * Fetches the site index data.

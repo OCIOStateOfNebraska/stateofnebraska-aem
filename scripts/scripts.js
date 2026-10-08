@@ -5,7 +5,6 @@ import {
 	readBlockConfig,
 	toCamelCase,
 	toClassName,
-	decorateBlocks,
 	decorateBlock,
 	decorateTemplateAndTheme,
 	getMetadata,
@@ -20,6 +19,14 @@ import { div, domEl } from './dom-helpers.js';
 
 // variable for caching site index
 window.siteIndexCache = window.siteIndexCache || {};
+
+/**
+ * Decorates all blocks in a container element.
+ * @param {Element} main The container element
+ */
+function decorateBlocks( main ) {
+	main.querySelectorAll( 'div.section > div:not(.section-background__image) > div' ).forEach( decorateBlock );
+}
 
 /**
  * Builds hero block and prepends to main.

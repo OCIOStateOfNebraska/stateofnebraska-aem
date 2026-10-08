@@ -1,8 +1,8 @@
-import { getMetadata, decorateBlock, loadBlock, buildBlock, fetchPlaceholders } from '../../scripts/aem.js';
+import { getMetadata, decorateBlock, loadBlock, buildBlock } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { a, domEl } from '../../scripts/dom-helpers.js';
 import { header, accordion } from '../../scripts/deps/bundle-uswds.js';
-import { getIndividualIcon, isSameDomainOrSubdomain } from '../../scripts/utils.js';
+import { getIndividualIcon, isSameDomainOrSubdomain, fetchPlaceholders } from '../../scripts/utils.js';
 
 async function decorateSkipnav( placeholders ) {
 	const { skipnav } = placeholders;

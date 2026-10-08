@@ -1,3 +1,4 @@
+import { toCamelCase } from './aem.js'; 
 /**
 	* Delay the execution of a function until after a specified period of inactivity.
 	* @param {any} func - the function to be delayed
@@ -259,4 +260,42 @@ function isFullWidthTemplate( getMetadata ) {
 	return true;
 }
 
-export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon, isSameDomainOrSubdomain, getMonthNumber, isFullWidthTemplate };
+
+/**
+ * Gets placeholders object.
+ * @param {string} [prefix] Location of placeholders
+ * @returns {object} Window placeholders object
+ */
+
+async function fetchPlaceholders( prefix = 'default' ) {
+	window.placeholders = window.placeholders || {};
+	if ( !window.placeholders[prefix] ) {
+		window.placeholders[prefix] = new Promise( ( resolve ) => {
+			fetch( `${prefix === 'default' ? '' : prefix}/placeholders.json` )
+				.then( ( resp ) => {
+					if ( resp.ok ) {
+						return resp.json();
+					}
+					return {};
+				} )
+				.then( ( json ) => {
+					const placeholders = {};
+					json.data
+						.filter( ( placeholder ) => placeholder.Key )
+						.forEach( ( placeholder ) => {
+							placeholders[toCamelCase( placeholder.Key )] = placeholder.Text;
+						} );
+					window.placeholders[prefix] = placeholders;
+					resolve( window.placeholders[prefix] );
+				} )
+				.catch( () => {
+					// error loading placeholders
+					window.placeholders[prefix] = {};
+					resolve( window.placeholders[prefix] );
+				} );
+		} );
+	}
+	return window.placeholders[`${prefix}`];
+}
+
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon, isSameDomainOrSubdomain, getMonthNumber, isFullWidthTemplate, fetchPlaceholders };
