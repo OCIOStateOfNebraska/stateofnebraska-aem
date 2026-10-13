@@ -18,7 +18,7 @@ import {
  * @returns {HTMLElement} The root element of the fragment
  */
 export async function loadFragment( path ) {
-	if ( path && path.startsWith( '/' ) ) {
+	if ( path ) {
 		const resp = await fetch( `${path}.plain.html` );
 		if ( resp.ok ) {
 			const container = document.createElement( 'div' );

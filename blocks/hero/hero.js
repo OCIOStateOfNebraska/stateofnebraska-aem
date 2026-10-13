@@ -1,8 +1,8 @@
-import { getMetadata, decorateBlock, loadBlock, buildBlock } from '../../scripts/aem.js';
+import { getMetadata, decorateBlock, loadBlock, loadCSS, buildBlock } from '../../scripts/aem.js';
 import { div, button } from '../../scripts/dom-helpers.js';
 import { getIndividualIcon } from '../../scripts/utils.js';
 
-function buildBreadcrumbBlock( breadcrumbContainer ) {
+async function buildBreadcrumbBlock( breadcrumbContainer, originUrl = '' ) {
 	const hideBreadcrumbVal = getMetadata( 'hide-breadcrumb' ) || 'no';
 	const hideBreadcrumb = hideBreadcrumbVal.toLowerCase() === 'yes' || hideBreadcrumbVal.toLowerCase() === 'true';
 	if ( !hideBreadcrumb && window.location.pathname !== '/' && window.isErrorPage !== true ) {
@@ -10,7 +10,14 @@ function buildBreadcrumbBlock( breadcrumbContainer ) {
 		const breadcrumbs = buildBlock( 'breadcrumb', { elems: [] } );
 		section.append( breadcrumbs );
 		decorateBlock( breadcrumbs );
-		loadBlock( breadcrumbs );
+		if ( originUrl ) {
+			await loadCSS( `${originUrl}${window.hlx.codeBasePath}/blocks/breadcrumb/breadcrumb.css` );
+			const breadcrumbUrl = `${originUrl}${window.hlx.codeBasePath}/blocks/breadcrumb/breadcrumb.js`;
+			const { default: decorateBreadcrumb } = await import( breadcrumbUrl );
+			await decorateBreadcrumb( breadcrumbs, originUrl );
+		} else {
+			await loadBlock( breadcrumbs );
+		}
 		breadcrumbContainer.prepend( breadcrumbs );
 	}
 }
@@ -65,13 +72,13 @@ export function resumeAfterInteraction( video, playButton, isUserPaused ) {
 	video.play();
 }
 
-export default function decorate( block ) {
+export default async function decorate( block, originUrl = '' ) {
 	block.classList.add( 'usa-hero' );
 	const container = div( { class: 'grid-container' } );
 	const content = div( { class: 'usa-hero__callout' } );
 
 	container.appendChild( content );
-	buildBreadcrumbBlock( content );
+	await buildBreadcrumbBlock( content, originUrl );
 
 	const backgroundImg = block.querySelector( 'picture' );
 	const video = block.querySelector( 'video' );

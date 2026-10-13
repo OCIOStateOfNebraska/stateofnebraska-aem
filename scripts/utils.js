@@ -156,6 +156,26 @@ async function fetchSvg( primaryUrl, secondaryUrl ) {
 	}
 }
 
+function getAssetBasePath( element, originUrl = '' ) {
+	const embed = element?.closest( '.aem-embed-content' );
+	const assetOrigin = originUrl || embed?.dataset.origin || '';
+	const globalBasePath = window.hlx.codeBasePath || '';
+	let codeBasePath = globalBasePath;
+	if ( embed ) {
+		codeBasePath = embed.dataset.codeBasePath || '';
+	} else if ( assetOrigin ) {
+		codeBasePath = globalBasePath.startsWith( assetOrigin )
+			? globalBasePath.substring( assetOrigin.length )
+			: '';
+	}
+	const normalizedPath = codeBasePath.replace( /^\/+|\/+$/g, '' );
+
+	if ( assetOrigin ) {
+		return new URL( normalizedPath ? `${normalizedPath}/` : '/', assetOrigin ).href.replace( /\/$/, '' );
+	}
+	return codeBasePath;
+}
+
 /**
  * Asynchronously loads a USWDS SVG icon into a given element.
  * @async
@@ -163,13 +183,17 @@ async function fetchSvg( primaryUrl, secondaryUrl ) {
  * @param {HTMLElement} el     - The element to inject the SVG into.
  * @param {string} iconName    - The icon name (e.g., 'arrow_back').
  * @param {string} [prefix=''] - Optional prefix to prepend to the icon path.
+ * @param {string} [originUrl=''] - Optional site origin for embedded content.
  */
 
 // Return a promise for fetching (or getting from cache)
-async function getIndividualIcon( el, iconName, prepend = false, prefix = '' ) {
+async function getIndividualIcon( el, iconName, prepend = false, prefix = '', originUrl = '' ) {
+	const embedOrigin = originUrl || el.closest( '.aem-embed-content' )?.dataset.origin || '';
+	const basePath = getAssetBasePath( el, embedOrigin );
+	const iconPrefix = prefix ? `/${prefix.replace( /^\/+|\/+$/g, '' )}` : '';
 
-	const primaryPath = `${window.hlx.codeBasePath}${prefix}/icons/usa-icons/${iconName}.svg`;
-	const secondaryPath = `${window.hlx.codeBasePath}${prefix}/icons/custom/${iconName}.svg`;
+	const primaryPath = `${basePath}${iconPrefix}/icons/usa-icons/${iconName}.svg`;
+	const secondaryPath = `${basePath}${iconPrefix}/icons/custom/${iconName}.svg`;
 
 	try {
 		const svgContent = await fetchSvg( primaryPath, secondaryPath );
@@ -267,11 +291,11 @@ function isFullWidthTemplate( getMetadata ) {
  * @returns {object} Window placeholders object
  */
 
-async function fetchPlaceholders( prefix = 'default' ) {
+async function fetchPlaceholders( prefix = 'default', originUrl = '' ) {
 	window.placeholders = window.placeholders || {};
 	if ( !window.placeholders[prefix] ) {
 		window.placeholders[prefix] = new Promise( ( resolve ) => {
-			fetch( `${prefix === 'default' ? '' : prefix}/placeholders.json` )
+			fetch( `${originUrl}${prefix === 'default' ? '' : prefix}/placeholders.json` )
 				.then( ( resp ) => {
 					if ( resp.ok ) {
 						return resp.json();
@@ -298,4 +322,4 @@ async function fetchPlaceholders( prefix = 'default' ) {
 	return window.placeholders[`${prefix}`];
 }
 
-export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getIndividualIcon, isSameDomainOrSubdomain, getMonthNumber, isFullWidthTemplate, fetchPlaceholders };
+export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getAssetBasePath, getIndividualIcon, isSameDomainOrSubdomain, getMonthNumber, isFullWidthTemplate, fetchPlaceholders };
