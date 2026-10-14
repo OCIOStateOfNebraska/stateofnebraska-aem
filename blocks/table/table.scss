@@ -27,76 +27,82 @@ $table-icon: px-to-rem(28px);
 .#{$block} {
 	@include u-margin(0);
 	@include u-width('full');
+	transition: box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+	border: 1px solid #000;
 	font-size: size('body', 'sm');
+	border-collapse: collapse;
+	border-spacing: 0;
+
+	th,
+	td {
+		border: 0;
+		border-bottom: 1px solid #1c1c1c2e;
+
+		&.#{$block}--is-sticky {
+			position: sticky;
+			left: 0;
+			background-color: color('white');
+			z-index: 2;
+
+			&:before,
+			&:after {
+				position: absolute;
+				top: 0;
+				width: px-to-rem(1px);
+				height: 100%;
+				background-color: color('black');
+				box-shadow: 2px 0 5px rgb(0 0 0 / 10%);
+				content: '';
+				z-index: 3;
+			}
+
+			&:after {
+				right: 0;
+				left: auto;
+			}
+
+			&:before {
+				right: auto;
+				left: 0;
+			}
+		}
+	}
+
+	th {
+
+		&[scope='col'],
+		&[scope='row'] {
+			background-color: color('primary');
+			color: color('white');
+		}
+	}
 
 	&-container--scrollable {
 		overflow-x: auto;
 		border: 0;
 
-		table {
-			transition: box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-			border: 1px solid #000;
-			border-collapse: collapse;
-			border-spacing: 0;
-		}
+		@media (forced-colors: none) {
+			scrollbar-color: color('primary') color('primary-lighter');
 
-		thead {
-			background-color: color('primary');
-			color: color('white');
-		}
+			@supports selector(::-webkit-scrollbar) {
+				scrollbar-color: auto;
 
-		th,
-		td {
-			border: 0;
-			border-bottom: 1px solid #1c1c1c2e;
-
-			&.is-sticky {
-
-				&:first-child,
-				&:nth-child(2) {
-					position: sticky;
-					background-color: color('white');
-					z-index: 2;
-
-					&:after {
-						position: absolute;
-						top: 0;
-						right: 0;
-						width: px-to-rem(1px);
-						height: 100%;
-						background-color: #1c1c1c2e;
-						box-shadow: 0 0 16px 0 #1c1c1c2e;
-						content: '';
-						z-index: 3;
-					}
+				&::-webkit-scrollbar {
+					width: px-to-rem(16px);
+					height: px-to-rem(16px);
 				}
-			}
-		}
 
-		th,
-		td {
-			&+& {
-				border-left: 1px solid #1c1c1c2e;
-			}
-		}
+				&::-webkit-scrollbar-track {
+					background-color: color('primary-lighter');
+				}
 
+				&::-webkit-scrollbar-thumb {
+					border: px-to-rem(3px) solid color('primary-lighter');
+					border-radius: px-to-rem(4px);
+					background-color: color('primary');
 
-		.usa-table {
-
-			th,
-			td {
-				&.is-sticky {
-					&:first-child {
-						&:before {
-							position: absolute;
-							top: 0;
-							left: 0;
-							width: px-to-rem(1px);
-							height: 100%;
-							background-color: color('black');
-							content: '';
-							z-index: 3;
-						}
+					&:hover {
+						background-color: color('primary-darker');
 					}
 				}
 			}
@@ -112,9 +118,9 @@ $table-icon: px-to-rem(28px);
 		@include u-text('white');
 		position: sticky;
 		left: 0;
-		z-index: 1;
 		display: flex;
 		justify-content: space-between;
+		z-index: 1;
 
 		.usa-text-input {
 			@include u-margin(0);
@@ -138,11 +144,31 @@ $table-icon: px-to-rem(28px);
 		}
 
 		&:hover {
-			&:has(td) {
-				border-left: 4px solid color('secondary');
 
+			>th {
+				&[scope='row'] {
+					position: relative;
+
+					&:before {
+						position: absolute;
+						top: 0;
+						left: 0;
+						width: px-to-rem(4px);
+						height: 100%;
+						background-color: color('secondary');
+						content: '';
+					}
+				}
+			}
+
+			&:has(td) {
 				>td {
 					background-color: color('accent-cool-lighter');
+					color: color('black');
+
+					&:first-child {
+						box-shadow: inset px-to-rem(4px) 0 color('secondary');
+					}
 				}
 			}
 		}
@@ -160,6 +186,7 @@ $table-icon: px-to-rem(28px);
 				@include u-padding-left(2);
 				@include u-padding-right(5);
 				@include u-border(0);
+				position: relative;
 				display: flex;
 				align-items: center;
 				gap: px-to-rem(10px);
@@ -184,33 +211,46 @@ $table-icon: px-to-rem(28px);
 			}
 
 			&:hover {
-				border-bottom: 4px solid #FFC44D;
-
-			}
-
-
-			&[aria-sort='ascending'] {
-				background-color: color('primary-light');
-
 				button {
-					&:focus {
-						outline-color: color('secondary');
+					&:after {
+						position: absolute;
+						bottom: 0;
+						left: 0;
+						width: 100%;
+						height: px-to-rem(4px);
+						background-color: color('secondary');
+						content: '';
 					}
 				}
 			}
 
-			&[aria-sort='descending'] {
-				background-color: color('primary-light');
+		}
 
-				button {
 
-					&:focus {
-						outline-color: color('secondary');
-					}
+		&[aria-sort='ascending'] {
+			background-color: color('primary-light');
+
+			button {
+				&:focus {
+					outline-color: color('secondary');
 				}
 			}
 		}
 
+		&[aria-sort='descending'] {
+			background-color: color('primary-light');
+
+			button {
+
+				&:focus {
+					outline-color: color('secondary');
+				}
+			}
+		}
+
+		&--is-sticky {
+			position: sticky;
+		}
 	}
 
 	td {
@@ -233,6 +273,7 @@ $table-icon: px-to-rem(28px);
 		}
 	}
 
+
 	caption {
 		@include u-margin-top(3);
 		@include u-margin-bottom(0);
@@ -241,30 +282,74 @@ $table-icon: px-to-rem(28px);
 		caption-side: bottom;
 	}
 
-	td[role='columnheader']:not([aria-sort]),
-	th[role='columnheader']:not([aria-sort]) {
-		@include u-bg('primary');
+	td,
+	th {
+		&[role='columnheader'] {
+			&:not([aria-sort]) {
+				@include u-bg('primary');
 
-		button {
-			@include u-text('white');
+				button {
+					@include u-text('white');
 
-			svg {
-				fill: color('white');
+					svg {
+						fill: color('white');
+					}
+				}
 			}
 		}
 	}
+
 }
 
-@include at-media('desktop') {
-	.cropped {
-		.#{$block}-container--scrollable {
-			overflow-x: hidden;
+.cropped {
+	&.table {
+		.usa-table {
+			width: max-content;
+			min-width: 100%;
 		}
 
-		td,
-		th {
-			text-overflow: ellipsis;
-			white-space: normal;
+		.table__cell-text {
+			display: block;
+			min-width: 0;
+
+			>p {
+				display: inline;
+			}
+		}
+
+		.table__tooltip {
+			position: fixed;
+			max-width: min(24rem, calc(100vw - 16px));
+			padding: units(1);
+			border-radius: 2px;
+			background-color: color('ink');
+			color: color('white');
+			font-size: size('body', 'sm');
+			z-index: 1000;
+			overflow-wrap: anywhere;
+		}
+
+		@include at-media('desktop') {
+			.#{$block} {
+				width: 100%;
+				table-layout: fixed;
+			}
+
+			.#{$block}-container--scrollable {
+				overflow-x: hidden;
+			}
+
+			td,
+			th {
+				white-space: nowrap;
+			}
+
+			.table__cell-text {
+				flex: 1;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
+			}
 		}
 	}
 }
