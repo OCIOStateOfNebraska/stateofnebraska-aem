@@ -23,8 +23,8 @@ body {
 	display: none;
 	overflow-x: clip;
 
-	&:has(header .header[data-block-status='loaded']),
-	&.appear { // stylelint-disable-line selector-no-qualifying-type
+	&:not([data-eager-status='loading']):has(header .header[data-block-status='loaded']),
+	&:not([data-eager-status='loading']).appear { // stylelint-disable-line selector-no-qualifying-type
 		display: block;
 	}
 }

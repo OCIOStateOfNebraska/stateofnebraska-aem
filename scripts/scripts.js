@@ -80,7 +80,7 @@ function buildHeroBlock( main, templateName ) {
 	container.appendChild( heroBlock );
 	main.prepend( container );
 	decorateBlock( heroBlock );
-	loadBlock( heroBlock );
+	return loadBlock( heroBlock ).then( () => container );
 }
 
 /**
@@ -117,9 +117,9 @@ function decorateIcons( element, prefix = '' ) {
  * @param {Element} main The container element
  * @param {String} templateName The name of the template
  */
-function buildAutoBlocks( main, templateName ) {
+async function buildAutoBlocks( main, templateName ) {
 	try {
-		buildHeroBlock( main, templateName );
+		return await buildHeroBlock( main, templateName );
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Auto Blocking failed', error );
@@ -620,9 +620,7 @@ export function decorateInner( container ) {
  */
 async function loadTemplate( doc, templateName ) {
 	try {
-		const cssLoaded = new Promise( ( resolve ) => {
-			loadCSS( `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`, resolve() );
-		} );
+		const cssLoaded = loadCSS( `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css` );
 		const decorationComplete = new Promise( ( resolve ) => {
 			( async () => {
 				try {
@@ -649,6 +647,7 @@ async function loadTemplate( doc, templateName ) {
  * @param {Element} doc The container element
  */
 async function loadEager( doc ) {
+	loadFonts();
 	// Brand slug application
 	const brandSlug = getMetadata( 'brandslug' );
 	if ( brandSlug ) {
@@ -656,7 +655,7 @@ async function loadEager( doc ) {
 	}
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
-	loadHeader( doc.querySelector( 'header' ) );
+	const headerLoaded = loadHeader( doc.querySelector( 'header' ) );
 	// load the blocks BEFORE decorating the template
 	const main = doc.querySelector( 'main' );
 	if ( main ) {
@@ -667,6 +666,7 @@ async function loadEager( doc ) {
 	// pull in template name from document metadata
 	// fallback to USWDS "documentation" template if none is specified
 	const templateName = getMetadata( 'template' );
+	const heroLoaded = buildAutoBlocks( main, templateName );
 	if ( templateName ) {
 		await loadTemplate( doc, templateName );
 	} else {
@@ -674,7 +674,10 @@ async function loadEager( doc ) {
 	}
 
 	// // build components that should be in main but be outside of the main template area
-	buildAutoBlocks( main, templateName );
+	const heroWrapper = await heroLoaded;
+	if ( heroWrapper ) main.prepend( heroWrapper );
+	await headerLoaded;
+	doc.body.classList.add( 'appear' );
 }
 
 /**
@@ -690,7 +693,6 @@ async function loadLazy( doc ) {
 
 	loadFooter( doc.querySelector( 'footer' ) );
 	loadCSS( `${window.hlx.codeBasePath}/styles/lazy-styles.css` );
-	loadFonts();
 
 	const loadQuickEdit = async ( ...args ) => {
 		const { default: initQuickEdit } = await import( '../tools/quick-edit/quick-edit.js' );
@@ -729,7 +731,21 @@ function loadDelayed() {
 }
 
 async function loadFonts() {
-	await loadCSS( 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap' );
+	const href = 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=optional';
+	if ( !document.querySelector( `head > link[href="${href}"]` ) ) {
+		await new Promise( ( resolve, reject ) => {
+			const link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.href = href;
+			link.media = 'print';
+			link.onload = () => {
+				link.media = 'all';
+				resolve();
+			};
+			link.onerror = reject;
+			document.head.append( link );
+		} );
+	}
 	try {
 		if ( !window.location.hostname.includes( 'localhost' ) ) sessionStorage.setItem( 'fonts-loaded', 'true' );
 	} catch ( e ) {
@@ -738,7 +754,12 @@ async function loadFonts() {
 }
 
 export async function loadPage() {
-	await loadEager( document );
+	document.body.dataset.eagerStatus = 'loading';
+	try {
+		await loadEager( document );
+	} finally {
+		delete document.body.dataset.eagerStatus;
+	}
 	await loadLazy( document );
 	loadDelayed();
 }
@@ -749,6 +770,7 @@ if ( !window.hlx.suppressLoadPage ) loadPage();
 ( function bodyAppear() {
 
 	function addClass() {
+		delete document.body.dataset.eagerStatus;
 		document.body.classList.add( 'appear' );
 	}
 	setTimeout( addClass, 2000 );
