@@ -656,6 +656,9 @@ async function loadEager( doc ) {
 	}
 	document.documentElement.lang = 'en';
 	decorateTemplateAndTheme();
+	getMetadata( 'theme' ).split( ',' ).map( toClassName ).filter( Boolean ).forEach( ( theme ) => {
+		document.body.classList.add( `theme--${theme}` );
+	} );
 	loadHeader( doc.querySelector( 'header' ) );
 	// load the blocks BEFORE decorating the template
 	const main = doc.querySelector( 'main' );
