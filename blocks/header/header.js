@@ -305,12 +305,12 @@ async function loadAndDecorateAlert() {
  */
 export default async function decorate( block ) {
 	document.querySelector( 'header' ).setAttribute( 'aria-hidden', 'false' ); 
-	const placeholders = await fetchPlaceholders();
-
-	const skipNav = await decorateSkipnav( placeholders );
-	const alertEle = await loadAndDecorateAlert( block );
-	const bannerEle = await loadBanner();
-	const navEle = await loadAndDecorateNav();
+	const [skipNav, alertEle, bannerEle, navEle] = await Promise.all( [
+		fetchPlaceholders().then( decorateSkipnav ),
+		loadAndDecorateAlert( block ),
+		loadBanner(),
+		loadAndDecorateNav(),
+	] );
 
 	block.innerHTML = '';
 	const overLay = domEl( 'div', { class: 'usa-overlay' } );

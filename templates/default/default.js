@@ -1,7 +1,7 @@
 import {
 	div,
 } from '../../scripts/dom-helpers.js';
-import { getMetadata, buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
+import { getMetadata, buildBlock, decorateBlock, loadBlock, loadCSS } from '../../scripts/aem.js';
 
 /**
  * Decorates the document to align with USWDS Documentation Page Template
@@ -51,15 +51,14 @@ export default async function decorate( doc ) {
 		
 		usaGridSideNavDiv.append( sideNav );
 		decorateBlock( sideNav );
-	
-		// await this so we can clone it for mobile
-		await loadBlock( sideNav );
-		
-		const mobileSideNav = sideNav.cloneNode( true );
-		usaGridSideNavDivMobile.append( mobileSideNav );
-		
 		usaGridRowDiv.prepend( usaGridSideNavDiv );
 		usaGridRowDiv.after( usaGridSideNavDivMobile );
+		const sideNavStyles = loadCSS( `${window.hlx.codeBasePath}/blocks/side-navigation/side-navigation.css` );
+		loadBlock( sideNav ).then( () => {
+			const mobileSideNav = sideNav.cloneNode( true );
+			usaGridSideNavDivMobile.append( mobileSideNav );
+		} );
+		await sideNavStyles;
 
 	} else if( showSideBar ){
 		const usaGridSideNavDiv = div( { class: 'side-navigation-container side-navigation-container--tablet grid-col-12 tablet:grid-col-3' } );
