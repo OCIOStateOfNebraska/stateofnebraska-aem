@@ -312,16 +312,14 @@ async function loadAndDecorateAlert() {
  * loads and decorates the header, including nav and global alerts
  * @param {Element} block The header block element
  */
-export default async function decorate( block, originUrl = ''  ) {
+export default async function decorate( block, originUrl = '' ) {
 	block.closest( 'header' )?.setAttribute( 'aria-hidden', 'false' ); 
+	const placeholders = await fetchPlaceholders( 'default', originUrl );
 
-	const [skipNav, alertEle, bannerEle, navEle] = await Promise.all( [
-
-		fetchPlaceholders( 'default', originUrl ).then( decorateSkipnav ),
-		loadAndDecorateAlert( block ),
-		loadBanner( originUrl),
-		loadAndDecorateNav( originUrl ),
-	] );
+	const skipNav = await decorateSkipnav( placeholders );
+	const alertEle = await loadAndDecorateAlert();
+	const bannerEle = await loadBanner( originUrl );
+	const navEle = await loadAndDecorateNav( originUrl );
 	
 	block.innerHTML = '';
 	const overLay = domEl( 'div', { class: 'usa-overlay' } );

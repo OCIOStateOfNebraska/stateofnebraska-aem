@@ -133,45 +133,12 @@
 		font-family: family('body'); // Roboto
 		font-size: size('body', 'sm');
 		line-height: lh('body', 5);
-		
-		ul {
-			margin: 0;
-			padding: 0;
-			list-style: none;
-		}
 	}
 
 	// Custom email link styling (not a standard USWDS element)
-	
-	.contact-card__contacts{
-		margin: 0;
-		padding: 0;
+	.contact-card__email {
 		font-family: family('body');
 		font-size: size('body', 'sm');
 		line-height: lh('body', 5);
-		
-		li {
-			display: flex;
-			list-style: none; /* Remove default list marker */
-
-			&:before {
-				display: inline-block;
-				width: 1rem;
-				height: 1rem;
-				margin-right: 1rem;
-			}
-			
-			&:has(.contact-card__email) {
-				&:before {
-					content: url('../../icons/usa-icons/mail.svg');
-				}
-			}
-
-			&:has(.contact-card__phone) {
-				&:before {
-					content: url('../../icons/usa-icons/phone.svg');
-				}
-			}
-		}
 	}
 }
