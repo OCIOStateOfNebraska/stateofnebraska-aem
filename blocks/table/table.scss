@@ -35,8 +35,7 @@ $table-icon: px-to-rem(28px);
 
 	th,
 	td {
-		border: 0;
-		border-bottom: 1px solid #1c1c1c2e;
+		border: 1px solid #1c1c1c2e;
 
 		&.#{$block}--is-sticky {
 			position: sticky;
@@ -69,6 +68,7 @@ $table-icon: px-to-rem(28px);
 	}
 
 	th {
+		border: 1px solid #000;
 
 		&[scope='col'],
 		&[scope='row'] {
