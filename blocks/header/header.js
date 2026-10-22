@@ -148,11 +148,9 @@ function createSecondaryMenu( innerMenu, searchResultsUrl, showDropdowns, origin
 	const label = domEl( 'label', { class: 'usa-sr-only', for: 'search-field' }, 'Search this website' );
 	const form = domEl( 'form', { class: 'usa-search usa-search--small', role: 'search', action: searchResultsUrl } );
 
-	if( !originUrl ){
-		form.append( label );
-		form.append( input );
-		form.append( searchButton );
-	}
+	form.append( label );
+	form.append( input );
+	form.append( searchButton );
 
 	const secondaryNav = domEl( 'div', { class: 'usa-nav__secondary' } );
 	let searchHeader;
