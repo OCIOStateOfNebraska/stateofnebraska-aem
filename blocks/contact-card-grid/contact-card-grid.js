@@ -91,14 +91,30 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 	}
 
 	// Title (optional field)
+	const isList = titleDiv?.querySelector( 'ul' ) !== null;
 	const titleText = titleDiv?.textContent?.trim();
 	if ( titleText ) {
-		const title = domEl( 'p', {
-			class: 'contact-card__title'
-		} );
-		title.textContent = titleText;
+		let title;
+		if ( isList ) {
+			// If the title contains a list, clone the list element
+			const ul = titleDiv.querySelector( 'ul' );
+			if ( ul ) {				
+				for ( let i = 0; i < ul.children.length - 1; i++ ) {
+					ul.children[i].textContent += ',';
+				}
+				title = domEl( 'div', { class: 'contact-card__title' } );
+				title.append( ul.cloneNode( true ) );
+			}
+		} else {
+			// Otherwise, create a paragraph
+			title = domEl( 'p', {
+				class: 'contact-card__title'
+			}, titleText );
+		}
 
-		bodyWrapper.append( title );
+		if ( title ) {
+			bodyWrapper.append( title );
+		}
 	}
 
 	// Email (optional field)
@@ -117,26 +133,56 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 		}
 	}
 
+	// phone (optional field)
+	let phoneNumber = null;
+
+	// First check if there's an existing anchor tag with tel href
+	const existingPhoneLink = emailDiv?.querySelector( 'a[href^="tel:"]' );
+	if ( existingPhoneLink ) {
+		// Extract phone number from href attribute
+		phoneNumber = existingPhoneLink.href.replace( /^tel:/i, '' );
+	} else {
+		// Fall back to using text content
+		const phoneText = existingPhoneLink?.textContent?.trim();
+		if ( phoneText ) {
+			phoneNumber = phoneText;
+		}
+	}
+
+	const contactsList = domEl( 'ul', { class: 'contact-card__contacts' } );
+
 	if ( emailAddress ) {
 		// Validate email address
 		if ( isValidEmail( emailAddress ) ) {
 			// Valid email: create mailto link
-			const emailLink = domEl( 'a', {
-				class: 'contact-card__email',
-				href: `mailto:${emailAddress}`
-			} );
-			emailLink.textContent = emailAddress;
-			bodyWrapper.append( emailLink );
+			const li = domEl( 'li', {},
+				domEl( 'a', {
+					class: 'contact-card__email',
+					href: `mailto:${emailAddress}`
+				}, emailAddress )
+			);
+			contactsList.append( li );
 		} else {
 			// Invalid email: display as plain text
 			const emailText = domEl( 'p', {
 				class: 'contact-card__email contact-card__email--invalid'
-			} );
-			emailText.textContent = emailAddress;
-			bodyWrapper.append( emailText );
+			}, emailAddress );
+			contactsList.append( emailText );
 		}
 	}
+	
+	if ( phoneNumber ) {
+		// Validate phone number (basic validation for non-empty string)
+		const li = domEl( 'li', {},
+			domEl( 'a', {
+				class: 'contact-card__phone',
+				href: `tel:${phoneNumber}`
+			}, phoneNumber )
+		);
+		contactsList.append( li );
+	}
 
+	bodyWrapper.append( contactsList );
 	container.append( bodyWrapper );
 }
 
