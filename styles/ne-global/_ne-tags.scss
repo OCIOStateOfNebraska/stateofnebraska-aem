@@ -23,6 +23,11 @@ body {
 	display: none;
 	overflow-x: clip;
 
+	@media print {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
 	&:has(header .header[data-block-status='loaded']),
 	&.appear { // stylelint-disable-line selector-no-qualifying-type
 		display: block;
