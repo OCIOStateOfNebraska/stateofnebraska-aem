@@ -41,14 +41,14 @@
 			width: 100%;
 			border-bottom: 1px solid #dfe1e2;
 
-			&[class*='wrapper']{
-				*{
-					margin-bottom: 1rem;
-				}
-			}
-
 			&:last-of-type{
 				border-bottom: none;
+			}
+		}
+
+		> [class*='wrapper'] {
+			* {
+				margin-bottom: 1rem;
 			}
 		}
 

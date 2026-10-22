@@ -1,5 +1,5 @@
 import { domEl } from '../../scripts/dom-helpers.js';
-import { getMonthNumber } from '../../scripts/utils.js';
+import { getMonthNumber, getIndividualIcon } from '../../scripts/utils.js';
 import { createBasicTable } from './dynamic-table.js';
 
 /**
@@ -34,7 +34,7 @@ function checkType( block ) {
 		type = 'col-header';
 	} else if ( c.contains( 'dynamic' ) ){
 		type = 'dynamic';
-	} else if ( c.contains( 'scrollable' ) ){
+	} else if ( c.contains( 'scrollable' ) || c.contains( 'cropped' ) ){
 		type = 'scrollable';
 	} else {
 		type = 'default';
@@ -103,6 +103,9 @@ function createSort( block ) {
 		button.textContent = th.textContent;
 		th.textContent = '';
 		th.append( button );
+		const arrow = domEl( 'span', { class: 'table__header__arrow' } );
+		getIndividualIcon( arrow, 'sort_arrow' );
+		button.append( arrow );
 	} );
 
 	/**
@@ -114,22 +117,27 @@ function createSort( block ) {
 		// Percentage
 		if( /^(-|)\d+(\.\d+)?%$/.test( text ) ) {
 			td.setAttribute( 'data-sort-value', Number( text.replace( '%', '' ) ) /100 );
+			td.setAttribute( 'data-type', 'numeric' );
 		}
 		// Numbers
 		else if( /^(-|)\d+((\.|,|)(\d+)?)+$/.test( text ) ){
 			td.setAttribute( 'data-sort-value', Number( text.replaceAll( ',', '' ) ) );
+			td.setAttribute( 'data-type', 'numeric' );
 		}
 		// Position to number
 		else if( /^\d+(th|st|nd|rd)$/.test( text.toLowerCase() ) ){
 			td.setAttribute( 'data-sort-value', Number( text.slice( 0, text.length-2 ) ) );
+			td.setAttribute( 'data-type', 'numeric' );
 		}
 		// Date
 		else if( !Number.isNaN( Date.parse( text ) ) ){
 			td.setAttribute( 'data-sort-value', new Date( text ).getTime() );
+			td.setAttribute( 'data-type', 'numeric' );
 		}
 		// Month to number
-		else if( getMonthNumber( text ) ){
+		else if( /^(jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|jun(e)?|jul(y)?|aug(ust)?|sep(t(ember)?)?|oct(ober)?|nov(ember)?|dec(ember)?)$/i.test( text ) ){
 			td.setAttribute( 'data-sort-value', getMonthNumber( text ) );
+			td.setAttribute( 'data-type', 'numeric' );
 		}
 		else{
 			td.setAttribute( 'data-sort-value', text );
@@ -185,6 +193,9 @@ function createSort( block ) {
 		let isAscending = false;
 		ths.forEach( ( th ) => {
 			if ( th !== parentTh ) {
+				const arrowReset = th.querySelector( '.table__header__arrow' );
+				getIndividualIcon( arrowReset, 'sort_arrow' );
+				arrowReset.innerHTML = '';
 				th.removeAttribute( 'aria-sort' );
 				return;
 			}
@@ -192,6 +203,10 @@ function createSort( block ) {
 			if( cur === null ) cur = 'descending';
 			const next = cur === 'ascending' ? 'descending' : 'ascending';
 			th.querySelector( 'button' ).title = `Sort by ${th.textContent.trim()} in ${cur} order.`;
+			const arrow = parentTh.querySelector( '.table__header__arrow' );
+			arrow.innerHTML = '';
+			cur === 'ascending'? getIndividualIcon( arrow, 'arrow_upward' ):
+				getIndividualIcon( arrow, 'arrow_downward' );
 			th.ariaLabel = `${th.textContent.trim()}, sortable column, currently sorted.`;
 			th.setAttribute( 'aria-sort', next );
 			isAscending = next === 'ascending';
@@ -233,6 +248,110 @@ function createSort( block ) {
 	thead.querySelectorAll( 'button.table__header__button' )
 		.forEach( ( btn ) => btn.addEventListener( 'click', handleSort ) );
 
+}
+
+function createCroppedTable( block, table ) {
+	const columnHeaders = Array.from( table.querySelectorAll( 'thead th' ) );
+	columnHeaders.forEach( header => {
+		if ( !header.id ) header.id = `table-header-${crypto.randomUUID()}`;
+	} );
+	table.querySelectorAll( 'tbody tr' ).forEach( row => {
+		const rowHeader = row.querySelector( 'th[scope="row"]' );
+		if ( rowHeader && !rowHeader.id ) rowHeader.id = `table-header-${crypto.randomUUID()}`;
+		Array.from( row.cells ).forEach( cell => {
+			if ( cell.hasAttribute( 'headers' ) ) return;
+			const headers = [columnHeaders[cell.cellIndex]?.id];
+			if ( rowHeader && rowHeader !== cell ) headers.push( rowHeader.id );
+			const ids = headers.filter( Boolean );
+			if ( ids.length ) cell.setAttribute( 'headers', ids.join( ' ' ) );
+		} );
+	} );
+
+	const tooltip = domEl( 'div', {
+		class: 'table__tooltip', 'aria-hidden': 'true',
+	} );
+	tooltip.hidden = true;
+	block.append( tooltip );
+	let activeCell = null;
+	let hideTimer;
+
+	const hideTooltip = () => {
+		window.clearTimeout( hideTimer );
+		tooltip.hidden = true;
+		activeCell = null;
+	};
+
+	const cells = Array.from( table.querySelectorAll( 'th, td' ), cell => {
+		const button = cell.querySelector( 'button.table__header__button' );
+		const parent = button || cell;
+		const content = domEl( 'span', { class: 'table__cell-text' } );
+		Array.from( parent.childNodes ).forEach( node => {
+			if ( node.nodeType !== Node.ELEMENT_NODE || !node.classList.contains( 'table__header__arrow' ) ) {
+				content.append( node );
+			}
+		} );
+		parent.prepend( content );
+		const focusTarget = parent.querySelector( 'button, a, input, select, textarea, [tabindex]' )
+			|| button || cell;
+		const originalTabindex = cell.getAttribute( 'tabindex' );
+		const accessibleContent = focusTarget === cell
+			? domEl( 'span', { class: 'usa-sr-only' }, content.textContent ) : null;
+		if ( accessibleContent ) {
+			accessibleContent.hidden = true;
+			cell.append( accessibleContent );
+		}
+
+		const isClipped = () => getComputedStyle( content ).textOverflow === 'ellipsis'
+			&& content.scrollWidth > content.clientWidth;
+		const showTooltip = () => {
+			window.clearTimeout( hideTimer );
+			if ( !isClipped() ) return;
+			activeCell = cell;
+			tooltip.textContent = content.textContent.trim();
+			tooltip.hidden = false;
+			const bounds = cell.getBoundingClientRect();
+			const tooltipBounds = tooltip.getBoundingClientRect();
+			tooltip.style.left = `${Math.max( 8, Math.min( bounds.left, window.innerWidth - tooltipBounds.width - 8 ) )}px`;
+			tooltip.style.top = `${bounds.top >= tooltipBounds.height + 8
+				? bounds.top - tooltipBounds.height - 8 : bounds.bottom + 8}px`;
+		};
+
+		cell.addEventListener( 'pointerenter', showTooltip );
+		cell.addEventListener( 'pointerleave', () => {
+			if ( !cell.contains( document.activeElement ) ) hideTimer = window.setTimeout( hideTooltip, 150 );
+		} );
+		cell.addEventListener( 'focusin', showTooltip );
+		cell.addEventListener( 'focusout', hideTooltip );
+		return { cell, content, focusTarget, isClipped, originalTabindex, accessibleContent };
+	} );
+
+	const update = () => {
+		hideTooltip();
+		cells.forEach( ( { cell, content, focusTarget, isClipped, originalTabindex, accessibleContent } ) => {
+			const clipped = isClipped();
+			if ( focusTarget === cell ) {
+				accessibleContent.hidden = !clipped;
+				if ( clipped ) content.setAttribute( 'aria-hidden', 'true' );
+				else content.removeAttribute( 'aria-hidden' );
+				if ( originalTabindex === null ) {
+					if ( clipped ) cell.setAttribute( 'tabindex', '0' );
+					else cell.removeAttribute( 'tabindex' );
+				}
+			}
+		} );
+	};
+
+	const observer = new ResizeObserver( update );
+	observer.observe( table );
+	window.addEventListener( 'resize', update );
+	window.addEventListener( 'scroll', hideTooltip, true );
+	document.addEventListener( 'keydown', event => {
+		if ( event.key === 'Escape' && activeCell ) hideTooltip();
+	} );
+	tooltip.addEventListener( 'pointerenter', () => window.clearTimeout( hideTimer ) );
+	tooltip.addEventListener( 'pointerleave', hideTooltip );
+	document.fonts.ready.then( update );
+	update();
 }
 
 /**
@@ -290,9 +409,24 @@ export default async function decorate( block ) {
 			} );
 		} );
 	}
-	
-	
-	
+
+	if ( type === 'scrollable' || type === 'col-header' ) {
+		const scrollContainer = container || block;
+		const setStickyColumnOffsets = () => {
+			const firstColSticky = table.querySelectorAll( 'td:first-child, th:first-child' );
+			
+			firstColSticky.forEach( ( cell ) => {
+				cell.classList.toggle( 'usa-table--is-sticky', scrollContainer.scrollLeft > 0 );
+			} );
+		};
+
+		setStickyColumnOffsets();
+		scrollContainer.addEventListener( 'scroll', setStickyColumnOffsets );
+		window.addEventListener( 'resize', setStickyColumnOffsets );
+		const resizeObserver = new ResizeObserver( () => setStickyColumnOffsets() );
+		resizeObserver.observe( table );
+	}
+
 	block.textContent = '';
 	if ( container ) {
 		block.append( container );
@@ -300,4 +434,5 @@ export default async function decorate( block ) {
 		block.append( table );
 	}
 	if( block.classList.contains( 'searchable' ) )  createSearch( table );
+	if( block.classList.contains( 'cropped' ) ) createCroppedTable( block, table );
 }
