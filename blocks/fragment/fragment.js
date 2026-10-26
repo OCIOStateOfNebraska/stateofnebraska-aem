@@ -6,30 +6,24 @@
 
 import {
 	decorateInner,
-} from '../../scripts/page.js';
+} from '../../scripts/scripts.js';
 
 import {
 	loadSections,
-} from '../../scripts/block-loader.js';
-import { getEmbedContext, setEmbedContext, plainUrl, resolveContentUrls } from '../../scripts/embed-context.js';
+} from '../../scripts/aem.js';
 
 /**
  * Loads a fragment.
  * @param {string} path The path to the fragment
  * @returns {HTMLElement} The root element of the fragment
  */
-export async function loadFragment( path, context = null ) {
+export async function loadFragment( path ) {
 	if ( path ) {
-		const url = plainUrl( new URL( path, context?.pageUrl || window.location.href ).href );
-		const resp = await fetch( url );
+		const resp = await fetch( `${path}.plain.html` );
 		if ( resp.ok ) {
 			const container = document.createElement( 'div' );
 			container.classList.add( 'fragment' );
 			container.innerHTML = await resp.text();
-			if ( context ) {
-				setEmbedContext( container, context );
-				resolveContentUrls( container, url );
-			}
 
 			// reset base path for media to fragment base
 			const resetAttributeBase = ( tag, attr ) => {
@@ -41,10 +35,9 @@ export async function loadFragment( path, context = null ) {
 			resetAttributeBase( 'source', 'srcset' );
 
 			decorateInner( container );
-			await loadSections( container, context );
+			await loadSections( container );
 			return container;
 		}
-		if ( context ) throw new Error( `Unable to fetch ${url}: ${resp.status}` );
 	}
 	return null;
 }
@@ -52,13 +45,12 @@ export async function loadFragment( path, context = null ) {
 export default async function decorate( block ) {
 	const link = block.querySelector( 'a' );
 	const path = link ? link.getAttribute( 'href' ) : block.textContent.trim();
-	const fragment = await loadFragment( path, getEmbedContext( block ) );
+	const fragment = await loadFragment( path );
 	if ( fragment ) {
 		const fragmentSection = fragment.querySelector( ':scope .section' );
 		if ( fragmentSection ) {
 			block.closest( '.section' ).classList.add( ...fragmentSection.classList );
-			const target = block.closest( '.fragment' ) || block.closest( '.section' );
-			target.replaceWith( ...fragment.childNodes );
+			block.closest( '.fragment' ).replaceWith( ...fragment.childNodes );
 		}
 	}
 }

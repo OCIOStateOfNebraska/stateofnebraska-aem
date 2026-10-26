@@ -1,5 +1,4 @@
 import { decorateIcons } from '../../scripts/aem.js';
-import { decorateIcons as decorateEmbedIcons } from '../../scripts/page.js';
 import { fetchPlaceholders } from '../../scripts/utils.js';
 import { li, span, ul, input, domEl } from '../../scripts/dom-helpers.js';
 import ffetch from '../../scripts/ffetch.js';
@@ -11,8 +10,7 @@ import createPagination from './search-pagination.js';
 import backdropDecorate from '../backdrop-grid/backdrop-grid.js';
 import galleryDecorate from '../gallery/gallery.js';
 import carouselDecorate from '../carousel/carousel.js';
-import { loadCSS } from '../../scripts/block-loader.js';
-import { getEmbedContext } from '../../scripts/embed-context.js';
+import { loadCSS } from '../../scripts/aem.js';
  
 /**
  * @file search.js
@@ -68,7 +66,6 @@ class SearchBlock {
 		* @param {HTMLElement} block - The block element to which the search functionality will be added.  This should be the `<div class="search">` element.
 	*/
 	constructor( block ) {
-		this.context = getEmbedContext( block );
 		/** @member {HTMLElement} */
 		this.block = block;
 		/** @member {string} */
@@ -83,8 +80,7 @@ class SearchBlock {
 		this.placeholders = null;
 		/** @member {string} */
 		// Getting text content since the hostname is stripped in the href
-		this.source = this.block.querySelector( 'a[href]' )?.href
-			|| ( this.context ? new URL( '/query-index.json', this.context.pageUrl ).href : '/query-index.json' );
+		this.source = this.block.querySelector( 'a[href]' )?.href || '/query-index.json'; // Use optional chaining
 		/** @member {number} */
 		this.limit = null;
 		/** @member {number} */
@@ -112,7 +108,7 @@ class SearchBlock {
 		/** @member {HTMLInputElement|null} */
 		this.query = null;
 		/** @member {URLSearchParams} */
-		this.urlParams = new URLSearchParams( ( this.context?.pageUrl || window.location ).search );
+		this.urlParams = new URLSearchParams( window.location.search ); // Store URLSearchParams
 		/** @member {string|null} */
 		this.previousSearchTerm = null;
 	}
@@ -146,8 +142,7 @@ class SearchBlock {
 			this.render();
 			this.attachEventListeners();
 			this.handleInitialSearch();
-			if ( this.context ) decorateEmbedIcons( this.block );
-			else decorateIcons( this.block );
+			decorateIcons( this.block );
 		} catch ( error ) {
 			// Handle the error gracefully, e.g., display an error message to the user
 			console.error( 'Error initializing SearchBlock:', error );
@@ -361,7 +356,7 @@ class SearchBlock {
 	clearSearch() {
 		this.clearSearchResults();
 
-		if ( !this.context && window.history.replaceState ) {
+		if ( window.history.replaceState ) {
 			const url = new URL( window.location.href );
 			url.search = '';
 
@@ -422,19 +417,19 @@ class SearchBlock {
 			}
 			
 			if ( this.blockBackdropGridCollection ) {
-				await loadCSS( new URL( '../backdrop-grid/backdrop-grid.css', import.meta.url ).href, this.block );
+				await loadCSS( `${window.hlx.codeBasePath}/blocks/backdrop-grid/backdrop-grid.css` );
 				backdropDecorate( this.block, data );
 				return;
 			}
 			
 			if ( this.blockGallery ) {
-				await loadCSS( new URL( '../gallery/gallery.css', import.meta.url ).href, this.block );
+				await loadCSS( `${window.hlx.codeBasePath}/blocks/gallery/gallery.css` );
 				galleryDecorate( this.block, data );
 				return;
 			}	
 			
 			if ( this.blockCarousel ) {
-				await loadCSS( new URL( '../carousel/carousel.css', import.meta.url ).href, this.block );
+				await loadCSS( `${window.hlx.codeBasePath}/blocks/carousel/carousel.css` );
 				carouselDecorate( this.block, data );
 				return;
 			}	
@@ -490,7 +485,7 @@ class SearchBlock {
 			this.urlParams.set( OFFSET_PARAM, this.offset.value );
 		}
 
-		if ( !this.context && window.history.replaceState ) {
+		if ( window.history.replaceState ) {
 			const url = new URL( window.location.href );
 			url.search = this.urlParams.toString();
 			window.history.replaceState( {}, '', url.toString() );

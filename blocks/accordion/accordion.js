@@ -2,20 +2,17 @@ import { domEl } from '../../scripts/dom-helpers.js';
 import { createId } from '../../scripts/utils.js';
 import { accordion } from '../../scripts/deps/bundle-uswds.js';
 import { default as decorateTable } from '../table/table.js';
-import { getEmbedContext } from '../../scripts/embed-context.js';
-import { initShadowAccordion } from '../../scripts/shadow-behaviors.js';
 
 export default function decorate( block ) {
-	let accordions = [...block.children];
+	let accordions = block.children;
 	let usaAccordion = domEl( 'div', { class: 'usa-accordion' } );
-	block.append( usaAccordion );
 
 
 
 	Array.from( accordions ).forEach( ( accordion ) => {
 		let heading = accordion.querySelector( 'h2, h3, h4, h5, h6' );
 		let content = accordion.querySelector( 'div:last-child' );
-		let accordionId = createId( heading.innerText, block.getRootNode() );
+		let accordionId = createId( heading.innerText );
 
 		// Create a new button for the heading
 		let button = domEl( 'button', {
@@ -85,9 +82,7 @@ export default function decorate( block ) {
 		}
 	} );
 
-	const context = getEmbedContext( block );
-	if ( context ) initShadowAccordion( block, context );
-	else accordion.on();
+	accordion.on(  );
 
 
 }
