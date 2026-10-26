@@ -1,0 +1,16 @@
+@use 'styles';
+
+:host {
+	@extend html;
+	@extend :root;
+
+	display: block;
+}
+
+.aem-embed-content {
+	@extend body;
+
+	&[hidden] {
+		display: none !important; // stylelint-disable-line declaration-no-important
+	}
+}

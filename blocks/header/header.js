@@ -1,8 +1,10 @@
-import { getMetadata, decorateBlock, loadBlock, loadCSS, buildBlock } from '../../scripts/aem.js';
+import { getMetadata, decorateBlock, buildBlock } from '../../scripts/aem.js';
+import { loadBlock, loadCSS } from '../../scripts/block-loader.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { a, domEl } from '../../scripts/dom-helpers.js';
 import { header, accordion } from '../../scripts/deps/bundle-uswds.js';
 import { getAssetBasePath, getIndividualIcon, isSameDomainOrSubdomain, fetchPlaceholders } from '../../scripts/utils.js';
+import { initShadowHeader } from '../../scripts/shadow-behaviors.js';
 
 async function decorateSkipnav( placeholders ) {
 	const { skipnav } = placeholders;
@@ -10,11 +12,15 @@ async function decorateSkipnav( placeholders ) {
 	return skipNav;
 }
 
-async function loadBanner( originUrl = '' ) {
+async function loadBanner( originUrl = '', context = null ) {
 	const bannerWrapper = domEl( 'div', { class: 'banner-wrap' } );
 	const bannerBlock = buildBlock( 'banner', '' );
 	bannerWrapper.appendChild( bannerBlock );
 	decorateBlock( bannerBlock );
+	if ( context ) {
+		await loadBlock( bannerBlock, context );
+		return bannerBlock;
+	}
 	if ( originUrl ) {
 		const bannerBaseUrl = `${getAssetBasePath( bannerBlock, originUrl )}/blocks/banner/banner`;
 		await loadCSS( `${bannerBaseUrl}.css` );
@@ -128,7 +134,7 @@ async function createSubMenu( subMenu, id, originUrl = '' ) {
 		subMenu.lastElementChild.remove();
 		subMenu.firstElementChild.classList.add( 'usa-nav__link' );
 		subMenu.firstElementChild.classList.remove( 'usa-button' );
-		const isExternal = !isSameDomainOrSubdomain( subMenu.firstElementChild.getAttribute( 'href' ) );
+		const isExternal = !isSameDomainOrSubdomain( subMenu.firstElementChild.getAttribute( 'href' ), originUrl || window.location.href );
 		
 		if( isExternal ) {
 			const externalLink = domEl( 'span', {} );
@@ -170,10 +176,10 @@ function createSecondaryMenu( innerMenu, searchResultsUrl, showDropdowns, origin
 	return secondaryNav;
 }
 
-async function loadAndDecorateNav( originUrl = '' ) {
-	const navMeta = getMetadata( 'nav' );
+async function loadAndDecorateNav( originUrl = '', context = null ) {
+	const navMeta = getMetadata( 'nav', context?.metadata || document );
 	const navPath = navMeta ? new URL( navMeta, originUrl ? originUrl : window.location ).pathname : originUrl? originUrl + '/nav' : '/nav';
-	const navFragment = await loadFragment( navPath );
+	const navFragment = context?.fragment || await loadFragment( navPath, context );
 	const innerNav = domEl( 'div', { class: 'usa-nav__inner' } );
 
 	if ( !navFragment ) return innerNav;
@@ -184,7 +190,17 @@ async function loadAndDecorateNav( originUrl = '' ) {
 		clearTimeout( resizeTimeout );
 		resizeTimeout = setTimeout( checkAllDropdownAlignments, 150 );
 	};
-	window.addEventListener( 'resize', debouncedCheckAlignment, { passive: true } );
+	window.addEventListener( 'resize', debouncedCheckAlignment, { passive: true, ...( context && { signal: context.signal } ) } );
+	if ( context ) {
+		context.signal.addEventListener( 'abort', () => {
+			clearTimeout( resizeTimeout );
+			for ( let i = dropdownRegistry.length - 1; i >= 0; i -= 1 ) {
+				if ( navFragment.contains( dropdownRegistry[i].parent ) || !dropdownRegistry[i].parent.isConnected ) {
+					dropdownRegistry.splice( i, 1 );
+				}
+			}
+		}, { once: true } );
+	}
 
 	let navChildren = navFragment.children;
 	const showDropdowns = navChildren.length > 2;
@@ -267,23 +283,26 @@ async function loadAndDecorateNav( originUrl = '' ) {
 		}
 	}
 	placeSearch();
-	desktopMQ.addEventListener( 'change', placeSearch );
+	desktopMQ.addEventListener( 'change', placeSearch, context ? { signal: context.signal } : {} );
 
 	const closeButton = nav.querySelector( 'button' );
-	menu.addEventListener( 'click', () => toggleAriaExpanded() );
-	closeButton.addEventListener( 'click', () => toggleAriaExpanded() );
+	if ( !context ) {
+		menu.addEventListener( 'click', () => toggleAriaExpanded() );
+		closeButton.addEventListener( 'click', () => toggleAriaExpanded() );
+	}
 
 	container.prepend( navBar );
 	navWrapper.append( container );
 	return navWrapper;
 }
 
-async function loadAndDecorateAlert() {
-	const alertMeta = getMetadata( 'alert' );
+async function loadAndDecorateAlert( context = null ) {
+	const alertMeta = getMetadata( 'alert', context?.metadata || document );
 	if ( !alertMeta ) { return null; }
 
-	const alertPath = new URL( alertMeta, window.location ).pathname;
-	const alertFragment = await loadFragment( alertPath );
+	const alertUrl = new URL( alertMeta, context?.pageUrl || window.location.href );
+	const alertPath = context ? alertUrl.href : alertUrl.pathname;
+	const alertFragment = await loadFragment( alertPath, context );
 
 	const alerts = alertFragment.querySelectorAll( '.alert-wrapper' );
 	const alertContainer = domEl( 'div', { class: 'alert-container' } );
@@ -312,14 +331,14 @@ async function loadAndDecorateAlert() {
  * loads and decorates the header, including nav and global alerts
  * @param {Element} block The header block element
  */
-export default async function decorate( block, originUrl = '' ) {
+export default async function decorate( block, originUrl = '', context = null ) {
 	block.closest( 'header' )?.setAttribute( 'aria-hidden', 'false' ); 
 	const placeholders = await fetchPlaceholders( 'default', originUrl );
 
 	const skipNav = await decorateSkipnav( placeholders );
-	const alertEle = await loadAndDecorateAlert();
-	const bannerEle = await loadBanner( originUrl );
-	const navEle = await loadAndDecorateNav( originUrl );
+	const alertEle = await loadAndDecorateAlert( context );
+	const bannerEle = await loadBanner( originUrl, context );
+	const navEle = await loadAndDecorateNav( originUrl, context );
 	
 	block.innerHTML = '';
 	const overLay = domEl( 'div', { class: 'usa-overlay' } );
@@ -329,8 +348,12 @@ export default async function decorate( block, originUrl = '' ) {
 	block.appendChild( overLay );	
 	if ( navEle ) { block.appendChild( navEle ); }
 
-	accordion.on();
-	header.on();
+	if ( context ) {
+		initShadowHeader( block, context );
+	} else {
+		accordion.on();
+		header.on();
+	}
 
 	return block;
 }

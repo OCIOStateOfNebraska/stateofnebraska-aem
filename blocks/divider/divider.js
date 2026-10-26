@@ -1,4 +1,5 @@
 import { span } from '../../scripts/dom-helpers.js';
+import { getEmbedContext } from '../../scripts/embed-context.js';
 
 export default function decorate( block ) {
 	const cell = block.querySelector( ':scope > div > div' );
@@ -25,4 +26,5 @@ export default function decorate( block ) {
 		block.dataset.orientation = width > height ? 'horizontal' : 'vertical';
 	} );
 	observer.observe( block );
+	getEmbedContext( block )?.signal.addEventListener( 'abort', () => observer.disconnect(), { once: true } );
 }

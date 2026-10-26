@@ -1,6 +1,7 @@
 import { domEl } from '../../scripts/dom-helpers.js';
 import { removeEmptyChildren, checkIfRowExists, getIndividualIcon } from '../../scripts/utils.js';
 import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
+import { getEmbedContext } from '../../scripts/embed-context.js';
 
 /**
  * loads and decorates the footer-navigation
@@ -239,7 +240,7 @@ export default async function decorate( block ) {
 	 */
 	function styleCopyright() {
 		const copyrightWrapper = domEl( 'div', { class: 'grid-container usa-footer__copyright' } );
-		const copyrightMeta = getMetadata( 'copyrightslug' );
+		const copyrightMeta = getMetadata( 'copyrightslug', getEmbedContext( block )?.metadata || document );
 		const col = domEl( 'div', { class: 'grid-col-12' } );
 		const text = domEl( 'p' );
 		const year = new Date().getFullYear();

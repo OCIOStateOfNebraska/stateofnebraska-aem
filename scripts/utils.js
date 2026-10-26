@@ -1,4 +1,5 @@
 import { toCamelCase } from './aem.js'; 
+import { getEmbedContext } from './embed-context.js';
 /**
 	* Delay the execution of a function until after a specified period of inactivity.
 	* @param {any} func - the function to be delayed
@@ -34,12 +35,12 @@ function normalizeId( str ) {
 	return str;
 }
 
-function createId( str ) {
+function createId( str, root = document ) {
 	str = `${str}`; // just in case it wasn't a string already
 	let uniqueId = normalizeId( str );
 	let counter = 0;
 	let tryId = uniqueId;
-	while ( document.getElementById( tryId ) ) {
+	while ( root.querySelector( `#${CSS.escape( tryId )}` ) ) {
 		counter++;
 		tryId = `${uniqueId}-${counter}`;
 	}
@@ -157,6 +158,12 @@ async function fetchSvg( primaryUrl, secondaryUrl ) {
 }
 
 function getAssetBasePath( element, originUrl = '' ) {
+	const context = getEmbedContext( element );
+	if ( context ) return context.sourceBase.replace( /\/$/, '' );
+	const moduleBase = new URL( '../', import.meta.url );
+	if ( moduleBase.origin !== window.location.origin || originUrl === moduleBase.origin ) {
+		return moduleBase.href.replace( /\/$/, '' );
+	}
 	const embed = element?.closest( '.aem-embed-content' );
 	const assetOrigin = originUrl || embed?.dataset.origin || '';
 	const globalBasePath = window.hlx.codeBasePath || '';
@@ -220,13 +227,13 @@ async function getIndividualIcon( el, iconName, prepend = false, prefix = '', or
  * @param {string} url The URL to check
  * @returns {boolean} True if the URL is on the same domain or subdomain, false otherwise.
  */
-function isSameDomainOrSubdomain( url ) {
+function isSameDomainOrSubdomain( url, base = window.location.href ) {
 	try {
 	// Get the current page's hostname
-		const currentHostname = window.location.hostname;
+		const currentHostname = new URL( base ).hostname;
 
 		// Construct a URL object for the link
-		const linkURL = new URL( url, window.location.href ); // Base URL for relative URLs
+		const linkURL = new URL( url, base );
 		const linkHostname = linkURL.hostname;
 
 		// If the link and the current page have the exact same hostname, it's the same domain
@@ -293,33 +300,25 @@ function isFullWidthTemplate( getMetadata ) {
 
 async function fetchPlaceholders( prefix = 'default', originUrl = '' ) {
 	window.placeholders = window.placeholders || {};
-	if ( !window.placeholders[prefix] ) {
-		window.placeholders[prefix] = new Promise( ( resolve ) => {
-			fetch( `${originUrl}${prefix === 'default' ? '' : prefix}/placeholders.json` )
-				.then( ( resp ) => {
-					if ( resp.ok ) {
-						return resp.json();
-					}
-					return {};
-				} )
-				.then( ( json ) => {
-					const placeholders = {};
-					json.data
-						.filter( ( placeholder ) => placeholder.Key )
-						.forEach( ( placeholder ) => {
-							placeholders[toCamelCase( placeholder.Key )] = placeholder.Text;
-						} );
-					window.placeholders[prefix] = placeholders;
-					resolve( window.placeholders[prefix] );
-				} )
-				.catch( () => {
-					// error loading placeholders
-					window.placeholders[prefix] = {};
-					resolve( window.placeholders[prefix] );
-				} );
-		} );
+	const origin = originUrl || new URL( import.meta.url ).origin;
+	const url = new URL( `${prefix === 'default' ? '' : prefix}/placeholders.json`, `${origin}/` ).href;
+	const key = originUrl || origin !== window.location.origin ? url : prefix;
+	if ( !window.placeholders[key] ) {
+		window.placeholders[key] = fetch( url )
+			.then( ( response ) => {
+				if ( !response.ok ) throw new Error( `Unable to fetch ${url}: ${response.status}` );
+				return response.json();
+			} )
+			.then( ( json ) => Object.fromEntries( json.data.filter( ( item ) => item.Key )
+				.map( ( item ) => [toCamelCase( item.Key ), item.Text] ) ) )
+			.catch( ( error ) => {
+				delete window.placeholders[key];
+				console.error( 'Unable to load placeholders', error );
+				if ( originUrl || origin !== window.location.origin ) throw error;
+				return {};
+			} );
 	}
-	return window.placeholders[`${prefix}`];
+	return window.placeholders[key];
 }
 
 export { debounce, normalizeId, createId, addClassToLists, addClassToLinks, fetchIndex, removeEmptyChildren, checkIfRowExists, getAssetBasePath, getIndividualIcon, isSameDomainOrSubdomain, getMonthNumber, isFullWidthTemplate, fetchPlaceholders };
