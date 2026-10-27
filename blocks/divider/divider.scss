@@ -17,6 +17,7 @@
 
 	&[data-orientation='horizontal'] {
 		flex-direction: row;
+		margin-bottom: units(2);
 	}
 
 	&__line {
@@ -25,13 +26,13 @@
 	}
 
 	&[data-orientation='vertical'] &__line {
-		width: 1px;
-		min-height: 1px;
+		width: px-to-rem(2px);
+		min-height: px-to-rem(2px);
 	}
 
 	&:not([data-orientation='vertical']) &__line {
-		min-width: 1px;
-		height: 1px;
+		min-width: px-to-rem(2px);
+		height: px-to-rem(2px);
 	}
 
 	&__label {
