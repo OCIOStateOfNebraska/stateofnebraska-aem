@@ -286,8 +286,21 @@ async function loadAndDecorateAlert() {
 		if ( alertEle.classList.contains( 'usa-alert--emergency' ) ) {
 			alertEle.classList.remove( 'usa-alert--emergency' );
 			alertEle.parentNode.classList.add( 'usa-site-alert--emergency' );
-		} else {
-			alertEle.classList.remove( 'usa-alert--warning', 'usa-alert--error', 'usa-alert--success', 'usa-alert--info' );
+		} 
+		else if ( alertEle.classList.contains( 'usa-alert--warning' ) ) {
+			alertEle.classList.remove( 'usa-alert--warning' );
+			alertEle.parentNode.classList.add( 'usa-site-alert--warning' );
+		} 
+		else if ( alertEle.classList.contains( 'usa-alert--error' ) ) {
+			alertEle.classList.remove( 'usa-alert--error' );
+			alertEle.parentNode.classList.add( 'usa-site-alert--error' );
+		}
+		else if ( alertEle.classList.contains( 'usa-alert--success' ) ) {
+			alertEle.classList.remove( 'usa-alert--success' );
+			alertEle.parentNode.classList.add( 'usa-site-alert--success' );
+		}
+		else {
+			alertEle.classList.remove( 'usa-alert--info' );
 			alertEle.parentNode.classList.add( 'usa-site-alert--info' );
 		}
 
