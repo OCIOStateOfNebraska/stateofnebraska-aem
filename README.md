@@ -55,11 +55,17 @@ npm run lint
 npm run sass
 ```
 
+## Printing
+
+The shared styles request that browsers preserve page colors when printing, including
+dark backgrounds behind light text. Screen styles are unchanged. Browser or printer
+preferences can override this request; enable **Background graphics** in the print
+dialog if backgrounds are still missing.
+
 ## Local development
 1. Create .env file with the following content: AEM_PAGES_URL=https://main--stateofnebraska-aem--ociostateofnebraska.aem.page (where the url the env where you want to pull the content from)
 1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
 1. Start AEM Proxy: `aem up` (opens your browser at `http://localhost:3000`)
-
 
 
 

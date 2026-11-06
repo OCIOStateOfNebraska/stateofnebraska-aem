@@ -94,7 +94,6 @@ function generateContent( nameDiv, titleDiv, emailDiv, container ) {
 	const isList = titleDiv?.querySelector( 'ul' ) !== null;
 	const titleText = titleDiv?.textContent?.trim();
 	if ( titleText ) {
-		console.log( 'Title text:', titleText );
 		let title;
 		if ( isList ) {
 			// If the title contains a list, clone the list element
