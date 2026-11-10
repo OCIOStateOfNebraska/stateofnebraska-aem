@@ -11,8 +11,8 @@ export function submitSuccess( e, form ) {
 	} else {
 		let thankYouMessage = form.parentNode.querySelector( '.form-message.success-message' );
 		if ( !thankYouMessage ) {
-			thankYouMessage = div({class: 'alert success form-message success-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, thankYouMsg || DEFAULT_THANK_YOU_MESSAGE ) ) );
-			loadBlock(thankYouMessage);
+			thankYouMessage = div( {class: 'alert success form-message success-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, thankYouMsg || DEFAULT_THANK_YOU_MESSAGE ) ) );
+			loadBlock( thankYouMessage );
 		}
 		form.parentNode.insertBefore( thankYouMessage, form );
 		if ( thankYouMessage.scrollIntoView ) {
@@ -27,8 +27,8 @@ export function submitSuccess( e, form ) {
 export function submitFailure( e, form ) {
 	let errorMessage = form.querySelector( '.form-message.error-message' );
 	if ( !errorMessage ) {
-		errorMessage = div({class: 'alert error form-message error-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, 'Some error occured while submitting the form' ) ) );
-		loadBlock(errorMessage);
+		errorMessage = div( {class: 'alert error form-message error-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, 'Some error occured while submitting the form' ) ) );
+		loadBlock( errorMessage );
 	}
 
 	form.prepend( errorMessage );
