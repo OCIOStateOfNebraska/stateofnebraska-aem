@@ -8,6 +8,10 @@ metadata:
 
 # AEM CLI
 
+## Repository Context
+
+This repo already has an AEM EDS setup. Read root `AGENTS.md` and `README.md` before changing local development commands. On Windows, run `npm run sass` separately from `aem up` when needed; the combined `npm run dev` bundle command has shell syntax that may not work in PowerShell.
+
 Local development tool for AEM Edge Delivery Services. Three commands: `aem up` (local dev
 server), `aem import` (import server + UI), `aem content` (da.live content sync).
 
@@ -102,7 +106,7 @@ All options can be persisted in `.env` at the project root; loaded automatically
 ```dotenv
 # .env example
 AEM_PORT=8080
-AEM_PAGES_URL=https://stage.myproject.com
+AEM_PAGES_URL=https://main--stateofnebraska-aem--ociostateofnebraska.aem.page
 AEM_FORWARD_BROWSER_LOGS=true
 AEM_HTML_FOLDER=drafts
 AEM_TLS_CERT=server.crt

@@ -9,6 +9,10 @@ metadata:
 
 # Project Handover - Development
 
+## Repository Context
+
+For this State of Nebraska Sower repository, read root `AGENTS.md` and `README.md` first. Document the existing browser-native EDS runtime, USWDS blocks, SCSS-to-generated-CSS workflow, and DA models; never recommend editing `scripts/aem.js`. On Windows, use PowerShell equivalents for shell examples.
+
 Generate a complete technical guide for developers. This skill analyzes the codebase and produces actionable documentation that enables developers to understand, maintain, and extend the project.
 
 ## When to Use This Skill
@@ -24,23 +28,22 @@ Generate a complete technical guide for developers. This skill analyzes the code
 
 **Skip this step if `allGuides` flag is set** (orchestrator already validated and navigated).
 
-**CRITICAL: If NOT skipped, you MUST execute the `cd` command. Do NOT use absolute paths — actually change directory.**
+**CRITICAL: If NOT skipped, navigate to the repository root in the available shell. On Windows, use PowerShell:**
 
-```bash
-ALL_GUIDES=$(cat .claude-plugin/project-config.json 2>/dev/null | node -e "
-  const d = require('fs').readFileSync(0,'utf8');
-  try { console.log(JSON.parse(d).allGuides ? 'true' : ''); } catch(e) { console.log(''); }
-")
-if [ -z "$ALL_GUIDES" ]; then
-  # Navigate to git project root (works from any subdirectory)
-  cd "$(git rev-parse --show-toplevel)"
-  # Verify it's an Edge Delivery Services project
-  ls scripts/aem.js
-fi
+```powershell
+$allGuides = $false
+$configPath = '.claude-plugin/project-config.json'
+if (Test-Path $configPath) {
+  $allGuides = (Get-Content $configPath -Raw | ConvertFrom-Json).allGuides
+}
+if (-not $allGuides) {
+  Set-Location (git rev-parse --show-toplevel)
+  if (-not (Test-Path 'scripts/aem.js')) { throw 'scripts/aem.js not found; this is not an EDS project.' }
+}
 ```
 
 **IMPORTANT:**
-- You MUST run the `cd` command above using the Bash tool
+- Use PowerShell commands on Windows; use equivalent commands on other platforms.
 - All subsequent steps operate from project root
 - Do NOT use absolute paths to verify — actually navigate
 - Guides will be created at `project-root/project-guides/`

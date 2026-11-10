@@ -8,6 +8,10 @@ metadata:
 
 # DA Authentication
 
+## Repository Context
+
+Use DA authentication only for the explicitly requested Nebraska EDS/DA operation. Resolve the organization, repository, branch, and target path from `README.md` or user-provided context; never assume production or expose cached tokens.
+
 Gets a valid Adobe IMS access token and stores it in `DA_TOKEN` for use in subsequent `admin.da.live` API calls.
 
 ## When to Use This Skill

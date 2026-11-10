@@ -8,6 +8,10 @@ metadata:
 
 # Content Audit for AEM Edge Delivery Services
 
+## Repository Context
+
+Audit this site's existing EDS content and Sower blocks. Use the repo's preview/live URLs from `README.md`, and treat implementation recommendations as changes to this project only after checking its blocks, templates, metadata, and conventions in root `AGENTS.md`.
+
 Analyze published AEM Edge Delivery Services pages against content quality, SEO, accessibility, performance, and EDS-specific best practices. Produces a prioritized fix list with concrete remediation steps — not vague suggestions.
 
 ## External Content Safety

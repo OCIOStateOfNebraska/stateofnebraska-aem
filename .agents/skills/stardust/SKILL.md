@@ -6,6 +6,10 @@ license: Apache-2.0
 
 # stardust
 
+## Repository Context
+
+This is an existing State of Nebraska Sower EDS/DA codebase. Stardust outputs are planning/prototype artifacts; they do not replace the authored site or its USWDS implementation. Read root `AGENTS.md` and `README.md`, and keep generated work inside the paths defined by the Stardust sub-skills. If the required Impeccable skill is absent, stop rather than inventing a substitute workflow.
+
 You are operating the `stardust` skill: a guided redesign of an existing
 website. The user's job is to say what they want; your job is to reason about
 what that means, propose a plan, and execute it through a small set of

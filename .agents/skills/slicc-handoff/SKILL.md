@@ -8,6 +8,10 @@ metadata:
 
 # SLICC Handoff
 
+## Repository Context
+
+SLICC is a separate browser agent and does not automatically share this repo's filesystem or branch. Include the repository/branch, exact Nebraska preview URL, relevant test status, and a concise task summary in every handoff. Do not imply that SLICC changes are already applied to this local worktree.
+
 This skill bridges the current coding agent and the [SLICC](https://www.sliccy.ai) browser agent. It builds and dispatches a structured handoff that SLICC surfaces to the user as a yes/no approval card.
 
 It supports two verbs:
@@ -38,19 +42,28 @@ Do **not** use this skill when:
 3. Run the helper script with `--open`:
 
    ```bash
-   node .claude/skills/slicc-handoff/scripts/slicc-handoff --open "handoff:<instruction>"
+   node .agents/skills/slicc-handoff/scripts/slicc-handoff --open "handoff:<instruction>"
    ```
 
    ```bash
-   node .claude/skills/slicc-handoff/scripts/slicc-handoff --open "upskill:<github-url>"
+   node .agents/skills/slicc-handoff/scripts/slicc-handoff --open "upskill:<github-url>"
    ```
 
 4. Tell the user that SLICC will show an approval prompt in its Chat tab, and they should accept it to dispatch the handoff.
 
-If the user runs a non-default SLICC instance on another port, prefix the call with `SLICC_PORT=5720` (or whatever port they chose) so the localhost POST hits the right instance:
+If the user runs a non-default SLICC instance on another port, set `SLICC_PORT` (for example, to `5720`) so the localhost POST hits the right instance.
+
+PowerShell:
+
+```powershell
+$env:SLICC_PORT = '5720'
+node .agents/skills/slicc-handoff/scripts/slicc-handoff --open "handoff:<instruction>"
+```
+
+POSIX shell:
 
 ```bash
-SLICC_PORT=5720 node .claude/skills/slicc-handoff/scripts/slicc-handoff --open "handoff:<instruction>"
+SLICC_PORT=5720 node .agents/skills/slicc-handoff/scripts/slicc-handoff --open "handoff:<instruction>"
 ```
 
 ## How It Works
@@ -62,19 +75,19 @@ The script builds a `https://www.sliccy.ai/handoff?<verb>=<urlencoded-payload>` 
 Continue an in-progress signup flow in the browser:
 
 ```bash
-node .claude/skills/slicc-handoff/scripts/slicc-handoff --open "Continue the signup flow in the browser"
+node .agents/skills/slicc-handoff/scripts/slicc-handoff --open "Continue the signup flow in the browser"
 ```
 
 Install a skill collection from a GitHub repo:
 
 ```bash
-node .claude/skills/slicc-handoff/scripts/slicc-handoff --open "upskill:https://github.com/slicc/skills-extra"
+node .agents/skills/slicc-handoff/scripts/slicc-handoff --open "upskill:https://github.com/slicc/skills-extra"
 ```
 
 Install only a single skill (a sub-path of a repo on a specific branch):
 
 ```bash
-node .claude/skills/slicc-handoff/scripts/slicc-handoff --open "upskill:https://github.com/slicc/skills-extra/tree/main/skills/foo"
+node .agents/skills/slicc-handoff/scripts/slicc-handoff --open "upskill:https://github.com/slicc/skills-extra/tree/main/skills/foo"
 ```
 
 ## Prerequisites

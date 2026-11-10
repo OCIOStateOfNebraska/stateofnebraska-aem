@@ -8,6 +8,10 @@ metadata:
 
 # Create a New AEM Edge Delivery Site
 
+## Repository Context
+
+This workspace is already the State of Nebraska Sower EDS site. Do not initialize or scaffold a new site here for ordinary feature work; use this skill only when the user explicitly requests a separate new site or a new repository.
+
 This skill walks through the full onboarding flow for a new AEM Edge Delivery site. It handles everything that can be automated and clearly signals the steps that require human action.
 
 ## When to Use This Skill

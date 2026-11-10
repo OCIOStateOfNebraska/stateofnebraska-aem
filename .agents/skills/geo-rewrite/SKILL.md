@@ -8,6 +8,10 @@ metadata:
 
 # GEO Rewrite
 
+## Repository Context
+
+This skill rewrites public content for the State of Nebraska site. Preserve the source's factual, legal, policy, and service details exactly; do not invent claims, eligibility rules, deadlines, or government guidance to improve search visibility. Read root `AGENTS.md` and `README.md` for site context, and leave visual/block code unchanged.
+
 Optimize AEM Edge Delivery Services page content for AI search discoverability (GEO — Generative Engine Optimization). Makes content discoverable, quotable, and accurately represented by AI search engines (ChatGPT Search, Perplexity, Google AI Overviews, Gemini, Claude) while maintaining strong traditional SEO performance.
 
 ## Context

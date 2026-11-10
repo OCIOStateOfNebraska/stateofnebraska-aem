@@ -8,6 +8,10 @@ metadata:
 
 # Snowflake — Static-to-EDS Conversion
 
+## Repository Context
+
+The target is this site's existing EDS/DA implementation. Inspect `blocks/`, templates, and root `AGENTS.md` before choosing an overlay or block conversion. Keep experiments isolated until approved; do not overwrite existing templates, blocks, or authored pages, and do not publish as part of conversion without explicit authorization.
+
 Convert a static HTML page into an EDS page while preserving the
 original design and making content authorable in Document Authoring.
 Two conversion levels are supported:

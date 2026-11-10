@@ -6,6 +6,10 @@ license: Apache-2.0
 
 # stardust:distill
 
+## Repository Context
+
+For this repo, keep design samples and generated trait artifacts in the skill's `samples/` paths. Do not copy sample styles into `styles/` or blocks; `distill` informs a proposed direction and does not change the Sower design system.
+
 Read a directory of user-provided design samples — static HTML files
 the user has placed under `samples/static/`, plus a `samples/live/urls.json`
 manifest of live URLs to fetch — and produce two artifacts that anchor

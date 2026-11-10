@@ -8,6 +8,10 @@ metadata:
 
 # Authoring Analysis
 
+## Repository Context
+
+For this Nebraska EDS/DA repo, prefer existing blocks and authoring models under `blocks/` and `models/`. Keep recommendations compatible with DA-authored HTML and the existing `decorateInner()` pipeline described in root `AGENTS.md`.
+
 Determine authoring approach for EACH content sequence: default content or specific block.
 
 ## When to Use This Skill

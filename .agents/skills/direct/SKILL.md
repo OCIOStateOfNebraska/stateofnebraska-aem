@@ -6,6 +6,10 @@ license: Apache-2.0
 
 # stardust:direct
 
+## Repository Context
+
+This workspace is the existing State of Nebraska Sower Edge Delivery Services site. Use its current brand and environment from `README.md` as source material. Treat root `PRODUCT.md`, `DESIGN.md`, and `DESIGN.json` as redesign artifacts; inspect existing files before writing and never replace them without explicit user approval. A direction spec does not authorize changing or publishing the live site.
+
 Resolve the user's freeform redesign intent into a complete **target
 specification**: project-root `PRODUCT.md` and `DESIGN.md` (impeccable
 format), a `DESIGN.json` sidecar with the divergence audit trail, and a

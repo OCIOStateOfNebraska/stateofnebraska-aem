@@ -6,6 +6,10 @@ license: Apache-2.0
 
 # stardust:extract
 
+## Repository Context
+
+Use the Nebraska preview/live origin from `README.md` when the user asks to extract this site. Keep captures and inventories under `stardust/current/`; do not edit authored DA content, EDS source files, or publish pages during extraction.
+
 Crawl an existing website, parse each page, extract the brand surface,
 and produce a stardust-formatted snapshot of the current state under
 `stardust/current/`. The output describes what the site **is**; later

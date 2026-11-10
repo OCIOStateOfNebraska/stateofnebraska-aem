@@ -9,6 +9,10 @@ metadata:
 
 # AEM Edge Delivery Services Authentication
 
+## Repository Context
+
+Use this skill only for the existing Nebraska EDS/DA organization and repository context documented in root `README.md` and `AGENTS.md`. Never guess a target environment or expose cached tokens; confirm the operation and target before authenticated mutations.
+
 Authenticate with Adobe IMS to obtain a Bearer token for all Edge Delivery Services admin operations.
 
 ## Token Usage

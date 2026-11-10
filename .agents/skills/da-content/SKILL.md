@@ -8,6 +8,10 @@ metadata:
 
 # DA + EDS content reference
 
+## Repository Context
+
+Apply these DA rules to this repo's existing EDS block and section conventions. Check nearby authored examples and root `AGENTS.md` before generating content; preserve the block's expected cell structure and avoid changing the site's code or publishing unless explicitly requested.
+
 A reference skill — not a workflow. Use it whenever you need to know **what
 the rules are** for generating, uploading, or delivering content through
 Adobe Document Authoring (DA) and Edge Delivery Services (EDS).

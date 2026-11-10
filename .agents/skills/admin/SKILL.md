@@ -9,6 +9,10 @@ metadata:
 
 # Project Handover - Admin Guide
 
+## Repository Context
+
+For this existing Nebraska Sower Edge Delivery Services project, read root `AGENTS.md` and `README.md` for the configured site, environments, and supported commands. Generate `project-guides/ADMIN-GUIDE.md` only when requested. This is not a Maven/Dispatcher project; do not infer AEM Cloud Service Java operations.
+
 Generate comprehensive documentation for administrators taking over an AEM Edge Delivery Services project. Produces a complete admin guide with Config Service setup, permissions, Admin API operations, and troubleshooting.
 
 ## When to Use This Skill
@@ -24,36 +28,18 @@ Generate comprehensive documentation for administrators taking over an AEM Edge 
 
 ## Step 0: Navigate to Project Root and Verify Edge Delivery Services Project (CONDITIONAL)
 
-**Skip this step if `allGuides` flag is set** (orchestrator already validated and navigated).
+**Skip this step if `allGuides` is set** (the orchestrator already navigated and validated).
 
-**CRITICAL: If NOT skipped, you MUST execute the `cd` command. Do NOT use absolute paths — actually change directory.**
+Otherwise, on Windows use PowerShell to navigate to the project root and verify the EDS runtime:
 
-```bash
-ALL_GUIDES=$(cat .claude-plugin/project-config.json 2>/dev/null | node -e "
-  const d = require('fs').readFileSync(0,'utf8');
-  try { console.log(JSON.parse(d).allGuides ? 'true' : ''); } catch(e) { console.log(''); }
-")
-if [ -z "$ALL_GUIDES" ]; then
-  # Navigate to git project root (works from any subdirectory)
-  cd "$(git rev-parse --show-toplevel)"
-  # Verify it's an Edge Delivery Services project
-  ls scripts/aem.js
-fi
+```powershell
+Set-Location (git rev-parse --show-toplevel)
+if (-not (Test-Path 'scripts/aem.js')) {
+  throw 'scripts/aem.js not found; this is not an Edge Delivery Services project.'
+}
 ```
 
-**IMPORTANT:**
-- You MUST run the `cd` command above using the Bash tool
-- All subsequent steps operate from project root
-- Do NOT use absolute paths to verify — actually navigate
-- Guides will be created at `project-root/project-guides/`
-
-**If NOT skipped AND `scripts/aem.js` does NOT exist**, respond:
-
-> "This skill is designed for AEM Edge Delivery Services projects. The current directory does not appear to be an Edge Delivery Services project (`scripts/aem.js` not found).
->
-> Please navigate to an Edge Delivery Services project and try again."
-
-**STOP if check fails. Otherwise proceed — you are now at project root.**
+Stop if the check fails. Otherwise, continue from the repository root.
 
 ---
 

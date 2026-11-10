@@ -10,6 +10,10 @@ metadata:
 
 This skill guides you through testing code changes in AEM Edge Delivery Services projects. Testing follows a value-versus-cost philosophy: create and maintain tests when the value they bring exceeds the cost of creation and maintenance.
 
+## Repository Context
+
+This is the existing State of Nebraska Sower Design System repository. Read the root `AGENTS.md` and `README.md` for its commands and preview conventions. There is no `npm test` script, `npm run lint:fix` script, or existing test directory; do not assume those are available.
+
 **CRITICAL: Browser validation is MANDATORY. You cannot complete this skill without providing proof of functional testing in a real browser environment.**
 
 ## Related Skills
@@ -46,12 +50,7 @@ Track your progress:
 npm run lint
 ```
 
-**If linting fails:**
-```bash
-npm run lint:fix
-```
-
-**Manually fix remaining issues** that auto-fix couldn't handle.
+**If linting fails:** Manually fix the reported issues and rerun `npm run lint`. On Windows, use `npm run lint:js -- --rule "linebreak-style: [1, windows]"` when the default LF rule reports CRLF-only warnings. Do not use `npm run lint:fix`; this repo does not define that script.
 
 **Success criteria:**
 - ✅ Linting passes with no errors
@@ -198,29 +197,13 @@ Use a standard web browser with dev tools:
 
 **For guidance on what to test:** See [references/testing-philosophy.md](references/testing-philosophy.md)
 
-**If unit tests needed:**
-
-```bash
-# Verify test setup (see references/vitest-setup.md if not configured)
-npm test
-
-# Write test for utility function
-# test/utils/my-utility.test.js
-import { describe, it, expect } from 'vitest';
-import { myUtility } from '../../scripts/utils/my-utility.js';
-
-describe('myUtility', () => {
-  it('should transform input correctly', () => {
-    expect(myUtility('input')).toBe('OUTPUT');
-  });
-});
-```
+**If unit tests are needed:** This repo does not include a test runner or test directory. Do not assume Vitest or `npm test` is configured; agree on and add the needed test setup as part of a task only when the logic justifies it.
 
 **For detailed unit testing guidance:** See [references/unit-testing.md](references/unit-testing.md)
 
 **Success criteria:**
 - ✅ Unit tests written for logic-heavy code
-- ✅ Tests pass: `npm test`
+- ✅ Any configured test runner passes; this repo currently has none
 - ✅ OR determined unit tests not needed
 
 **Mark complete when:** Unit tests written and passing, or determined not needed
@@ -229,23 +212,13 @@ describe('myUtility', () => {
 
 ## Step 4: Run Existing Tests
 
-**Verify your changes don't break existing functionality:**
-
-```bash
-npm test
-```
-
-**If tests fail:**
-1. Read error message carefully
-2. Run single test to isolate: `npm test -- path/to/test.js`
-3. Fix code or update test if expectations changed
-4. Re-run full test suite
+This repository currently has no configured test suite. Mark this step not applicable unless the task adds one; use browser validation and the repo's lint/build commands for the available checks.
 
 **Success criteria:**
-- ✅ All existing tests pass
-- ✅ No regressions introduced
+- ✅ Browser validation and available lint/build checks pass
+- ✅ No regressions found
 
-**Mark complete when:** `npm test` passes with no failures
+**Mark complete when:** All applicable checks pass, or unavailable tests are recorded as not configured.
 
 ## Troubleshooting
 
@@ -254,13 +227,10 @@ For detailed troubleshooting guide, see [references/troubleshooting.md](referenc
 **Common issues:**
 
 ### Tests fail
-- Read error message carefully
-- Run single test: `npm test -- path/to/test.js`
-- Fix code or update test
+- This repository has no default test runner. If the task introduces one, follow that runner's documented commands.
 
 ### Linting fails
-- Run `npm run lint:fix`
-- Manually fix remaining issues
+- Use `npm run lint`; on Windows, use the line-ending override documented above when appropriate. Fix other reported issues manually.
 
 ### Browser tests fail
 - Verify dev server running: `aem up --html-folder drafts`

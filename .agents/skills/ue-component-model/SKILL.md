@@ -6,6 +6,10 @@ license: Apache-2.0
 
 # Universal Editor Component Model Configuration
 
+## Repository Context
+
+This repo uses distributed block schemas at `blocks/<name>/_<name>.json`; edit those sources, then run `npm run build:json` and review generated root `component-*.json`. Follow the existing Nebraska/DA-compatible schema conventions and inspect the block decorator before changing fields, definitions, or filters.
+
 This skill helps you create or edit the three JSON configuration files that control how AEM Edge Delivery Services (EDS) blocks appear and behave in the Universal Editor (UE):
 
 1. **component-definition.json** — Registers blocks in the UE component palette

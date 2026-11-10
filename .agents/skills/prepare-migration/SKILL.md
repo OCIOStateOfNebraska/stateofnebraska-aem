@@ -6,6 +6,10 @@ license: Apache-2.0
 
 # stardust:prepare-migration
 
+## Repository Context
+
+For this existing EDS site, treat preparation outputs as analysis artifacts under `stardust/`. Read `README.md` for the site origin and do not change live DA content, deploy code, or publish during preparation.
+
 Orchestrate the migrate-prep cascade. When the user commits to
 migrating an existing site, this skill runs the upstream phases
 (`extract`, `direct`, `prototype`) in their `--prep` modes,

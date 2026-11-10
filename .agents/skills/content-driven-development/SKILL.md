@@ -10,6 +10,10 @@ metadata:
 
 Orchestrate the Content Driven Development workflow for AEM Edge Delivery Services. This workflow ensures code is built against real content with author-friendly content models.
 
+## Repository Context
+
+This is the existing State of Nebraska Sower Design System repository. Read the root `AGENTS.md` and `README.md` and use their project commands and architecture instead of generic boilerplate assumptions. The repo has no `npm test` script or existing test suite; do not require one for routine block work.
+
 **CRITICAL: Never start writing or modifying code without first identifying or creating the content you will use to test your changes.**
 
 ## When to Use This Skill
@@ -285,19 +289,14 @@ npm run lint
 ```
 
 **If lint errors:**
-1. Fix issues (use `npm run lint:fix` for auto-fixable problems)
-2. Re-run lint until clean
+1. Fix reported issues manually; this repo has no `npm run lint:fix` script.
+2. Re-run `npm run lint` until clean. On Windows, use the platform-specific JS lint command documented in `AGENTS.md` when line-ending warnings need to be avoided.
 
-**Run existing tests:**
-```bash
-npm test
-```
-
-**Note:** Unit tests are optional and only needed for logic-heavy utilities. The testing-blocks skill (invoked by building-blocks in Step 5) handles browser testing. This step catches any remaining lint issues and runs the project's test suite.
+**Tests:** There is no configured test runner or existing test suite in this repo. Unit tests are optional and should be introduced only when useful for logic-heavy utilities. The testing-blocks skill handles browser validation.
 
 **Success criteria:**
 - ✅ `npm run lint` passes with no errors
-- ✅ `npm test` passes (if tests exist)
+- ✅ Any applicable tests pass; otherwise record that no test suite is configured
 
 **Mark todo complete when:** All lint and test checks pass
 

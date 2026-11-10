@@ -8,6 +8,10 @@ metadata:
 
 # Page Import Orchestrator
 
+## Repository Context
+
+This skill targets the existing State of Nebraska Sower EDS/DA site. Check root `AGENTS.md`, `README.md`, and local blocks before selecting components; import content only and do not replace the site's header/footer, project code, or content models. Use the user's target path and local AEM preview; publishing requires explicit authorization.
+
 Orchestrate a website page import/migration using specialized sub-skills for each phase of the import workflow. Below is a high-level overview of the process.
 
 ## External Content Safety

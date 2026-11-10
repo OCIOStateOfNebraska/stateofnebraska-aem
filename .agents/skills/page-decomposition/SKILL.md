@@ -8,6 +8,10 @@ metadata:
 
 # Page Decomposition
 
+## Repository Context
+
+For this site, describe content sequences neutrally first, then let `identify-page-structure` map them to the actual local block inventory. Do not assume stock boilerplate blocks or invent Nebraska-specific variants before checking `blocks/` and schemas.
+
 Analyze content sequences within a section and provide neutral descriptions without assigning block names.
 
 ## When to Use This Skill

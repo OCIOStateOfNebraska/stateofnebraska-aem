@@ -1,14 +1,18 @@
 ---
 name: ensure-agents-md
 description: |
-  **Run FIRST (before any other skill or task)** when workspace root has no AGENTS.md and the repo
-  is an AEM Cloud Service project. Creates AGENTS.md and CLAUDE.md (tailored via pom.xml). Applies on
-  every user request until AGENTS.md exists — not only the first chat. Never overwrites existing files.
+  Run first only when the workspace root lacks AGENTS.md and is an AEM Cloud Service Java/Maven project.
+  This State of Nebraska workspace is an existing EDS project with AGENTS.md, so skip this skill here.
+  Never overwrites existing files.
 license: Apache-2.0
 compatibility: AEM as a Cloud Service projects (Java stack, Maven, Dispatcher).
 ---
 
 # Ensure AGENTS.md and CLAUDE.md (bootstrap)
+
+## Repository Context
+
+The State of Nebraska Sower workspace is an existing Edge Delivery Services project and already has a root `AGENTS.md`. Skip this bootstrap skill in this repository; it is not a Maven AEM Cloud Service project.
 
 ## Mandatory order (all cases)
 

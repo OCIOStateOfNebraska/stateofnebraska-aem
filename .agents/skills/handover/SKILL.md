@@ -9,6 +9,10 @@ metadata:
 
 # Project Handover Documentation
 
+## Repository Context
+
+This workspace is the existing State of Nebraska Sower Edge Delivery Services project. Read root `AGENTS.md` and `README.md`; generate only the guide(s) requested under `project-guides/`. Use PowerShell equivalents on Windows, and preserve all existing project configuration and credentials.
+
 Generate comprehensive handover documentation for Edge Delivery Services projects. This skill orchestrates the creation of guides for different audiences.
 
 ## When to Use This Skill
@@ -37,16 +41,13 @@ Generate comprehensive handover documentation for Edge Delivery Services project
 
 **CRITICAL: You MUST execute this `cd` command before anything else. Do NOT use absolute paths — actually change directory.**
 
-```bash
-# Navigate to git project root (works from any subdirectory)
-cd "$(git rev-parse --show-toplevel)"
-
-# Verify it's an Edge Delivery Services project
-ls scripts/aem.js
+```powershell
+Set-Location (git rev-parse --show-toplevel)
+if (-not (Test-Path 'scripts/aem.js')) { throw 'scripts/aem.js not found; this is not an EDS project.' }
 ```
 
 **IMPORTANT:**
-- You MUST run the `cd` command above using the Bash tool
+- On Windows, run the PowerShell commands above; use equivalent commands on other platforms.
 - All subsequent steps operate from project root
 - Do NOT use absolute paths to verify — actually navigate
 - Guides will be created at `project-root/project-guides/`
@@ -61,13 +62,9 @@ ls scripts/aem.js
 
 ---
 
-### Step 0.5: Clean Up Stale Config
+### Step 0.5: Read Existing Project Context
 
-Remove any existing config to ensure fresh org and authentication for this project:
-
-```bash
-rm -f .claude-plugin/project-config.json
-```
+Read `AGENTS.md` and `README.md` first. If `.claude-plugin/project-config.json` exists, preserve it and read it only when relevant; do not delete configuration or cached credentials as part of documentation generation.
 
 ---
 

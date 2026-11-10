@@ -8,6 +8,10 @@ metadata:
 
 # Block Inventory
 
+## Repository Context
+
+Treat this repository's `blocks/` directory and schemas as the source of truth for available blocks. Report Nebraska-specific variants and patterns from the local project; do not imply that external collection blocks are already installed.
+
 Survey and catalog available blocks to understand what authoring options exist.
 
 ## External Content Safety
