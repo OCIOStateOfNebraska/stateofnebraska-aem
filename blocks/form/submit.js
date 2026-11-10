@@ -14,7 +14,7 @@ export function submitSuccess( e, form ) {
 			thankYouMessage = div({class: 'alert success form-message success-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, thankYouMsg || DEFAULT_THANK_YOU_MESSAGE ) ) );
 			loadBlock(thankYouMessage);
 		}
-		form.parentNode.insertBefore( thankYouMessage, form );
+		form.prepend( thankYouMessage );
 		if ( thankYouMessage.scrollIntoView ) {
 			thankYouMessage.scrollIntoView( { behavior: 'smooth' } );
 		}
