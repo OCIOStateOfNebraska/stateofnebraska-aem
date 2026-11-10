@@ -1,4 +1,6 @@
 import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
+import { div } from '../../scripts/dom-helpers.js';
+import { loadBlock } from '../../scripts/aem.js';
 
 export function submitSuccess( e, form ) {
 	const { payload } = e;
@@ -9,10 +11,9 @@ export function submitSuccess( e, form ) {
 	} else {
 		let thankYouMessage = form.parentNode.querySelector( '.form-message.success-message' );
 		if ( !thankYouMessage ) {
-			thankYouMessage = document.createElement( 'div' );
-			thankYouMessage.className = 'form-message success-message';
+			thankYouMessage = div({class: 'alert success form-message success-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, thankYouMsg || DEFAULT_THANK_YOU_MESSAGE ) ) );
+			loadBlock(thankYouMessage);
 		}
-		thankYouMessage.innerHTML = thankYouMsg || DEFAULT_THANK_YOU_MESSAGE;
 		form.parentNode.insertBefore( thankYouMessage, form );
 		if ( thankYouMessage.scrollIntoView ) {
 			thankYouMessage.scrollIntoView( { behavior: 'smooth' } );
@@ -26,10 +27,10 @@ export function submitSuccess( e, form ) {
 export function submitFailure( e, form ) {
 	let errorMessage = form.querySelector( '.form-message.error-message' );
 	if ( !errorMessage ) {
-		errorMessage = document.createElement( 'div' );
-		errorMessage.className = 'form-message error-message';
+		errorMessage = div({class: 'alert error form-message error-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, 'Some error occured while submitting the form' ) ) );
+		loadBlock(errorMessage);
 	}
-	errorMessage.innerHTML = 'Some error occured while submitting the form'; // TODO: translation
+
 	form.prepend( errorMessage );
 	errorMessage.scrollIntoView( { behavior: 'smooth' } );
 	form.setAttribute( 'data-submitting', 'false' );

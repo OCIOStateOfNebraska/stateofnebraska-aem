@@ -12,6 +12,13 @@ $block: 'form';
 			max-width: 100%;
 		}
 	}
+	.form-message{
+		grid-column: span 12;
+
+		.usa-alert__body{
+			padding-left: units(7);
+		}
+	}
 }
 
 form {
