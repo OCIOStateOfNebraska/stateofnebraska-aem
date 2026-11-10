@@ -6,6 +6,10 @@ license: Apache-2.0
 
 # stardust:uplift
 
+## Repository Context
+
+Use the Nebraska site origin and current brand from `README.md`. This skill produces proposed presales variants, not a live site redesign; keep output in Stardust artifacts and do not replace EDS source or publish without explicit approval.
+
 One entry point. One URL. Three presales-quality redesign variants.
 
 `uplift` collapses the `extract → direct → prototype × 3` chain into a

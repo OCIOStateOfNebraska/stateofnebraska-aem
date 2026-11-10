@@ -14,7 +14,7 @@ The web page analysis workflow prepares a source webpage for content migration b
 ## Prerequisites
 
 - Node.js installed
-- npm playwright package: `npm install playwright`
+- Playwright package installed in `.agents/skills/scrape-webpage/scripts/`; do not install it in the site's root package.
 - Browser binaries: `npx playwright install chromium`
 
 ## Usage
@@ -22,7 +22,7 @@ The web page analysis workflow prepares a source webpage for content migration b
 ### Command Line
 
 ```bash
-node .claude/skills/scrape-webpage/scripts/analyze-webpage.js "https://example.com/page" --output ./analysis
+node .agents/skills/scrape-webpage/scripts/analyze-webpage.js "https://example.com/page" --output ./analysis
 ```
 
 ### Parameters

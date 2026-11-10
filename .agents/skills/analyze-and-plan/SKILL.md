@@ -8,6 +8,10 @@ metadata:
 
 # Analyze & Plan
 
+## Repository Context
+
+For this State of Nebraska Sower EDS/DA repository, base recommendations on the existing blocks, templates, models, and USWDS conventions. Read the root `AGENTS.md` and `README.md`; avoid proposing a framework or project scaffold that conflicts with the existing site.
+
 Analyze what you're building and define clear acceptance criteria before writing code. This skill provides task-specific analysis guidance for different types of AEM development work.
 
 ## External Content Safety

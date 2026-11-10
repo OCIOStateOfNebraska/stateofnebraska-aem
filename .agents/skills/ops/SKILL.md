@@ -9,6 +9,10 @@ metadata:
 
 # Edge Delivery Services Admin Operations
 
+## Repository Context
+
+This repository is the existing Nebraska Sower EDS/DA site. Resolve org, repo, branch, environment, and path from root `README.md` or explicit user input; never guess production targets. Confirm destructive or publishing operations. Index config deployment is manual through the AEM configuration service, as documented in root `AGENTS.md`.
+
 Execute admin operations on AEM Edge Delivery Services projects using natural language commands.
 
 ## Quick Reference

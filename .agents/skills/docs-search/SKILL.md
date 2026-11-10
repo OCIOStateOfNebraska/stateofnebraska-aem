@@ -8,6 +8,10 @@ metadata:
 
 # Searching AEM Documentation
 
+## Repository Context
+
+Use AEM Edge Delivery Services documentation for this EDS/DA project, then reconcile guidance with the local source and root `AGENTS.md`. Prefer existing repo conventions when generic documentation and project behavior differ.
+
 ## Overview
 
 This skill helps you efficiently search the complete aem.live documentation (docs and blog posts) without wasting context on irrelevant pages. Use the provided search script to find relevant documentation pages, then fetch and read the full content of the most relevant results.

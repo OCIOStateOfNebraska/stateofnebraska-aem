@@ -8,6 +8,10 @@ metadata:
 
 # Accessibility Fix for AEM Edge Delivery Services
 
+## Repository Context
+
+This skill is used with the existing State of Nebraska Sower EDS/DA site. Read the root `AGENTS.md` and `README.md` for local preview and project conventions; preserve authored content and block markup while applying accessibility fixes.
+
 Scan published AEM Edge Delivery Services pages for WCAG 2.1 AA violations, identify fixable issues, and generate specific fixes applicable in the source document (Google Docs / Word / da.live) or in block code. Produces a structured fix report separating document-level fixes from code-level fixes so content authors and developers each get a clear action list.
 
 ## External Content Safety

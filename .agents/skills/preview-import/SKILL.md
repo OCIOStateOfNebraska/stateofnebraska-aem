@@ -8,6 +8,10 @@ metadata:
 
 # Preview Import
 
+## Repository Context
+
+This project uses the AEM CLI against the existing Nebraska preview site; read root `AGENTS.md` and `README.md` for `AEM_PAGES_URL` and local preview setup. On Windows, use PowerShell-compatible commands. Keep imported drafts under the requested path and do not publish them unless explicitly asked.
+
 Open and verify imported content in local development server.
 
 ## When to Use This Skill

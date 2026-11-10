@@ -8,6 +8,10 @@ metadata:
 
 # Content Diff for AEM Edge Delivery Services
 
+## Repository Context
+
+For this repository, use the Nebraska preview/live URLs documented in `README.md` unless the user supplies different URLs. Compare authored content and block output without assuming generic boilerplate or changing content during a read-only diff.
+
 Compare two versions of an AEM Edge Delivery Services page and produce a clear, author-friendly change report covering content, metadata, blocks, and media. Highlights changes that could impact SEO, performance, or accessibility.
 
 ## External Content Safety

@@ -6,6 +6,10 @@ license: Apache-2.0
 
 # stardust:migrate
 
+## Repository Context
+
+This skill emits a separate static site under `stardust/migrated/`; it does not deploy to or replace this repository's existing EDS site. Preserve current `blocks/`, `scripts/`, `styles/`, templates, and authored content. Any later EDS integration or publishing requires a separate explicit request.
+
 Apply the target spec authored by `direct`, the visual canon
 written by `prototype --prep`, and the brand-module catalog
 extracted during `prepare-migration` to every page in the

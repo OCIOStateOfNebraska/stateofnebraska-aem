@@ -8,6 +8,10 @@ metadata:
 
 # Bulk Metadata for AEM Edge Delivery Services
 
+## Repository Context
+
+For this Nebraska EDS site, validate indexed properties against `helix-configs/index/*.yaml`; index configuration deployment is manual through the AEM configuration service. Use the preview/live environment URLs in `README.md` and do not invent indexed fields.
+
 Audit metadata across an entire AEM Edge Delivery Services site using the query index, identify gaps and inconsistencies, and produce a corrected bulk metadata spreadsheet ready to paste into Google Sheets or Excel.
 
 ## External Content Safety

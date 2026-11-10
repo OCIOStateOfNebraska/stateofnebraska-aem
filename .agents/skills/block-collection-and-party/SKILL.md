@@ -8,6 +8,10 @@ metadata:
 
 # Using the Block Collection and Block Party
 
+## Repository Context
+
+When using external block references for this project, adapt patterns to the State of Nebraska Sower EDS/DA conventions in root `AGENTS.md`: browser-native decoration, local DOM helpers, USWDS, SCSS source with generated CSS, and existing authoring schemas. Do not copy boilerplate files over this repo.
+
 ## Overview
 
 This skill helps you find reference implementations, code examples, and patterns from two key AEM Edge Delivery resources:

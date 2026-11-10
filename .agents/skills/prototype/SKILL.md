@@ -6,6 +6,10 @@ license: Apache-2.0
 
 # stardust:prototype
 
+## Repository Context
+
+Prototypes for this project are isolated HTML artifacts under `stardust/prototypes/`, not edits to the live EDS templates or blocks. Read the current site context from `README.md`; do not publish or overwrite authored content when rendering a prototype.
+
 For each `directed` page, render a **proposed redesign** as a
 self-contained static HTML file at
 `stardust/prototypes/<slug>-proposed.html`. Open the file in the

@@ -8,6 +8,10 @@ metadata:
 
 # Identify Page Structure
 
+## Repository Context
+
+When surveying blocks for this project, use the local `blocks/` directory and its `_*.json` authoring schemas as the available palette. Read root `AGENTS.md` for local runtime/content constraints and preserve existing Nebraska components where they fit.
+
 Analyze webpage structure using two-level hierarchy: sections, then content sequences within each section.
 
 ## External Content Safety

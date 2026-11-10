@@ -8,6 +8,10 @@ metadata:
 
 # Generate Import HTML
 
+## Repository Context
+
+Generate DA-compatible content for this site's existing blocks and authoring schemas. Preserve the selected local block structures and variants; never edit generated component JSON or project code as part of HTML generation. Use a target path supplied by the user or import workflow.
+
 Create plain HTML file with block structure from authoring analysis.
 
 ## External Content Safety

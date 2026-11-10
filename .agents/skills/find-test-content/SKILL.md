@@ -8,6 +8,10 @@ metadata:
 
 # Find Test Content
 
+## Repository Context
+
+Search the Nebraska EDS site's configured index and report only URLs/variants that exist. Check `helix-configs/index/*.yaml` for indexed properties and use root `README.md` for the site's preview/live hosts; do not assume the standard boilerplate index contains every field.
+
 This skill searches for existing pages containing a specific block, helping you identify test content during the Content Driven Development workflow.
 
 ## External Content Safety

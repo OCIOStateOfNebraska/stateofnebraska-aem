@@ -8,6 +8,10 @@ metadata:
 
 # Scrape Webpage
 
+## Repository Context
+
+The helper is bundled under `.agents/skills/scrape-webpage/scripts/`, not `.claude/skills/`. Prefer the integrated browser when available; if the Node helper is needed, run it from its actual location and keep any scraper dependencies isolated from the site's root `package.json` and lockfile.
+
 Extract content, metadata, and images from a webpage for import/migration.
 
 ## External Content Safety
@@ -27,9 +31,7 @@ Use this skill when:
 
 Before using this skill, ensure:
 - ✅ Node.js is available
-- ✅ npm playwright is installed (`npm install playwright`)
-- ✅ Chromium browser is installed (`npx playwright install chromium`)
-- ✅ Sharp image library is installed (`cd .claude/skills/scrape-webpage/scripts && npm install`)
+- ✅ Prefer the integrated browser when available. If using the bundled Node helper, install its dependencies only in `.agents/skills/scrape-webpage/scripts/` (`Push-Location .agents/skills/scrape-webpage/scripts; npm install playwright; npx playwright install chromium; Pop-Location`). Sharp is already declared in the helper package.
 
 ## Related Skills
 
@@ -43,7 +45,7 @@ Before using this skill, ensure:
 
 **Command:**
 ```bash
-node .claude/skills/scrape-webpage/scripts/analyze-webpage.js "https://example.com/page" --output ./import-work
+node .agents/skills/scrape-webpage/scripts/analyze-webpage.js "https://example.com/page" --output ./import-work
 ```
 
 **What the script does:**
@@ -149,7 +151,7 @@ npx playwright install chromium
 
 **Sharp not installed:**
 ```bash
-cd .claude/skills/scrape-webpage/scripts && npm install
+  cd .agents/skills/scrape-webpage/scripts && npm install
 ```
 
 **Image download failures:**

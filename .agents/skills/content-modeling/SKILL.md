@@ -8,6 +8,10 @@ metadata:
 
 # Content Modeling for AEM Edge Delivery Blocks
 
+## Repository Context
+
+Model blocks for this site's DA/EDS authoring conventions. Put distributed block schemas in `blocks/<name>/_<name>.json`; after model changes run `npm run build:json` and review generated root `component-*.json`. Follow nearby schemas and the root `AGENTS.md`.
+
 This skill guides you through designing content models for AEM Edge Delivery Services blocks. A content model defines the table structure that authors work with when creating content
 
 ## External Content Safety
