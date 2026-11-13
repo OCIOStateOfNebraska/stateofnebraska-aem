@@ -26,6 +26,13 @@
                     "label": "Name",
                     "valueType": "string",
                     "required": true
+                },
+                {
+                    "component": "text",
+                    "name": "rcCloudServicePath",
+                    "label": "Captcha configuration",
+                    "valueType": "string",
+                    "description": "Name of the reCAPTCHA cloud configuration (Tools > Cloud Services > reCAPTCHA) in the form's configuration container. Leave empty to use the default."
                 }
             ]
         }
