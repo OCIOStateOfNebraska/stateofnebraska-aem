@@ -5,7 +5,7 @@ import { loadBlock } from '../../scripts/aem.js';
 export function submitSuccess( e, form ) {
 	const { payload } = e;
 	const redirectUrl = form.dataset.redirectUrl || payload?.body?.redirectUrl;
-	const thankYouMsg = form.dataset.thankYouMsg || payload?.body?.thankYouMessage;
+	const thankYouMsg = form.dataset.thankYouMsg || payload?.body?.thankYouMessage?.textContent;
 	if ( redirectUrl ) {
 		window.location.assign( encodeURI( redirectUrl ) );
 	} else {
