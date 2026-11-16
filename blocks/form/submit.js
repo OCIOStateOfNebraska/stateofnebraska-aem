@@ -5,13 +5,13 @@ import { loadBlock } from '../../scripts/aem.js';
 export function submitSuccess( e, form ) {
 	const { payload } = e;
 	const redirectUrl = form.dataset.redirectUrl || payload?.body?.redirectUrl;
-	const thankYouMsg = form.dataset.thankYouMsg || payload?.body?.thankYouMessage?.textContent;
+	const thankYouMsg = form.dataset.thankYouMsg || payload?.body?.thankYouMessage;
 	if ( redirectUrl ) {
 		window.location.assign( encodeURI( redirectUrl ) );
 	} else {
 		let thankYouMessage = form.parentNode.querySelector( '.form-message.success-message' );
 		if ( !thankYouMessage ) {
-			thankYouMessage = div( {class: 'alert success form-message success-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, thankYouMsg || DEFAULT_THANK_YOU_MESSAGE ) ) );
+			thankYouMessage = div( {class: 'alert success form-message success-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, thankYouMsg.textContent || DEFAULT_THANK_YOU_MESSAGE ) ) );
 			loadBlock( thankYouMessage );
 		}
 		form.parentNode.insertBefore( thankYouMessage, form );
