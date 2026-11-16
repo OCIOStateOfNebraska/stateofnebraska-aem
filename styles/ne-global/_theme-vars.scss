@@ -16,6 +16,7 @@
 	--theme-card-heading: #{color('primary-darker')};
 	--theme-card-filled-text: #{color('white')};
 	--theme-card-filled-accent: #{color('secondary')};
+	--theme-testimonials-accent: #{color('primary-dark')};
 }
 
 .theme--red {
@@ -34,6 +35,7 @@
 	--theme-card-heading: #{$ne-color-darkest-red};
 	--theme-card-filled-text: #{color('white')};
 	--theme-card-filled-accent: #{color('white')};
+	--theme-testimonials-accent: #{$ne-color-darkest-red};
 }
 
 .theme--green {
@@ -52,4 +54,5 @@
 	--theme-card-heading: #{color('accent-warm-darker')};
 	--theme-card-filled-text: #{color('white')};
 	--theme-card-filled-accent: #{color('white')};
+	--theme-testimonials-accent: #{color('accent-warm-darker')};
 }

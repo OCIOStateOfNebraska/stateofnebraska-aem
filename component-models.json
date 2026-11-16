@@ -7845,5 +7845,29 @@
         "value": ""
       }
     ]
+  },
+  {
+    "id": "testimonials",
+    "fields": [
+      {
+        "component": "number",
+        "valueType": "number",
+        "name": "rating",
+        "label": "Rating",
+        "description": "Optional. Enter a value from 0 to 5, or leave blank to hide the stars.",
+        "validation": {
+          "numberMin": 0,
+          "numberMax": 5
+        }
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "testimonial",
+        "label": "Testimonial",
+        "value": "",
+        "description": "Add the quote in one or more paragraphs. Put the author's name in bold in the final paragraph; an optional date or role may follow after a line break or in a separate paragraph."
+      }
+    ]
   }
 ]

@@ -1,0 +1,99 @@
+@use '../../styles/ne-global-imports' as *;
+
+.testimonials-wrapper {
+	padding-block: units(8);
+
+	.testimonials {
+		&__grid {
+			align-items: stretch;
+			row-gap: units(6);
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		&__item {
+			display: flex;
+		}
+
+		&__card {
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			min-height: units('card-lg');
+			padding: units(4);
+			border-radius: units(1);
+			background-color: color('white');
+			box-shadow: 0 units('05') units(1) color('base-light');
+		}
+
+		&__rating {
+			display: flex;
+			gap: units(0.5);
+			align-items: center;
+			margin-bottom: units(2);
+			color: var(--theme-testimonials-accent);
+		}
+
+		&__star {
+			display: inline-flex;
+			width: units(3);
+			height: units(3);
+
+			.usa-icon {
+				width: 100%;
+				height: 100%;
+				fill: currentcolor;
+			}
+		}
+
+		&__quote-mark {
+			display: block;
+			width: units(6);
+			height: units(6);
+			margin-bottom: units(2);
+			color: var(--theme-testimonials-accent);
+
+			.usa-icon {
+				width: 100%;
+				height: 100%;
+				fill: currentcolor;
+			}
+		}
+
+		&__content {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			font-size: size('body', 'sm');
+		}
+
+		&__quote {
+			margin: 0;
+			line-height: 1.5;
+		}
+
+		&__quote + &__quote {
+			margin-top: units(2);
+		}
+
+		&__quote--last {
+			margin-bottom: units(2);
+		}
+
+		&__attribution { 
+			margin-top: auto;
+			margin-bottom: 0;
+			padding-top: units(2);
+
+			strong {
+				color: var(--theme-testimonials-accent);
+			}
+		}
+
+		&__attribution + &__attribution {
+			margin-top: 0;
+			padding-top: 0;
+		}
+	}
+}

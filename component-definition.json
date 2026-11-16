@@ -963,6 +963,18 @@
               ]
             }
           }
+        },
+        {
+          "title": "Testimonials",
+          "id": "testimonials",
+          "model": "testimonials",
+          "plugins": {
+            "da": {
+              "name": "Testimonials",
+              "rows": 1,
+              "columns": 2
+            }
+          }
         }
       ]
     }
