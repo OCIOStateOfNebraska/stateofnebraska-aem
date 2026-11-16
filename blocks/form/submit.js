@@ -11,7 +11,8 @@ export function submitSuccess( e, form ) {
 	} else {
 		let thankYouMessage = form.parentNode.querySelector( '.form-message.success-message' );
 		if ( !thankYouMessage ) {
-			thankYouMessage = div( {class: 'alert success form-message success-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, thankYouMsg.replace('<p>', '').replace('</p>', '') || DEFAULT_THANK_YOU_MESSAGE ) ) );
+			console.log(thankYouMsg);
+			thankYouMessage = div( {class: 'alert success form-message success-message', ['data-block-name']: 'alert' }, div( {}, div( {}, '' ), div( {}, thankYouMsg || DEFAULT_THANK_YOU_MESSAGE ) ) );
 			loadBlock( thankYouMessage );
 		}
 		form.parentNode.insertBefore( thankYouMessage, form );
