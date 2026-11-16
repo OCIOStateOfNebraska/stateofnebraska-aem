@@ -97,3 +97,17 @@
 		}
 	}
 }
+
+@include at-media('desktop') {
+	:is(.side-navigation-container + .main-content, .usa-in-page-nav-container > .main-content) {
+		.testimonials__item {
+			&[class~='desktop:grid-col-4'] {
+				width: 50%;
+			}
+
+			&[class~='desktop:grid-col-8'] {
+				width: 100%;
+			}
+		}
+	}
+}
