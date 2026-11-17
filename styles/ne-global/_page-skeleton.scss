@@ -8,10 +8,11 @@ body {
 		> header,
 		> main,
 		> footer {
-			visibility: hidden;
+			// USWDS discovers headings by computed visibility during decoration.
+			opacity: 0;
 
 			@media print {
-				visibility: visible;
+				opacity: 1;
 			}
 		}
 	}
