@@ -1,5 +1,6 @@
 import { domEl } from '../../scripts/dom-helpers.js';
 import { parseCombinedDateTime } from '../../scripts/event-utils.js';
+import handlePagination from './events-pagination.js';
 
 /**
  * Fetches the events index JSON file
@@ -21,6 +22,12 @@ async function fetchSearchIndex( indexPath ) {
  */
 function isEventPage( event ) {
 	return event.template === 'events';
+}
+
+function parseDateBoundary( value, fallback ) {
+	const date = parseCombinedDateTime( value, { includeDateObject: true } ).dateObject;
+	if ( !date || Number.isNaN( date.getTime() ) ) return fallback;
+	return new Date( date.getFullYear(), date.getMonth(), date.getDate() );
 }
 
 /**
@@ -103,6 +110,18 @@ export default async function decorate( block ) {
 		const firstRow = block.querySelector( ':scope > div' );
 		const firstCell = firstRow?.querySelector( ':scope > div' );
 		const indexPath = firstCell?.textContent?.trim() || '/events-index.json';
+		const secondRow  = block.querySelector( ':scope > div:nth-child(2)' );
+		const secondCell = secondRow?.querySelector( ':scope > div:nth-child(2)' );
+		const today = new Date();
+		const startDate = parseDateBoundary( secondCell?.textContent?.trim(), new Date( today.getFullYear(), today.getMonth(), today.getDate() ) );
+		const thirdRow  = block.querySelector( ':scope > div:nth-child(3)' );
+		const thirdCell = thirdRow?.querySelector( ':scope > div:nth-child(2)' );
+		const endDate = parseDateBoundary( thirdCell?.textContent?.trim(), new Date( 9999, 11, 31 ) );
+		const fourthRow  = block.querySelector( ':scope > div:nth-child(4)' );
+		const fourthCell = fourthRow?.querySelector( ':scope > div:nth-child(2)' );
+		const configuredPerPage = Number.parseInt( fourthCell?.textContent?.trim(), 10 );
+		const perPage = Number.isInteger( configuredPerPage ) && configuredPerPage > 0 ? configuredPerPage : 3;
+
 
 		const searchIndex = await fetchSearchIndex( indexPath );
 
@@ -110,7 +129,7 @@ export default async function decorate( block ) {
 			throw new Error( 'Invalid search index format' );
 		}
 
-		const eventPages = searchIndex.data
+		let eventPages = searchIndex.data
 			.filter( isEventPage )
 			.map( ( event ) => {
 				const start = parseCombinedDateTime( event.eventStartDate, { includeDateObject: true } );
@@ -126,11 +145,9 @@ export default async function decorate( block ) {
 				if ( !event.startDate ) return false;
 
 				// Compare only dates, not times (show events for entire day)
-				const today = new Date();
-				const todayDateOnly = new Date( today.getFullYear(), today.getMonth(), today.getDate() );
 				const eventDateOnly = new Date( event.startDate.getFullYear(), event.startDate.getMonth(), event.startDate.getDate() );
 
-				return eventDateOnly >= todayDateOnly;
+				return eventDateOnly >= startDate && eventDateOnly <= endDate;
 			} )
 			.sort( ( a, b ) => ( a.startDate?.getTime() || 0 ) - ( b.startDate?.getTime() || 0 ) );
 
@@ -138,17 +155,23 @@ export default async function decorate( block ) {
 			block.innerHTML = '<p>No events found.</p>';
 			return;
 		}
+		const requestedOffset = Number( new URL( window.location.href ).searchParams.get( 'offset' ) );
+		const lastPageOffset = Math.floor( ( eventPages.length - 1 ) / perPage ) * perPage;
+		const currentOffset = Number.isInteger( requestedOffset ) && requestedOffset >= 0
+			? Math.min( Math.floor( requestedOffset / perPage ) * perPage, lastPageOffset )
+			: 0;
 
 		const container = domEl( 'div', { class: 'events-list__container' } );
 		const collection = domEl( 'ul', { class: 'events-list__collection' } );
+		container.appendChild( collection );
+		block.innerHTML = '';
 
+		eventPages = handlePagination( currentOffset, eventPages, perPage, container );
 		eventPages.forEach( ( event ) => {
 			const item = createEventItem( event );
 			collection.appendChild( item );
 		} );
 
-		container.appendChild( collection );
-		block.innerHTML = '';
 		block.appendChild( container );
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
