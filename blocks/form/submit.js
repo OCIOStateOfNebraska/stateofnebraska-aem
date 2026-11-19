@@ -1,6 +1,7 @@
 import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
 import { div } from '../../scripts/dom-helpers.js';
 import { loadBlock } from '../../scripts/aem.js';
+import { clearErrorSummary, showErrorSummary } from './error-summary.js';
 
 export function submitSuccess( e, form ) {
 	const { payload } = e;
@@ -122,6 +123,7 @@ export async function handleSubmit( e, form, captcha ) {
 	e.preventDefault();
 	const valid = form.checkValidity();
 	if ( valid ) {
+		clearErrorSummary( form );
 		e.submitter?.setAttribute( 'disabled', '' );
 		if ( form.getAttribute( 'data-submitting' ) !== 'true' ) {
 			form.setAttribute( 'data-submitting', 'true' );
@@ -134,10 +136,6 @@ export async function handleSubmit( e, form, captcha ) {
 			}
 		}
 	} else {
-		const firstInvalidEl = form.querySelector( ':invalid:not(fieldset)' );
-		if ( firstInvalidEl ) {
-			firstInvalidEl.focus();
-			firstInvalidEl.scrollIntoView( { behavior: 'smooth' } );
-		}
+		showErrorSummary( form );
 	}
 }

@@ -14,6 +14,8 @@
  * against the AEM Adaptive Form's own required attributes.
  */
 
+import { clearErrorSummary, showErrorSummary } from './error-summary.js';
+
 function collectFieldValues( form ) {
 	const values = {};
 	for ( const [name, value] of new FormData( form ) ) {
@@ -30,13 +32,10 @@ export function handleSearchRedirect( e, form, block ) {
 	e.stopImmediatePropagation();
 
 	if ( !form.checkValidity() ) {
-		const firstInvalid = form.querySelector( ':invalid:not(fieldset)' );
-		if ( firstInvalid ) {
-			firstInvalid.focus();
-			firstInvalid.scrollIntoView( { behavior: 'smooth' } );
-		}
+		showErrorSummary( form );
 		return;
 	}
+	clearErrorSummary( form );
 
 	const redirectTo = block.dataset.redirectTo || form.dataset.redirectUrl;
 	if ( !redirectTo ) {
