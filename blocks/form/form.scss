@@ -12,6 +12,7 @@ $block: 'form';
 			max-width: 100%;
 		}
 	}
+
 	.form-message{
 		grid-column: span 12;
 
@@ -136,17 +137,25 @@ form {
 	}
 	
 	fieldset { // due to classes in aem forms, I need to override spacing for chrome 
-		margin-top: units(3) !important; // stylelint-disable-line declaration-no-important
+		margin-top: units(1) !important; // stylelint-disable-line declaration-no-important
 		
 		legend {
 			margin-top: 0 !important; // stylelint-disable-line declaration-no-important
 		}
 	}
-
+	
 	.panel-wrapper {
 		display: grid;
 		grid-template-columns: repeat(12, minmax(0, 1fr));
 		gap: units(2.5) units(4);
+		padding: units(2);
+		border: 1px solid color('base-light');
+		border-radius: units(1);
+
+		> legend{
+			padding: units(1);
+			font-size: size('body', 8) !important; // stylelint-disable-line declaration-no-important
+		}
 	}
 
 	/* Repeatable panels — ported from adobe-rnd/aem-boilerplate-forms.
