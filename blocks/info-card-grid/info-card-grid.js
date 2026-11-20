@@ -3,6 +3,15 @@ import { domEl } from '../../scripts/dom-helpers.js';
 import { isFullWidthTemplate } from '../../scripts/utils.js';
 
 /**
+* Finds a card icon SVG, ignoring decorative link icons (e.g. the PDF icon added to links).
+* @param {HTMLElement} el - The element to search in.
+* @returns {SVGElement|undefined} The first SVG that is not inside a link.
+*/
+function getMediaSvg( el ) {
+	return [...el.querySelectorAll( 'svg' )].find( ( svg ) => !svg.closest( 'a' ) );
+}
+
+/**
 * Generates the media content in the card.
 * @param {HTMLElement} div - The `div` element to be transformed into a card media section.
 * @param {HTMLElement} container - The card wrapper the content should be in.
@@ -10,7 +19,7 @@ import { isFullWidthTemplate } from '../../scripts/utils.js';
 function generateMedia( div, container ) {
 	div.className = 'usa-card__media';
 	const media = container.querySelector( '.usa-card__media' );
-	const img = container.querySelector( 'picture' ) || container.querySelector( 'svg' );
+	const img = container.querySelector( 'picture' ) || getMediaSvg( container );
 	const imgWrapper = domEl( 'div', { class: 'usa-card__img' } );
 	const svgParagraph = media.querySelector( 'p' );
 	imgWrapper.append( img );
@@ -53,7 +62,7 @@ function generateContent( div, container ) {
 */
 function generateWholeCard( container ) {
 	[...container.children].forEach( ( div ) => {
-		if ( div.querySelector( 'picture' ) || div.querySelector( 'svg' ) ) {
+		if ( div.querySelector( 'picture' ) || getMediaSvg( div ) ) {
 			generateMedia( div, container );
 		} else {
 			generateContent( div, container );
@@ -92,7 +101,7 @@ export default function decorate( block ) {
 	}
 
 	// If block has icons, add 'filled' class for icon card styling
-	if ( block.querySelector( 'svg' ) ) {
+	if ( getMediaSvg( block ) ) {
 		block.classList.add( 'filled' );
 	}
 
