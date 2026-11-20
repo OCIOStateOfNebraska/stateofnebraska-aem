@@ -167,10 +167,26 @@ function getFieldContainer( fieldElement ) {
 export function createHelpText( fd ) {
 	const div = document.createElement( 'div' );
 	div.className = 'field-description';
-	div.setAttribute( 'aria-live', 'polite' );
+	// Announced via the control's aria-describedby; a live region would repeat every error at once.
 	div.innerHTML = fd.description;
 	div.id = `${fd.id}-description`;
 	return div;
+}
+
+function getDescribedControls( fieldElement, container ) {
+	const controls = 'input:not([type="hidden"]), select, textarea';
+	if ( fieldElement.matches( controls ) && !['radio', 'checkbox'].includes( fieldElement.type ) ) {
+		return [fieldElement];
+	}
+	// Groups are validated through their wrapper, but screen readers focus each option.
+	return [...container.querySelectorAll( controls )];
+}
+
+function updateDescribedBy( control, id, describe ) {
+	const ids = ( control.getAttribute( 'aria-describedby' ) || '' ).split( /\s+/ ).filter( ( token ) => token && token !== id );
+	if ( describe ) ids.push( id );
+	if ( ids.length ) control.setAttribute( 'aria-describedby', ids.join( ' ' ) );
+	else control.removeAttribute( 'aria-describedby' );
 }
 
 export function updateOrCreateInvalidMsg( fieldElement, msg ) {
@@ -180,6 +196,7 @@ export function updateOrCreateInvalidMsg( fieldElement, msg ) {
 		element = createHelpText( { id: fieldElement.id } );
 		container.append( element );
 	}
+	const controls = getDescribedControls( fieldElement, container );
 	if ( msg ) {
 		container.classList.add( 'field-invalid' );
 		element.textContent = msg;
@@ -190,6 +207,11 @@ export function updateOrCreateInvalidMsg( fieldElement, msg ) {
 		element.remove();
 		container?.classList?.remove( 'field-invalid' );
 	}
+	controls.forEach( ( control ) => {
+		updateDescribedBy( control, element.id, element.isConnected );
+		if ( msg ) control.setAttribute( 'aria-invalid', 'true' );
+		else control.removeAttribute( 'aria-invalid' );
+	} );
 	return element;
 }
 

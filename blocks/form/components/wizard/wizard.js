@@ -1,4 +1,5 @@
 import { createButton } from '../../util.js';
+import { clearErrorSummary, showErrorSummary } from '../../error-summary.js';
 
 export class WizardLayout {
 	inputFields = 'input,textarea,select';
@@ -50,7 +51,9 @@ export class WizardLayout {
 		}, true );
 
 		if ( !isValid ) {
-			container.querySelector( ':invalid' )?.focus();
+			showErrorSummary( container );
+		} else {
+			clearErrorSummary( container );
 		}
 		return isValid;
 	}

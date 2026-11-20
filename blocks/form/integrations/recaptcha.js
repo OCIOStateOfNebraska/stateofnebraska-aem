@@ -16,8 +16,27 @@ export default class GoogleReCaptcha {
 		this.formName = formName;
 	}
 
+	// The invisible v3 badge iframe contains a live region that announces
+	// "reCAPTCHA finished loading" on every token request, interrupting form
+	// announcements. The badge is informational only, so hide it from AT.
+	static #hideBadgeFromAssistiveTech() {
+		const hide = () => {
+			const badge = document.querySelector( '.grecaptcha-badge' );
+			if ( !badge ) return false;
+			badge.setAttribute( 'aria-hidden', 'true' );
+			badge.querySelectorAll( 'iframe' ).forEach( ( frame ) => frame.setAttribute( 'tabindex', '-1' ) );
+			return true;
+		};
+		if ( hide() ) return;
+		const observer = new MutationObserver( () => {
+			if ( hide() ) observer.disconnect();
+		} );
+		observer.observe( document.body, { childList: true, subtree: true } );
+	}
+
 	#loadScript( url ) {
 		if ( !this.loadPromise ) {
+			GoogleReCaptcha.#hideBadgeFromAssistiveTech();
 			this.loadPromise = new Promise( ( resolve, reject ) => {
 				const head = document.head || document.querySelector( 'head' );
 				const script = document.createElement( 'script' );
