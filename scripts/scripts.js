@@ -444,6 +444,7 @@ function decorateImgs( element ) {
 		if ( !img.closest( 'body' ) ) { return; } // skip if ul is not in the DOM (i.e. a fragment)
 
 		const pEle = img.closest( 'p' );
+		if ( !pEle ) { return; } // already unwrapped (e.g. an <img> inside a <picture> handled just before)
 		let isOnlyNode = true;
 		pEle.childNodes.forEach( ( childNode ) => {
 			if ( childNode !== img && childNode.textContent.trim().length > 0 ) {

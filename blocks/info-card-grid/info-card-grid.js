@@ -3,18 +3,25 @@ import { domEl } from '../../scripts/dom-helpers.js';
 import { isFullWidthTemplate } from '../../scripts/utils.js';
 
 /**
+* Finds the authored icon placeholder or an inline SVG, ignoring icons inside links.
+* @param {HTMLElement} el - The element to search in.
+* @returns {Element|null} The first media icon, even if its SVG has not loaded yet.
+*/
+function getMediaIcon( el ) {
+	return el.querySelector( ':is(span.icon, svg):not(a *)' );
+}
+
+/**
 * Generates the media content in the card.
 * @param {HTMLElement} div - The `div` element to be transformed into a card media section.
-* @param {HTMLElement} container - The card wrapper the content should be in.
+* @param {Element} media - The picture or icon to move into the media wrapper.
 */
-function generateMedia( div, container ) {
+function generateMedia( div, media ) {
 	div.className = 'usa-card__media';
-	const media = container.querySelector( '.usa-card__media' );
-	const img = container.querySelector( 'picture' ) || container.querySelector( 'svg' );
 	const imgWrapper = domEl( 'div', { class: 'usa-card__img' } );
-	const svgParagraph = media.querySelector( 'p' );
-	imgWrapper.append( img );
-	media.append( imgWrapper );
+	const svgParagraph = div.querySelector( 'p' );
+	imgWrapper.append( media );
+	div.append( imgWrapper );
 
 	// remove the old p tag that the svg was wrapped in if it exists
 	if ( svgParagraph ) {
@@ -53,8 +60,9 @@ function generateContent( div, container ) {
 */
 function generateWholeCard( container ) {
 	[...container.children].forEach( ( div ) => {
-		if ( div.querySelector( 'picture' ) || div.querySelector( 'svg' ) ) {
-			generateMedia( div, container );
+		const media = div.querySelector( 'picture' ) || getMediaIcon( div );
+		if ( media ) {
+			generateMedia( div, media );
 		} else {
 			generateContent( div, container );
 		}
@@ -92,7 +100,7 @@ export default function decorate( block ) {
 	}
 
 	// If block has icons, add 'filled' class for icon card styling
-	if ( block.querySelector( 'svg' ) ) {
+	if ( getMediaIcon( block ) ) {
 		block.classList.add( 'filled' );
 	}
 
