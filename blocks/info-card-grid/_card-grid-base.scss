@@ -12,6 +12,12 @@
 		margin-bottom: 0;
 	}
 
+	// When the grid ends the page, nothing follows it, so use the small spacing
+	// (the footer adds its own) instead of leaving a large gap above the footer.
+	main .section:last-child > &:last-child {
+		margin-bottom: units($component-spacing-sm);
+	}
+
 	.#{$block} {
 		&,
 		&:last-child {

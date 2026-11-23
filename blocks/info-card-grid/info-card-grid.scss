@@ -22,18 +22,18 @@
 	}
 
 	// Icon-specific styling for filled variant - when block has .filled class
-	&:has(svg) {
+	&:has(.filled) {
 		.#{$block}__img {
 			@include u-padding-top($theme-card-padding-perimeter);
 			@include u-padding-x($theme-card-padding-perimeter);
 			padding-bottom: math.div(units($theme-card-padding-y), 2);
 			aspect-ratio: unset;
 			background-color: transparent;
-		}
 
-		.usa-icon {
-			width: units(8);
-			height: units(8);
+			.usa-icon {
+				width: units(8);
+				height: units(8);
+			}
 		}
 	}
 
