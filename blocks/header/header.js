@@ -223,6 +223,9 @@ async function loadAndDecorateNav( originUrl = '' ) {
 	const picture = navChildren[0].querySelector( 'picture' );
 	const link = navChildren[0].querySelector( 'a' );
 	if ( picture && link ) {
+		if ( originUrl ) {
+			link.href = new URL( link.getAttribute( 'href' ) || '/', originUrl ).href;
+		}
 		link.textContent = '';
 		link.className = '';
 		link.append( picture );
