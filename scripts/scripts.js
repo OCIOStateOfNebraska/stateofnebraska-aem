@@ -16,6 +16,7 @@ import {
 } from './aem.js';
 import { getIndividualIcon, isFullWidthTemplate, isSameDomainOrSubdomain } from './utils.js';
 import { div, domEl } from './dom-helpers.js';
+import showPageSkeleton from './page-skeleton.js';
 
 // variable for caching site index
 window.siteIndexCache = window.siteIndexCache || {};
@@ -33,7 +34,7 @@ function decorateBlocks( main ) {
  * @param {Element} main The container element
  * @param {String} templateName The name of the template
  */
-function buildHeroBlock( main, templateName ) {
+async function buildHeroBlock( main, templateName ) {
 	const h1 = main.querySelector( 'h1' );
 	let heroSection;
 	if ( h1 ) {
@@ -80,7 +81,7 @@ function buildHeroBlock( main, templateName ) {
 	container.appendChild( heroBlock );
 	main.prepend( container );
 	decorateBlock( heroBlock );
-	loadBlock( heroBlock );
+	await loadBlock( heroBlock );
 }
 
 /**
@@ -117,9 +118,9 @@ function decorateIcons( element, prefix = '' ) {
  * @param {Element} main The container element
  * @param {String} templateName The name of the template
  */
-function buildAutoBlocks( main, templateName ) {
+async function buildAutoBlocks( main, templateName ) {
 	try {
-		buildHeroBlock( main, templateName );
+		await buildHeroBlock( main, templateName );
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Auto Blocking failed', error );
@@ -621,9 +622,7 @@ export function decorateInner( container ) {
  */
 async function loadTemplate( doc, templateName ) {
 	try {
-		const cssLoaded = new Promise( ( resolve ) => {
-			loadCSS( `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`, resolve() );
-		} );
+		const cssLoaded = loadCSS( `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css` );
 		const decorationComplete = new Promise( ( resolve ) => {
 			( async () => {
 				try {
@@ -638,10 +637,12 @@ async function loadTemplate( doc, templateName ) {
 				resolve();
 			} )();
 		} );
-		await Promise.all( [cssLoaded, decorationComplete] );
+		const results = await Promise.allSettled( [cssLoaded, decorationComplete] );
+		const failure = results.find( ( result ) => result.status === 'rejected' );
+		if ( failure ) throw failure.reason;
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
-		console.log( `failed to load template ${templateName}`, error );
+		console.error( `failed to load template ${templateName}`, error );
 	}
 }
 
@@ -660,12 +661,14 @@ async function loadEager( doc ) {
 	getMetadata( 'theme' ).split( ',' ).map( toClassName ).filter( Boolean ).forEach( ( theme ) => {
 		document.body.classList.add( `theme--${theme}` );
 	} );
-	loadHeader( doc.querySelector( 'header' ) );
 	// load the blocks BEFORE decorating the template
 	const main = doc.querySelector( 'main' );
 	if ( main ) {
 		decorateMain( main );
-		await loadSection( main.querySelector( '.section' ), waitForFirstImage );
+		const firstSection = main.querySelector( '.section' );
+		if ( firstSection ) await loadSection( firstSection, waitForFirstImage );
+	} else {
+		return;
 	}
 
 	// pull in template name from document metadata
@@ -678,7 +681,7 @@ async function loadEager( doc ) {
 	}
 
 	// // build components that should be in main but be outside of the main template area
-	buildAutoBlocks( main, templateName );
+	await buildAutoBlocks( main, templateName );
 }
 
 /**
@@ -687,12 +690,8 @@ async function loadEager( doc ) {
  */
 async function loadLazy( doc ) {
 	const main = doc.querySelector( 'main' );
-	await loadSections( main );
-	const { hash } = window.location;
-	const element = hash ? doc.getElementById( hash.substring( 1 ) ) : false;
-	if ( hash && element ) element.scrollIntoView();
+	if ( main ) await loadSections( main );
 
-	loadFooter( doc.querySelector( 'footer' ) );
 	loadCSS( `${window.hlx.codeBasePath}/styles/lazy-styles.css` );
 	loadFonts();
 
@@ -742,12 +741,29 @@ async function loadFonts() {
 }
 
 export async function loadPage() {
-	await loadEager( document );
-	await loadLazy( document );
+	const finishSkeleton = showPageSkeleton( document );
+	try {
+		const header = document.querySelector( 'header' );
+		const footer = document.querySelector( 'footer' );
+		await Promise.all( [
+			header ? loadHeader( header ) : null,
+			footer ? loadFooter( footer ) : null,
+			( async () => {
+				await loadEager( document );
+				await loadLazy( document );
+			} )(),
+		] );
+	} finally {
+		finishSkeleton();
+	}
+	const { hash } = window.location;
+	const element = hash ? document.getElementById( hash.substring( 1 ) ) : null;
+	if ( element ) element.scrollIntoView();
 	loadDelayed();
 }
 
-if ( !window.hlx.suppressLoadPage ) await loadPage();
+// Let fragment modules import this module while the header and footer are loading.
+if ( !window.hlx.suppressLoadPage ) loadPage().catch( ( error ) => console.error( 'Page loading failed', error ) );
 
 // add class to to make the content appear in case header gets stuck
 ( function bodyAppear() {
